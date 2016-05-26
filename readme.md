@@ -1,8 +1,8 @@
-## Release 7 to 7.2
+## Release 7.8
 
-<b>Release Date:</b> 6th January, 2010
+<b>Release Date:</b> 17th April, 2010
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/presenting-7">Presenting 7</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/and-presenting-78-notice-the-difference">...and presenting 7.8. Notice the difference?</a>
 
 <b>Frontend:</b> Site Handler, XSLT Transform with AJAX / JavaScript
 
@@ -10,4 +10,4 @@
 
 <b>Dev Tool:</b> Visual Studio 2008
 
-A return to old style development, enschewing MVC. However I believe the JavaScript involvement in this site is more than any of the previous versions. This version also marks the first instance of SQLite usage. The release was quite painful and rushed however, and as such there were two more subsequent releases (7.1 and 7.2) over the following days.
+Changes over base 7 are better routing (using System.Routing, then new-ish and a lot more painful than semi-magical attribute routing now available at time of writing, v13.5 2016), and the replacement of the CKEditor with the NicEditor, which was much more lightweight (though again, nowhere near as lightweight as content-editable on raw divs).
