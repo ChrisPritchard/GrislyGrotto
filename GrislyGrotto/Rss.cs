@@ -18,7 +18,7 @@ namespace GrislyGrotto
             var xml = new StringBuilder();
             var textWriter = new StringWriter(xml);
 
-            var data = new GrislyGrottoEntities();
+            var data = new GrislyGrottoEntitiesAzure();
             serializer.Serialize(textWriter, data.Posts.OrderByDescending(p => p.Created).Take(5).ToArray());
 
             var transform = new XslCompiledTransform();

@@ -25,17 +25,29 @@
     <span class="editorState"></span>
 </div>
 
-<span class="editorComponent">
-    <input type="radio" name="ViewType" class="viewType" checked="true"></input>Normal
-</span>
+<div>
+    <span class="editorComponent">
+        <input type="radio" name="ViewType" class="viewType" checked="true"></input>Normal
+    </span>
 
-<span class="editorComponent">
-    <input type="radio" name="ViewType" class="viewType"></input>HTML
-</span>
+    <span class="editorComponent">
+        <input type="radio" name="ViewType" class="viewType"></input>HTML
+    </span>
 
-<span class="editorComponent">
-    <input type="checkbox" class="isStory" {{if Type == 'Story'}}checked="checked"{{/if}}></input>Is Story
-</span>
+    <span class="editorComponent">
+        <input type="checkbox" class="isStory" {{if Type == 'Story'}}checked="checked"{{/if}}></input>Is Story
+    </span>
+</div>
 
-<br/>
+<br />
+<div>
+    <span>Assets:<a href="#" class="addAssetLink spacedLink">Add</a><a href="/usercontent" target="_blank" class="assetLink">All</a></span>
+    <div style="display:none" class="addAsset">
+        <iframe src="Upload.htm" frameBorder="0" seamless='seamless' height="100"></iframe>
+        <br />
+        <a href="#" class="hideAddAsset">Hide</a>
+    </div>
+</div>
+<br />
+
 <button class="submitPost">Submit</button>

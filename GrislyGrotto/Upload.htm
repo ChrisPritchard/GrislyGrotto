@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Upload user content</title>
+    <script src="/Resources/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="/Resources/upload.js?v=10.5" type="text/javascript"></script>
+</head>
+<body>
+    <form enctype="multipart/form-data" method="post">
+        <span class="successMessage" style="display:none; color:green">
+            Success! The new asset is here: <a class="imageUrl" target="_blank"></a>
+        </span>
+        <br />
+        <input type="file" name="content" />
+        <br />
+        <span style="margin-right: 5px">Custom filename?</span><input type="text" name="customFilename" />
+        <br />
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>

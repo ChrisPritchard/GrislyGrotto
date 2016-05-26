@@ -1,344 +1,341 @@
-﻿
-function GrislyGrotto() {
-    this.userCredentials = null;
-    this.editorViewType = 'normal';
-
-    this.postTemplate = null, this.commentsTemplate = null, this.authenticationTemplate = null, this.editorTemplate = null;
-
-    this.downloadTemplateAsync = function(title, onDownloaded) {
+var Credentials = (function () {
+    function Credentials(username, password) {
+        this.Username = username;
+        this.Password = password;
+    }
+    return Credentials;
+})();
+var Post = (function () {
+    function Post(title, content, type) {
+        this.Title = title;
+        this.Content = content;
+        this.Type = type;
+    }
+    return Post;
+})();
+var MainBlogControl = (function () {
+    function MainBlogControl() { }
+    MainBlogControl.getParameterByName = function getParameterByName(name) {
+        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    };
+    MainBlogControl.downloadTemplateAsync = function downloadTemplateAsync(title, onDownloaded) {
         $.ajax({
             method: 'GET',
             async: false,
-            url: '/resources/templates/' + title + '.template.htm?v=10.2',
-            success: function (data) { onDownloaded($.templates(data)); }
-        });
-    }
-
-    this.downloadTemplate = function (title, onDownloaded) {
-        $.get('/resources/templates/' + title + '.template.htm',
-            function (data) { onDownloaded($.templates(data)); });
-    }
-
-    this.getParameterByName = function(name) {
-        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-    }
-
-    this.showAuthenticationZone = function(trigger, postId) {
-        $('.authenticationZone').remove();
-        $(trigger).after(grislygrotto.authenticationTemplate.render());
-        $(trigger).hide();
-
-        $('.checkedForValidCredentials').keyup(function () {
-            if ($('.username').val() != '' && $('.password').val() != '')
-                $('.authenticate').removeAttr('disabled');
-            else
-                $('.authenticate').attr('disabled', 'disabled');
-        });
-
-        $('.authenticate').click(function () {
-            grislygrotto.checkAuthentication(postId);
-        });
-    }
-
-    this.checkAuthentication = function (postId) {
-
-        grislygrotto.userCredentials = {
-            credentials: {
-                Username: $('.username').val(),
-                Password: $('.password').val()
+            url: '/resources/templates/' + title + '.template.htm?v=10.4',
+            success: function (data) {
+                onDownloaded($.templates(data));
             }
-        };
-
-        var methodUrl = '/Blog.svc/';
-        if (postId)
-            methodUrl += 'CheckAuthenticationForPost/' + postId;
-        else
-            methodUrl += 'CheckAuthentication';
-
+        });
+    };
+    MainBlogControl.downloadTemplate = function downloadTemplate(title, onDownloaded) {
+        $.get('/resources/templates/' + title + '.template.htm?v=10.4', function (data) {
+            onDownloaded($.templates(data));
+        });
+    };
+    MainBlogControl.postJson = function postJson(url, data, onSuccess) {
         $.ajax({
             type: "POST",
-            url: methodUrl,
+            url: url,
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(grislygrotto.userCredentials),
+            data: JSON.stringify(data),
             dataType: "json",
             success: function (result) {
-                $('.authenticationZone').remove();
-                if (!result) {
-                    $('.authenticationError').text('Authentication failed, please try again');
-                    return;
-                }
-
-                if (postId)
-                    $.getJSON('/Blog.svc/Post/' + postId + '?r=' + Math.random(), function (data) { grislygrotto.renderEditor(postId, data); });
-                else
-                    grislygrotto.renderEditor(postId, { Title: '', Content: '' });
+                onSuccess(result);
             }
         });
-    }
-
-    this.loadLatest = function() {
-        $.getJSON('/Blog.svc/LatestPosts?r=' + Math.random(),
-        function (data) { grislygrotto.renderPosts(data); });
-    }
-
-    this.loadPost = function(postId, scrollToComments) {
-        $.getJSON('/Blog.svc/Post/' + postId + '?r=' + Math.random(),
-        function (data) {
-            grislygrotto.renderPosts(data);
-
-            $('.posts').append(grislygrotto.commentsTemplate.render(data));
-            $('.commentSubmitButton').click(function () { grislygrotto.submitComment($(this).attr('name')); });
-
-            $('.checkedForValidComment').keyup(function () {
-                if ($('.commentAuthor').val() != '' && $('.commentText').val() != '')
-                    $('.commentSubmitButton').removeAttr('disabled');
-                else
-                    $('.commentSubmitButton').attr('disabled', 'disabled');
+    };
+    MainBlogControl.showAuthenticationZone = function showAuthenticationZone(trigger, postId) {
+        $('.authenticationZone').remove();
+        $(trigger).after(MainBlogControl.authenticationTemplate.render());
+        $(trigger).hide();
+        $('.checkedForValidCredentials').keyup(function () {
+            if($('.username').val() != '' && $('.password').val() != '') {
+                $('.authenticate').removeAttr('disabled');
+            } else {
+                $('.authenticate').attr('disabled', 'disabled');
+            }
+        });
+        $('.authenticate').click(function () {
+            MainBlogControl.checkAuthentication(postId);
+        });
+    };
+    MainBlogControl.checkAuthentication = function checkAuthentication(postId) {
+        MainBlogControl.userCredentials = new Credentials($('.username').val(), $('.password').val());
+        var methodUrl = '/Blog.svc/';
+        if(postId) {
+            methodUrl += 'CheckAuthenticationForPost/' + postId;
+        } else {
+            methodUrl += 'CheckAuthentication';
+        }
+        MainBlogControl.postJson(methodUrl, MainBlogControl.userCredentials, function (result) {
+            $('.authenticationZone').remove();
+            if(!result) {
+                $('.authenticationError').text('Authentication failed, please try again');
+                return;
+            }
+            if(postId) {
+                $.getJSON('/Blog.svc/Post/' + postId + '?r=' + Math.random(), function (data) {
+                    MainBlogControl.renderEditor(postId, data);
+                });
+            } else {
+                MainBlogControl.renderEditor(postId, {
+                    Title: '',
+                    Content: ''
+                });
+            }
+        });
+    };
+    MainBlogControl.loadLatest = function loadLatest() {
+        $.getJSON('/Blog.svc/LatestPosts?r=' + Math.random(), function (data) {
+            MainBlogControl.renderPosts(data);
+        });
+    };
+    MainBlogControl.loadPost = function loadPost(postId, scrollToComments) {
+        $.getJSON('/Blog.svc/Post/' + postId + '?r=' + Math.random(), function (data) {
+            MainBlogControl.renderPosts(data);
+            $('.posts').append(MainBlogControl.commentsTemplate.render(data));
+            $('.commentSubmitButton').click(function () {
+                MainBlogControl.submitComment(parseInt($(this).attr('name')));
             });
-
+            $('.checkedForValidComment').keyup(function () {
+                if($('.commentAuthor').val() != '' && $('.commentText').val() != '') {
+                    $('.commentSubmitButton').removeAttr('disabled');
+                } else {
+                    $('.commentSubmitButton').attr('disabled', 'disabled');
+                }
+            });
             $('.editPostLink').click(function () {
-                grislygrotto.showAuthenticationZone(this, postId);
+                MainBlogControl.showAuthenticationZone(this, postId);
                 return false;
             });
-
-            if (scrollToComments)
+            if(scrollToComments) {
                 document.getElementById('commentsBegin').scrollIntoView(true);
+            }
         });
-    }
-
-    this.renderPosts = function(data) {
-        $('.posts').html(grislygrotto.postTemplate.render(data));
+    };
+    MainBlogControl.renderPosts = function renderPosts(data) {
+        $('.posts').html(MainBlogControl.postTemplate.render(data));
         $('.postLink').click(function () {
-            grislygrotto.loadPost($(this).attr('name'), true);
+            MainBlogControl.loadPost(parseInt($(this).attr('name')), true);
             return false;
         });
-    }
-
-    this.loadArchives = function(template) {
-        $.getJSON('/Blog.svc/Archives?r=' + Math.random(),
-            function (data) {
-                $('.archives').append(template.render(data));
-                $('.archives').change(function () {
-                    var segments = $(this).val().split(',');
-                    $('.stories').val('/');
-                    $.getJSON('/Blog.svc/Month/' + segments[0] + '/' + segments[1] + '?r=' + Math.random(),
-                        function (data) { grislygrotto.renderPosts(data); });
+    };
+    MainBlogControl.loadArchives = function loadArchives(template) {
+        $.getJSON('/Blog.svc/Archives?r=' + Math.random(), function (data) {
+            $('.archives').append(template.render(data));
+            $('.archives').change(function () {
+                var segments = $(this).val().split(',');
+                $('.stories').val('/');
+                $.getJSON('/Blog.svc/Month/' + segments[0] + '/' + segments[1] + '?r=' + Math.random(), function (data) {
+                    MainBlogControl.renderPosts(data);
                 });
             });
-    }
-
-    this.loadStories = function(template) {
-        $.getJSON('/Blog.svc/Stories?r=' + Math.random(),
-            function (data) {
-                $('.stories').append(template.render(data));
-                $('.stories').change(function () {
-                    $('.archives').val('/');
-                    grislygrotto.loadPost($(this).val());
-                });
-            });
-    }
-
-    this.renderEditor = function (postId, post) {
-        $.getJSON('/Blog.svc/GetEditorState?r=' + Math.random(),
-            function (data) {
-                if (data != null) {
-                    if (!post)
-                        post = data;
-                    else {
-                        post.Title = data.Title;
-                        post.Content = data.Content;
-                    }
-                }
-
-                $('.posts').html(grislygrotto.editorTemplate.render(post));
-
-                if (postId) {
-                    post.isEditorMode = true;
-                    $('.posts').append(grislygrotto.commentsTemplate.render(post));
-                }
-
-                $('.viewType').change(function () { grislygrotto.changeViewType(); });
-                $('.submitPost').click(function () {
-                    grislygrotto.addOrEditPost(postId);
-                    return false;
-                });
-
-                $('.deleteCommentLink').click(function () {
-                    if (confirm('Are you sure you want to delete this comment?')) {
-                        var trigger = $(this);
-                        $.post('/Blog.svc/DeleteComment/' + $(this).attr('href'),
-                            function () { $(trigger).parent().remove(); });
-                    }
-                    return false;
-                });
-
-                $('.deletePostLink').click(function () {
-                    if (confirm('Are you sure you want to delete this post?')) {
-                        $.ajax({
-                            type: "POST",
-                            url: '/Blog.svc/DeletePost',
-                            contentType: "application/json; charset=utf-8",
-                            data: JSON.stringify({ request: { Credentials: grislygrotto.userCredentials.credentials, Id: postId} }),
-                            dataType: "json",
-                            success: function () { document.location.reload(true); }
-                        });
-                    }
-                    return false;
-                });
-
-                setTimeout(function () { grislygrotto.saveEditorState(); }, 5000);
-            });
-    }
-
-    this.saveEditorState = function() {
-        if ($('.editor').length == 0)
-            return;
-
-        $('.editorState').html('Saving...');
-
-        var postRequest = {
-            post: {
-                Title: $('.title').text(),
-                Content: $('.content').html(),
-                Type: 'Normal'
-            }
-        };
-
-        if (grislygrotto.editorViewType == 'html')
-            postRequest.post.Content = $('.content').text();
-        if ($('.isStory').attr('checked'))
-            postRequest.post.Type = 'Story';
-
-        $.ajax({
-            type: "POST",
-            url: '/Blog.svc/SaveEditorState',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(postRequest),
-            dataType: "json",
-            success: function () { setTimeout(function () { $('.editorState').html('Saved'); }, 500); }
         });
-
-        setTimeout(function () { grislygrotto.saveEditorState(); }, 5000);
-    }
-
-    this.changeViewType = function() {
-        if (grislygrotto.editorViewType == 'normal') {
-            grislygrotto.editorViewType = 'html';
-            $('.content').text($('.content').html());
+    };
+    MainBlogControl.loadStories = function loadStories(template) {
+        $.getJSON('/Blog.svc/Stories?r=' + Math.random(), function (data) {
+            $('.stories').append(template.render(data));
+            $('.stories').change(function () {
+                $('.archives').val('/');
+                MainBlogControl.loadPost($(this).val());
+            });
+        });
+    };
+    MainBlogControl.renderEditor = function renderEditor(postId, post) {
+        $.getJSON('/Blog.svc/GetEditorState?r=' + Math.random(), function (data) {
+            if(data != null) {
+                if(!post) {
+                    post = data;
+                } else {
+                    post.Title = data.Title;
+                    post.Content = data.Content;
+                }
+            }
+            $('.posts').html(MainBlogControl.editorTemplate.render(post));
+            if(postId) {
+                post.isEditorMode = true;
+                $('.posts').append(MainBlogControl.commentsTemplate.render(post));
+            }
+            $('.viewType').change(function () {
+                MainBlogControl.changeViewType();
+            });
+            $('.addAssetLink').click(function () {
+                $('.addAssetLink').hide();
+                $('.addAsset').show();
+                return false;
+            });
+            $('.hideAddAsset').click(function () {
+                $('.addAsset').hide();
+                $('.addAssetLink').show();
+                return false;
+            });
+            $('.submitPost').click(function () {
+                MainBlogControl.addOrEditPost(postId);
+                return false;
+            });
+            $('.deleteCommentLink').click(function () {
+                if(confirm('Are you sure you want to delete this comment?')) {
+                    var trigger = $(this);
+                    $.post('/Blog.svc/DeleteComment/' + $(this).attr('href'), function () {
+                        $(trigger).parent().remove();
+                    });
+                }
+                return false;
+            });
+            $('.deletePostLink').click(function () {
+                if(confirm('Are you sure you want to delete this post?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/Blog.svc/DeletePost',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            request: {
+                                Credentials: MainBlogControl.userCredentials,
+                                Id: postId
+                            }
+                        }),
+                        dataType: "json",
+                        success: function () {
+                            document.location.reload(true);
+                        }
+                    });
+                }
+                return false;
+            });
+            setTimeout(function () {
+                MainBlogControl.saveEditorState();
+            }, 5000);
+        });
+    };
+    MainBlogControl.saveEditorState = function saveEditorState() {
+        if($('.editor').length == 0) {
+            return;
         }
-        else {
-            grislygrotto.editorViewType = 'normal';
+        $('.editorState').html('Saving...');
+        var postRequest = {
+            post: new Post($('.title').text(), $('.content').html(), 'Normal')
+        };
+        if(MainBlogControl.editorViewType == 'html') {
+            postRequest.post.Content = $('.content').text();
+        }
+        if($('.isStory').attr('checked')) {
+            postRequest.post.Type = 'Story';
+        }
+        MainBlogControl.postJson('/Blog.svc/SaveEditorState', postRequest, function () {
+            setTimeout(function () {
+                $('.editorState').html('Saved');
+            }, 500);
+        });
+        setTimeout(function () {
+            MainBlogControl.saveEditorState();
+        }, 5000);
+    };
+    MainBlogControl.changeViewType = function changeViewType() {
+        if(MainBlogControl.editorViewType == 'normal') {
+            MainBlogControl.editorViewType = 'html';
+            $('.content').text($('.content').html());
+        } else {
+            MainBlogControl.editorViewType = 'normal';
             $('.content').html($('.content').text());
         }
-    }
-
-    this.addOrEditPost = function(postId) {
+    };
+    MainBlogControl.addOrEditPost = function addOrEditPost(postId) {
         var postRequest = {
             request: {
-                Credentials: grislygrotto.userCredentials.credentials,
-                Post: {
-                    Title: $('.title').text(),
-                    Content: $('.content').html(),
-                    Type: 'Normal'
-                }
+                Credentials: MainBlogControl.userCredentials,
+                Post: new Post($('.title').text(), $('.content').html(), 'Normal')
             }
         };
-
-        if (grislygrotto.editorViewType == 'html')
+        if(MainBlogControl.editorViewType == 'html') {
             postRequest.request.Post.Content = $('.content').text();
-        if ($('.isStory').attr('checked'))
+        }
+        if($('.isStory').attr('checked')) {
             postRequest.request.Post.Type = 'Story';
-        if (postId)
+        }
+        if(postId) {
             postRequest.request.Post.Id = postId;
-
-        $.ajax({
-            type: "POST",
-            url: '/Blog.svc/AddOrEditPost',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(postRequest),
-            dataType: "json",
-            success: function () { document.location.reload(true); }
+        }
+        MainBlogControl.postJson('/Blog.svc/AddOrEditPost', postRequest, function () {
+            document.location.reload(true);
         });
-    }
-
-    this.submitComment = function(postId) {
+    };
+    MainBlogControl.submitComment = function submitComment(postId) {
         $('.commentAuthor').attr('disabled', 'disabled');
         $('.commentText').attr('disabled', 'disabled');
         $('.commentSubmitButton').attr('disabled', 'disabled');
-
-        var newComment = { 
+        var newComment = {
             comment: {
                 Author: $('.commentAuthor').val(),
                 Text: $('.commentText').val()
             }
         };
-
-        $.ajax({
-            type: "POST",
-            url: '/Blog.svc/AddComment/' + postId,
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(newComment),
-            dataType: "json",
-            success: function () { grislygrotto.loadPost(postId); }
+        MainBlogControl.postJson('/Blog.svc/AddComment/' + postId, newComment, function () {
+            MainBlogControl.loadPost(postId);
         });
-    }
-
-    this.Run = function () {
-        this.downloadTemplateAsync('post', function (template) {
-            grislygrotto.postTemplate = template;
-            var id = grislygrotto.getParameterByName('id')
-            if (id != null)
-                grislygrotto.loadPost(id);
-            else {
+    };
+    MainBlogControl.Run = function Run() {
+        MainBlogControl.editorViewType = 'normal';
+        MainBlogControl.downloadTemplateAsync('post', function (template) {
+            MainBlogControl.postTemplate = template;
+            var id = MainBlogControl.getParameterByName('id');
+            if(id != null) {
+                MainBlogControl.loadPost(parseInt(id));
+            } else {
                 $.ajax({
                     method: 'GET',
                     async: false,
                     url: '/Blog.svc/LatestPosts?r=' + Math.random(),
-                    success: function (data) { grislygrotto.renderPosts(data); }
+                    success: function (data) {
+                        MainBlogControl.renderPosts(data);
+                    }
                 });
             }
         });
-
-        this.downloadTemplate('comments', function (template) { grislygrotto.commentsTemplate = template; });
-        this.downloadTemplate('authentication', function (template) {
-            grislygrotto.authenticationTemplate = template;
-
+        MainBlogControl.downloadTemplate('comments', function (template) {
+            MainBlogControl.commentsTemplate = template;
+        });
+        MainBlogControl.downloadTemplate('authentication', function (template) {
+            MainBlogControl.authenticationTemplate = template;
             $('.newPostLink').click(function () {
-                grislygrotto.showAuthenticationZone(this);
+                MainBlogControl.showAuthenticationZone(this);
                 return false;
             });
         });
-        this.downloadTemplate('editor', function (template) { grislygrotto.editorTemplate = template; });
-
-        this.downloadTemplate('archive', function (template) { grislygrotto.loadArchives(template); });
-        this.downloadTemplate('story', function (template) { grislygrotto.loadStories(template); });
-
-        this.downloadTemplateAsync('quote', function (template) {
+        MainBlogControl.downloadTemplate('editor', function (template) {
+            MainBlogControl.editorTemplate = template;
+        });
+        MainBlogControl.downloadTemplate('archive', function (template) {
+            MainBlogControl.loadArchives(template);
+        });
+        MainBlogControl.downloadTemplate('story', function (template) {
+            MainBlogControl.loadStories(template);
+        });
+        MainBlogControl.downloadTemplateAsync('quote', function (template) {
             $.ajax({
                 method: 'GET',
                 async: false,
                 url: '/Blog.svc/Quote?r=' + Math.random(),
-                success: function (data) { $('.quote').html(template.render(data)); }
+                success: function (data) {
+                    $('.quote').html(template.render(data));
+                }
             });
         });
-
         $('.header').click(function () {
             $('.archives').val('/');
             $('.stories').val('/');
             $('.newPostLink').show();
-            grislygrotto.loadLatest();
+            MainBlogControl.loadLatest();
         });
-
         $('.searchButton').click(function () {
-            $.getJSON('/Blog.svc/Search/' + $('.searchTerm').val() + '?r=' + Math.random(),
-                function (data) { grislygrotto.renderPosts(data); });
+            $.getJSON('/Blog.svc/Search/' + $('.searchTerm').val() + '?r=' + Math.random(), function (data) {
+                MainBlogControl.renderPosts(data);
+            });
         });
-    }
-}
-
-var grislygrotto = grislygrotto || new GrislyGrotto();
-
+    };
+    return MainBlogControl;
+})();
 $().ready(function () {
-    grislygrotto.Run();
+    MainBlogControl.Run();
 });

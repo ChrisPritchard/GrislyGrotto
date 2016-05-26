@@ -13,12 +13,13 @@ namespace GrislyGrotto
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class Blog
     {
-        private readonly GrislyGrottoEntities data;
-        private readonly Random random;
+        readonly GrislyGrottoEntitiesAzure data;
+        readonly Random random;
+        readonly TimeZoneInfo newZealandTime;
 
-        private const string editorStateKey = "editorState";
+        const string editorStateKey = "editorState";
 
-        private readonly Dictionary<CredentialsDto, string> users = new Dictionary<CredentialsDto, string>
+        readonly Dictionary<CredentialsDto, string> users = new Dictionary<CredentialsDto, string>
         {
             {new CredentialsDto {Username = "aquinas", Password = "***REMOVED***"}, "Christopher"},
             {new CredentialsDto {Username = "pdc", Password = "***REMOVED***"}, "Peter"},
@@ -26,8 +27,9 @@ namespace GrislyGrotto
 
         public Blog()
         {
-            data = new GrislyGrottoEntities();
+            data = new GrislyGrottoEntitiesAzure();
             random = new Random();
+            newZealandTime = TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time");
         }
 
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -110,14 +112,14 @@ namespace GrislyGrotto
         }
 
         [OperationContract]
-        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         public bool CheckAuthentication(CredentialsDto credentials)
         {
             return users.Any(u => u.Key.IsMatch(credentials));
         }
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "/CheckAuthenticationForPost/{postId}", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "/CheckAuthenticationForPost/{postId}", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         public bool CheckAuthenticationForPost(CredentialsDto credentials, string postId)
         {
             var parsedId = int.Parse(postId);
@@ -169,12 +171,12 @@ namespace GrislyGrotto
                 var newPost = new Post
                 {
                     Author = users.Single(u => u.Key.IsMatch(request.Credentials)).Value,
-                    Created = DateTime.Now,
+                    Created = TimeZoneInfo.ConvertTime(DateTime.Now, newZealandTime),
                     Title = request.Post.Title,
                     Content = request.Post.Content,
                     Type = request.Post.Type
                 };
-                data.Posts.AddObject(newPost);
+                data.Posts.Add(newPost);
             }
 
             data.SaveChanges();
@@ -191,8 +193,8 @@ namespace GrislyGrotto
             if (post == null)
                 return;
 
-            data.Posts.DeleteObject(post);
-            data.Comments.Where(c => c.PostID == request.Id).ToList().ForEach(data.Comments.DeleteObject);
+            data.Posts.Remove(post);
+            data.Comments.Where(c => c.PostID == request.Id).ToList().ForEach(c => data.Comments.Remove(c));
             data.SaveChanges();
 
             HttpContext.Current.Session[editorStateKey] = null;
@@ -208,7 +210,7 @@ namespace GrislyGrotto
 
             comment.Text = comment.Text.Trim();
 
-            data.AddToComments(new Comment { Author = comment.Author, Created = DateTime.Now, Text = comment.Text, PostID = int.Parse(postId)});
+            data.Comments.Add(new Comment { Author = comment.Author, Created = TimeZoneInfo.ConvertTime(DateTime.Now, newZealandTime), Text = comment.Text, PostID = int.Parse(postId) });
             data.SaveChanges();
         }
 
@@ -220,7 +222,7 @@ namespace GrislyGrotto
             var comment = data.Comments.SingleOrDefault(c => c.ID == id);
             if(comment == null)
                 return;
-            data.Comments.DeleteObject(comment);
+            data.Comments.Remove(comment);
             data.SaveChanges();
         }
 

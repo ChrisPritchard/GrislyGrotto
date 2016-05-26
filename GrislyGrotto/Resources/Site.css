@@ -143,6 +143,11 @@ a :visited
     line-height: 1.8em; 
 }
 
+.assetLink 
+{
+    margin-left:5px;
+}
+
 .footer 
 {
   font-size: 0.8em;
