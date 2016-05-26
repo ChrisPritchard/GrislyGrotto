@@ -1,13 +1,16 @@
 ﻿body
 {
 	background-color: #444;
-	background-image: url("/images/background.gif");
+	background-image: url("/blog/images/background.gif");
 	margin: 0px;
 }
 a, a:visited
 {
 	color: #66F;
-	margin-left: 10px;
+}
+a.sidemenu
+{
+    text-indent: 10px;
 }
 form
 {
@@ -15,7 +18,8 @@ form
 }
 div.page
 {
-	font-family: 'Trebuchet MS', 'Lucinda Grande', Verdana, Arial, Helvetica, sans-serif;
+	/*font-family: 'Trebuchet MS', 'Lucinda Grande', Verdana, Arial, Helvetica, sans-serif;*/
+	font-family: Georgia, "Times New Roman", Times, serif;
 	font-size: 0.8em;
 	line-height: 2em;
 	width: 80%;
@@ -121,12 +125,14 @@ input.button
 {
 	width: 100px;
 	
-	background-color: #CCC;
-	border: 1px solid;
-	border-top-color: #696;	
-	border-left-color: #696;
-	border-bottom-color: #363;
-	border-right-color: #363;
+	background-color: #FFF;
+	border: none;
+	
+    text-align:left;
+    font-weight: bolder;
+    font-size: 10px;
+    
+    color: red;
 }
 input.text
 {

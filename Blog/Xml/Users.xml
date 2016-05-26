@@ -1,0 +1,59 @@
+<users>
+  <user name="Christopher" primary="true" username="havoc" password="shadow">
+	<links>
+		<category title="Webcomics">
+		    <link text="Penny Arcade" href="http://www.penny-arcade.com/" />
+		    <link text="Xkcd" href="http://xkcd.com/" />
+		    <link text="Cyanide and Happiness" href="http://www.explosm.net/comics" />
+		    <link text="Men in Hats" href="http://www.meninhats.com" />
+		    <link text="Rooster Teeth" href="http://www.roosterteeth.com" />
+		</category>
+		<category title="Sites">
+		    <link text="The Escapist" href="http://www.escapistmagazine.com" />
+		    <link text="World of Warcraft (sigh)" href="http://www.worldofwarcraft.com" />
+		    <link text="Kotaku" href="http://kotaku.com" />
+		    <link text="Gamers with Jobs" href="http://www.gamerswithjobs.com" />
+		    <link text="BBC News" href="http://news.bbc.co.uk" />
+		    <link text="The Daily WTF" href="http://thedailywtf.com" />
+		    <link text="Life Hacker" href="http://lifehacker.com/" />
+		    <link text="Gizmodo" href="http://gizmodo.com/" />
+		</category>
+	</links>
+  </user>
+  <user name="Peter" username="pdc" password="***REMOVED***">
+	  <links>
+		<category title="Common Links">
+		    <link text="BBC News" href="http://news.bbc.co.uk/" />
+		    <link text="Castle Models" href="http://www.hirstarts.com/index.html" />
+		    <link text="Fantasy Map Drawing Software" href="http://profantasy.com/" />
+		    <link text="NZ History" href="http://www.nzetc.org/tm/scholarly/subject-000001.html" />
+		    <link text="Cassius Dio" href="http://penelope.uchicago.edu/Thayer/E/Roman/Texts/Cassius_Dio/home.html" />
+		    <link text="Wikipedia" href="http://en.wikipedia.org/wiki/Main_Page" />
+		</category>
+		<category title="Comix">
+		    <link text="Alex" href="http://www.alexcartoon.com/" />
+		    <link text="Doonesbury" href="http://www.doonesbury.com/strip/dailydose/" />
+		    <link text="Dilbert" href="http://www.dilbert.com/" />
+		</category>
+		<category title="Games">
+		    <link text="Diablo III" href="http://www.blizzard.com/diablo3/" />
+		</category>
+	  </links>
+  </user>
+  <user name="Ben" username="odin" password="odin">
+    <links>
+		<category title="Games I Play">
+		    <link text="Half Life 2" href="http://halflife2.com" />
+		    <link text="Team Fortress 2" href="http://orange.half-life2.com/tf2.html" />
+		</category>
+		<category title="Latest Book Read">
+		    <link text="Arthur C. Clarke - Light of Other Days" href="http://en.wikipedia.org/wiki/The_Light_of_Other_Days" />
+		    <link text="Vertigo Comic - Sandman" href="http://en.wikipedia.org/wiki/The_Sandman_%28Vertigo%29" />
+		    <link text="DC Comic - The Authority" href="http://en.wikipedia.org/wiki/The_Authority" />
+		</category>
+		<category title="Sites">
+		    <link text="The Pandas Thumb" href="http://www.pandasthumb.org/" />
+		</category>
+	</links>
+  </user>  
+</users>
