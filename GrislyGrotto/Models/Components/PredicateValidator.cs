@@ -1,4 +1,4 @@
-﻿namespace GrislyGrotto.Models
+﻿namespace GrislyGrotto.Models.Components
 {
     public class PredicateValidator
     {
@@ -9,9 +9,9 @@
             Valid = true;
         }
 
-        public void Validate(bool bPredicate)
+        public void Validate(bool predicate)
         {
-            if (Valid && !bPredicate)
+            if (Valid && !predicate)
                 Valid = false;
         }
     }

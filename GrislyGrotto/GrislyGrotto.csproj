@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ObjectBuilder2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="MvcContrib.Unity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\Christopher\Desktop\MvcContrib.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -69,8 +75,26 @@
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\BlogController.cs" />
-    <Compile Include="Models\Enums.cs" />
-    <Compile Include="Models\PredicateValidator.cs" />
+    <Compile Include="Models\Components\DtoToXElementMapper.cs" />
+    <Compile Include="Models\Defaults\DefaultUserRepository.cs" />
+    <Compile Include="Models\Defaults\XmlQuotesRepository.cs" />
+    <Compile Include="Models\DTO\PostInfo.cs" />
+    <Compile Include="Models\DTO\CommentInfo.cs" />
+    <Compile Include="Models\DTO\MonthInfo.cs" />
+    <Compile Include="Models\DTO\QuoteInfo.cs" />
+    <Compile Include="Models\DTO\UserInfo.cs" />
+    <Compile Include="Models\Components\Enums.cs" />
+    <Compile Include="Models\IAuthentication.cs" />
+    <Compile Include="Models\IBlogRepository.cs" />
+    <Compile Include="Models\ICommentRepository.cs" />
+    <Compile Include="Models\IQuoteRepository.cs" />
+    <Compile Include="Models\IUserRepository.cs" />
+    <Compile Include="Models\LinqToSql\LinqBlogRepository.cs" />
+    <Compile Include="Models\LinqToSql\LinqCommentRepository.cs" />
+    <Compile Include="Models\LinqToSql\LinqQuoteRepository.cs" />
+    <Compile Include="Models\Defaults\SessionAuthentication.cs" />
+    <Compile Include="Models\LinqToSql\LinqUserRepository.cs" />
+    <Compile Include="Models\Components\PredicateValidator.cs" />
     <Compile Include="Mvc\XViewData.cs" />
     <Compile Include="Mvc\XController.cs" />
     <Compile Include="Default.aspx.cs">
@@ -80,13 +104,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Extensions.cs" />
-    <Compile Include="Models\GrislyGrottoDB.designer.cs">
+    <Compile Include="Models\Components\Extensions.cs" />
+    <Compile Include="Models\LinqToSql\GrislyGrottoDB.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GrislyGrottoDB.dbml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mvc\XslView.cs" />
     <Compile Include="Mvc\XslViewEngine.cs" />
@@ -98,7 +121,7 @@
       <DependentUpon>GrislyGrottoDB.mdf</DependentUpon>
     </Content>
     <Content Include="Content\grislygrotto.css" />
-    <Content Include="Content\Images\title.png" />
+    <Content Include="Content\Quotes.xml" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\Blog\Editor.js" />
@@ -107,7 +130,6 @@
     <Content Include="Scripts\jquery.form.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\Shared\Common.js" />
-    <Content Include="Views\Blog\All.xslt" />
     <Content Include="Views\Blog\Editor.xslt" />
     <Content Include="Views\Feed\Atom.xslt" />
     <Content Include="Views\Feed\Rss.xslt" />
@@ -118,7 +140,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Models\GrislyGrottoDB.dbml">
+    <None Include="Models\LinqToSql\GrislyGrottoDB.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>GrislyGrottoDB.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -128,7 +150,7 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Models\GrislyGrottoDB.dbml.layout">
+    <None Include="Models\LinqToSql\GrislyGrottoDB.dbml.layout">
       <DependentUpon>GrislyGrottoDB.dbml</DependentUpon>
     </None>
   </ItemGroup>

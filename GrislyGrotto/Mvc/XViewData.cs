@@ -5,17 +5,17 @@ namespace GrislyGrotto.Mvc
     public class XViewData
     {
         public XDocument Content { get; private set; }
-        XElement xRootNode;
+        private XElement rootNode;
 
         public XViewData()
         {
-            xRootNode = new XElement("ViewData");
-            Content = new XDocument(xRootNode);
+            rootNode = new XElement("ViewData");
+            Content = new XDocument(rootNode);
         }
 
         public void Add(params object[] content)
         {
-            xRootNode.Add(content);
+            rootNode.Add(content);
         }
     }
 }

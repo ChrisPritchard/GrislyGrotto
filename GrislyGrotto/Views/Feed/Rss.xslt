@@ -6,11 +6,11 @@
 
         <rss version="2.0">
             <channel>
-                <title>grislygrotto.co.nz</title>
+                <title>The Grisly Grotto</title>
                 <link>http://grislygrotto.co.nz/</link>
                 <description>Grisly Grotto - Deviant Minds Think Alike</description>
                 <language>en</language>
-                <xsl:for-each select="ViewData/Blogs/Blog">
+                <xsl:for-each select="ViewData/Posts/Post">
                     <item>
                         <title>
                             <xsl:value-of select="@Title"/>
@@ -19,7 +19,7 @@
                             <xsl:value-of select="@Author"/>
                         </author>
                         <link>
-                            http://grislygrotto.co.nz/Blog/Specific/<xsl:value-of select="@BlogID"/>
+                            http://grislygrotto.co.nz/Blog/Specific/<xsl:value-of select="@PostID"/>
                         </link>
                         <description>
                             <xsl:value-of select="." />
@@ -28,7 +28,7 @@
                             <xsl:value-of select="@EntryDate"/>
                         </pubDate>
                         <guid>
-                            http://grislygrotto.co.nz/Blog/Specific/<xsl:value-of select="@BlogID"/>
+                            http://grislygrotto.co.nz/Blog/Specific/<xsl:value-of select="@PostID"/>
                         </guid>
                     </item>
                 </xsl:for-each>

@@ -1,37 +1,33 @@
-﻿using System;
+﻿using System.IO;
 using System.Web.Mvc;
-using System.IO;
-using System.Xml.Xsl;
 using System.Xml;
-using System.Web.Compilation;
-using System.Xml.Linq;
+using System.Xml.Xsl;
 
 namespace GrislyGrotto.Mvc
 {
     public class XslView: IView
     {
-        private string sXslPath;
-        private XViewData xViewData;
+        private string xslPath;
+        private XViewData ViewData;
 
         public XslView(XViewData viewData, string viewPath)
         {
-            sXslPath = viewPath;
-            xViewData = viewData;
+            xslPath = viewPath;
+            ViewData = viewData;
         }
 
         public void Render(ViewContext viewContext, TextWriter writer)
         {
-            XslCompiledTransform xslTransformer = new XslCompiledTransform();
-            xslTransformer.Load(
-                viewContext.HttpContext.Request.PhysicalApplicationPath + sXslPath);
-            xslTransformer.Transform(ConvertToXmlDocument(xViewData), null, writer);
+            var transformer = new XslCompiledTransform();
+            transformer.Load(viewContext.HttpContext.Request.PhysicalApplicationPath + xslPath);
+            transformer.Transform(ConvertToXmlDocument(ViewData), null, writer);
         }
 
-        private XmlDocument ConvertToXmlDocument(XViewData xViewData)
+        private XmlDocument ConvertToXmlDocument(XViewData viewData)
         {
-            XmlDocument xmlViewData = new XmlDocument();
-            xmlViewData.LoadXml(xViewData.Content.ToString());
-            return xmlViewData;
+            var document = new XmlDocument();
+            document.LoadXml(viewData.Content.ToString());
+            return document;
         }
     }
 }

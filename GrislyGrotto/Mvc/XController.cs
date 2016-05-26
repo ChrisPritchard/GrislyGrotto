@@ -1,6 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
-using System.Web.Routing;
+﻿using System.Web.Mvc;
 
 namespace GrislyGrotto.Mvc
 {
@@ -18,9 +16,9 @@ namespace GrislyGrotto.Mvc
             return base.View(ViewData);
         }
 
-        public new ViewResult View(string sViewName)
+        public new ViewResult View(string viewName)
         {
-            return base.View(sViewName, ViewData);
+            return base.View(viewName, ViewData);
         }
     }
 }

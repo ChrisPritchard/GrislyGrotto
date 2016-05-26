@@ -1,31 +1,47 @@
 ﻿using System;
-using GrislyGrotto.Mvc;
 using System.Web.Mvc;
-using GrislyGrotto.Models;
 using System.Xml.Linq;
+using GrislyGrotto.Models;
+using GrislyGrotto.Models.Components;
+using GrislyGrotto.Mvc;
 
 namespace GrislyGrotto.Controllers
 {
     public class FeedController : XController
     {
-        GrislyGrottoDBDataContext db;
+        IBlogRepository blogRepository;
+        ICommentRepository commentRepository;
 
-        public FeedController()
+        DtoToXElementMapper mapper;
+
+        public FeedController(IBlogRepository blogRepository, ICommentRepository commentRepository)
         {
-            db = new GrislyGrottoDBDataContext();
+            this.blogRepository = blogRepository;
+            this.commentRepository = commentRepository;
+
+            mapper = new DtoToXElementMapper();
         }
 
-        public ActionResult Atom(string Author)
+        /// <summary>
+        /// Returns latest posts with a date timestamp suitable for atom
+        /// </summary>
+        public ActionResult Atom(string userFullname)
         {
             ViewData.Add(new XElement("Date", DateTime.Now.ToString("yyyy-MM-ddThh:mm:ssZ")));
-            ViewData.Add(Util.LatestBlogs(Author, db));
+
+            var latestPosts = mapper.Posts(blogRepository.GetLatestPosts(userFullname, 5, commentRepository));
+            ViewData.Add(latestPosts);
 
             return View();
         }
 
-        public ActionResult Rss(string Author)
+        /// <summary>
+        /// Returns latest posts suitable for rss
+        /// </summary>
+        public ActionResult Rss(string userFullname)
         {
-            ViewData.Add(Util.LatestBlogs(Author, db));
+            var latestPosts = mapper.Posts(blogRepository.GetLatestPosts(userFullname, 5, commentRepository));
+            ViewData.Add(latestPosts);
 
             return View();
         }

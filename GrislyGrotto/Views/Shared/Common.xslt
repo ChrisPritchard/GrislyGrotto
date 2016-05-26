@@ -19,7 +19,7 @@
             <body>
                 <div class="page">
 
-                    <div class="header" id="headerDiv">
+                    <div class="header" id="header">
                         <h1 class="headertext">The Grisly Grotto</h1>
                         <h2 class="headertext">Deviant Minds Think Alike</h2>
                     </div>
@@ -28,15 +28,16 @@
                         <span class="quotetext">
                             <xsl:value-of select="ViewData/Quote/." />
                         </span>
-                        <br/>
-                        -<xsl:value-of select="ViewData/Quote/@Author" />
+                        <span class="quoteauthor">
+                          -<xsl:value-of select="ViewData/Quote/@Author" />
+                        </span>
                     </div>
 
                     <xsl:call-template name="AuthorLinks" />
 
                     <div class="menu">
                         <xsl:call-template name="UserBox" />
-                        <xsl:call-template name="BlogHistory" />
+                        <xsl:call-template name="PostHistory" />
                     </div>
 
                     <div>
@@ -58,71 +59,64 @@
         <xsl:choose>
             <xsl:when test="ViewData/AuthorDetails/Author/@LoggedIn">
                 <p>
-                    <h3>
-                        Welcome <xsl:value-of select="ViewData/AuthorDetails/Author[@LoggedIn]/@Fullname"/>
+                    <h3 class="historyheading">
+                        <xsl:value-of select="ViewData/AuthorDetails/Author[@LoggedIn]/@Fullname"/>
                     </h3>
-                    <p>
-                        <a href="/User/Logout">Logout</a>
-                    </p>
-                    <p>
-                        <a href="/Blog/Editor">Post a new Blog</a>
-                    </p>
+                    <a href="/User/Logout" class="oneline">Logout</a>
+                    <a href="/Blog/Editor" class="oneline">Post a new Blog</a>
                 </p>
             </xsl:when>
             <xsl:otherwise>
                 <form id="Login" method="post" action="/User/Login">
-                    <p>
-                        <label for="Username">Username:&#160;</label>
-                        <input type="text" id="Username" name="Username" />
-                    </p>
-                    <p>
-                        <label for="Password">Password:&#160;</label>
-                        <input type="password" id="Password" name="Password" />
-                    </p>
-                    <input type="submit" value="Login" />
+                  <span class="oneline">
+                    <span class="loginlabel">
+                      <label for="Username">Username:</label>
+                    </span>
+                    <input type="text" id="Username" name="Username" class="login" />
+                  </span>
+                  <span class="oneline">
+                    <span class="loginlabel">
+                      <label for="Password">Password:</label>
+                    </span>
+                    <input type="password" id="Password" name="Password" class="login" />
+                  </span>
+                  <input type="submit" value="Login" />
                 </form>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template name="BlogHistory">
+    <xsl:template name="PostHistory">
         <p>
             <h3 class="historyheading">Recent Posts</h3>
-            <ul>
-                <xsl:for-each select="ViewData/History/RecentEntries/Entry">
-                    <li>
-                        <a href="/Blog/Specific/{@BlogID}">
-                            <xsl:value-of select="@Title"/>
-                            <br/>
-                            <span class="howrecent">
-                                <xsl:value-of select="@HowRecent"/>
-                            </span>
-                        </a>
-                    </li>
-                </xsl:for-each>
-            </ul>
+            <xsl:for-each select="ViewData/RecentEntries/Entry">
+                <a href="/Blog/Specific/{@PostID}" class="oneline">
+                    <xsl:value-of select="@Title"/>
+                    <br/>
+                    <span class="howrecent">
+                        <xsl:value-of select="@HowRecent"/>
+                    </span>
+                </a>
+            </xsl:for-each>
         </p>
 
         <p>
-          <h3 class="historyheading">History</h3>
-            <ul>
-                <xsl:for-each select="ViewData/History/MonthBlogCounts/Month">
-                    <li>
-                        <a href="/Blog/{@Year}/{@Month}">
-                            <xsl:if test="/ViewData/AuthorDetails/Author[@Current]">
-                                <xsl:attribute name="href">
-                                    /Blog/<xsl:value-of select="@Year" />/<xsl:value-of select="@Month" />/<xsl:value-of select="/ViewData/AuthorDetails/Author[@Current]/@Fullname" />
-                                </xsl:attribute>
-                            </xsl:if>
-                            <xsl:value-of select="@Month"/>&#160;<xsl:value-of select="@Year"/>&#160;(<xsl:value-of select="@Count"/>)</a>
-                    </li>
-                </xsl:for-each>
-            </ul>
+            <h3 class="historyheading">History</h3>
+            <xsl:for-each select="ViewData/MonthBlogCounts/Month">
+                <a href="/Blog/{@Year}/{@Month}" class="oneline">
+                    <xsl:if test="/ViewData/AuthorDetails/Author[@Current]">
+                        <xsl:attribute name="href">
+                            /Blog/<xsl:value-of select="@Year" />/<xsl:value-of select="@Month" />/<xsl:value-of select="/ViewData/AuthorDetails/Author[@Current]/@Fullname" />
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="@Month"/>&#160;<xsl:value-of select="@Year"/>&#160;(<xsl:value-of select="@Count"/>)</a>
+            </xsl:for-each>
         </p>
     </xsl:template>
 
     <xsl:template name="AuthorLinks">
         <div class="authorlinks">
+            Currently Displaying:
             <xsl:choose>
                 <xsl:when test="ViewData/AuthorDetails/Author/@Current">
                     <a href="/Blog/Latest">All</a>

@@ -1,4 +1,5 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function()
+{
 
     $("#Login").validate({
         rules: {
@@ -17,6 +18,11 @@
                 required: "Please enter a password"
             }
         }
+    });
+
+    $('#header').click(function()
+    {
+        $()[0].location.href = '/';
     });
 
 });

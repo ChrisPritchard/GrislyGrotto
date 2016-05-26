@@ -5,13 +5,13 @@
     <xsl:template match="/">
 
         <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-            <title>grislygrotto.co.nz</title>
+            <title>The Grisly Grotto</title>
             <link href="http://grislygrotto.co.nz/" rel="alternate"></link>
             <id>http://grislygrotto.co.nz/</id>
             <updated>
                 <xsl:value-of select="ViewData/Date/."/>
             </updated>
-            <xsl:for-each select="ViewData/Blogs/Blog">
+            <xsl:for-each select="ViewData/Posts/Post">
                 <entry>
                     <title>
                         <xsl:value-of select="@Title"/>
@@ -19,12 +19,12 @@
                     <author>
                         <xsl:value-of select="@Author"/>
                     </author>
-                    <link href="http://grislygrotto.co.nz/Blog/Specific/{@BlogID}" rel="alternate"></link>
+                    <link href="http://grislygrotto.co.nz/Blog/Specific/{@PostID}" rel="alternate"></link>
                     <updated>
                         <xsl:value-of select="@EntryDate"/>
                     </updated>
                     <id>
-                        http://grislygrotto.co.nz/Blog/Specific/<xsl:value-of select="@BlogID"/>
+                        http://grislygrotto.co.nz/Blog/Specific/<xsl:value-of select="@PostID"/>
                     </id>
                     <summary type="html">
                         <xsl:value-of select="." />

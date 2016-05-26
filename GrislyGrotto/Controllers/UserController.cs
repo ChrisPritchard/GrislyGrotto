@@ -1,42 +1,45 @@
-﻿using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using GrislyGrotto.Models;
+using GrislyGrotto.Models.Components;
 using GrislyGrotto.Mvc;
 
 namespace GrislyGrotto.Controllers
 {
-
     public class UserController : XController
     {
-        GrislyGrottoDBDataContext db;
-        PredicateValidator InputContract;
+        IAuthentication authentication;
+        PredicateValidator validator;
 
-        public UserController()
+        public UserController(IAuthentication authentication)
         {
-            db = new GrislyGrottoDBDataContext();
-            InputContract = new PredicateValidator();
+            this.authentication = authentication;
+
+            validator = new PredicateValidator();
         }
 
+        /// <summary>
+        /// attempt a login. Redirect to the homepage on success or failure
+        /// </summary>
         public ActionResult Login(string Username, string Password)
         {
-            InputContract.Validate(!string.IsNullOrEmpty(Username));
-            InputContract.Validate(!string.IsNullOrEmpty(Password));
-            if (!InputContract.Valid)
+            validator.Validate(!string.IsNullOrEmpty(Username));
+            validator.Validate(!string.IsNullOrEmpty(Password));
+            if (!validator.Valid)
                 return RedirectToAction("/");
 
-            IQueryable<User> user = db.Users.Where(u => u.Username == Username && u.Password == Password);
-            if (user.Count() > 0)
-                Session["user"] = user.Single();
+            authentication.TryLogin(Username, Password);
 
             return Redirect("/");
         }
 
+        /// <summary>
+        /// Logout the current user, redirect to homepage
+        /// </summary>
         public ActionResult Logout()
         {
-            Session["user"] = null;
+            authentication.Logout();
 
             return Redirect("/");
         }
-
     }
 }

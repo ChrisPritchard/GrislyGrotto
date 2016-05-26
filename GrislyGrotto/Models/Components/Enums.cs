@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace GrislyGrotto.Models
+﻿
+namespace GrislyGrotto.Models.Components
 {
-    public enum Months
+    public enum Month
     {
         January = 1, 
         February = 2, 

@@ -5,12 +5,12 @@
 
   <xsl:template match="ViewData">
 
-    <xsl:for-each select="Blogs/Blog">
-      <div class="blog">
-        <h3 class="blogtitle">
+    <xsl:for-each select="Posts/Post">
+      <div class="post">
+        <h3 class="posttitle">
           <xsl:value-of select="@Title" />
         </h3>
-        <p class="blogdetail">
+        <p class="postdetail">
           <xsl:if test="not(/ViewData/AuthorDetails/Author[@Current])">
             Posted by <span class="authorname">
               <xsl:value-of select="@Author" />
@@ -18,13 +18,13 @@
           </xsl:if>
           <xsl:value-of select="@EntryDate" />&#160;
           <xsl:if test="/ViewData/AuthorDetails/Author[@LoggedIn]/@Fullname = @Author">
-            <a href="/Blog/Editor/{@BlogID}">Edit</a>&#160;
+            <a href="/Blog/Editor/{@PostID}">Edit</a>&#160;
           </xsl:if>
-          <a href="/Blog/Specific/{@BlogID}#Comments">
-            Comments (<xsl:value-of select="@Comments"/>)
+          <a href="/Blog/Specific/{@PostID}#Comments">
+            Comments (<xsl:value-of select="@CommentCount"/>)
           </a>
         </p>
-        <p class="blogtext">
+        <p class="posttext">
           <xsl:value-of select="." disable-output-escaping="yes" />
         </p>
       </div>
