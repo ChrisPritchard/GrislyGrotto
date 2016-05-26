@@ -1,0 +1,13 @@
+﻿@model GrislyGrotto.ViewModels.Home.MonthViewModel
+
+@{
+    ViewBag.Title = Model.MonthName + ", " + Model.Year;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="pageHeading">@Model.MonthName, @Model.Year</h2>
+
+@foreach (var post in Model.Posts)
+{
+    Html.RenderPartial("_Post", post);
+}

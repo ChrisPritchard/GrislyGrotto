@@ -1,0 +1,18 @@
+﻿@model GrislyGrotto.ViewModels.Home.TagViewModel
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "Tag: " + Model.DisplayTag;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="pageHeading">Tag - @Model.DisplayTag</h2>
+
+@foreach (var post in Model.Posts)
+{
+    Html.RenderPartial("_Post", post);
+}
+
+<input id="TagName" type="hidden" value="@Model.Tag" />
+@Html.Partial("_KnockOutLoadMore")
+@Scripts.Render("~/app/tagSearch.js")

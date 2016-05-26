@@ -1,40 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto", "GrislyGrotto\GrislyGrotto.csproj", "{BF9B757C-5F9A-445C-80C7-4AB401B787BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto", "GrislyGrotto\GrislyGrotto.csproj", "{52588608-2769-4527-BF26-0A9927B35180}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMigrator.SqlCeToSqlSvr", "DataMigrator.SqlCeToSqlSvr\DataMigrator.SqlCeToSqlSvr.csproj", "{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.Backup.GG10", "GrislyGrotto.Backup.GG10\GrislyGrotto.Backup.GG10.csproj", "{D81AA9A0-7611-4155-837B-88CF64C53526}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.Migrate.GG10.To.GG11", "GrislyGrotto.Migrate.GG10.To.GG11\GrislyGrotto.Migrate.GG10.To.GG11.csproj", "{E1755125-730F-49CE-9C69-6C1CBB695449}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|Mixed Platforms = Release|Mixed Platforms
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|x86.ActiveCfg = Release|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C5D03A73-6BB8-49C1-BA61-044EC5475EA9}.Release|x86.ActiveCfg = Release|Any CPU
+		{52588608-2769-4527-BF26-0A9927B35180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52588608-2769-4527-BF26-0A9927B35180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52588608-2769-4527-BF26-0A9927B35180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52588608-2769-4527-BF26-0A9927B35180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D81AA9A0-7611-4155-837B-88CF64C53526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81AA9A0-7611-4155-837B-88CF64C53526}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81AA9A0-7611-4155-837B-88CF64C53526}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81AA9A0-7611-4155-837B-88CF64C53526}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1755125-730F-49CE-9C69-6C1CBB695449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1755125-730F-49CE-9C69-6C1CBB695449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1755125-730F-49CE-9C69-6C1CBB695449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1755125-730F-49CE-9C69-6C1CBB695449}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,45 @@
+﻿@model GrislyGrotto.ViewModels.Shared.PostViewModel
+
+<div class="js_comments comments">
+    
+    <h3>
+        Comments
+        @if (Model.Comments.Count == 0)
+        {
+            <span class="js_noComment"> - No comments have been posted yet</span>
+        }
+    </h3>
+
+    <a name="Comments"></a>
+
+    @foreach (var comment in Model.Comments.OrderBy(c => c.Created))
+    {
+        <div class="comment">
+            <span class="author">@comment.Author</span>
+            <span> - </span>
+            <span class="date">@comment.Created.ToString("dddd, dd MMMM yyyy h:mm:ss tt")</span>
+            <div>@Html.Raw(comment.Content)</div>
+        </div>
+    }
+
+    <div data-bind="foreach: newComments">
+        <div class="comment">
+            <span class="author" data-bind="text: Author"></span>
+            <span> - </span>
+            <span class="date" data-bind="text: $root.dateFormatted($data)"></span>
+            <div data-bind="html: Content"></div>
+        </div>
+    </div>
+
+    <div>
+        <label>
+            Author:
+            <br />
+            <input type="text" data-bind="value: commentAuthor, valueUpdate: 'afterkeyup', enable: allEnabled" />
+        </label>
+        <textarea class="newCommentText" rows="8" cols="80" data-bind="value: commentContent, valueUpdate: 'afterkeyup', enable: allEnabled"></textarea>
+        <input type="hidden" class="js_postID" value="@Model.ID" />
+        <button data-bind="click: submitComment, enable: contentValid">Add Comment</button>
+    </div>
+    
+</div>

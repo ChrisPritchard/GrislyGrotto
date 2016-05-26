@@ -1,0 +1,345 @@
+﻿/* HTML5 fix for IE8- */
+
+header,nav,section,article,aside,footer,hgroup { 
+    display: block;
+}
+
+/* Generic */
+
+body {
+    font-family: calibri, Verdana;
+    color: #333;
+    padding: 0;
+    margin: 0;
+}
+
+section.bodywrap {
+    margin: 0;
+    margin-left: 10px;
+    min-height: 100%;
+    padding: 20px;
+}
+
+button {
+    height: 33px;
+    border: 0;
+    background: #005;
+    color: white;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #008
+}
+
+button:active {
+    background: #005
+}
+
+a, a:active {
+    color: #006;
+    text-decoration: none
+}
+
+input {
+    height: 33px;
+    font-size: 20px;
+}
+
+.warning {
+    color: red;
+    font-weight:bold;
+    margin: 3px;
+}
+
+div.validation-summary-errors {
+    color: red;
+    font-weight:bold;
+}
+
+footer {
+    text-align: center;
+    font-size: 10px;
+}
+
+/* Header / First Content*/
+
+header {
+    text-align: center;
+}
+
+header a h1 {
+    font-size: 60px;
+    font-family: Georgia, Verdana;
+    color: #555;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+header span{
+    font-size: 15px;
+    border-bottom: 1px solid black;
+}
+
+section.quote {
+    margin-top: 20px;
+    text-align: center;
+}
+
+section.quote div {
+    font-style: italic;
+    color: maroon;
+    font-size: 14px;
+}
+
+section.quote span {
+    font-size: 10px;
+}
+
+/* Nav / Archives etc */
+
+section.authSection {
+    font-weight: bold;
+}
+
+section.navigation {
+    width: 300px;
+    float: right;
+    text-align: right;
+}
+
+section.navigation section {
+    margin-bottom: 10px;
+}
+
+section.search {
+    margin-bottom: 50px !important;
+}
+
+section.navigation section h2 {
+    margin-bottom: 0;
+}
+
+section.navigation section div.loading {
+    background: url('/content/loading.gif') right no-repeat;
+    width: 100%;
+    height: 55px;
+}
+
+a.hideLink {
+    font-size: 10px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+section section ul {
+    list-style: none;
+}
+
+section section button.loadArchive {
+    width: 100px;
+}
+
+ul.archiveList {
+    list-style: none;
+}
+
+li.archiveItem {
+    margin-bottom: 10px;
+}
+
+span.storyTitle {
+    display: block;
+    font-weight: bold;
+}
+
+/* Main Content / Posts */
+
+h2.pageHeading {
+    font-family: Georgia, Verdana;
+    border-bottom: 1px solid black;
+    width: 800px;
+}
+
+section.mainContent {
+    width: 800px;
+}
+
+div.listPost {
+    margin-bottom: 30px;
+}
+
+div.listPost h3 {
+    font-family: Georgia, Verdana;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+div.listPost .postDetails {
+    font-weight: bold;
+}
+
+div.listPost div.content {
+    padding: 5px;
+}
+
+div.loading {
+    background: url('/content/loading.gif') center no-repeat;
+    width: 400px;
+    height: 100px;
+}
+
+/* Login Page */
+
+section.loginForm {
+    margin-bottom: 500px;
+}
+
+section.loginForm p {
+    margin-bottom: 20px;
+}
+
+section.loginForm p label {
+    font-weight: bold;
+}
+
+section.loginForm p input {
+    width: 300px;
+}
+
+section.logoutForm {
+    font-weight: bold;
+    margin-bottom: 800px;
+}
+
+/* Specific Post Page */
+
+div.specificPost .postDetails {
+    font-weight: bold;
+}
+
+div.specificPost div.content {
+    padding: 5px;
+}
+
+div.specificPost a.editLink {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
+    height: 20px;
+    background: #555;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 7px;
+    width: 100px;
+    font-size: 14px;
+}
+
+div.specificPost a.editLink:hover {
+    background: #888;
+}
+
+div.comments h3 {
+    text-decoration: underline;
+}
+
+div.comment {
+    margin-bottom: 20px;
+}
+
+div.comment span.author {
+    font-weight: bold;
+}
+
+div.comment span.date {
+    font-style: italic;
+}
+
+div.comment div {
+    padding: 5px;
+}
+
+textarea.newCommentText {
+    display: block;
+    font-family: Verdana;
+    margin: 10px;
+}
+
+/* Editor */
+
+h2.editorTitle {
+    border: 1px solid black;
+    background: white;
+    width: 800px;
+}
+
+div.editorContent {
+    border: 1px solid black;
+    background: white;
+    width: 800px;
+    margin-bottom: 20px;
+}
+
+div.viewType label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+div.viewType label input {
+    height: 13px;
+}
+
+div.isStory {
+    margin-top: 10px;
+}
+
+div.isStory label input {
+    height: 13px;
+}
+
+div.editorTags {
+    margin-top: 20px;
+}
+
+div.editorTags ul li {
+    display: inline;
+    padding-right: 5px;
+}
+
+button.deletePost {
+    width: 200px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div.encodedImageGenerator h4 {
+    margin-bottom: 0;
+}
+
+div.encodedImageGenerator form button {
+    margin-top: 10px;
+}
+
+div.deletableComment {
+    border: 1px solid black;
+    width: 400px;
+    padding: 10px;
+    margin: 10px;
+}
+
+div.deletableComment span.commentAuthor {
+    font-weight: bold;
+}
+
+div.deletableComment span.date {
+    font-style: italic;
+}
+
+div.deletableComment div {
+    padding: 5px;
+}
+
+div.deletableComment button {
+    margin-top: 5px;
+}

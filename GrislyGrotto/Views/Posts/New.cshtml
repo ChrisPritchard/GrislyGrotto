@@ -1,0 +1,33 @@
+﻿@model GrislyGrotto.ViewModels.Post.EditorViewModel
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    @Html.Partial("_Editor")
+    
+    <p>
+        <input type="submit" value="Create New Post" class="js_submitPost" />
+    </p>
+}
+
+<h4>Create encoded image</h4>
+<form class="js_imageEncodingForm"
+    action="@Url.Action("GetEncodedImageHtml")"
+    method="post" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" />
+    <button type="submit">Get Image HTML</button>
+</form>
+<textarea class="js_encodeResult" style="display:none"></textarea>
+
+@Scripts.Render("~/app/editor")
+
+<div>
+    @Html.ActionLink("Cancel", "Latest", "Home")
+</div>

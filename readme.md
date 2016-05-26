@@ -1,17 +1,13 @@
-## Release 10.5
+## Release 11
 
-<b>Release Date:</b> 23rd January, 2013 - Approx. 7th February 2013
+<b>Release Date:</b> 15th June 2013
 
-<b>Release Post(s):</b> 
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/welcome-to-gg11">Welcome to GG11!</a>
 
-- <a href="http://grislygrotto.azurewebsites.net/p/greener-pastures">Greener Pastures</a>
-- <a href="http://grislygrotto.azurewebsites.net/p/scholar-prince">Scholar Prince</a>
+<b>Frontend:</b> ASP.NET MVC (4?), .NET 4.5 
 
-<b>Frontend:</b> WCF REST Service, HTML5 frontend using JsRender templates and Typescript
-
-<b>Backend:</b> Azure Hosting, Azure SQL Server
+<b>Backend:</b> Azure SQL Server
 
 <b>Dev Tool:</b> Visual Studio 2012
 
-The first shift to Azure. Previously the site had been on a hosting service called OpenHost. With the move to Azure I also moved to Azure SQL, as I couldn't work out how to get SQL Server CE to work on it (figured it out three years later).
-Also the first use of TypeScript.
+Back to pure ASP.NET MVC, in an orthodox manner. Still on Azure and using Azure SQL Server.

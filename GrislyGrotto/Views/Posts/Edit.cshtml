@@ -1,0 +1,43 @@
+﻿@model GrislyGrotto.ViewModels.Post.EditorViewModel
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "Edit - " + Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(model => model.ID)
+
+    @Html.Partial("_Editor")
+    
+    <p>
+        <input type="submit" value="Save Post Changes" class="js_submitPost" />
+    </p>
+}
+
+<form action="@Url.Action("Delete", new { id = Model.ID })" method="POST">
+    <button type="submit" class="js_delete deletePost">Delete this post</button>
+</form>
+
+@Html.Partial("_EncodedImageGenerator")
+
+@foreach (var comment in Model.Comments.OrderBy(c => c.Created))
+{
+    <div class="js_comment deletableComment">
+        <span class="commentAuthor">@comment.Author</span>
+        <span> - </span>
+        <span class="date">@comment.Created.ToString("dddd, dd MMMM yyyy h:mm:ss tt")</span>
+        <div>@Html.Raw(comment.Content)</div>
+        <button class="js_deleteComment" name="@comment.ID">Delete</button>
+    </div>
+}
+
+@Scripts.Render("~/app/editor")
+
+<div>
+    @Html.ActionLink("Return", "Specific", new { id = Model.ID })
+</div>

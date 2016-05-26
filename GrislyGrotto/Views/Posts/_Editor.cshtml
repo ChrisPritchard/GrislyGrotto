@@ -1,0 +1,59 @@
+﻿@model GrislyGrotto.ViewModels.Post.EditorViewModel
+
+<h2 class="js_title editorTitle" contenteditable="true">@Html.Raw(Model.Title ?? "Enter Title Here")</h2>
+@Html.ValidationMessageFor(model => model.Title)
+
+<div class="js_content editorContent" contenteditable="true">@Html.Raw(Model.Content ?? "Enter Content Here")</div>
+@Html.ValidationMessageFor(model => model.Content)
+
+<div class="viewType">
+    <span>View as:</span>
+    <label>
+        @Html.RadioButtonFor(model => model.ViewType, "Normal")
+        Rendered
+    </label>        
+
+    <label>
+        @Html.RadioButtonFor(model => model.ViewType, "HTML")
+        HTML
+    </label>
+</div>
+    
+<div class="isStory">
+    <label>
+        @Html.CheckBoxFor(model => model.IsStory)
+        Is Story
+    </label>
+</div>
+
+<div class="js_tags editorTags">
+    @{
+        var existingTags = Model.ExistingTags != null && Model.ExistingTags.Count > 0
+            ? Model.ExistingTags.Aggregate((s1, s2) => s1 + "," + s2)
+            : string.Empty;
+
+        var selectedTags = Model.SelectedTags != null && Model.SelectedTags.Count > 0
+            ? Model.SelectedTags.Aggregate((s1, s2) => s1 + "," + s2)
+            : string.Empty;
+    }
+    <input type="hidden" class="js_existingTags" value="@existingTags" />
+    <input type="hidden" class="js_selectedTags" value="@selectedTags" />
+
+    <input type="text" data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" />
+    <button data-bind="click: addNewTag">Add New Tag</button>
+    <ul data-bind="foreach: foundTags">
+        <li>
+            <button data-bind="text: name, click: addThisTag" />
+        </li>
+    </ul>
+    <ul data-bind="foreach: addedTags">
+        <li>
+            <span data-bind="text: displayName"></span>
+            <button data-bind="click: removeThisTag">Remove</button>
+        </li>
+    </ul>
+</div>
+
+<div>
+    <span class="js_savingStatus"></span>
+</div>

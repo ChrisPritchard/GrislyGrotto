@@ -1,0 +1,18 @@
+﻿@model GrislyGrotto.ViewModels.Home.SearchViewModel
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "Search: " + Model.SearchTerm;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="pageHeading">Search - @Model.SearchTerm</h2>
+
+@foreach (var post in Model.Posts)
+{
+    Html.RenderPartial("_Post", post);
+}
+
+<input id="SearchTerm" type="hidden" value="@Model.SearchTerm" />
+@Html.Partial("_KnockOutLoadMore")
+@Scripts.Render("~/app/search.js")

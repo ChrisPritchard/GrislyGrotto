@@ -1,0 +1,38 @@
+﻿@model GrislyGrotto.ViewModels.Shared.PostViewModel
+@using System.Web.Optimization
+@using GrislyGrotto
+
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="pageHeading">@Model.Title</h2>
+
+<div class="specificPost">
+    <span class="postDetails">@Model.Author.DisplayName</span>
+    <span> - </span>
+    <span class="postDetails">@Model.Created.ToString("dddd, dd MMMM yyyy h:mm:ss tt")</span>
+    <br />
+    <a href="#Comments" class="postDetails">Comments (<span class="js_commentsCount">@Model.Comments.Count</span>)</a>
+    @if(Model.Tags.Count > 0)
+    {
+        <span class="postDetails">Tagged as:</span>
+        foreach(var tag in Model.Tags)
+        {
+            <span class="postDetails">
+                @Html.ActionLink(tag.DisplayText, "Tag", "Home", new { Id = tag.Text }, null);
+            </span>
+        }
+    }
+
+    <div class="content">@Html.Raw(Model.Content)</div>
+
+    @if (Request.IsAuthenticated && Model.Author.Username.Equals(Utility.LoggedUser().Username))
+    {
+        @Html.ActionLink("Edit", "Edit", new { ID = Model.ID }, new { @class = "editLink" })
+    }
+</div>
+
+@Html.Partial("_CommentsSection", Model)
+@Scripts.Render("~/app/specific.js")
