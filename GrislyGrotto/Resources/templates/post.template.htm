@@ -1,0 +1,19 @@
+﻿<div class="post">
+    <div class="titlebox">
+        {{if Author == 'Christopher'}}
+            <img src="http://graph.facebook.com/christopher.j.pritchard/picture" alt="The Face of GOD" />
+        {{else Author == 'Peter'}}
+            <img src="http://graph.facebook.com/peter.coleman.5/picture" alt="Old man" />
+        {{/if}}
+        <h1 class="title">{{:Title}}</h1>
+    </div>
+    <div class="clearer" />
+    <span class="details">{{:Author}} - {{:Created}}</span>
+    <br/>
+    {{if Comments}}
+        <a href="#" class="editPostLink">Edit</a>
+    {{else}}
+        <a href="/{{:Id}}" class="postLink" name="{{:Id}}">Comments ({{:CommentCount}})</a>
+    {{/if}}
+    <div class="content">{{:Content}}</div>
+</div>

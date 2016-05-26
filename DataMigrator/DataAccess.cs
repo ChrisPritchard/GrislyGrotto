@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Web;
+using System.IO;
 
-namespace GrislyGrotto.Data
+namespace DataMigrator
 {
     internal class DataAccess
     {
@@ -14,7 +14,7 @@ namespace GrislyGrotto.Data
                 return new DataAccess
                 {
                     ConnectionString = string.Format("Data Source={0};Pooling=true;FailIfMissing=true",
-                        HttpContext.Current.Server.MapPath(@"\App_Data\GrislyGrotto.db3"))
+                        Path.Combine(Path.GetDirectoryName(typeof(DataAccess).Assembly.Location), "GrislyGrotto.db3"))
                 };
             }
         }

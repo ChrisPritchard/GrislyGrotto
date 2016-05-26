@@ -19,7 +19,7 @@
               <xsl:value-of select="Author"/>
             </author>
             <link>
-              http://grislygrotto.co.nz/?id=<xsl:value-of select="Id"/>
+              http://grislygrotto.co.nz/?id=<xsl:value-of select="ID"/>
             </link>
             <description>
               <xsl:value-of select="Content" />
@@ -28,7 +28,7 @@
               <xsl:value-of select="TimePosted"/>
             </pubDate>
             <guid>
-              http://grislygrotto.co.nz/?id=<xsl:value-of select="Id"/>
+              http://grislygrotto.co.nz/?id=<xsl:value-of select="ID"/>
             </guid>
           </item>
         </xsl:for-each>

@@ -1,13 +1,13 @@
-## Release 9.0
+## Release 10.2
 
-<b>Release Date:</b> Possibly 23rd February, 2011
+<b>Release Date:</b> 4th August, 2012
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/introducing-grisly-grotto-90">Introducing Grisly Grotto 9.0!</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/grisly-grotto-10">Grisly Grotto 10!!!</a>
 
-<b>Frontend:</b> Site Handler acting as a REST service (sort of), HTML5 frontend
+<b>Frontend:</b> WCF REST Service, HTML5 frontend using JsRender templates 
 
-<b>Backend:</b> SQLite
+<b>Backend:</b> SQL Server CE
 
-<b>Dev Tool:</b> Visual Studio 2010
+<b>Dev Tool:</b> Visual Studio 2012
 
-The first fully HTML5 site, though not using any particular framework other than JQuery. Backend is largely the same as GG8 but stripped back to just the database parts. Also the first appearance of the 'content editable' attribute.
+VS 2012, .NET 4.0 and the first appearance of SQL Server CE. A more professional version of GG 9, especially in its use of WCF rather than a hacked HTTP Handler for its service, and in using a templating JS engine rather than string composition.

@@ -1,389 +1,344 @@
-﻿var id = getParameterByName('id');
-var year = getParameterByName('year');
-var month = getParameterByName('month');
-var searchTerm = getParameterByName('searchTerm');
-var editor = getParameterByName('editor');
-var viewType = 'normal';
+﻿
+function GrislyGrotto() {
+    this.userCredentials = null;
+    this.editorViewType = 'normal';
 
-var postTemplate = '<div class="post"><h2 class="title">[Title]</h2><span class="details">[Author] - [TimePosted]</span><br/>[Link]<div class="content">[Content]</div></div>';
-var editorElements = '<input type="radio" name="ViewType" class="viewType" checked="true"></input>Normal<input type="radio" name="ViewType" class="viewType"></input>HTML    <input type="checkbox" class="isStory"></input>Is Story<br/>'
-            + '<button class="submitButton">Submit</button>';
-var editorPostTemplate = '<div class="post editor"><h2 class="title" contenteditable="true">[Title]</h2><span class="details">[Author] - [TimePosted]</span><div class="content" contenteditable="true">[Content]</div></div>'
-            + editorElements;
-var newPostTemplate = '<div class="post editor"><h2 class="title" contenteditable="true">Enter Title Here</h2><div class="content" contenteditable="true">Enter Content Here</div></div>'
-            + editorElements;
-var optionTemplate = '<option value="[Value]" [Selected]>[Text]</option>';
-var commentLinkTemplate = '<a class="postLink" href="#">Comments ([CommentsCount])</a>';
-var commentTemplate = '<div class="comment"><h3>[Author] - [TimeMade]</h3><p>[Content]</p></div>';
-var commentEditorTemplate = '<div class="commentEditor">Author:<input type="text" class="commentAuthor" /><br /><textarea class="commentContent"></textarea><br /><button class="commentSubmitButton">Submit</button></div>';
+    this.postTemplate = null, this.commentsTemplate = null, this.authenticationTemplate = null, this.editorTemplate = null;
 
-var username;
-var password;
-var currentAuthor;
+    this.downloadTemplateAsync = function(title, onDownloaded) {
+        $.ajax({
+            method: 'GET',
+            async: false,
+            url: '/resources/templates/' + title + '.template.htm?v=10.2',
+            success: function (data) { onDownloaded($.templates(data)); }
+        });
+    }
 
-$().ready(function ()
-{
-    $('.header').click(function ()
-    {
-        $('.archives').val('/');
-        $('.stories').val('/');
-        loadLatest();
-    });
+    this.downloadTemplate = function (title, onDownloaded) {
+        $.get('/resources/templates/' + title + '.template.htm',
+            function (data) { onDownloaded($.templates(data)); });
+    }
 
-    $.getJSON('/Posts/Quote', function (data)
-    {
-        $('.quote').html('<span class="quoteContent">' + data.Content + '</span><span class="quoteAuthor">' + data.Author + '</span>');
-    });
+    this.getParameterByName = function(name) {
+        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    }
 
-    $('.searchButton').click(function ()
-    {
-        loadSearchResults($('.searchTerm').val());
-    });
+    this.showAuthenticationZone = function(trigger, postId) {
+        $('.authenticationZone').remove();
+        $(trigger).after(grislygrotto.authenticationTemplate.render());
+        $(trigger).hide();
 
-    $('.loginLink').click(function ()
-    {
-        $(this).hide();
-        $('.loginPanel').show();
-        $('.username').focus();
-        return false;
-    });
+        $('.checkedForValidCredentials').keyup(function () {
+            if ($('.username').val() != '' && $('.password').val() != '')
+                $('.authenticate').removeAttr('disabled');
+            else
+                $('.authenticate').attr('disabled', 'disabled');
+        });
 
-    $('.loginButton').click(function () { authenticateUser(); });
+        $('.authenticate').click(function () {
+            grislygrotto.checkAuthentication(postId);
+        });
+    }
 
-    addCentralPostZone();
+    this.checkAuthentication = function (postId) {
 
-    loadArchives();
-    loadStories();
-});
+        grislygrotto.userCredentials = {
+            credentials: {
+                Username: $('.username').val(),
+                Password: $('.password').val()
+            }
+        };
 
-function getParameterByName(name)
-{
-    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
+        var methodUrl = '/Blog.svc/';
+        if (postId)
+            methodUrl += 'CheckAuthenticationForPost/' + postId;
+        else
+            methodUrl += 'CheckAuthentication';
 
-function authenticateUser()
-{
-    username = $('.username').val();
-    password = $('.password').val();
+        $.ajax({
+            type: "POST",
+            url: methodUrl,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(grislygrotto.userCredentials),
+            dataType: "json",
+            success: function (result) {
+                $('.authenticationZone').remove();
+                if (!result) {
+                    $('.authenticationError').text('Authentication failed, please try again');
+                    return;
+                }
 
-    $.getJSON('/Posts/Authenticate/' + id,
-        { username: username, password: password },
-        function (data)
-        {
-            if (data != null)
-            {
-                currentAuthor = data;
-                $('.loginPanel').after('<a href="#" class="newPostLink">Add new post</a>');
-                $('.newPostLink').click(function ()
-                {
-                    loadNewPostEditor();
+                if (postId)
+                    $.getJSON('/Blog.svc/Post/' + postId + '?r=' + Math.random(), function (data) { grislygrotto.renderEditor(postId, data); });
+                else
+                    grislygrotto.renderEditor(postId, { Title: '', Content: '' });
+            }
+        });
+    }
+
+    this.loadLatest = function() {
+        $.getJSON('/Blog.svc/LatestPosts?r=' + Math.random(),
+        function (data) { grislygrotto.renderPosts(data); });
+    }
+
+    this.loadPost = function(postId, scrollToComments) {
+        $.getJSON('/Blog.svc/Post/' + postId + '?r=' + Math.random(),
+        function (data) {
+            grislygrotto.renderPosts(data);
+
+            $('.posts').append(grislygrotto.commentsTemplate.render(data));
+            $('.commentSubmitButton').click(function () { grislygrotto.submitComment($(this).attr('name')); });
+
+            $('.checkedForValidComment').keyup(function () {
+                if ($('.commentAuthor').val() != '' && $('.commentText').val() != '')
+                    $('.commentSubmitButton').removeAttr('disabled');
+                else
+                    $('.commentSubmitButton').attr('disabled', 'disabled');
+            });
+
+            $('.editPostLink').click(function () {
+                grislygrotto.showAuthenticationZone(this, postId);
+                return false;
+            });
+
+            if (scrollToComments)
+                document.getElementById('commentsBegin').scrollIntoView(true);
+        });
+    }
+
+    this.renderPosts = function(data) {
+        $('.posts').html(grislygrotto.postTemplate.render(data));
+        $('.postLink').click(function () {
+            grislygrotto.loadPost($(this).attr('name'), true);
+            return false;
+        });
+    }
+
+    this.loadArchives = function(template) {
+        $.getJSON('/Blog.svc/Archives?r=' + Math.random(),
+            function (data) {
+                $('.archives').append(template.render(data));
+                $('.archives').change(function () {
+                    var segments = $(this).val().split(',');
+                    $('.stories').val('/');
+                    $.getJSON('/Blog.svc/Month/' + segments[0] + '/' + segments[1] + '?r=' + Math.random(),
+                        function (data) { grislygrotto.renderPosts(data); });
+                });
+            });
+    }
+
+    this.loadStories = function(template) {
+        $.getJSON('/Blog.svc/Stories?r=' + Math.random(),
+            function (data) {
+                $('.stories').append(template.render(data));
+                $('.stories').change(function () {
+                    $('.archives').val('/');
+                    grislygrotto.loadPost($(this).val());
+                });
+            });
+    }
+
+    this.renderEditor = function (postId, post) {
+        $.getJSON('/Blog.svc/GetEditorState?r=' + Math.random(),
+            function (data) {
+                if (data != null) {
+                    if (!post)
+                        post = data;
+                    else {
+                        post.Title = data.Title;
+                        post.Content = data.Content;
+                    }
+                }
+
+                $('.posts').html(grislygrotto.editorTemplate.render(post));
+
+                if (postId) {
+                    post.isEditorMode = true;
+                    $('.posts').append(grislygrotto.commentsTemplate.render(post));
+                }
+
+                $('.viewType').change(function () { grislygrotto.changeViewType(); });
+                $('.submitPost').click(function () {
+                    grislygrotto.addOrEditPost(postId);
                     return false;
                 });
-                $('.loginPanel').hide();
 
-                addCentralPostZone();
+                $('.deleteCommentLink').click(function () {
+                    if (confirm('Are you sure you want to delete this comment?')) {
+                        var trigger = $(this);
+                        $.post('/Blog.svc/DeleteComment/' + $(this).attr('href'),
+                            function () { $(trigger).parent().remove(); });
+                    }
+                    return false;
+                });
+
+                $('.deletePostLink').click(function () {
+                    if (confirm('Are you sure you want to delete this post?')) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/Blog.svc/DeletePost',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify({ request: { Credentials: grislygrotto.userCredentials.credentials, Id: postId} }),
+                            dataType: "json",
+                            success: function () { document.location.reload(true); }
+                        });
+                    }
+                    return false;
+                });
+
+                setTimeout(function () { grislygrotto.saveEditorState(); }, 5000);
+            });
+    }
+
+    this.saveEditorState = function() {
+        if ($('.editor').length == 0)
+            return;
+
+        $('.editorState').html('Saving...');
+
+        var postRequest = {
+            post: {
+                Title: $('.title').text(),
+                Content: $('.content').html(),
+                Type: 'Normal'
             }
-            else
-            {
-                $('.error').remove();
-                $('.loginButton').after('<br /><span class="error">Username and/or Password is incorrect</span>');
-            }
+        };
+
+        if (grislygrotto.editorViewType == 'html')
+            postRequest.post.Content = $('.content').text();
+        if ($('.isStory').attr('checked'))
+            postRequest.post.Type = 'Story';
+
+        $.ajax({
+            type: "POST",
+            url: '/Blog.svc/SaveEditorState',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(postRequest),
+            dataType: "json",
+            success: function () { setTimeout(function () { $('.editorState').html('Saved'); }, 500); }
         });
-}
 
-function addCentralPostZone()
-{
-    if (id != null)
-        loadPost(id);
-    else if (year != null && month != null)
-        loadMonth(year, month);
-    else if (searchTerm != null)
-        loadSearchResults(searchTerm);
-    else if (editor != null)
-        loadNewPostEditor();
-    else
-        loadLatest();
-}
+        setTimeout(function () { grislygrotto.saveEditorState(); }, 5000);
+    }
 
-function loadPost(postid)
-{
-    id = postid;
-    month = null;
-    year = null;
-    searchTerm = null;
+    this.changeViewType = function() {
+        if (grislygrotto.editorViewType == 'normal') {
+            grislygrotto.editorViewType = 'html';
+            $('.content').text($('.content').html());
+        }
+        else {
+            grislygrotto.editorViewType = 'normal';
+            $('.content').html($('.content').text());
+        }
+    }
 
-    $.getJSON('/Posts/' + postid, function (data)
-    {
-        var post = postTemplate;
-        if (editor != null)
-            post = editorPostTemplate;
-
-        post = post.replace('[Title]', data.Title)
-            .replace('[Author]', data.Author)
-            .replace('[TimePosted]', data.TimePostedWeb)
-            .replace('[Content]', data.Content);
-
-        if (data.IsStory)
-            $('.isStory').attr('checked', 'checked');
-
-        if (currentAuthor != null && data.Author == currentAuthor)
-            post = post.replace('[Link]', '<a class="postLink" href="#">Edit</a>');
-        else
-            post = post.replace('[Link]', '');
-        $('.posts').html(post);
-        $('.postLink').click(function ()
-        {
-            editPost(data.Id, data.IsStory);
-            return false;
-        });
-        $('.viewType').change(function () { changeViewType(); });
-
-        if (editor == null)
-        {
-            if (data.Comments.length > 0)
-            {
-                $('.posts').append('<h2 class="commentsHeading">Comments</h2><div class="comments"></div>');
-                for (var i = 0; i < data.Comments.length; i++)
-                {
-                    var comment = commentTemplate
-                .replace('[Author]', data.Comments[i].Author)
-                .replace('[TimeMade]', data.Comments[i].TimeMadeWeb)
-                .replace('[Content]', data.Comments[i].Content)
-                    $('.comments').append(comment);
+    this.addOrEditPost = function(postId) {
+        var postRequest = {
+            request: {
+                Credentials: grislygrotto.userCredentials.credentials,
+                Post: {
+                    Title: $('.title').text(),
+                    Content: $('.content').html(),
+                    Type: 'Normal'
                 }
             }
-            $('.posts').append(commentEditorTemplate);
-            $('.commentSubmitButton').click(function () { addComment(data.Id); });
-        }
-    });
-}
+        };
 
-function loadMonth(postyear, postmonth)
-{
-    id = null;
-    month = postmonth;
-    year = postyear;
-    searchTerm = null;
+        if (grislygrotto.editorViewType == 'html')
+            postRequest.request.Post.Content = $('.content').text();
+        if ($('.isStory').attr('checked'))
+            postRequest.request.Post.Type = 'Story';
+        if (postId)
+            postRequest.request.Post.Id = postId;
 
-    $.getJSON('/Posts/' + postyear + '/' + postmonth,
-        function (data) { renderPosts(data); });
-}
-
-function loadSearchResults(postsearchTerm)
-{
-    id = null;
-    month = null;
-    year = null;
-    searchTerm = postsearchTerm;
-
-    $.getJSON('/Posts/Search',
-    { searchTerm: postsearchTerm },
-        function (data) { renderPosts(data); });
-}
-
-function loadLatest()
-{
-    id = null;
-    month = null;
-    year = null;
-    searchTerm = null;
-
-    $.getJSON('/Posts', 
-        function (data) { renderPosts(data); });
-}
-
-function loadNewPostEditor()
-{
-    $('.posts').html(newPostTemplate);
-    $('.viewType').change(function () { changeViewType(); });
-    $('.submitButton').click(function () { addPost(); });
-}
-
-function renderPosts(data)
-{
-    $('.posts').html('');
-    for (i = 0; i < data.length; i++)
-    {
-        var post = postTemplate
-                .replace('[Title]', data[i].Title)
-                .replace('[Author]', data[i].Author)
-                .replace('[TimePosted]', data[i].TimePostedWeb)
-                .replace('[Link]', commentLinkTemplate)
-                .replace('[CommentsCount]', data[i].Comments.length)
-                .replace('[Content]', data[i].Content);
-        $('.posts').append(post);
-    }
-
-    var links = $('.postLink');
-    for (i = 0; i < data.length; i++)
-    {
-        $(links[i]).attr('name', data[i].Id);
-        $(links[i]).click(function ()
-        {
-            loadPost($(this).attr('name'));
-            return false;
+        $.ajax({
+            type: "POST",
+            url: '/Blog.svc/AddOrEditPost',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(postRequest),
+            dataType: "json",
+            success: function () { document.location.reload(true); }
         });
     }
-}
 
-function loadArchives()
-{
-    $.getJSON('/Posts/Archives', function (data)
-    {
-        for (i = 0; i < data.length; i++)
-        {
-            var value = data[i].Year + ',' + data[i].MonthName;
-            var text = data[i].MonthName + ', ' + data[i].Year + ' (' + data[i].PostCount + ')';
-            var option = optionTemplate
-                .replace('[Value]', value)
-                .replace('[Text]', text);
-            if (year != null && month != null && year == data[i].Year && month == data[i].MonthName)
-                option = option.replace('[Selected]', 'selected');
-            else
-                option = option.replace('[Selected]', '');
-            $('.archives').append(option);
-        }
+    this.submitComment = function(postId) {
+        $('.commentAuthor').attr('disabled', 'disabled');
+        $('.commentText').attr('disabled', 'disabled');
+        $('.commentSubmitButton').attr('disabled', 'disabled');
 
-        $('.archives').change(function ()
-        {
-            var segments = $(this).val().split(',');
-            $('.stories').val('/');
-            loadMonth(segments[0], segments[1]);
+        var newComment = { 
+            comment: {
+                Author: $('.commentAuthor').val(),
+                Text: $('.commentText').val()
+            }
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '/Blog.svc/AddComment/' + postId,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(newComment),
+            dataType: "json",
+            success: function () { grislygrotto.loadPost(postId); }
         });
-    });
-}
+    }
 
-function loadStories()
-{
-    $.getJSON('/Posts/Stories', function (data)
-    {
-        for (i = 0; i < data.length; i++)
-        {
-            var value = data[i].Id;
-            var text = data[i].Title + ' (' + data[i].Author + ', ' + data[i].WordCount + ' words)';
-            var option = optionTemplate
-                .replace('[Value]', value)
-                .replace('[Text]', text);
-            if (id != null && id == data[i].Id)
-                option = option.replace('[Selected]', 'selected');
-            else
-                option = option.replace('[Selected]', '');
-            $('.stories').append(option);
-        }
+    this.Run = function () {
+        this.downloadTemplateAsync('post', function (template) {
+            grislygrotto.postTemplate = template;
+            var id = grislygrotto.getParameterByName('id')
+            if (id != null)
+                grislygrotto.loadPost(id);
+            else {
+                $.ajax({
+                    method: 'GET',
+                    async: false,
+                    url: '/Blog.svc/LatestPosts?r=' + Math.random(),
+                    success: function (data) { grislygrotto.renderPosts(data); }
+                });
+            }
+        });
 
-        $('.stories').change(function ()
-        {
+        this.downloadTemplate('comments', function (template) { grislygrotto.commentsTemplate = template; });
+        this.downloadTemplate('authentication', function (template) {
+            grislygrotto.authenticationTemplate = template;
+
+            $('.newPostLink').click(function () {
+                grislygrotto.showAuthenticationZone(this);
+                return false;
+            });
+        });
+        this.downloadTemplate('editor', function (template) { grislygrotto.editorTemplate = template; });
+
+        this.downloadTemplate('archive', function (template) { grislygrotto.loadArchives(template); });
+        this.downloadTemplate('story', function (template) { grislygrotto.loadStories(template); });
+
+        this.downloadTemplateAsync('quote', function (template) {
+            $.ajax({
+                method: 'GET',
+                async: false,
+                url: '/Blog.svc/Quote?r=' + Math.random(),
+                success: function (data) { $('.quote').html(template.render(data)); }
+            });
+        });
+
+        $('.header').click(function () {
             $('.archives').val('/');
-            loadPost($(this).val());
+            $('.stories').val('/');
+            $('.newPostLink').show();
+            grislygrotto.loadLatest();
         });
-    });
-}
 
-function editPost(id, isstory)
-{
-    $('.postLink').remove();
-    $('.title').attr('contenteditable', 'true');
-    $('.content').attr('contenteditable', 'true');
-    $('.post').after(editorElements);
-    $('.viewType').change(function () { changeViewType(); });
-    if (isstory)
-        $('.isStory').attr('checked', 'checked');
-    $('.submitButton').click(function () { updatePost(id); });
-    $('.comment').remove();
-    $('.commentEditor').remove();
-}
-
-function changeViewType()
-{
-    if (viewType == 'normal')
-    {
-        viewType = 'html';
-        $('.content').text($('.content').html());
-    }
-    else
-    {
-        viewType = 'normal';
-        $('.content').html($('.content').text());
+        $('.searchButton').click(function () {
+            $.getJSON('/Blog.svc/Search/' + $('.searchTerm').val() + '?r=' + Math.random(),
+                function (data) { grislygrotto.renderPosts(data); });
+        });
     }
 }
 
-function updatePost(id)
-{
-    var title = $('.title').text();
-    var content = $('.content').html();
-    if (viewType == 'html')
-        content = $('.content').text();
-    var isstory = false;
-    if($('.isStory').attr('checked'))
-        isstory = true;
+var grislygrotto = grislygrotto || new GrislyGrotto();
 
-    $.getJSON('/Posts/Authenticate/' + id,
-        { username: username, password: password },
-        function (data)
-        {
-            if (data != null)
-            {
-                $.post('/Posts/' + id,
-                    { title: title, content: content, username: username, password: password, isstory: isstory },
-                    function ()
-                    { loadLatest(); });
-            }
-            else
-            {
-                $('.error').remove();
-                $('.submitButton').after('<br /><span class="error">Username and/or Password is incorrect</span>');
-            }
-        });
-}
-
-function addPost()
-{
-    var title = $('.title').text();
-    var content = $('.content').html();
-    if (viewType == 'html')
-        content = $('.content').text();
-    var isstory = false;
-    if($('.isStory').attr('checked'))
-        isstory = true;
-
-    $.getJSON('/Posts/Authenticate',
-        { username: username, password: password },
-        function (data)
-        {
-            if (data != null)
-            {
-                $.post('/Posts',
-                    { title: title, content: content, username: username, password: password, isstory: isstory },
-                    function ()
-                    { loadLatest(); });
-            }
-            else
-            {
-                $('.error').remove();
-                $('.submitButton').after('<br /><span class="error">Username and/or Password is incorrect</span>');
-            }
-        });
-}
-
-function addComment(id)
-{
-    var author = $('.commentAuthor').val();
-    var content = $('.commentContent').val();
-    $('.commentSubmitButton').after('<p class="commentPostingStatus">Posting...</p>');
-
-    $.post('/Posts/' + id + '/AddComment',
-    { author: author, content: content },
-    function ()
-    {
-        $('.commentAuthor').val('');
-        $('.commentContent').val('');
-        $('.commentPostingStatus').remove();
-
-        var comment = commentTemplate
-                .replace('[Author]', author)
-                .replace('[TimeMade]', 'Just Added')
-                .replace('[Content]', content)
-        $('.comments').append(comment);
-    });
-}
+$().ready(function () {
+    grislygrotto.Run();
+});
