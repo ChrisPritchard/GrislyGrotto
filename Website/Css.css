@@ -1,0 +1,141 @@
+﻿body
+{
+	background-color: #444;
+	background-image: url("/images/background.gif");
+	margin: 0px;
+}
+a, a:visited
+{
+	color: #66F;
+	margin-left: 10px;
+}
+form
+{
+	display: inline;	
+}
+div.page
+{
+	font-family: 'Trebuchet MS', 'Lucinda Grande', Verdana, Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+	line-height: 2em;
+	width: 80%;
+	min-width: 600px;
+	margin-left: 10%;
+	padding-left: 10px;
+	background-color: #FFF;
+	border-left: solid 1px #BBB;
+	border-right: solid 1px #BBB;
+}
+ul
+{
+	margin-left: 0px;
+}
+ul.lined
+{
+    border-bottom: solid 1px black;
+}
+li.lined
+{
+    list-style-type: none;
+    border-top: solid 1px black;
+}
+	
+div.header
+{
+	border-bottom: solid 1px black;
+	margin-right: 10px;	
+}
+h1
+{
+	font-family: 'Blackadder ITC', Calibri;	
+	font-size: 10em;
+	line-height: 1em;
+	text-align: center;
+}
+div.header h2
+{
+	font-family: Calibri;	
+	font-size: 2em;
+	line-height: 1em;
+	text-align: center;	
+}
+h3
+{
+	margin-bottom: -1em;	
+}
+h4
+{
+	margin-bottom: -1em;	
+	font-weight: normal;
+    font-style: italic;
+}
+
+div.randomimage
+{
+	display: inline;
+	margin-top: 1.5em;
+	text-align: center;
+	float:left;
+	clear: left;	
+}
+p.quotetext
+{
+	color: red;
+	font-style: italic;
+	margin-bottom: 0em;
+}
+	
+a.author
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+div.sidebar
+{
+	margin-right: 10px;
+	padding: 5px;
+	float: right;
+	clear: right;
+	width: 30%;
+}
+div.footer
+{
+	text-align: center;
+}
+
+textarea.comment
+{
+	width: 60%;
+	height: 200px;
+}
+textarea.editor
+{
+	width: 80%;
+	height: 400px;
+}
+		
+input.button
+{
+	width: 100px;
+	
+	background-color: #CCC;
+	border: 1px solid;
+	border-top-color: #696;	
+	border-left-color: #696;
+	border-bottom-color: #363;
+	border-right-color: #363;
+}
+input.text
+{
+	width: 150px;
+	margin-left: 10px; 
+	margin-bottom:5px;
+}
+.error
+{
+	color: red;
+	font-weight: bold;
+}
