@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "Content/grislygrotto.css",
+    "inputFile": "Content/grislygrotto.less"
+  },
+  {
+    "outputFile": "Content/grislygrotto.css",
+    "inputFile": "Content/grislygrotto.scss"
+  }
+]

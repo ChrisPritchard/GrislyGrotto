@@ -1,77 +1,43 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0EA4FF38-71DF-4E53-9406-20CC32EF8AAD}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbConverter.GG12to13", "DbConverter.GG12to13\DbConverter.GG12to13.csproj", "{4B6342AF-E65B-4DF4-A9E1-C3069A236AF7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto", "GrislyGrotto\GrislyGrotto.csproj", "{EB788791-F28F-4A7F-9F4B-34FB327745D3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "additional", "additional", "{F6511B5A-CFFC-4164-8521-03994EE64638}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additional", "Additional", "{68A4BD57-84BA-48A8-9D9B-1246B12B284F}"
 	ProjectSection(SolutionItems) = preProject
-		additional\grislygrotto.azurewebsites.net.PublishSettings = additional\grislygrotto.azurewebsites.net.PublishSettings
+		Additional\grislygrotto.azurewebsites.net.PublishSettings = Additional\grislygrotto.azurewebsites.net.PublishSettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.Backup", "GrislyGrotto.Backup\GrislyGrotto.Backup.csproj", "{A3EED520-914B-49E5-B2A3-D329D885601F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.CommentsCleaner", "GrislyGrotto.CommentsCleaner\GrislyGrotto.CommentsCleaner.csproj", "{3CA942F0-8EB9-49E3-95C6-52C0B2B600B8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.DeadLinksFixer", "GrislyGrotto.DeadLinksFixer\GrislyGrotto.DeadLinksFixer.csproj", "{F20A93B0-43F1-483A-8E4E-5639C8240AA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.DbConverterSearchToSql", "GrislyGrotto.DbConverterSearchToSql\GrislyGrotto.DbConverterSearchToSql.csproj", "{982A3125-971A-4C19-B56C-85F741A4C099}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://hundredmile.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = DbConverter.GG12to13\\DbConverter.GG12to13.csproj
-		SccProjectName1 = DbConverter.GG12to13
-		SccLocalPath1 = DbConverter.GG12to13
-		SccProjectUniqueName2 = GrislyGrotto\\GrislyGrotto.csproj
-		SccProjectName2 = GrislyGrotto
-		SccLocalPath2 = GrislyGrotto
-		SccProjectUniqueName3 = GrislyGrotto.Backup\\GrislyGrotto.Backup.csproj
-		SccProjectName3 = GrislyGrotto.Backup
-		SccLocalPath3 = GrislyGrotto.Backup
-		SccProjectUniqueName4 = GrislyGrotto.CommentsCleaner\\GrislyGrotto.CommentsCleaner.csproj
-		SccProjectName4 = GrislyGrotto.CommentsCleaner
-		SccLocalPath4 = GrislyGrotto.CommentsCleaner
-		SccProjectUniqueName5 = GrislyGrotto.DeadLinksFixer\\GrislyGrotto.DeadLinksFixer.csproj
-		SccProjectName5 = GrislyGrotto.DeadLinksFixer
-		SccLocalPath5 = GrislyGrotto.DeadLinksFixer
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4B6342AF-E65B-4DF4-A9E1-C3069A236AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B6342AF-E65B-4DF4-A9E1-C3069A236AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B6342AF-E65B-4DF4-A9E1-C3069A236AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B6342AF-E65B-4DF4-A9E1-C3069A236AF7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB788791-F28F-4A7F-9F4B-34FB327745D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB788791-F28F-4A7F-9F4B-34FB327745D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB788791-F28F-4A7F-9F4B-34FB327745D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB788791-F28F-4A7F-9F4B-34FB327745D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3EED520-914B-49E5-B2A3-D329D885601F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3EED520-914B-49E5-B2A3-D329D885601F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3EED520-914B-49E5-B2A3-D329D885601F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3EED520-914B-49E5-B2A3-D329D885601F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CA942F0-8EB9-49E3-95C6-52C0B2B600B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CA942F0-8EB9-49E3-95C6-52C0B2B600B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CA942F0-8EB9-49E3-95C6-52C0B2B600B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CA942F0-8EB9-49E3-95C6-52C0B2B600B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F20A93B0-43F1-483A-8E4E-5639C8240AA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F20A93B0-43F1-483A-8E4E-5639C8240AA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F20A93B0-43F1-483A-8E4E-5639C8240AA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F20A93B0-43F1-483A-8E4E-5639C8240AA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{982A3125-971A-4C19-B56C-85F741A4C099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{982A3125-971A-4C19-B56C-85F741A4C099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{982A3125-971A-4C19-B56C-85F741A4C099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{982A3125-971A-4C19-B56C-85F741A4C099}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 1
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://hundredmile.visualstudio.com/defaultcollection
+		SccProjectUniqueName0 = GrislyGrotto\\GrislyGrotto.csproj
+		SccProjectName0 = GrislyGrotto
+		SccAuxPath0 = https://hundredmile.visualstudio.com/defaultcollection
+		SccLocalPath0 = GrislyGrotto
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 EndGlobal

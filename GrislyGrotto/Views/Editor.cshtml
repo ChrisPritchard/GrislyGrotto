@@ -1,0 +1,72 @@
+﻿@model GrislyGrotto.App.Data.Post
+
+@{
+    var editing = ViewContext.RouteData.Values["action"] as string == "Edit";
+    ViewBag.Title = editing ? "Edit post" : "Create new post";
+}
+
+
+<article>
+    <h2>@ViewBag.Title</h2>
+
+    @using (Html.BeginForm())
+    {
+        <div>
+            @Html.LabelFor(m => m.Title)
+            @Html.EditorFor(m => m.Title)
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+
+        <div>
+            @Html.LabelFor(m => m.Content)
+            @Html.HiddenFor(m => m.Content)
+            <div class="content-editor" contenteditable="true">@Html.Raw(Model.Content)</div>
+            @Html.ValidationMessageFor(m => m.Content)
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" class="html-edit" />
+                <span class="label-body">Edit HTML</span>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                @Html.CheckBoxFor(m => m.IsStory)
+                <span class="label-body">Is this a story (not just story related)?</span>
+            </label>
+        </div>
+
+        <div>
+            <input type="submit" class="button-primary" value="@(editing ? "Update" : "Create")" />
+            <span class="saving-status"></span>
+        </div>
+    }
+
+    <div class="image-uploader">
+        <input type="file" id="file" />
+        <a class="button" href="@Url.Action("UploadImage", "Secure")">Upload</a>
+        <span class="uploading-status"></span>
+    </div>
+</article>
+
+@section Scripts {
+    <script type="text/javascript">
+        @{
+            Func<ViewContext, HelperResult> unminified = @<text>
+        (function () {
+            const $contentDiv = $('.content-editor');
+            const $isHtml = $('.html-edit');
+            const editor = new GrislyGrotto.Editor($contentDiv, $isHtml);
+
+            editor.setupContentEditing($('#Content'));
+            editor.setupIncrementalSaving($('.saving-status'), '@Url.Action("SaveEditorContent", "Secure")');
+            editor.setupImageUpload($('#file'), $('.image-uploader a'), $('.uploading-status'));
+        })();
+        </text>;
+            var minifier = new Microsoft.Ajax.Utilities.Minifier();
+            Output.Write(minifier.MinifyJavaScript(unminified(ViewContext).ToString()));
+        }
+    </script>
+}

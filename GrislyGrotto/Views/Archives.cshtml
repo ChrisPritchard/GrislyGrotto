@@ -1,0 +1,44 @@
+﻿@using GrislyGrotto.App.Data;
+@model Tuple<Tuple<int, Tuple<string, int>[]>[], Post[]>
+@{
+    ViewBag.Title = "Archives";
+}
+
+<div class="archives">
+    <h1>Archives</h1>
+    <ul>
+        @foreach (var year in Model.Item1)
+        {
+            <li class="year">
+                <h2>@year.Item1</h2>
+                <ul>
+                    @foreach (var month in year.Item2)
+                    {
+                        <li>
+                            <a href="/m/@month.Item1/@year.Item1">@month.Item1 (@month.Item2)</a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+
+    <div class="u-cf"></div>
+
+    <h2>Stories</h2>
+    <ul>
+        @foreach (var story in Model.Item2)
+        {
+            <li>
+                <article class="centred">
+                    <h4>
+                        <a href="/p/@story.Key">@story.Title (@story.WordCount words)</a>
+                    </h4>
+                    <p class="post-footer">
+                        Posted by @story.Author.DisplayName on <span>@story.DateFormatted</span>.
+                    </p>
+                </article>
+            </li>
+        }
+    </ul>
+</div>
