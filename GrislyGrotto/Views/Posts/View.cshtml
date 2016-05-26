@@ -1,0 +1,64 @@
+﻿@model GrislyGrotto.ViewModels.ViewViewModel
+
+@{
+    ViewBag.Title = Model.Post.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<article>
+    <div class="row view-header">
+        <h2>@Model.Post.Title</h2>
+        @Model.Post.Author, @Model.Post.Date.Add(PostService.NzTimeZone).ToString("hh:mm tt, dddd dd MMMM, yyyy")
+    </div>
+
+    <div class="row">
+        <div class="u-full-width">
+            @Html.Raw(Model.Post.Content)
+        </div>
+    </div>
+
+    @if (Model.Post.Author == Request.GetOwinContext().Authentication.User.Identity.Name)
+    {
+        <div class="edit-button">
+            @Html.ActionLink("Edit", "Edit", new { Model.Post.Key }, new { @class = "button" })
+        </div>
+    }
+
+    <a name="comments"></a>
+    <h3>Comments</h3>
+
+    <div>
+        @if (Model.Post.CommentCount.HasValue && Model.Post.CommentCount.Value > 0)
+        {
+            foreach (var comment in Model.GetCommentsExpanded())
+            {
+                <p>
+                    <b>@comment.Author, @comment.Date.Add(PostService.NzTimeZone).ToString("hh:mm tt, dddd dd MMMM, yyyy")</b>
+                    <br />
+                    @Html.Raw(comment.Content)
+                </p>
+            }
+        }
+    </div>
+
+    <a name="commentsend"></a>
+
+    <div>
+        @using (Html.BeginForm())
+        {
+            <div>
+                <div>
+                    @Html.LabelFor(m => m.NewComment.Author)
+                    @Html.TextBoxFor(m => m.NewComment.Author)
+                    @Html.ValidationMessageFor(m => m.NewComment.Author)
+
+                    @Html.LabelFor(m => m.NewComment.Content)
+                    @Html.TextAreaFor(m => m.NewComment.Content)
+                    @Html.ValidationMessageFor(m => m.NewComment.Content)
+                </div>
+                <input type="submit" value="Add Comment" class="button-primary" />
+            </div>
+        }
+    </div>
+
+</article>

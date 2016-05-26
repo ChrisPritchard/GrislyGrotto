@@ -1,0 +1,9 @@
+﻿{
+  "$schema": "http://schemastore.org/schemas/json/webjob-publish-settings.json",
+  "webJobName": "GrislyGrottoBackup",
+  "startTime": "2015-09-13T00:00:00+12:00",
+  "endTime": "2015-09-14T00:00:00+12:00",
+  "jobRecurrenceFrequency": "Day",
+  "interval": 3,
+  "runMode": "Scheduled"
+}

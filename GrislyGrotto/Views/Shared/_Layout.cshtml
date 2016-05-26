@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The personal blog of Chris Pritchard and Peter Coleman" />
+    <title>Grisly Grotto - @ViewBag.Title</title>
+    <!--[if lt IE 9]>
+    <script>
+    document.createElement('header');
+    document.createElement('nav');
+    document.createElement('section');
+    document.createElement('article');
+    document.createElement('aside');
+    document.createElement('footer');
+    document.createElement('hgroup');
+    </script>
+    <![endif]-->
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <canvas id="backgroundCanvas" style="position: absolute; z-index:-1;"></canvas>
+    <header>
+        <h1>
+            <a href="/">The Grisly Grotto</a>
+        </h1>
+    </header>
+
+    <div class="recent-events">
+        <ul>
+            @foreach(var evt in PostService.Current.GetEvents())
+            {
+                <li>@evt</li>
+            }
+        </ul>
+    </div>
+
+    <div class="container">
+        <nav class="row">
+            <ul class="menu">
+                <li>
+                    @Html.ActionLink("Search", "Search", "Home")
+                </li>
+                <li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        @Html.ActionLink("New Post", "Edit", "Posts")
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Login", "Login", "Account")
+                    }
+                </li>
+                <li>
+                    @Html.ActionLink("About", "About", "Home")
+                </li>
+            </ul>
+        </nav>
+
+        @RenderBody()
+    </div>
+
+    <footer class="centred">
+        Grisly Grotto v13. Site designed and coded by <a href="mailto:chrispritchard.nz@gmail.com">Christopher Pritchard</a>, 2015
+    </footer>
+
+    @Scripts.Render("~/bundles/grislygrotto")
+    @RenderSection("scripts", required: false)
+    <!-- The background animation code is likely to be minified and bundled when live. If you want to take a look at the js version, view it here: http://grislygrotto.azurewebsites.net/scripts/grislygrotto/background-animation.js. Otherwise on the about page you can download the full project source. -->
+    <script type="text/javascript">(new GrislyGrotto.BackgroundAnimation()).initialise(document.getElementById('backgroundCanvas'), $('body').css('background-color'), $('h1').css('color'))</script>
+</body>
+</html>
