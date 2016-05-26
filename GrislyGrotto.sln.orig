@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "Website\Website.csproj", "{4EBF3E00-431A-4701-8086-79F334EBD9F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{F2FF3BED-ED6D-4E12-AD25-031745EDC438}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.SQLite", "DAL.SQLite\DAL.SQLite.csproj", "{6782670E-60DF-4D0A-92F7-0B3FD878D751}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{9B35C988-F247-4D74-82AE-A2CF97692B7C}"
+	ProjectSection(SolutionItems) = preProject
+		Microsoft.Practices.ObjectBuilder2.dll = Microsoft.Practices.ObjectBuilder2.dll
+		Microsoft.Practices.Unity.dll = Microsoft.Practices.Unity.dll
+		System.Data.SQLite.dll = System.Data.SQLite.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.FtpUploader", "Shell.FtpUploader\Shell.FtpUploader.csproj", "{01989B92-E626-4A6C-BD42-649840B118D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.UploadAssemblies", "Shell.UploadAssemblies\Shell.UploadAssemblies.csproj", "{D2C382E5-DD3F-462F-934F-708120FDBA23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.BackupSiteDatabase", "Shell.BackupSiteDatabase\Shell.BackupSiteDatabase.csproj", "{1F9167B8-9DF0-45D1-912E-2CEBA652D904}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{44D2A42C-C7BF-41B1-8F80-CF3065B0C4A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EBF3E00-431A-4701-8086-79F334EBD9F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EBF3E00-431A-4701-8086-79F334EBD9F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EBF3E00-431A-4701-8086-79F334EBD9F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EBF3E00-431A-4701-8086-79F334EBD9F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2FF3BED-ED6D-4E12-AD25-031745EDC438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FF3BED-ED6D-4E12-AD25-031745EDC438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FF3BED-ED6D-4E12-AD25-031745EDC438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FF3BED-ED6D-4E12-AD25-031745EDC438}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6782670E-60DF-4D0A-92F7-0B3FD878D751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6782670E-60DF-4D0A-92F7-0B3FD878D751}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6782670E-60DF-4D0A-92F7-0B3FD878D751}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6782670E-60DF-4D0A-92F7-0B3FD878D751}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01989B92-E626-4A6C-BD42-649840B118D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01989B92-E626-4A6C-BD42-649840B118D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01989B92-E626-4A6C-BD42-649840B118D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01989B92-E626-4A6C-BD42-649840B118D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2C382E5-DD3F-462F-934F-708120FDBA23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2C382E5-DD3F-462F-934F-708120FDBA23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2C382E5-DD3F-462F-934F-708120FDBA23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2C382E5-DD3F-462F-934F-708120FDBA23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9167B8-9DF0-45D1-912E-2CEBA652D904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F9167B8-9DF0-45D1-912E-2CEBA652D904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F9167B8-9DF0-45D1-912E-2CEBA652D904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F9167B8-9DF0-45D1-912E-2CEBA652D904}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D2C382E5-DD3F-462F-934F-708120FDBA23} = {44D2A42C-C7BF-41B1-8F80-CF3065B0C4A6}
+		{1F9167B8-9DF0-45D1-912E-2CEBA652D904} = {44D2A42C-C7BF-41B1-8F80-CF3065B0C4A6}
+		{01989B92-E626-4A6C-BD42-649840B118D6} = {44D2A42C-C7BF-41B1-8F80-CF3065B0C4A6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+EndGlobal

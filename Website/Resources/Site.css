@@ -1,0 +1,154 @@
+﻿body
+{
+    font-family: Calibri;
+    margin: 1em 2.5em 2.5em 2.5em;
+    color: #111;
+}
+
+a
+{
+    color: #33F;
+}
+
+a:visited
+{
+    color: #77F;   
+}
+
+.header
+{
+  cursor: pointer;   
+}
+
+.header h1
+{
+    font-size: 3em;   
+}
+
+.header h2
+{
+    margin-top: -1em;
+    width: 360px;
+    border-bottom: 1px gray solid;
+}
+
+.error
+{
+    color:Red;
+}
+
+.loginBox
+{
+    margin-bottom: 1em;   
+}
+
+.loginBox, .recentPosts, .postHistory, .searchBox, .sideMenuBase
+{
+    clear: right;
+    float:right;
+    width: 40%;
+    text-align: right;
+}
+
+.sideMenuBase
+{
+    min-height: 100%;
+    height: 100%;
+}
+
+.historyTitle
+{
+    border-bottom: 1px gray solid;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.recentPosts li, .postHistory li
+{
+    list-style-type: none;
+    margin-top: 0.3em;
+}
+
+.recentTitle
+{
+    display: block;   
+    font-size: 1.1em;
+}
+
+.howRecent
+{
+    margin-top: -1em;
+    font-size: 0.8em;   
+}
+
+.editor
+{
+    margin: 10px;    
+}
+
+.editorDialog
+{
+    background-color: #EEE;
+    border: 1px solid gray;
+}
+
+.ckeditor
+{
+    height: 450px;   
+}
+
+.quote
+{
+    margin-top: 2em;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.quote span
+{
+    color: Red;
+}
+
+.quote h4
+{
+    margin-left: 1.5em;
+    margin-top: 0.5em;
+}
+
+.posts
+{
+    margin-top: 2em;
+}
+
+.post
+{
+    text-align: justify; 
+    margin-bottom: 4em;
+}
+
+.postTitle
+{
+    font-size: 1.5em;
+    font-weight: bold;
+    border-bottom: 1px gray solid;
+}
+
+.post h3, .post h4
+{
+    margin-bottom: -0.8em;
+}
+
+.comment h4
+{
+    margin-bottom: -1em;
+}
+
+.deleteLink, .seperator, .userLink
+{
+    margin-left: 0.3em;
+}
+
+.editLink
+{
+    margin-left: 1em;
+}

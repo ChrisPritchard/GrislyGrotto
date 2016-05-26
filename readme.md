@@ -1,13 +1,13 @@
-## Release 6.5
+## Release 7 to 7.2
 
-<b>Release Date:</b> 28th July, 2009
+<b>Release Date:</b> 6th January, 2010
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/a-refreshing-change">A Refreshing Change</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/presenting-7">Presenting 7</a>
 
-<b>Frontend:</b> ASP.NET MVC3 with a custom XSL View Engine, .NET 3.5
+<b>Frontend:</b> Site Handler, XSLT Transform with AJAX / JavaScript
 
-<b>Backend:</b> Linq to SQL
+<b>Backend:</b> SQLite
 
 <b>Dev Tool:</b> Visual Studio 2008
 
-Main change was around layout. There was a bunch of refactoring and reorganising of the code, but mostly it is unchanged in broad design from 6.0.
+A return to old style development, enschewing MVC. However I believe the JavaScript involvement in this site is more than any of the previous versions. This version also marks the first instance of SQLite usage. The release was quite painful and rushed however, and as such there were two more subsequent releases (7.1 and 7.2) over the following days.
