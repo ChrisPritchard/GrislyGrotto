@@ -1,0 +1,138 @@
+﻿body
+{
+    font-family: Georgia, Times New Roman;
+    font-size: 10pt;
+    color: #333;
+    line-height: 1.5;
+}
+
+a, a:visited
+{
+    color: #6A6;
+}
+
+div.header
+{
+    background-image: url('/Content/Images/title.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 127;
+}
+
+.hide
+{
+    display: none;
+}
+
+h3.historyheading
+{
+    font-family: Courier New;
+}
+
+.headertext
+{
+    display: none;
+}
+
+div.quote
+{
+    text-align: center;
+}
+
+span.quotetext
+{
+    color: red;
+    font-style: italic;
+    margin-bottom: 0em;
+}
+
+div.authorlinks
+{
+    margin-top: 10px;
+    font-size: larger;
+    font-weight: bold;
+    text-align: center;
+    font-family: Courier New;
+}
+
+span.howrecent
+{
+    font-size: 8pt;
+    color: #666;
+}
+
+div.menu
+{
+    margin-left: 10;
+    clear: left;
+    float: right;
+    text-align: right;
+    margin-right: 20px;
+}
+
+div.blog
+{
+    margin-left: 20px;
+    margin-right: 300px;
+}
+
+h3.blogtitle
+{
+    color: #6A6;
+}
+
+p.blogdetail
+{
+    color: #555;
+    font-style: italic;
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+
+div.comment
+{
+}
+
+span.authorname
+{
+    font-weight: bold;
+}
+
+span.commentdetails
+{
+    color: #6A6;
+    font-style: italic;
+}
+
+p.commenttext
+{
+    margin-left: 20;
+}
+
+div.footer
+{
+    text-align: center;
+}
+
+/*Common elements*/
+
+label.error
+{
+    display: block;
+    color: red;
+    font-style: italic;
+    font-weight: normal;
+}
+
+input.error
+{
+    border: 2px solid red;
+}
+
+td.field input.error, td.field select.error, tr.errorRow td.field input, tr.errorRow td.field select
+{
+    border: 2px solid red;
+    background-color: #FFFFD5;
+    margin: 0px;
+    color: red;
+}
