@@ -1,8 +1,8 @@
-## Release 6.0  
+## Release 6.5
 
-<b>Release Date:</b> 2nd June, 2009
+<b>Release Date:</b> 28th July, 2009
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/welcome-to-gg6">Welcome to GG6!</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/a-refreshing-change">A Refreshing Change</a>
 
 <b>Frontend:</b> ASP.NET MVC3 with a custom XSL View Engine, .NET 3.5
 
@@ -10,4 +10,4 @@
 
 <b>Dev Tool:</b> Visual Studio 2008
 
-The primary change in technology between this version and 5 is the introduction of 'enterprise best practices', things like inversion of control, dependency injection etc. All done using the Enterprise Library (and container's like Microsoft's Unity). My knowledge of these techniques was enthusiastic but not deep, and they are in retrospect really not needed for a site this small. Ah well, I am sure I enjoyed myself :D
+Main change was around layout. There was a bunch of refactoring and reorganising of the code, but mostly it is unchanged in broad design from 6.0.

@@ -1,0 +1,100 @@
+﻿body
+{
+    font-family: Arial, Georgia, Times New Roman;
+    font-size: 9pt;
+    color: #333;
+    line-height: 1.5;
+}
+
+a, a:visited
+{
+    color: #A66;
+}
+
+h1.headertext
+{
+    font-size: 36pt;
+    margin-bottom: -40px;
+}
+
+h2.headertext
+{
+    font-size: 12pt;
+    margin-bottom: 0px;
+}
+
+h3.historyheading
+{
+    font-family: Courier New;
+    display: inline;
+}
+
+span.quotetext
+{
+    color: red;
+    font-style: italic;
+    display: block;
+}
+
+
+
+div.authorlinks
+{
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Courier New;
+}
+
+span.howrecent
+{
+    font-size: 8pt;
+    color: #666;
+}
+
+h3.posttitle
+{
+    color: #A66;
+    margin-bottom: 10px;
+}
+
+p.postdetail
+{
+    color: #555;
+    font-style: italic;
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+
+span.authorname
+{
+    font-weight: bold;
+}
+
+.commentdetails
+{
+    color: #A66;
+    font-style: italic;
+    display: block;
+}
+
+label.error
+{
+    display: block;
+    color: red;
+    font-style: italic;
+    font-weight: normal;
+}
+
+input.error
+{
+    border: 2px solid red;
+}
+
+td.field input.error, td.field select.error, tr.errorRow td.field input, tr.errorRow td.field select
+{
+    border: 2px solid red;
+    background-color: #FFFFD5;
+    margin: 0px;
+    color: red;
+}
