@@ -1,19 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.Web", "GrislyGrotto.Web\GrislyGrotto.Web.csproj", "{E3C06275-B96B-4B74-AB65-4ABA6E8442BB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{29728DC0-2DF3-43B5-BEAA-1C633245968A}"
-	ProjectSection(SolutionItems) = preProject
-		Lib\System.Data.SQLite.DLL = Lib\System.Data.SQLite.DLL
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.FtpUploader", "Shell.FtpUploader\Shell.FtpUploader.csproj", "{01989B92-E626-4A6C-BD42-649840B118D6}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "32bit", "32bit", "{91CC965F-F27F-4D5F-BC56-A7B79BA9EE10}"
-	ProjectSection(SolutionItems) = preProject
-		Lib\32bit\System.Data.SQLite.dll = Lib\32bit\System.Data.SQLite.dll
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto", "GrislyGrotto\GrislyGrotto.csproj", "{BF9B757C-5F9A-445C-80C7-4AB401B787BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,19 +9,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E3C06275-B96B-4B74-AB65-4ABA6E8442BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3C06275-B96B-4B74-AB65-4ABA6E8442BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3C06275-B96B-4B74-AB65-4ABA6E8442BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3C06275-B96B-4B74-AB65-4ABA6E8442BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{01989B92-E626-4A6C-BD42-649840B118D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{01989B92-E626-4A6C-BD42-649840B118D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{01989B92-E626-4A6C-BD42-649840B118D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{01989B92-E626-4A6C-BD42-649840B118D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{91CC965F-F27F-4D5F-BC56-A7B79BA9EE10} = {29728DC0-2DF3-43B5-BEAA-1C633245968A}
 	EndGlobalSection
 EndGlobal

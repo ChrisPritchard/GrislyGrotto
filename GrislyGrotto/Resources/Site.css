@@ -1,0 +1,150 @@
+﻿body 
+{
+	margin:0;
+	padding:0;
+	border:0;
+	width:100%;
+	background:#fff;
+	min-width:600px;
+    font-family: calibri;
+    color: black;
+    background: white url('/divinecircuits.jpg');
+    
+    height: 100%;
+}
+
+a, a:visited
+{
+    color: blue;   
+}
+
+.middle
+{
+    margin-left: 20%;
+    margin-right: 20%;
+    max-width: 60%;
+    min-height: 100%;
+    float: left;
+    background:#FAFAFA;
+    padding: 2em; 
+    border-left: 1px gray solid;
+    border-right: 1px gray solid;
+}
+
+td
+{
+    vertical-align: top;
+}
+
+.header
+{
+	text-align: center;
+	width: 100%;
+}
+
+.header h1
+{
+    margin-top: -0.3em;
+    font-size: 4em;
+}
+
+.header h2
+{
+    margin-top: -1.5em;
+    font-size: 1.5em;
+    border-bottom: 1px gray solid;
+}
+
+.header span
+{
+    font-style: italic;   
+    padding: 2em;
+}
+
+.quote span
+{
+    color: Maroon;
+}
+
+.menu
+{
+    width: 100%;
+    text-align: center;
+    padding:0.2em;
+    border-top: 1px gray solid;
+    border-bottom: 1px gray solid;
+}
+
+.menu span
+{
+    padding-right: 20px;
+    display: inline-block;
+}
+
+.menu form
+{
+    display: inline;
+}
+
+.recentPosts
+{
+    list-style: none;    
+    padding-left: 0px;
+    font-size: 0.8em;
+}
+
+.recentPosts li
+{
+    margin-bottom: 0.5em;
+}
+
+.recentTitle
+{
+    display:block;
+    font-size: 1.5em;
+}
+
+.story
+{
+    width: 60%;
+    margin-left:20%;
+    margin-right:20%;
+}
+
+.storyNavigation
+{
+    margin-top:2em;
+    text-align:center;   
+}
+
+.post h3
+{
+   text-decoration: underline;   
+   margin-top: 2em;
+   margin-bottom: -0.5em;
+}
+
+.comment
+{
+    margin-top: 2em;   
+}   
+
+#loginPanel
+{
+    display:none;   
+}
+
+#loginLink
+{
+    text-align: center;   
+}
+
+.error
+{
+    color: Maroon;
+}
+
+.nicEdit-main
+{
+    background-color: Window;
+}
