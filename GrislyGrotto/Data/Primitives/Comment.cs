@@ -1,12 +1,12 @@
 using System;
 
-namespace GrislyGrotto.Framework.Data.Primitives
+namespace GrislyGrotto.Data.Primitives
 {
     public class Comment
     {
         public string Author { get; set; }
         public DateTime TimeMade { get; set; }
-        public string TimeMadeText { get { return TimeMade.ToWebFormat(); } set { } }
+        public string TimeMadeWeb { get { return TimeMade.ToWebFormat(); } set { } }
         public string Content { get; set; }
 
         public Comment()

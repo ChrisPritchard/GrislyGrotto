@@ -1,6 +1,6 @@
-namespace GrislyGrotto.Framework.Data.Primitives
+namespace GrislyGrotto.Data.Primitives
 {
-    public class Quote
+    internal class Quote
     {
         public string Author { get; set; }
         public string Content { get; set; }

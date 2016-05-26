@@ -6,13 +6,23 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BF9B757C-5F9A-445C-80C7-4AB401B787BA}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

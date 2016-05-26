@@ -13,6 +13,7 @@
     <RootNamespace>GrislyGrotto</RootNamespace>
     <AssemblyName>GrislyGrotto</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,9 +37,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>C:\Program Files (x86)\SQLite.NET\bin\x64\System.Data.SQLite.DLL</HintPath>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SQLite, Version=1.0.74.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\x64\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -50,51 +56,47 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Default.aspx" />
-    <Content Include="Resources\favicon.png" />
-    <Content Include="Resources\NicEditor\nicEdit.js" />
-    <Content Include="Resources\NicEditor\nicEditorIcons.gif" />
+    <Content Include="Default.htm" />
+    <Content Include="Resources\jquery-1.6.2.min.js" />
     <Content Include="Resources\Quotes.xml" />
+    <Content Include="Resources\renaissance.jpg" />
+    <Content Include="Resources\renaissance1.jpg" />
     <Content Include="Resources\Rss.xslt" />
-    <Content Include="Resources\Site.css" />
-    <Content Include="Resources\Site.js" />
-    <Content Include="Resources\Site.xslt">
-      <SubType>Designer</SubType>
+    <Content Include="Resources\Site.css">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Site.scss</DependentUpon>
     </Content>
+    <Content Include="Resources\Site.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Container.cs" />
-    <Compile Include="Framework\ContextNavigationService.cs" />
-    <Compile Include="Framework\Data\IAuthenticationService.cs" />
-    <Compile Include="Framework\Data\Implementations\CookieAuthenticationService.cs" />
-    <Compile Include="Framework\Data\Implementations\DataAccess.cs" />
-    <Compile Include="Framework\Data\Implementations\SqlPostData.cs" />
-    <Compile Include="Framework\Data\Implementations\SqlUserData.cs" />
-    <Compile Include="Framework\Data\IPostData.cs" />
-    <Compile Include="Framework\Data\IUserData.cs" />
-    <Compile Include="Framework\Data\Moqs\MoqPostData.cs" />
-    <Compile Include="Framework\Data\Implementations\GenericResourceService.cs" />
-    <Compile Include="Framework\Data\Moqs\MoqUserData.cs" />
-    <Compile Include="Framework\Data\Primitives\Comment.cs" />
-    <Compile Include="Framework\Data\Primitives\MonthCount.cs" />
-    <Compile Include="Framework\Data\Primitives\Post.cs" />
-    <Compile Include="Framework\Data\Primitives\Quote.cs" />
-    <Compile Include="Framework\Data\Primitives\Story.cs" />
-    <Compile Include="Framework\Handlers\HomePageHandler.cs" />
-    <Compile Include="Framework\INavigationService.cs" />
-    <Compile Include="Framework\Data\IResourceService.cs" />
-    <Compile Include="Framework\RequestData.cs" />
-    <Compile Include="Framework\Handlers\EditorHandler.cs" />
-    <Compile Include="Framework\Handlers\IHandler.cs" />
-    <Compile Include="Framework\Handlers\PostRangeHandler.cs" />
-    <Compile Include="Framework\Handlers\SinglePostHandler.cs" />
-    <Compile Include="UtilityExtensions.cs" />
+    <Compile Include="Data\DataAccess.cs" />
+    <Compile Include="Data\IPosts.cs" />
+    <Compile Include="Data\MockPosts.cs" />
+    <Compile Include="Data\Primitives\MonthCount.cs" />
+    <Compile Include="Data\DatabasePosts.cs" />
+    <Compile Include="Data\Quotes.cs" />
+    <Compile Include="Data\Primitives\Comment.cs" />
+    <Compile Include="Data\Primitives\Post.cs" />
+    <Compile Include="Data\Primitives\Quote.cs" />
+    <Compile Include="Data\Primitives\Story.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SiteHandler.cs" />
+    <Compile Include="PostsServiceHandler.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Site.scss">
+      <Generator>ScssGenerator</Generator>
+      <LastGenOutput>Site.css</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>

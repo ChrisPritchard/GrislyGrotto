@@ -10,25 +10,25 @@
         <link>http://grislygrotto.co.nz/</link>
         <description>Grisly Grotto - Deviant Minds Think Alike</description>
         <language>en</language>
-        <xsl:for-each select="Response/HomePage/Post">
+        <xsl:for-each select="//Post">
           <item>
             <title>
               <xsl:value-of select="Title"/>
             </title>
             <author>
-              <xsl:value-of select="Username"/>
+              <xsl:value-of select="Author"/>
             </author>
             <link>
-              http://grislygrotto.co.nz/Posts/<xsl:value-of select="ID"/>
+              http://grislygrotto.co.nz/?id=<xsl:value-of select="Id"/>
             </link>
             <description>
               <xsl:value-of select="Content" />
             </description>
             <pubDate>
-              <xsl:value-of select="Created"/>
+              <xsl:value-of select="TimePosted"/>
             </pubDate>
             <guid>
-              http://grislygrotto.co.nz/Posts/<xsl:value-of select="ID"/>
+              http://grislygrotto.co.nz/?id=<xsl:value-of select="Id"/>
             </guid>
           </item>
         </xsl:for-each>

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
-using GrislyGrotto.Framework.Data.Primitives;
+using GrislyGrotto.Data.Primitives;
 
-namespace GrislyGrotto.Framework.Data.Implementations
+namespace GrislyGrotto.Data
 {
-    public class SqlPostData : IPostData
+    internal class DatabasePosts : IPosts
     {
-        private const int storySummaryWordCap = 300;
+        private const int numberOfLatestPosts = 5;
 
-        public IEnumerable<Post> LatestPosts(int count, string user = null)
+        public IEnumerable<Post> LatestPosts(string user = null)
         {
             var query = "SELECT * FROM Posts ";
             if (user != null) query += "WHERE User = @user ";
@@ -19,12 +19,12 @@ namespace GrislyGrotto.Framework.Data.Implementations
 
             var results = DataAccess.Default.RetrieveDataSet(query,
                 new SQLiteParameter("@user", user ?? string.Empty),
-                new SQLiteParameter("@count", count));
+                new SQLiteParameter("@count", numberOfLatestPosts));
 
-            return results.Tables[0].Rows.Cast<DataRow>().Select(r => AsPost(r));
+            return results.Tables[0].Rows.Cast<DataRow>().Select(AsPost);
         }
 
-        public IEnumerable<Post> PostsByStatus(string status, string user = null)
+        public IEnumerable<Story> PostsThatAreStories(string user = null)
         {
             var query = "SELECT * FROM Posts WHERE Status = @status ";
             if (user != null) query += "AND User = @user ";
@@ -32,9 +32,9 @@ namespace GrislyGrotto.Framework.Data.Implementations
 
             var results = DataAccess.Default.RetrieveDataSet(query,
                 new SQLiteParameter("@user", user ?? string.Empty),
-                new SQLiteParameter("@status", status));
+                new SQLiteParameter("@status", "Story"));
 
-            return results.Tables[0].Rows.Cast<DataRow>().Select(r => AsPost(r, false));
+            return results.Tables[0].Rows.Cast<DataRow>().Select(p => new Story(AsPost(p)));
         }
 
         public IEnumerable<Post> PostsForMonth(int year, int month, string user = null)
@@ -50,7 +50,7 @@ namespace GrislyGrotto.Framework.Data.Implementations
                 new SQLiteParameter("@startTime", startTime),
                 new SQLiteParameter("@endTime", startTime.AddMonths(1)));
 
-            return results.Tables[0].Rows.Cast<DataRow>().Select(r => AsPost(r));
+            return results.Tables[0].Rows.Cast<DataRow>().Select(AsPost);
         }
 
         public IEnumerable<Post> SearchResults(string searchTerm)
@@ -60,7 +60,7 @@ namespace GrislyGrotto.Framework.Data.Implementations
             var results = DataAccess.Default.RetrieveDataSet(query,
                 new SQLiteParameter("@searchTerm", "%" + searchTerm + "%"));
 
-            return results.Tables[0].Rows.Cast<DataRow>().Select(r => AsPost(r));
+            return results.Tables[0].Rows.Cast<DataRow>().Select(AsPost);
         }
 
         public IEnumerable<MonthCount> MonthPostCounts(string user = null)
@@ -90,64 +90,61 @@ namespace GrislyGrotto.Framework.Data.Implementations
             const string query = "SELECT * FROM Posts WHERE PostID = @ID";
             var results = DataAccess.Default.RetrieveDataSet(query, new SQLiteParameter("@ID", id));
             return results.Tables.Count > 0 && results.Tables[0].Rows.Count > 0
-                ? AsPost(results.Tables[0].Rows[0], false) : null;
+                ? AsPost(results.Tables[0].Rows[0]) : null;
         }
 
         public int AddOrEditPost(Post post)
         {
-            if (post.ID.HasValue)
+            if (post.Id.HasValue)
             {
                 DataAccess.Default.ExecuteNonQuery(
                     "UPDATE Posts SET Title = @title, Content = @content, Status = @status WHERE PostID = @ID",
                     new SQLiteParameter("@title", post.Title),
                     new SQLiteParameter("@content", post.Content),
                     new SQLiteParameter("@status", post.IsStory ? "Story" : "Post"),
-                    new SQLiteParameter("@ID", post.ID.Value));
-                return post.ID.Value;
+                    new SQLiteParameter("@ID", post.Id.Value));
+                return post.Id.Value;
             }
 
-            post.ID = (int)DataAccess.Default.RetrieveDataSet("SELECT PostID FROM Posts ORDER BY PostID DESC LIMIT 1").Tables[0].Rows[0].ItemArray[0] + 1;
+            post.Id = (int)DataAccess.Default.RetrieveDataSet("SELECT PostID FROM Posts ORDER BY PostID DESC LIMIT 1").Tables[0].Rows[0].ItemArray[0] + 1;
             DataAccess.Default.ExecuteNonQuery("INSERT INTO Posts VALUES (@postID, @author, @entryDate, @title, @status, @content)",
-                new SQLiteParameter("@postID", post.ID),
-                new SQLiteParameter("@author", post.Username),
+                new SQLiteParameter("@postID", post.Id),
+                new SQLiteParameter("@author", post.Author),
                 new SQLiteParameter("@entryDate", post.TimePosted),
                 new SQLiteParameter("@title", post.Title),
                 new SQLiteParameter("@status", post.IsStory ? "Story" : "Post"),
                 new SQLiteParameter("@content", post.Content));
 
-            return post.ID.Value;
+            return post.Id.Value;
         }
 
-        public void AddComment(Comment comment, int postID)
+        public void AddComment(Comment comment, int postId)
         {
             DataAccess.Default.ExecuteNonQuery("INSERT INTO Comments VALUES (@PostID, @Author, @Created, @Text)",
-                new SQLiteParameter("@PostID", postID),
+                new SQLiteParameter("@PostID", postId),
                 new SQLiteParameter("@Author", comment.Author),
                 new SQLiteParameter("@Created", comment.TimeMade),
                 new SQLiteParameter("@Text", comment.Content));
         }
 
-        private static Post AsPost(DataRow row, bool summariseStories = true)
+        private static Post AsPost(DataRow row)
         {
-            var post = new Post
+            return new Post
             {
-                ID = (int)row["PostID"],
-                Username = row["User"].ToString(),
+                Id = (int)row["PostID"],
+                Author = row["User"].ToString(),
                 Title = row["Title"].ToString(),
                 TimePosted = DateTime.Parse(row["Created"].ToString()),
                 Content = row["Content"].ToString().Trim(),
                 Comments = CommentsOfPost((int)row["PostID"]).ToArray(),
                 IsStory = row["Status"].ToString().Equals("Story")
             };
-            if (summariseStories && post.IsStory && post.RawContent.Split(' ').Length > storySummaryWordCap)
-                post.Content = "<p style=\"font-style:italic\">" + string.Concat(post.RawContent.Split(' ').Take(storySummaryWordCap).Select(w => w + " ").ToArray()) + "...</p>";
-            return post;
         }
 
-        private static IEnumerable<Comment> CommentsOfPost(int postID)
+        private static IEnumerable<Comment> CommentsOfPost(int postId)
         {
             const string query = "SELECT * FROM Comments WHERE PostID = @postID ORDER BY Created";
-            var results = DataAccess.Default.RetrieveDataSet(query, new SQLiteParameter("@postID", postID));
+            var results = DataAccess.Default.RetrieveDataSet(query, new SQLiteParameter("@postID", postId));
             if (results.Tables.Count == 0)
                 yield break;
             foreach (DataRow row in results.Tables[0].Rows)

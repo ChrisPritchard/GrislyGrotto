@@ -3,14 +3,20 @@ using System.Data;
 using System.Data.SQLite;
 using System.Web;
 
-namespace GrislyGrotto.Framework.Data.Implementations
+namespace GrislyGrotto.Data
 {
-    public class DataAccess
+    internal class DataAccess
     {
-        public static DataAccess Default 
-        { 
-            get { return new DataAccess { ConnectionString = string.Format("Data Source={0};Pooling=true;FailIfMissing=true",
-                HttpContext.Current.Server.MapPath(@"\App_Data\GrislyGrotto.db3")) }; } 
+        public static DataAccess Default
+        {
+            get
+            {
+                return new DataAccess
+                {
+                    ConnectionString = string.Format("Data Source={0};Pooling=true;FailIfMissing=true",
+                        HttpContext.Current.Server.MapPath(@"\App_Data\GrislyGrotto.db3"))
+                };
+            }
         }
 
         public string ConnectionString { get; set; }
@@ -38,7 +44,7 @@ namespace GrislyGrotto.Framework.Data.Implementations
 
         public void ExecuteNonQuery(string query, params SQLiteParameter[] parameters)
         {
-            if(string.IsNullOrEmpty(ConnectionString))
+            if (string.IsNullOrEmpty(ConnectionString))
                 throw new ArgumentNullException(ConnectionString);
 
             using (var connection = new SQLiteConnection(ConnectionString))

@@ -1,150 +1,84 @@
-﻿body 
-{
-	margin:0;
-	padding:0;
-	border:0;
-	width:100%;
-	background:#fff;
-	min-width:600px;
-    font-family: calibri;
-    color: black;
-    background: white url('/divinecircuits.jpg');
-    
-    height: 100%;
-}
+html {
+  height: 100%; }
 
-a, a:visited
-{
-    color: blue;   
-}
+body {
+  margin: 0em;
+  padding: 0em;
+  background: white url("/resources/renaissance1.jpg"); }
 
-.middle
-{
-    margin-left: 20%;
-    margin-right: 20%;
-    max-width: 60%;
-    min-height: 100%;
-    float: left;
-    background:#FAFAFA;
-    padding: 2em; 
-    border-left: 1px gray solid;
-    border-right: 1px gray solid;
-}
+.middle {
+  background-color: white;
+  font-family: Georgia;
+  color: #555;
+  width: 60%;
+  min-height: 100%;
+  margin-left: 20%;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  padding-left: 20px;
+  padding-right: 20px; }
 
-td
-{
-    vertical-align: top;
-}
+img {
+  margin: 10px; }
 
-.header
-{
-	text-align: center;
-	width: 100%;
-}
+a {
+  color: #654; }
+  a :visited {
+    color: #654; }
 
-.header h1
-{
-    margin-top: -0.3em;
-    font-size: 4em;
-}
+.error {
+  color: maroon; }
 
-.header h2
-{
-    margin-top: -1.5em;
-    font-size: 1.5em;
-    border-bottom: 1px gray solid;
-}
+.header {
+  text-align: center;
+  font-family: Copperplate Gothic Light, Trebuchet MS, Verdana;
+  font-size: 4em;
+  margin-top: 0em;
+  margin-bottom: 0em; }
 
-.header span
-{
-    font-style: italic;   
-    padding: 2em;
-}
+.motto {
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1em; }
 
-.quote span
-{
-    color: Maroon;
-}
+.menu {
+  text-align: center;
+  padding: 20px;
+  border-bottom: 1px solid black; }
+  .menu select {
+    margin-left: 10px; }
+  .menu .loginLink, .menu .newPostLink {
+    display: block;
+    margin-bottom: 1em; }
+  .menu .loginPanel {
+    display: none;
+    margin: 1em; }
 
-.menu
-{
-    width: 100%;
-    text-align: center;
-    padding:0.2em;
-    border-top: 1px gray solid;
-    border-bottom: 1px gray solid;
-}
+.quote {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid black;
+  margin-bottom: 2em; }
+  .quote .quoteContent {
+    color: maroon;
+    font-style: italic; }
+  .quote .quoteAuthor {
+    display: block;
+    font-weight: bold; }
 
-.menu span
-{
-    padding-right: 20px;
-    display: inline-block;
-}
+.posts .post {
+  margin-bottom: 2em; }
+  .posts .post .title {
+    font-family: Copperplate Gothic Light, Trebuchet MS, Verdana;
+    text-decoration: underline;
+    margin-bottom: 0em; }
+  .posts .post .details {
+    font-weight: bold; }
+  .posts .post .content {
+    margin-top: 1em; }
 
-.menu form
-{
-    display: inline;
-}
-
-.recentPosts
-{
-    list-style: none;    
-    padding-left: 0px;
-    font-size: 0.8em;
-}
-
-.recentPosts li
-{
-    margin-bottom: 0.5em;
-}
-
-.recentTitle
-{
-    display:block;
-    font-size: 1.5em;
-}
-
-.story
-{
-    width: 60%;
-    margin-left:20%;
-    margin-right:20%;
-}
-
-.storyNavigation
-{
-    margin-top:2em;
-    text-align:center;   
-}
-
-.post h3
-{
-   text-decoration: underline;   
-   margin-top: 2em;
-   margin-bottom: -0.5em;
-}
-
-.comment
-{
-    margin-top: 2em;   
-}   
-
-#loginPanel
-{
-    display:none;   
-}
-
-#loginLink
-{
-    text-align: center;   
-}
-
-.error
-{
-    color: Maroon;
-}
-
-.nicEdit-main
-{
-    background-color: Window;
-}
+.footer {
+  font-size: 0.8em;
+  font-family: Trebuchet MS, Verdana;
+  text-align: center; }
