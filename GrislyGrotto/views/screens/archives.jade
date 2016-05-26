@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+	.archives
+		h1 Archives
+		ul
+			- each year in years
+				li
+					h2=year.name
+					ul
+						- each month in year.months
+							a(href="/m/" + month.name + "/" + year.name)
+								h3=month.name + " (" + month.count + ")"
+		.clear

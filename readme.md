@@ -1,13 +1,13 @@
-## Release 11
+## Release 12
 
-<b>Release Date:</b> 15th June 2013
+<b>Release Date:</b> 21st February 2014
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/welcome-to-gg11">Welcome to GG11!</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/grisly-grotto-12">Grisly Grotto 12!!!</a>
 
-<b>Frontend:</b> ASP.NET MVC (4?), .NET 4.5 
+<b>Frontend:</b> NodeJS
 
 <b>Backend:</b> Azure SQL Server
 
-<b>Dev Tool:</b> Visual Studio 2012
+<b>Dev Tool:</b> Visual Studio 2013
 
-Back to pure ASP.NET MVC, in an orthodox manner. Still on Azure and using Azure SQL Server.
+This was the first, and possibly last, version of the site that wasn't based on C#. NodeJS! A pure Javascript site, through and through :) Of course, painful to develop - no TypeScript (at the time), poor JS support for SQL databases etc (still was using Azure SQL Server). Still, a leap of faith (at the time).

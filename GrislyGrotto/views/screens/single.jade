@@ -1,0 +1,40 @@
+extends ../layout
+
+block content
+	.post
+		.singleinfo
+			h1=post.Title
+			img(src=post.ImageUrl, alt="Author")
+			=post.DisplayName
+			|, 
+			+formattedDate(post.Date)
+		div
+			!=post.Content
+		if(loggedInAsAuthor)
+			a(href="/edit/" + post.Key) Edit
+	div
+		if(post.Comments.length > 0)
+		.comment
+			h3 Comments
+		- each comment in post.Comments
+			.comment
+				div
+					!=comment.Content
+				span.commentauthor
+					="- " + comment.Author + ", "
+					+formattedDate(comment.Date)
+	a(name="comments")
+	.comment
+		form(method="post", action="/p/" + post.Key + "#comments")
+			input(type="hidden", name="postID", value=post?post.ID:'')
+			p
+				label(for="author") Author
+				br
+				input(type="text", name="author")#author
+			p
+				textarea(cols=50, rows=10, name="content")#content
+			p
+				input(type="submit", value="Add Comment")#submit
+				br
+				span(style="display: none")#error
+	script(type="text/javascript", src="/scripts/single.js")

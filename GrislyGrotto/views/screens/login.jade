@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+	.loginbox
+		h2 Login
+		form(method="post")
+			span Please enter your credentials, below
+			p
+				label(for="username") Username
+				br
+				input(type="text", name="username")#username.formfield
+			p
+				label(for="password") Password
+				br
+				input(type="password", name="password")#password.formfield
+			if(failed)
+				p.error Username and/or password incorrect
+			p
+				input(type="submit", value="Login")#submit
+				br
+				span(style="display: none")#error
+	script(type="text/javascript", src="/scripts/login.js")

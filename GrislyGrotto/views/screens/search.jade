@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+	.postinfolist
+		h1 Search
+		form(method="post")
+			label(for="searchTerm") Search Term
+			input(name="searchTerm")#searchTerm
+			input(type="submit", value="Search")#submit
+			br
+			span(style="display: none")#error
+			br
+			| Note: Searches crawl the entire site content, so can take up to 30 seconds (bad coder hasn't bothered indexing yet)
+		ul
+			- each post in posts
+				li
+					a(href="/p/"+post.Key)
+						h2=post.Title
+					span
+						="Written by " + post.DisplayName + " on "
+						+formattedDate(post.Date, true)
+	script(type="text/javascript", src="/scripts/search.js")

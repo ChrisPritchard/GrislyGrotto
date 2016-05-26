@@ -1,0 +1,14 @@
+{
+  "name": "Test",
+  "version": "0.0.0",
+  "description": "Test",
+  "main": "app.js",
+  "author": {
+    "name": "ChrisP",
+    "email": ""
+  },
+  "dependencies": {
+    "azure": "~0.9.3",
+    "node-sqlserver-unofficial": "~1.4.0"
+  }
+}

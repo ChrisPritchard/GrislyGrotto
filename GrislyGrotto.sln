@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto", "GrislyGrotto\GrislyGrotto.csproj", "{52588608-2769-4527-BF26-0A9927B35180}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30324.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migration.GG11toGG12", "Migration.GG11toGG12\Migration.GG11toGG12.csproj", "{1E1BE561-3D4E-49AA-828B-36DEB666D110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.Backup.GG10", "GrislyGrotto.Backup.GG10\GrislyGrotto.Backup.GG10.csproj", "{D81AA9A0-7611-4155-837B-88CF64C53526}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "GrislyGrotto", "GrislyGrotto\GrislyGrotto.njsproj", "{FF0109B1-FDCD-4774-B54A-31D318F38EBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.Migrate.GG10.To.GG11", "GrislyGrotto.Migrate.GG10.To.GG11\GrislyGrotto.Migrate.GG10.To.GG11.csproj", "{E1755125-730F-49CE-9C69-6C1CBB695449}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Test", "Test\Test.njsproj", "{3F9B633C-0707-48AF-A077-30B42BF4F843}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migration.FromBlobToSql", "Migration.FromBlobToSql\Migration.FromBlobToSql.csproj", "{A37C59A8-3F3F-48E9-BA20-DD0156D46BE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,18 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{52588608-2769-4527-BF26-0A9927B35180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52588608-2769-4527-BF26-0A9927B35180}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52588608-2769-4527-BF26-0A9927B35180}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52588608-2769-4527-BF26-0A9927B35180}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D81AA9A0-7611-4155-837B-88CF64C53526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D81AA9A0-7611-4155-837B-88CF64C53526}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D81AA9A0-7611-4155-837B-88CF64C53526}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D81AA9A0-7611-4155-837B-88CF64C53526}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1755125-730F-49CE-9C69-6C1CBB695449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1755125-730F-49CE-9C69-6C1CBB695449}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1755125-730F-49CE-9C69-6C1CBB695449}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1755125-730F-49CE-9C69-6C1CBB695449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E1BE561-3D4E-49AA-828B-36DEB666D110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E1BE561-3D4E-49AA-828B-36DEB666D110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E1BE561-3D4E-49AA-828B-36DEB666D110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E1BE561-3D4E-49AA-828B-36DEB666D110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF0109B1-FDCD-4774-B54A-31D318F38EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0109B1-FDCD-4774-B54A-31D318F38EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0109B1-FDCD-4774-B54A-31D318F38EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0109B1-FDCD-4774-B54A-31D318F38EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F9B633C-0707-48AF-A077-30B42BF4F843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F9B633C-0707-48AF-A077-30B42BF4F843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F9B633C-0707-48AF-A077-30B42BF4F843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F9B633C-0707-48AF-A077-30B42BF4F843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A37C59A8-3F3F-48E9-BA20-DD0156D46BE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A37C59A8-3F3F-48E9-BA20-DD0156D46BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A37C59A8-3F3F-48E9-BA20-DD0156D46BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A37C59A8-3F3F-48E9-BA20-DD0156D46BE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+	.postinfolist
+		h1 Stories
+		ul
+			- each post in posts
+				li
+					a(href="/p/"+post.Key)
+						h2=post.Title
+					span
+						=post.WordCount + " words. Written by " + post.DisplayName + " on "
+						+formattedDate(post.Date, true)

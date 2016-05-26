@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+	- each post in posts
+		.post
+			.title
+				a(href="/p/"+post.Key)
+					img(src=post.ImageUrl, alt="Author")
+					h2=post.Title
+			.clear
+			div
+				!=post.Content
+			ul.postinfo
+				li
+					| Posted by 
+					=post.DisplayName
+				li
+					| at 
+					+formattedDate(post.Date)
+					|.
+				li
+					a(href="/p/"+post.Key + "#comments")
+						|  Comments (
+						=post.CommentCount
+						|)
+					|.
+			.clear
