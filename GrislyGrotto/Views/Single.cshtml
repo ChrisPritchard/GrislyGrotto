@@ -5,6 +5,17 @@
 }
 
 <article>
+    <nav class="row">
+        <br />
+        <div class="u-pull-left">
+            <a href="/previous/@Model.Key" class="button">< Previous</a>
+        </div>
+        <div class="u-pull-right">
+            <a href="/next/@Model.Key" class="button">Next ></a>
+        </div>
+        <div class="u-cf"></div>
+    </nav>
+    
     <div class="row view-header">
         <h2>@Model.Title</h2>
         @Model.Author.DisplayName, @Model.DateFormatted
