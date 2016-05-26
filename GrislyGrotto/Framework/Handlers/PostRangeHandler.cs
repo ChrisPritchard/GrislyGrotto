@@ -33,9 +33,6 @@ namespace GrislyGrotto.Framework.Handlers
                            ? requestData.Segments[0]
                            : null;
 
-            yield return postData.LatestPosts(Constants.LatestPostsCount, "Christopher").Select(p => new RecentPost(p));
-            yield return postData.LatestPosts(Constants.LatestPostsCount, "Peter").Select(p => new RecentPost(p));
-
             yield return postData.MonthPostCounts().OrderByDescending(mc => mc.Year).ThenByDescending(mc => mc.Month);
             yield return postData.PostsByStatus("Story", user).Select(p => new Story(p));
 
@@ -59,10 +56,7 @@ namespace GrislyGrotto.Framework.Handlers
         {
             if (!requestData.FormCollection.ContainsKey("SearchTerm"))
                 navigationService.RedirectToHome();
-
-            yield return postData.LatestPosts(Constants.LatestPostsCount, "Christopher").Select(p => new RecentPost(p));
-            yield return postData.LatestPosts(Constants.LatestPostsCount, "Peter").Select(p => new RecentPost(p));
-
+            
             yield return postData.MonthPostCounts().OrderByDescending(mc => mc.Year).ThenByDescending(mc => mc.Month);
 
             var searchTerm = HttpUtility.UrlDecode(requestData.FormCollection["SearchTerm"]);

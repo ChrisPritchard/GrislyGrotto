@@ -35,9 +35,6 @@ namespace GrislyGrotto.Framework.Handlers
 
             yield return postData.LatestPosts(Constants.LatestPostsCount, user);
 
-            yield return postData.LatestPosts(Constants.LatestPostsCount, "Christopher").Select(p => new RecentPost(p));
-            yield return postData.LatestPosts(Constants.LatestPostsCount, "Peter").Select(p => new RecentPost(p));
-
             yield return postData.MonthPostCounts(user).OrderByDescending(mc => mc.Year).ThenByDescending(mc => mc.Month);
             yield return postData.PostsByStatus("Story", user).Select(p => new Story(p));
 

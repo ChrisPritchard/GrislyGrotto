@@ -6,9 +6,10 @@
       <html>
         <head>
           <title>The Grisly Grotto - Deviant Minds Think Alike</title>
-          <link rel="stylesheet" type="text/css" href="/resources/site.css" media="screen" />
+          <link rel="stylesheet" type="text/css" href="/resources/site.css?v=8" media="screen" />
           <link rel="shortcut icon" href="/resources/favicon.png" />
-          <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/Format/RSS" />        </head>
+          <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/Format/RSS" />
+        </head>
         <body>
 
           <input type="hidden" id="currentUrl" value="{/Response/@Url}" />
@@ -95,27 +96,6 @@
                 </form>
               </div>
 
-              <xsl:if test="//RecentPost">
-                <div>
-                  <table border="0" width="100%">
-                    <tr>
-                      <td align="left" width="50%">
-                        <h2>Christopher</h2>
-                        <ul class="recentPosts">
-                          <xsl:apply-templates select="//RecentPost[Username = 'Christopher']" />
-                        </ul>
-                      </td>
-                      <td align="right" width="50%">
-                        <h2>Peter</h2>
-                        <ul class="recentPosts">
-                          <xsl:apply-templates select="//RecentPost[Username = 'Peter']" />
-                        </ul>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-              </xsl:if>
-
               <div class="content">
                 <xsl:choose>
                   <xsl:when test="not(//Editor)">
@@ -146,6 +126,9 @@
                         </p>
                         <div>
                           <xsl:value-of select="Content" disable-output-escaping="yes" />
+                          <xsl:if test="IsStory = 'true'">
+                            <a href="/Posts/{ID}">Read more</a>
+                          </xsl:if>
                         </div>
                       </div>
                       <xsl:choose>
@@ -203,7 +186,7 @@
 
           <script src="/Resources/NicEditor/NicEdit.js" type="text/javascript" />
           <script src="http://code.jquery.com/jquery-1.5.min.js" type="text/javascript" />
-          <script src="/Resources/Site.js" type="text/javascript" />
+          <script src="/Resources/Site.js?v=8" type="text/javascript" />
         </body>
       </html>
       

@@ -1,8 +1,8 @@
-## Release 8
+## Release 8.6
 
-<b>Release Date:</b> 20th February, 2011
+<b>Release Date:</b> Possibly 23rd February, 2011
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/gg8-ascendant">GG8 Ascendant</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/the-fixening">The Fixening</a>
 
 <b>Frontend:</b> Site Handler, XSLT Transform with AJAX / JavaScript
 
@@ -10,4 +10,4 @@
 
 <b>Dev Tool:</b> Visual Studio 2010
 
-And update of the same basic architecture present in 7, but aligned with my development skill and style at the time. Which apparently means lots of class files and an orthodox development style, as seen in the screen shot in the announcement post.
+Seems to be improvements and bug fixes over 8. Not too sure why it warrented its own version number/release folder, or why that number is .6 (when .5 in the past and future represents a more substantial change).

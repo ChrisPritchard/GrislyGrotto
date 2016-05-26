@@ -19,6 +19,13 @@ namespace GrislyGrotto
 
         public void ProcessRequest(HttpContext context)
         {
+            if(context.Request.HttpMethod.Equals("POST") && (context.Request.UrlReferrer == null || context.Request.UrlReferrer.Host != context.Request.Url.Host))
+            {
+                // protection against cross site forgery
+                context.Response.StatusCode = 403;
+                return;
+            }
+
             var resourceService = Container.GetInstance<IResourceService>();
             if (Path.HasExtension(context.Request.Url.ToString()))
                 resourceService.ReturnFile(context);

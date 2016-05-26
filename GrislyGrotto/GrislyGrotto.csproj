@@ -83,7 +83,6 @@
     <Compile Include="Framework\Data\Primitives\Quote.cs" />
     <Compile Include="Framework\Data\Primitives\Story.cs" />
     <Compile Include="Framework\Handlers\HomePageHandler.cs" />
-    <Compile Include="Framework\Data\Primitives\RecentPost.cs" />
     <Compile Include="Framework\INavigationService.cs" />
     <Compile Include="Framework\Data\IResourceService.cs" />
     <Compile Include="Framework\RequestData.cs" />
