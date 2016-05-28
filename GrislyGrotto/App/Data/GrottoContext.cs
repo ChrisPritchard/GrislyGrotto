@@ -11,5 +11,11 @@ namespace GrislyGrotto.App.Data
         public GrottoContext()
             : base("GrottoContext")
         { }
+
+        public GrottoContext(string nameOrConnectionString, bool proxyCreationEnabled = true)
+            : base(nameOrConnectionString)
+        {
+            Configuration.ProxyCreationEnabled = proxyCreationEnabled;
+        }
     }
 }

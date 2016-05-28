@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additional", "Additional", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.DbConverterSearchToSql", "GrislyGrotto.DbConverterSearchToSql\GrislyGrotto.DbConverterSearchToSql.csproj", "{982A3125-971A-4C19-B56C-85F741A4C099}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrislyGrotto.DbConverterCeToServer", "GrislyGrotto.DbConverterCeToServer\GrislyGrotto.DbConverterCeToServer.csproj", "{DDD94F2C-35BE-4F0A-A5D0-6D026FFA995A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,18 +28,12 @@ Global
 		{982A3125-971A-4C19-B56C-85F741A4C099}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{982A3125-971A-4C19-B56C-85F741A4C099}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{982A3125-971A-4C19-B56C-85F741A4C099}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDD94F2C-35BE-4F0A-A5D0-6D026FFA995A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD94F2C-35BE-4F0A-A5D0-6D026FFA995A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDD94F2C-35BE-4F0A-A5D0-6D026FFA995A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDD94F2C-35BE-4F0A-A5D0-6D026FFA995A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 1
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://hundredmile.visualstudio.com/defaultcollection
-		SccProjectUniqueName0 = GrislyGrotto\\GrislyGrotto.csproj
-		SccProjectName0 = GrislyGrotto
-		SccAuxPath0 = https://hundredmile.visualstudio.com/defaultcollection
-		SccLocalPath0 = GrislyGrotto
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 EndGlobal
