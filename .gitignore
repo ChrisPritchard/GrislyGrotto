@@ -2,8 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/GrislyGrotto/bin
-/GrislyGrotto/obj/Debug
-/GrislyGrotto.DbConverterCeToServer/obj/Debug
-/GrislyGrotto.DbConverterSearchToSql/obj/Debug
+/**/bin
+/**/obj
 /packages
