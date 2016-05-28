@@ -42,15 +42,17 @@ namespace GrislyGrotto.App
         public async Task<ActionResult> Archives()
         {
             Func<string, string> uppercaseFirst = text => char.ToUpper(text[0]) + text.Substring(1);
-            var months = (await _db.Posts.Select(o => new { o.Date.Month, o.Date.Year })
+            var months = (await _db.Posts
+                .Select(o => new { o.Date.Month, o.Date.Year })
                 .GroupBy(o => o.Year)
                 .ToArrayAsync())
                 .Select(o => Tuple.Create(
                     o.Key,
-                    o.GroupBy(m => m.Month).Select(m => Tuple.Create(
-                        uppercaseFirst(_months[m.Key]),
-                        m.Count()
-                    )).ToArray()
+                    o.GroupBy(m => m.Month)
+                        .OrderBy(m => m.Key).Select(m => Tuple.Create(
+                            uppercaseFirst(_months[m.Key]),
+                            m.Count()
+                        )).ToArray()
                 )).ToArray();
 
             var stories = (await _db.Posts.Where(o => o.IsStory).Select(o => new { o.Title, o.Author, o.WordCount, o.Date, o.Key })
