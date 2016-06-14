@@ -54,12 +54,17 @@ module GrislyGrotto {
         }
     }
 
+    enum TriangleType {
+        left, right, up, down
+    }
+    
     class WanderingTriangle {
 
         size = 15;
         chanceOfJump = 0.01;
         changeOfSecondaryColour = 0.25;
-        position: IPoint;
+        point: IPoint; // point direction of current triangle
+        type: TriangleType;
         canvas: HTMLCanvasElement;
 
         primaryColour: string;
@@ -74,10 +79,11 @@ module GrislyGrotto {
         }
 
         jump() {
-            this.position = {
+            this.point = {
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height
             };
+            this.type = Math.floor(Math.random() * 4);
             if (Math.random() < this.changeOfSecondaryColour)
                 this.colour = this.secondaryColour;
             else
@@ -91,18 +97,7 @@ module GrislyGrotto {
             context.fillStyle = context.strokeStyle = this.colour;
 
             context.beginPath();
-            context.moveTo(this.position.x, this.position.y);
-
-            const random = Math.random();
-            if (random < 0.25)
-                this.rightTriangle(context, this.position, this.size);
-            else if (random < 0.5)
-                this.downTriangle(context, this.position, this.size);
-            else if (random < 0.75)
-                this.leftTriangle(context, this.position, this.size);
-            else
-                this.upTriangle(context, this.position, this.size);
-
+            this.nextTriangle(context);
             context.closePath();
 
             if (Math.random() > 0.5)
@@ -111,32 +106,94 @@ module GrislyGrotto {
                 context.fill();
         }
 
-        rightTriangle(context: CanvasRenderingContext2D, position: IPoint, size: number) {
-            context.lineTo(position.x + size, position.y - size);
-            context.lineTo(position.x + size, position.y + size);
-            context.lineTo(position.x, position.y);
-            this.position.x += size; this.position.y += size; // bottom right
+        nextTriangle(context: CanvasRenderingContext2D) {
+            const random = Math.random();
+
+            if (this.type === TriangleType.up) {
+                if (random < 0.2)
+                    this.rightTriangle(context);
+                else if (random < 0.4)
+                    this.leftTriangle(context)
+                else {
+                    this.point = { x: this.point.x, y: this.point.y + this.size * 2 };
+                    this.downTriangle(context);
+                }
+                return;
+            }
+
+            if (this.type === TriangleType.down) {
+                if (random < 0.2) {
+                    this.point = { x: this.point.x, y: this.point.y - this.size * 2 };
+                    this.upTriangle(context);
+                } else if(random < 0.6)
+                    this.leftTriangle(context);
+                else
+                    this.rightTriangle(context);
+                return;
+            }
+
+            if (this.type === TriangleType.left) {
+                if (random < 0.1) {
+                    this.point = { x: this.point.x + this.size, y: this.point.y - this.size };
+                    this.rightTriangle(context);
+                } else if (random < 0.4) {
+                    this.point = { x: this.point.x + this.size, y: this.point.y + this.size };
+                    this.rightTriangle(context);
+                } else if (random < 0.7) {
+                    this.point = { x: this.point.x + this.size * 2, y: this.point.y };
+                    this.rightTriangle(context);
+                } else
+                    this.upTriangle(context);
+                return;
+            }
+
+            if (random < 0.1) {
+                this.point = { x: this.point.x - this.size, y: this.point.y - this.size };
+                this.leftTriangle(context);
+            } else if (random < 0.4) {
+                this.point = { x: this.point.x - this.size, y: this.point.y + this.size };
+                this.leftTriangle(context);
+            } else if (random < 0.7) {
+                this.point = { x: this.point.x - this.size * 2, y: this.point.y };
+                this.leftTriangle(context);
+            } else
+                this.upTriangle(context);
         }
 
-        downTriangle(context: CanvasRenderingContext2D, position: IPoint, size: number) {
-            context.lineTo(position.x + size, position.y + size);
-            context.lineTo(position.x - size, position.y + size);
-            context.lineTo(position.x, position.y);
-            this.position.x += size; this.position.y += size; // bottom right
+        upTriangle(context: CanvasRenderingContext2D) {
+            var p = this.point; var s = this.size;
+            context.moveTo(p.x, p.y);
+            context.lineTo(p.x - s, p.y + s);
+            context.lineTo(p.x + s, p.y + s);
+            context.lineTo(p.x, p.y);
+            this.type = TriangleType.up;
         }
 
-        leftTriangle(context: CanvasRenderingContext2D, position: IPoint, size: number) {
-            context.lineTo(position.x - size, position.y + size);
-            context.lineTo(position.x - size, position.y - size);
-            context.lineTo(position.x, position.y);
-            this.position.x -= size; this.position.y += size; // bottom left
+        downTriangle(context: CanvasRenderingContext2D) {
+            var p = this.point; var s = this.size;
+            context.moveTo(p.x, p.y);
+            context.lineTo(p.x - s, p.y - s);
+            context.lineTo(p.x + s, p.y - s);
+            context.lineTo(p.x, p.y);
+            this.type = TriangleType.down;
         }
 
-        upTriangle(context: CanvasRenderingContext2D, position: IPoint, size: number) {
-            context.lineTo(position.x - size, position.y - size);
-            context.lineTo(position.x + size, position.y - size);
-            context.lineTo(position.x, position.y);
-            this.position.x -= size; this.position.y -= size; // upper left
+        leftTriangle(context: CanvasRenderingContext2D) {
+            var p = this.point; var s = this.size;
+            context.moveTo(p.x, p.y);
+            context.lineTo(p.x + s, p.y - s);
+            context.lineTo(p.x + s, p.y + s);
+            context.lineTo(p.x, p.y);
+            this.type = TriangleType.left;
+        }
+
+        rightTriangle(context: CanvasRenderingContext2D) {
+            var p = this.point; var s = this.size;
+            context.moveTo(p.x, p.y);
+            context.lineTo(p.x - s, p.y - s);
+            context.lineTo(p.x - s, p.y + s);
+            context.lineTo(p.x, p.y);
+            this.type = TriangleType.right;
         }
     }
 }
