@@ -61,8 +61,9 @@ module GrislyGrotto {
     class WanderingTriangle {
 
         size = 15;
-        chanceOfJump = 0.01;
+        chanceOfJump = 0.005;
         changeOfSecondaryColour = 0.25;
+        changeOfPause = 0.5;
         point: IPoint; // point direction of current triangle
         type: TriangleType;
         canvas: HTMLCanvasElement;
@@ -97,7 +98,14 @@ module GrislyGrotto {
             context.fillStyle = context.strokeStyle = this.colour;
 
             context.beginPath();
-            this.nextTriangle(context);
+            if (Math.random() > this.changeOfPause) {
+                context.globalAlpha = 1;
+                this.type = this.nextTriangle();
+                this.triangleForType(context);
+            } else {
+                context.globalAlpha = 0.5;
+                this.triangleForType(context);
+            }
             context.closePath();
 
             if (Math.random() > 0.5)
@@ -106,58 +114,64 @@ module GrislyGrotto {
                 context.fill();
         }
 
-        nextTriangle(context: CanvasRenderingContext2D) {
+        triangleForType(context: CanvasRenderingContext2D) {
+            if (this.type === TriangleType.up)
+                this.upTriangle(context);
+            else if (this.type === TriangleType.down)
+                this.downTriangle(context);
+            else if (this.type === TriangleType.left)
+                this.leftTriangle(context);
+            else if (this.type === TriangleType.right)
+                this.rightTriangle(context);
+        }
+
+        nextTriangle() {
             const random = Math.random();
 
-            if (this.type === TriangleType.up) {
+            if (this.type === TriangleType.up)
                 if (random < 0.2)
-                    this.rightTriangle(context);
+                    return TriangleType.right;
                 else if (random < 0.4)
-                    this.leftTriangle(context)
+                    return TriangleType.left;
                 else {
-                    this.point = { x: this.point.x, y: this.point.y + this.size * 2 };
-                    this.downTriangle(context);
+                    this.point.y += this.size * 2;
+                    return TriangleType.down;
                 }
-                return;
-            }
 
-            if (this.type === TriangleType.down) {
+            if (this.type === TriangleType.down)
                 if (random < 0.2) {
-                    this.point = { x: this.point.x, y: this.point.y - this.size * 2 };
-                    this.upTriangle(context);
-                } else if(random < 0.6)
-                    this.leftTriangle(context);
+                    this.point.y -= this.size * 2;
+                    return TriangleType.up;
+                } else if (random < 0.6)
+                    return TriangleType.left;
                 else
-                    this.rightTriangle(context);
-                return;
-            }
+                    return TriangleType.right;
 
             if (this.type === TriangleType.left) {
                 if (random < 0.1) {
                     this.point = { x: this.point.x + this.size, y: this.point.y - this.size };
-                    this.rightTriangle(context);
+                    return TriangleType.right;
                 } else if (random < 0.4) {
                     this.point = { x: this.point.x + this.size, y: this.point.y + this.size };
-                    this.rightTriangle(context);
+                    return TriangleType.right;
                 } else if (random < 0.7) {
                     this.point = { x: this.point.x + this.size * 2, y: this.point.y };
-                    this.rightTriangle(context);
+                    return TriangleType.right;
                 } else
-                    this.upTriangle(context);
-                return;
+                    return TriangleType.up;
             }
 
             if (random < 0.1) {
                 this.point = { x: this.point.x - this.size, y: this.point.y - this.size };
-                this.leftTriangle(context);
+                return TriangleType.left;
             } else if (random < 0.4) {
                 this.point = { x: this.point.x - this.size, y: this.point.y + this.size };
-                this.leftTriangle(context);
+                return TriangleType.left;
             } else if (random < 0.7) {
                 this.point = { x: this.point.x - this.size * 2, y: this.point.y };
-                this.leftTriangle(context);
+                return TriangleType.left;
             } else
-                this.upTriangle(context);
+                return TriangleType.up;
         }
 
         upTriangle(context: CanvasRenderingContext2D) {
