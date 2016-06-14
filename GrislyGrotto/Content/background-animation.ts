@@ -63,7 +63,6 @@ module GrislyGrotto {
         size = 15;
         chanceOfJump = 0.005;
         changeOfSecondaryColour = 0.25;
-        changeOfPause = 0.5;
         point: IPoint; // point direction of current triangle
         type: TriangleType;
         canvas: HTMLCanvasElement;
@@ -76,6 +75,7 @@ module GrislyGrotto {
             this.canvas = canvas;
             this.colour = this.primaryColour = primaryColour;
             this.secondaryColour = secondaryColour;
+
             this.jump();
         }
 
@@ -98,14 +98,8 @@ module GrislyGrotto {
             context.fillStyle = context.strokeStyle = this.colour;
 
             context.beginPath();
-            if (Math.random() > this.changeOfPause) {
-                context.globalAlpha = 1;
-                this.type = this.nextTriangle();
-                this.triangleForType(context);
-            } else {
-                context.globalAlpha = 0.5;
-                this.triangleForType(context);
-            }
+            this.type = this.nextTriangle();
+            this.triangleForType(context);
             context.closePath();
 
             if (Math.random() > 0.5)

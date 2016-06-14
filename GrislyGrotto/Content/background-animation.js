@@ -48,7 +48,6 @@ var GrislyGrotto;
             this.size = 15;
             this.chanceOfJump = 0.005;
             this.changeOfSecondaryColour = 0.25;
-            this.changeOfPause = 0.5;
             this.canvas = canvas;
             this.colour = this.primaryColour = primaryColour;
             this.secondaryColour = secondaryColour;
@@ -70,15 +69,8 @@ var GrislyGrotto;
                 this.jump();
             context.fillStyle = context.strokeStyle = this.colour;
             context.beginPath();
-            if (Math.random() > this.changeOfPause) {
-                context.globalAlpha = 1;
-                this.type = this.nextTriangle();
-                this.triangleForType(context);
-            }
-            else {
-                context.globalAlpha = 0.5;
-                this.triangleForType(context);
-            }
+            this.type = this.nextTriangle();
+            this.triangleForType(context);
             context.closePath();
             if (Math.random() > 0.5)
                 context.stroke();
@@ -185,3 +177,4 @@ var GrislyGrotto;
         return WanderingTriangle;
     }());
 })(GrislyGrotto || (GrislyGrotto = {}));
+//# sourceMappingURL=background-animation.js.map
