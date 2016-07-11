@@ -6,7 +6,7 @@
     <h2>About me</h2>
 
     <p>
-        My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. At time of writing (April, 2016), I am a (the?) Principal Software Engineer at Wynyard Group, Wellington. Formerly for a (long) time I was a developer/solutions architect at Provoke Solutions Wellington. In my role we develop on the Microsoft .NET stack. Generally this involves full end to end development of websites, processing software and mobile applications for businesses and government departments.
+        My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. At time of writing (July, 2016), I work as a Senior Developer Contractor in the employ of the New Zealand Fire Service, developing Xamarin and Azure focused apps. Formerly I worked at Wynyard Group briefly and before that for a (long) time I was a developer/solutions architect at Provoke Solutions Wellington. Generally my work involves the full end-to-end development of websites, processing software and mobile applications for businesses and government departments.
     </p>
 
     <p>
@@ -63,14 +63,9 @@
     <p>
         v13.0 used the free tier of <a href="https://azure.microsoft.com/en-us/services/search/">Azure Search</a> for its database. This Lucene-like search system contains a JSON index that was large enough to
         host the entirety of Grisly Grotto's data. While innovative and neat (combined with a backup webjob that saved the data as a json file every three days into Azure Blob Storage), 
-        Azure Search was not entirely reliable and occasionally content would be out of order or muddled. v13.5 uses a SQL CE database instead. Normally a file-based database is not a good idea for
+        Azure Search was not entirely reliable and occasionally content would be out of order or muddled. v13.5 used a SQL CE database instead. Normally a file-based database is not a good idea for
         cloud based website, but GG runs in a single instance and so there are no replication risks.
-    </p>
-
-    <h3>Source code</h3>
-
-    <p>
-        You can get the source code for v13.5 <a href="http://grislygrotto.blob.core.windows.net/usercontentpub/gg13point5src.zip">here</a>.
+        Finally, as of v13.7, I returned to full SQL Server (or at least, Azure SQL Server). This was due to migrating the code base to VSTS (Visual Studio Team Services) and adding a CI build process - the CI process was deleting the SQL CE database on deployment, which wasn't the best :D
     </p>
 
 </article>
