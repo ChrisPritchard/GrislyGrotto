@@ -14,6 +14,19 @@ a, a:visited {
     color: black;
 }
 
+.clear {
+    clear: both;
+}
+
+.centred {
+    text-align: center;
+}
+
+footer {
+    color: #333;
+    font-size: 0.8em;
+}
+
 /*  Header and Nav  */
 
 header {
@@ -66,4 +79,25 @@ div.post-info a, div.post-info a:visited {
 div.post-content {
     text-align: justify;
     line-height: 1.5em;
+}
+
+/* Archives */
+
+.archives {
+  text-align: center; 
+}
+
+.archives ul {
+  list-style-type: none; 
+  padding-left: 0;
+}
+
+.year {
+  float: left;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.archives .post-title {
+    font-size: 1.2em;
 }
