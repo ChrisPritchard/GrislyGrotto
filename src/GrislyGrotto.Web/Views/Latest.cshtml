@@ -1,10 +1,17 @@
-@model GrislyGrotto.Post[]
+@model LatestViewModel
 
 @{
-    ViewBag.Title = "Latest";
+    var isMonth = Model.Month.HasValue;
+    ViewBag.Title = isMonth ? Model.Month.Value.ToString("MMMM yyyy") : "Latest";
 }
 
-@foreach(var post in Model)
+@if(isMonth)
+{
+    <h1 class="month-title">@ViewBag.Title</h1>
+    @Html.Partial("_MonthNav", Model);
+}
+
+@foreach(var post in Model.Posts)
 {
     <div>
         <h2 class="post-title">@post.Title</h2>
@@ -16,4 +23,24 @@
             @Html.Raw(post.Content)
         </div>
     </div>
+}
+
+@if(isMonth)
+{
+    @Html.Partial("_MonthNav", Model);
+}
+else
+{
+    <nav class="page-nav">
+        @if (Model.Page > 1)
+        {
+            <div class="page-newer">
+                <a class="button" asp-action="Latest" asp-route-pageNum="@(Model.Page - 1)">◄ Newer</a>
+            </div>
+        }
+        <div class="page-older">
+            <a class="button" asp-action="Latest" asp-route-pageNum="@(Model.Page + 1)">Older ►</a>
+        </div>
+    </nav>
+    <div class="clear"></div>
 }

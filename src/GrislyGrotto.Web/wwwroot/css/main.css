@@ -18,16 +18,16 @@ a, a:visited {
     clear: both;
 }
 
-.centred {
-    text-align: center;
+a.button {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 10px 30px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-footer {
-    color: #333;
-    font-size: 0.8em;
-}
-
-/*  Header and Nav  */
+/*  Header, Menu and Footer  */
 
 header {
     text-align: center;
@@ -60,6 +60,13 @@ ul.menu li a {
   font-size: 1.2em; 
 }
 
+footer {
+    color: #333;
+    font-size: 0.8em;
+    margin-top: 50px;
+    text-align: center;
+}
+
 /* Posts */
 
 h2.post-title {
@@ -81,6 +88,18 @@ div.post-content {
     line-height: 1.5em;
 }
 
+.page-nav {
+    margin: 2em 0 2em 0;
+}
+
+.page-newer {
+    float: left;
+}
+
+.page-older {
+    float: right;
+}
+
 /* Archives */
 
 .archives {
@@ -98,6 +117,26 @@ div.post-content {
   margin-right: 20px;
 }
 
+.stories-list {
+    text-align: center;
+}
+
 .archives .post-title {
     font-size: 1.2em;
+}
+
+.month-nav {
+    margin: 2em 0 2em 0;
+}
+
+.month-title {
+    text-align: center;
+}
+
+.month-prev {
+    float: left;
+}
+
+.month-next {
+    float: right;
 }

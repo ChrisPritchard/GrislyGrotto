@@ -33,12 +33,12 @@ namespace GrislyGrotto
             var page = pageNum ?? 1;
 			ViewBag.Page = page;
 
-            var model = await _db.Posts.OrderByDescending(o => o.Date)
+            var posts = await _db.Posts.OrderByDescending(o => o.Date)
                 .Include(o => o.Author).Include(o => o.Comments)
                 .Skip((page - 1) * _latestCount)
                 .Take(_latestCount).ToArrayAsync();
 
-			return View(model);
+			return View(new LatestViewModel(posts, pageNum ?? 1));
         }
 
         [HttpGet("archives")]
@@ -77,12 +77,12 @@ namespace GrislyGrotto
             if (monthNum == -1)
                 return NotFound();
 
-            var model = await _db.Posts.OrderBy(o => o.Date)
+            var posts = await _db.Posts.OrderBy(o => o.Date)
                 .Where(o => o.Date.Year == year && o.Date.Month == monthNum)
                 .Include(o => o.Author).Include(o => o.Comments)
                 .ToArrayAsync();
 
-            return View("Latest", model);
+            return View("Latest", new LatestViewModel(posts, month, year));
         }
 
         [HttpGet("search")]

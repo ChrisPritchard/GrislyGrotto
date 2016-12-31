@@ -26,11 +26,11 @@
     <div class="clear"></div>
 
     <h2>Stories</h2>
-    <ul>
+    <ul class="stories-list">
         @foreach (var story in Model.Stories)
         {
             <li>
-                <article class="centred">
+                <article>
                     <h2 class="post-title">
                         <a asp-action="Single" asp-route-key="@story.Key">@story.Title (@story.WordCount words)</a>
                     </h2>
