@@ -40,6 +40,7 @@ namespace GrislyGrotto
             });
 
             services.AddMvc();
+            services.AddSession();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -61,6 +62,7 @@ namespace GrislyGrotto
             });
 
             app.UseStaticFiles();
+            app.UseSession();
             app.UseMvc();
         }
     }
