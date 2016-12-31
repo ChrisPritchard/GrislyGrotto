@@ -31,6 +31,9 @@ namespace GrislyGrotto
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var databaseConnectionString = Configuration["connectionStrings:database"];
+            services.AddDbContext<GrislyGrottoDbContext>(options => options.UseSqlServer(databaseConnectionString));
+
             services.Configure<RazorViewEngineOptions>(options => 
             {
                 options.ViewLocationExpanders.Add(new ShallowViewLocationExpander());
