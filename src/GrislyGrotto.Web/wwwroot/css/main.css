@@ -3,6 +3,7 @@
 
 body {
     font-family: 'Bitter', serif;
+    font-size: 16px;
     max-width: 800px;
     padding-left: 20px;
     padding-right: 20px;
@@ -18,13 +19,42 @@ a, a:visited {
     clear: both;
 }
 
-a.button {
+label {
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+input, textarea {
+    border-radius: 4px;
+    padding: 6px 10px;
+    box-shadow: 0;
+    font-family: 'Bitter', serif;
+    border: 1px solid black;
+    margin-bottom: 1em;
+}
+
+button, a.button {
+    background: white;
+    font-family: 'Bitter', serif;
+    font-size: 16px;
     border: 1px solid black;
     border-radius: 4px;
     padding: 10px 30px;
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+}
+
+.page-nav {
+    margin: 2em 0 2em 0;
+}
+
+.page-prev {
+    float: left;
+}
+
+.page-next {
+    float: right;
 }
 
 /*  Header, Menu and Footer  */
@@ -73,6 +103,10 @@ h2.post-title {
     margin-bottom: 0;
 }
 
+h2.post-title a {
+    text-decoration: none;
+}
+
 div.post-info {
     color: #666;
     margin-bottom: 0.5em;
@@ -88,16 +122,27 @@ div.post-content {
     line-height: 1.5em;
 }
 
-.page-nav {
-    margin: 2em 0 2em 0;
+/* Single Post */
+
+div.single-title {
+    text-align: center;
+    margin-top: 2em;
+    margin-bottom: 2em;
 }
 
-.page-newer {
-    float: left;
+div.single-title h2 {
+    margin-bottom: 0px;
 }
 
-.page-older {
-    float: right;
+.comments-title {
+    text-align: center;
+}
+
+.comment {
+    font-size: 0.9em;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Archives */
@@ -125,18 +170,6 @@ div.post-content {
     font-size: 1.2em;
 }
 
-.month-nav {
-    margin: 2em 0 2em 0;
-}
-
 .month-title {
     text-align: center;
-}
-
-.month-prev {
-    float: left;
-}
-
-.month-next {
-    float: right;
 }

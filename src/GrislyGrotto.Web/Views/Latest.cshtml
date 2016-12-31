@@ -14,10 +14,12 @@
 @foreach(var post in Model.Posts)
 {
     <div>
-        <h2 class="post-title">@post.Title</h2>
+        <h2 class="post-title">
+            <a asp-action="Single" asp-route-key="@post.Key">@post.Title</a>
+        </h2>
         <div class="post-info">
             @($"Posted by {post.Author.DisplayName} at {post.DateFormatted}.".ToLower())
-            <a asp-action="Single" asp-route-key="@post.Key">comments (@post.Comments.Count)</a>
+            <a asp-action="Single" asp-route-key="@post.Key" asp-fragment="comments">comments (@post.Comments.Count)</a>
         </div>
         <div class="post-content">
             @Html.Raw(post.Content)
@@ -34,11 +36,11 @@ else
     <nav class="page-nav">
         @if (Model.Page > 1)
         {
-            <div class="page-newer">
+            <div class="page-prev">
                 <a class="button" asp-action="Latest" asp-route-pageNum="@(Model.Page - 1)">◄ Newer</a>
             </div>
         }
-        <div class="page-older">
+        <div class="page-next">
             <a class="button" asp-action="Latest" asp-route-pageNum="@(Model.Page + 1)">Older ►</a>
         </div>
     </nav>

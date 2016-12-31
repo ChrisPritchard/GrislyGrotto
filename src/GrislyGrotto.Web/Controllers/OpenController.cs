@@ -82,7 +82,7 @@ namespace GrislyGrotto
                 .Include(o => o.Author).Include(o => o.Comments)
                 .ToArrayAsync();
 
-            return View("Latest", new LatestViewModel(posts, month, year));
+            return View(nameof(Latest), new LatestViewModel(posts, month, year));
         }
 
         [HttpGet("search")]
@@ -123,8 +123,10 @@ namespace GrislyGrotto
                 return NotFound();
 
             var post = await _db.Posts.Where(o => o.Key == key)
+                .Include(o => o.Author)
                 .Include(o => o.Comments).SingleAsync();
-            return View(post);
+
+            return View(new SingleViewModel(post));
         }
 
 	    [HttpGet("next/{currentKey}")]
@@ -138,7 +140,7 @@ namespace GrislyGrotto
             var nextKey = await _db.Posts.OrderBy(o => o.Date).Where(o => o.Date > currentDate)
                 .Select(o => o.Key).FirstOrDefaultAsync();
 
-	        return RedirectToAction("Single", new { key = nextKey ?? currentKey });
+            return RedirectToAction(nameof(Single), new { key = nextKey ?? currentKey });
 	    }
 
 	    [HttpGet("previous/{currentKey}")]
@@ -152,38 +154,51 @@ namespace GrislyGrotto
 	        var previousKey = await _db.Posts.OrderByDescending(o => o.Date).Where(o => o.Date < currentDate)
 	            .Select(o => o.Key).FirstOrDefaultAsync();
 
-	        return RedirectToAction("Single", new {key = previousKey ?? currentKey});
+	        return RedirectToAction(nameof(Single), new {key = previousKey ?? currentKey});
 	    }
 
         [HttpPost("p/{key}")]
-        public async Task<IActionResult> PostComment(string key, Comment model)
+        public async Task<IActionResult> PostComment(string key, SingleViewModel model)
         {
             if (string.IsNullOrWhiteSpace(key))
                 return NotFound();
-            if (!ModelState.IsValid)
-                return Redirect("/p/" + key + "#commentsend");
-
-            var invalidTokens = new[] { "http:", "https:", "www." };
-            if (invalidTokens.Any(o => model.Content.ToLower().Contains(o)))
-                return BadRequest(); // fuck off spammers
 
             var post = await _db.Posts.Where(o => o.Key == key)
                 .Include(o => o.Comments).SingleAsync();
 
-            if (post.Comments.Count >= _maxComments)
+            if (string.IsNullOrWhiteSpace(model.CommentAuthor) || string.IsNullOrWhiteSpace(model.CommentContent))
             {
-                ModelState.AddModelError("Content", $"Sorry, The max of {_maxComments} comments has been reached.");
-                return Redirect("/p/" + key + "#commentsend");
+                ModelState.AddModelError(nameof(model.CommentContent), $"Sorry, both author and content must be specified.");
+                return View(new SingleViewModel(post, model.CommentAuthor, model.CommentContent));
             }
 
-            model.Post = post;
-            model.Date = DateTime.Now.ToUniversalTime();
-            post.Comments.Add(model);
+            var invalidTokens = new[] { "http:", "https:", "www." };
+            if (invalidTokens.Any(o => model.CommentContent.ToLower().Contains(o)))
+            {
+                ModelState.AddModelError(nameof(model.CommentContent), $"Sorry, posts may not contain urls or url-like content.");
+                return View(new SingleViewModel(post, model.CommentAuthor));
+            }
+
+            if (post.Comments.Count >= _maxComments)
+            {
+                ModelState.AddModelError(nameof(model.CommentContent), $"Sorry, The max of {_maxComments} comments has been reached.");
+                return View(new SingleViewModel(post));
+            }
+
+            var comment = new Comment 
+            { 
+                Post = post, 
+                Date = DateTime.Now.ToUniversalTime(), 
+                Author = model.CommentAuthor, 
+                Content = model.CommentContent 
+            };
+
+            post.Comments.Add(comment);
             await _db.SaveChangesAsync();
 
             //Events.Add($"{model.Author} posted a comment on '{post.Title}'");
 
-            return Redirect("/p/" + key + "#commentsend");
+            return RedirectToAction(nameof(Single), new {key});
         }
 
         [HttpGet("login")]
@@ -198,7 +213,7 @@ namespace GrislyGrotto
             var user = await _db.Authors.SingleOrDefaultAsync(o => o.Username == model.Username && o.Password == model.Password);
             if (user == null)
             {
-                ModelState.AddModelError("Username", "Username and Password not recognised");
+                ModelState.AddModelError(nameof(model.Username), "Username and Password not recognised");
                 return View(model);
             }
 
