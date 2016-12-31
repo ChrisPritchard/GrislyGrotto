@@ -216,7 +216,7 @@ namespace GrislyGrotto
             return Redirect(returnUrl);
         }
 
-        [HttpGet("About")]
+        [HttpGet("about")]
         public IActionResult About() => View();
     }
 }
