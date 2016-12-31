@@ -12,7 +12,7 @@ namespace GrislyGrotto
         public string Key { get; set; }
         [Required]
         public string Title { get; set; }
-
+        [ForeignKey("Author_Username")]
         public virtual Author Author { get; set; }
         public DateTime Date { get; set; }
 
@@ -21,7 +21,6 @@ namespace GrislyGrotto
         public int WordCount { get; set; }
         public bool IsStory { get; set; }
         
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public virtual List<Comment> Comments { get; set; }
 
         public void UpdateWordCount()

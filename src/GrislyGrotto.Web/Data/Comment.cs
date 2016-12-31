@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrislyGrotto
 {
     public class Comment
     {
         public int Id { get; set; }
+        [ForeignKey("Post_Key")]
         public virtual Post Post { get; set; }
 
         [Required]

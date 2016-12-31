@@ -5,7 +5,7 @@ namespace GrislyGrotto
 {
     public class Author
     {
-        [Required, Key]
+        [Required, Key, Column("Username")]
         public string Username { get; set; }
         [Required]
         public string Password { get; set; }
