@@ -27,6 +27,30 @@
         </h1>
     </header>
 
+    <nav>
+        <ul class="menu">
+            <li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="New" asp-controller="Secure">New Post</a>
+                }
+                else
+                {
+                    <a asp-action="Login" asp-controller="Open">Login</a>
+                }
+            </li>
+            <li>
+                <a asp-action="Archives" asp-controller="Open">Archives</a>
+            </li>
+            <li>
+                <a asp-action="Search" asp-controller="Open">Search</a>
+            </li>
+            <li>
+                <a asp-action="About" asp-controller="Open">About</a>
+            </li>
+        </ul>
+        </nav>
+
     <div>
         @RenderBody()
     </div>

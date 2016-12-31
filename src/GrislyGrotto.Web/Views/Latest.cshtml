@@ -11,7 +11,7 @@
             @($"Posted by {post.Author.DisplayName} at {post.DateFormatted}.".ToLower())
             <a asp-action="Single" asp-route-key="@post.Key">comments (@post.Comments.Count)</a>
         </div>
-        <div>
+        <div class="post-content">
             @Html.Raw(post.Content)
         </div>
     </div>
