@@ -6,7 +6,11 @@
 @foreach(var post in Model)
 {
     <div>
-        <h2>@post.Title</h2>
+        <h2 class="post-title">@post.Title</h2>
+        <div class="post-info">
+            @($"Posted by {post.Author.DisplayName} at {post.DateFormatted}.".ToLower())
+            <a asp-action="Single" asp-route-key="@post.Key">comments (@post.Comments.Count)</a>
+        </div>
         <div>
             @Html.Raw(post.Content)
         </div>
