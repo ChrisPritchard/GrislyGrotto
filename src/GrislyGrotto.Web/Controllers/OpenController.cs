@@ -44,23 +44,15 @@ namespace GrislyGrotto
         [HttpGet("archives")]
         public async Task<IActionResult> Archives()
         {
-            Func<string, string> uppercaseFirst = text => char.ToUpper(text[0]) + text.Substring(1);
-            var months = (await _db.Posts
-                .Select(o => new { o.Date.Month, o.Date.Year })
-                .GroupBy(o => o.Year)
-                .ToArrayAsync())
-                .Select(o => Tuple.Create(
-                    o.Key,
-                    o.GroupBy(m => m.Month)
-                        .OrderBy(m => m.Key).Select(m => Tuple.Create(
-                            uppercaseFirst(_months[m.Key]),
-                            m.Count()
-                        )).ToArray()
+            var yearsRaw = await _db.Posts.Select(o => new { o.Date.Month, o.Date.Year })
+                .GroupBy(o => o.Year).ToArrayAsync();
+            var years = yearsRaw.Select(o => new YearViewModel(o.Key, 
+                    o.GroupBy(m => m.Month).OrderBy(m => m.Key).Select(m => new MonthViewModel(_months[m.Key], m.Count())).ToArray()
                 )).ToArray();
 
-            var stories = (await _db.Posts.Where(o => o.IsStory).Select(o => new { o.Title, o.Author, o.WordCount, o.Date, o.Key })
-                .OrderByDescending(o => o.Date).ToArrayAsync())
-                .Select(o => new Post
+            var storiesRaw = await _db.Posts.Where(o => o.IsStory).Select(o => new { o.Title, o.Author, o.WordCount, o.Date, o.Key })
+                .OrderByDescending(o => o.Date).ToArrayAsync();
+            var stories = storiesRaw.Select(o => new Post
                 {
                     Title = o.Title,
                     Author = o.Author,
@@ -69,7 +61,11 @@ namespace GrislyGrotto
                     Key = o.Key
                 }).ToArray();
 
-            return View(Tuple.Create(months, stories));
+            return View(new ArchiveViewModel
+            {
+                Years = years,
+                Stories = stories
+            });
         }
 
         [HttpGet("m/{month}/{year}")]

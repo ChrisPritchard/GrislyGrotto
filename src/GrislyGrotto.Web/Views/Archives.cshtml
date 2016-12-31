@@ -1,4 +1,4 @@
-@model Tuple<Tuple<int, Tuple<string, int>[]>[], Post[]>
+@model ArchiveViewModel
 
 @{
     ViewBag.Title = "Archives";
@@ -7,15 +7,15 @@
 <div class="archives">
     <h1>Archives</h1>
     <ul>
-        @foreach (var year in Model.Item1)
+        @foreach (var year in Model.Years)
         {
             <li class="year">
-                <h2>@year.Item1</h2>
+                <h2>@year.Year</h2>
                 <ul>
-                    @foreach (var month in year.Item2)
+                    @foreach (var month in year.Months)
                     {
                         <li>
-                            <a asp-action="Month" asp-route-month="@month.Item1" asp-route-year="@year.Item1">@month.Item1 (@month.Item2)</a>
+                            <a asp-action="Month" asp-route-month="@month.Month" asp-route-year="@year.Year">@month.Month (@month.Count)</a>
                         </li>
                     }
                 </ul>
@@ -27,7 +27,7 @@
 
     <h2>Stories</h2>
     <ul>
-        @foreach (var story in Model.Item2)
+        @foreach (var story in Model.Stories)
         {
             <li>
                 <article class="centred">
