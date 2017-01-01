@@ -7,7 +7,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-<form method="POST">
+<form method="POST" id="editor-form">
     <p>
         <label asp-for="Title">Title</label>
         <input type="text" asp-for="Title" />
@@ -32,3 +32,20 @@
         <button type="submit">@(editing ? "Update" : "Create")</button>
     </div>
 </form>
+
+@section scripts {
+    <script type="text/javascript">
+        el('html-edit').onclick = function() {
+            var editor = el('content-editor');
+            if(this.checked)
+                editor.innerText = editor.innerHTML;
+            else
+                editor.innerHTML = editor.innerText;
+        };
+        el('editor-form').onsubmit = function() {
+            var editor = el('content-editor');
+            var html = el('html-edit').checked ? editor.innerText : editor.innerHTML;
+            el('Content').value = html;
+        };
+    </script>
+}
