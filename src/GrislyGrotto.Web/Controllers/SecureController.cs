@@ -119,19 +119,6 @@ namespace GrislyGrotto
             if (post.Author.Username != HttpContext.User.Identity.Name)
                 return Unauthorized();
 
-            if(post.Title != model.Title)
-            {
-                var newKey = model.TitleAsKey();
-                var existing = await _db.Posts.Where(o => o.Key == newKey).SingleOrDefaultAsync();
-                if (existing != null)
-                {
-                    ModelState.AddModelError("Title", "A post with a similar title already exists");
-                    return View("Editor", model);
-                }
-
-                post.Key = newKey;
-            }
-
             SavedEditorContent = null;
 
             post.Title = model.Title;

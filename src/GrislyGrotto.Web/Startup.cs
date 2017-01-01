@@ -46,11 +46,7 @@ namespace GrislyGrotto
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddDebug();
-
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Error");
+            app.UseDeveloperExceptionPage(); // even in prod - my site, want to see my bugs
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
