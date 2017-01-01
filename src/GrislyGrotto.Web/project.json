@@ -29,7 +29,8 @@
     "Newtonsoft.Json": "9.0.1"
   },
   "tools": {
-    "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final"
+    "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final",
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final"
   },
   "frameworks": {
     "netcoreapp1.1": {
@@ -42,5 +43,8 @@
       "**/*.cshtml",
       "web.config"
     ]
+  },
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }
