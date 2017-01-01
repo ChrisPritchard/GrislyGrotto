@@ -12,7 +12,13 @@ namespace GrislyGrotto
         private string SavedEditorContent
         {
             get { return HttpContext.Session.GetString("savedEditorContent"); }
-           set { HttpContext.Session.SetString("savedEditorContent", value); }
+            set 
+            { 
+                if(value != null)
+                    HttpContext.Session.SetString("savedEditorContent", value);
+                else
+                    HttpContext.Session.Remove("savedEditorContent");
+            }
         }
 
         private const string _expiredMessage = "Your session has expired. You may want to save your post content (to notepad or similar), return to the homepage and login again.";
