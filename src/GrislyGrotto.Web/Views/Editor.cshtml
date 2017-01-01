@@ -30,6 +30,7 @@
 
     <div>
         <button type="submit">@(editing ? "Update" : "Create")</button>
+        <span id="saving-status"></span>
     </div>
 </form>
 
@@ -42,10 +43,31 @@
             else
                 editor.innerHTML = editor.innerText;
         };
+        function getHtml() {
+            var editor = el('content-editor');
+            return el('html-edit').checked ? editor.innerText : editor.innerHTML;
+        }
         el('editor-form').onsubmit = function() {
             var editor = el('content-editor');
-            var html = el('html-edit').checked ? editor.innerText : editor.innerHTML;
-            el('Content').value = html;
+            el('Content').value = getHtml();
         };
+        function postContent(callback) {
+            var request = new XMLHttpRequest();
+            request.open('POST', '@Url.Action("SaveEditorContent")', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.onload = callback;
+            var data = getHtml();
+            request.send(JSON.stringify(data));
+        }
+        setInterval(function() {
+            var status = el('saving-status');
+            status.innerText = 'Saving...';
+            postContent(function() {
+                setTimeout(function() {
+                    status.innerText = 'Saved';
+                    setTimeout(function() { status.innerText = ''; }, 1000);
+                }, 1000);                
+            });
+        }, 10000);
     </script>
 }

@@ -143,8 +143,8 @@ namespace GrislyGrotto
             return RedirectToAction("Single", "Open", new { post.Key });
         }
 
-        [HttpGet("api/saveeditorcontent")]
-        public IActionResult SaveEditorContent(string content)
+        [HttpPost("api/saveeditorcontent")]
+        public IActionResult SaveEditorContent([FromBody]string content)
         {
             SavedEditorContent = content;
             return Json(true);
