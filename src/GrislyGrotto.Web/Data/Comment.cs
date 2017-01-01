@@ -16,6 +16,6 @@ namespace GrislyGrotto
         public string Content { get; set; }
         public DateTime Date { get; set; }
 
-        public string DateFormatted => Date.Add(Program.NzTimeZone).ToString("hh:mm tt, dddd dd MMMM, yyyy");
+        public string DateFormatted => Program.NzTime(Date).ToString("hh:mm tt, dddd dd MMMM, yyyy");
     }
 }

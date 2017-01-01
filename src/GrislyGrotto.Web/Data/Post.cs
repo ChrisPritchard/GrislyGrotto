@@ -34,6 +34,6 @@ namespace GrislyGrotto
             return Regex.Replace(Title.Replace(" ", "-"), "[^A-Za-z0-9 -]+", string.Empty).ToLower();
         }
 
-        public string DateFormatted => Date.Add(Program.NzTimeZone).ToString("hh:mm tt, dddd dd MMMM, yyyy");
+        public string DateFormatted => Program.NzTime(Date).ToString("hh:mm tt, dddd dd MMMM, yyyy");
     }
 }

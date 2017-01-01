@@ -7,7 +7,10 @@ namespace GrislyGrotto
 {
     public class Program
     {
-        public static TimeSpan NzTimeZone = TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time").BaseUtcOffset;
+        public static TimeZoneInfo NzTimeZone = TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time");
+
+        public static DateTime NzTime(DateTime? source = null)
+            => TimeZoneInfo.ConvertTime(source ?? DateTime.UtcNow, TimeZoneInfo.Utc, NzTimeZone);
 
         public static void Main(string[] args)
         {
@@ -23,7 +26,7 @@ namespace GrislyGrotto
 
         private static readonly List<string> _recentEvents = new List<string> { FormatEvent("Application (re)started") };
 
-        private static string FormatEvent(string @event) => @event + " at " + DateTime.UtcNow.Add(NzTimeZone).ToString("hh:mm:ss dd-MM-yy");
+        private static string FormatEvent(string @event) => @event + " at " + NzTime().ToString("hh:mm:ss dd-MM-yy");
 
         public static void AddEvent(string @event) => _recentEvents.Add(FormatEvent(@event));
 
