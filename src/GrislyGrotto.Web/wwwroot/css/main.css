@@ -175,14 +175,10 @@ div.single-title h2 {
     margin-bottom: 0px;
 }
 
-.comments-title {
-    text-align: center;
-}
-
 .comment {
     font-size: 0.9em;
     max-width: 600px;
-    margin-left: auto;
+    margin-left: 0;
     margin-right: auto;
 }
 

@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrislyGrotto
 {
+    [Authorize]
     public class SecureController : Controller
     {
         private string SavedEditorContent
@@ -148,6 +150,23 @@ namespace GrislyGrotto
         {
             SavedEditorContent = content;
             return Json(true);
+        }
+
+        [HttpPost("api/deletecomment/{id}")]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var comment = await _db.Comments.SingleOrDefaultAsync(o => o.Id == id);
+            if(comment == null)
+                return NotFound();
+
+            _db.Comments.Remove(comment);
+            await _db.SaveChangesAsync();
+
+            var currentUser = User.Identity.Name;
+            var author = await _db.Authors.SingleAsync(o => o.Username == currentUser);
+            Program.AddEvent($"{author.DisplayName} deleted a comment by author '{comment.Author}'");
+
+            return Ok();
         }
     }
 }
