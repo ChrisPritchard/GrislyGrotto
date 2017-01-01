@@ -4,6 +4,9 @@
 body {
     font-family: 'Bitter', serif;
     font-size: 16px;
+}
+
+div.container {
     max-width: 800px;
     padding-left: 20px;
     padding-right: 20px;
@@ -62,6 +65,29 @@ button, a.button {
 
 .page-next {
     float: right;
+}
+
+/* Recent Events */
+
+div.recent-events {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    color: #888;
+    z-index: -1;
+    font-size: 0.8rem;
+    text-align: right;
+    text-transform: lowercase;
+}
+
+div.recent-events ul {
+    list-style: none; 
+    padding-left: 0;
+}
+
+div.recent-events ul li {
+    margin-bottom: 0; 
+    margin-right: 1em;
 }
 
 /*  Header, Menu and Footer  */

@@ -35,8 +35,8 @@ namespace GrislyGrotto
         {
             var model = new Post();
 
-            // if (!string.IsNullOrWhiteSpace(SavedEditorContent))
-            //     model.Content = SavedEditorContent;
+            if (!string.IsNullOrWhiteSpace(SavedEditorContent))
+                 model.Content = SavedEditorContent;
 
             return View("Editor", model);
         }
@@ -79,7 +79,7 @@ namespace GrislyGrotto
             _db.Posts.Add(newPost);
 
             await _db.SaveChangesAsync();
-            //Events.Add($"{newPost.Author.DisplayName} made a new post '{newPost.Title}'");
+            Program.AddEvent($"{newPost.Author.DisplayName} made a new post '{newPost.Title}'");
 
             return RedirectToAction("Single", "Open", new { newPost.Key });
         }
@@ -138,7 +138,7 @@ namespace GrislyGrotto
             post.IsStory = model.IsStory;
 
             await _db.SaveChangesAsync();
-            // Events.Add($"{post.Author.DisplayName} updated '{post.Title}'");
+            Program.AddEvent($"{post.Author.DisplayName} updated '{post.Title}'");
 
             return RedirectToAction("Single", "Open", new { post.Key });
         }
@@ -149,22 +149,5 @@ namespace GrislyGrotto
             SavedEditorContent = content;
             return Json(true);
         }
-
-        // [HttpPost("api/uploadimage")]
-        // public async Task<IActionResult> UploadImage()
-        // {
-        //     if (Request.Files.Count == 0 || Request.Files[0] == null)
-        //         return Json(false);
-
-        //     var file = Request.Files[0];
-        //     var fileName = Path.GetFileName(file.FileName);
-
-        //     var result = await AzureStorage.Upload(fileName, file.InputStream);
-
-        //     if (result.Item1)
-        //         return Json(result.Item2); // success - this is the filename
-        //     else
-        //         return Json("file already exists");
-        // }
     }
 }

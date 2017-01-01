@@ -21,43 +21,54 @@
     <link type="text/css" rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
-    <header>
-        <h1>
-            <a href="/">The Grisly Grotto</a>
-        </h1>
-    </header>
-
-    <nav>
-        <ul class="menu">
-            <li>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <a asp-action="New" asp-controller="Secure">New Post</a>
-                }
-                else
-                {
-                    <a asp-action="Login" asp-controller="Open">Login</a>
-                }
-            </li>
-            <li>
-                <a asp-action="Archives" asp-controller="Open">Archives</a>
-            </li>
-            <li>
-                <a asp-action="Search" asp-controller="Open">Search</a>
-            </li>
-            <li>
-                <a asp-action="About" asp-controller="Open">About</a>
-            </li>
+    <div class="recent-events">
+        <ul>
+            @foreach(var evt in Program.GetEvents())
+            {
+                <li>@evt</li>
+            }
         </ul>
-        </nav>
-
-    <div>
-        @RenderBody()
     </div>
 
-    <footer>
-        Grisly Grotto v14.0. Site designed and coded by <a href="mailto:chrispritchard.nz@gmail.com">Christopher Pritchard</a>, 2017
-    </footer>
+    <div class="container">
+        <header>
+            <h1>
+                <a href="/">The Grisly Grotto</a>
+            </h1>
+        </header>
+
+        <nav>
+            <ul class="menu">
+                <li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="New" asp-controller="Secure">New Post</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Login" asp-controller="Open">Login</a>
+                    }
+                </li>
+                <li>
+                    <a asp-action="Archives" asp-controller="Open">Archives</a>
+                </li>
+                <li>
+                    <a asp-action="Search" asp-controller="Open">Search</a>
+                </li>
+                <li>
+                    <a asp-action="About" asp-controller="Open">About</a>
+                </li>
+            </ul>
+            </nav>
+
+        <div>
+            @RenderBody()
+        </div>
+
+        <footer>
+            Grisly Grotto v14.0. Site designed and coded by <a href="mailto:chrispritchard.nz@gmail.com">Christopher Pritchard</a>, 2017
+        </footer>
+    </div>
 
     <script type="text/javascript">
         function el(id) { return document.getElementById(id); }
