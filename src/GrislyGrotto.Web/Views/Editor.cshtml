@@ -1,0 +1,34 @@
+@model Post
+
+@{
+    var editing = Model?.Key != null;
+    ViewBag.Title = editing ? "Edit post" : "Create new post";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form method="POST">
+    <p>
+        <label asp-for="Title">Title</label>
+        <input type="text" asp-for="Title" />
+        <span asp-validation-for="Title"></span>
+    </p>
+    <p>
+        <label asp-for="Content">Content</label>
+        <input type="hidden" asp-for="Content" />
+        <div class="content-editor" id="content-editor" contenteditable="true">@Html.Raw(Model.Content)</div>
+        <span asp-validation-for="Content"></span>
+    </p>
+    <p>
+        <input type="checkbox" id="html-edit" />
+        <label class="checkbox-label" for="html-edit">Edit HTML</label>
+    </p>
+    <p>
+        <input type="checkbox" asp-for="IsStory" />
+        <label class="checkbox-label" asp-for="IsStory">Is this a story (not just story related)?</label>
+    </p>
+
+    <div>
+        <button type="submit">@(editing ? "Update" : "Create")</button>
+    </div>
+</form>

@@ -24,7 +24,7 @@ label {
     margin-bottom: 0.3em;
 }
 
-input, textarea {
+input[type='text'], input[type='password'], textarea, div.content-editor {
     border-radius: 4px;
     padding: 6px 10px;
     box-shadow: 0;
@@ -221,4 +221,15 @@ ul.results-list {
 
 span.search-term {
     background-color: yellow;
+}
+
+/* Editor */
+
+div.content-editor {
+    margin-top: -10px;
+    min-height: 400px;
+}
+
+label.checkbox-label {
+    display: inline;
 }
