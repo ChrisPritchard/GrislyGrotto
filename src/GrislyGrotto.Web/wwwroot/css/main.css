@@ -1,0 +1,257 @@
+
+/*  Common  */
+
+body {
+    font-family: 'Bitter', serif;
+    font-size: 16px;
+}
+
+div.container {
+    max-width: 800px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a, a:visited {
+    color: black;
+}
+
+.clear {
+    clear: both;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+input[type='text'], input[type='password'], textarea, div.content-editor {
+    border-radius: 4px;
+    padding: 6px 10px;
+    box-shadow: 0;
+    font-family: 'Bitter', serif;
+    border: 1px solid black;
+    margin-bottom: 1em;
+}
+
+button, a.button {
+    background: white;
+    font-family: 'Bitter', serif;
+    font-size: 16px;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 10px 30px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.field-validation-error {
+    display: block;
+    color: red;
+}
+
+.page-nav {
+    margin: 2em 0 2em 0;
+}
+
+.page-prev {
+    float: left;
+}
+
+.page-next {
+    float: right;
+}
+
+/* Recent Events */
+
+div.recent-events {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    color: #888;
+    z-index: -1;
+    font-size: 0.8rem;
+    text-align: right;
+    text-transform: lowercase;
+}
+
+div.recent-events ul {
+    list-style: none; 
+    padding-left: 0;
+}
+
+div.recent-events ul li {
+    margin-bottom: 0; 
+    margin-right: 1em;
+}
+
+/*  Header, Menu and Footer  */
+
+header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 3.5em;
+    margin-bottom: 5px;
+    text-shadow: 0 0 3px #333;
+}
+
+header h1 a, header h1 a:visited {
+    text-decoration: none;
+}
+
+ul.menu {
+    list-style: none;
+    text-align: center;
+    padding: 0;
+    margin-top: 5px;
+}
+
+ul.menu li {
+  display: inline;
+  margin: 5px; 
+}
+
+ul.menu li a {
+  text-decoration: none;
+  font-size: 1.2em; 
+}
+
+footer {
+    color: #333;
+    font-size: 0.8em;
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* Login */
+
+div.login {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+/* Posts */
+
+h2.post-title {
+    margin-bottom: 0;
+}
+
+h2.post-title a {
+    text-decoration: none;
+}
+
+div.post-info {
+    color: #666;
+    margin-bottom: 0.5em;
+    font-size: 14px;
+}
+
+div.post-info a, div.post-info a:visited {
+    color: #666;
+}
+
+div.post-content {
+    text-align: justify;
+    line-height: 1.5em;
+}
+
+/* Single Post */
+
+div.single-title {
+    text-align: center;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+div.single-title h2 {
+    margin-bottom: 0px;
+}
+
+.comment {
+    font-size: 0.9em;
+    max-width: 600px;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* Archives */
+
+.archives {
+  text-align: center; 
+}
+
+.archives ul {
+  list-style-type: none; 
+  padding-left: 0;
+}
+
+.year {
+  float: left;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.stories-list {
+    text-align: center;
+}
+
+.archives .post-title {
+    font-size: 1.2em;
+}
+
+.month-title {
+    text-align: center;
+}
+
+/* Search */
+
+div.search-form {
+    text-align: center;
+    margin-top: 50px;
+}
+
+div.search-form input {
+    margin-bottom: 0;
+}
+
+div.search-form p {
+    margin-bottom: 0;
+}
+
+.search-progress {
+    text-align: center;
+    display: none;
+}
+
+.results-header {
+    text-align: center;
+}
+
+ul.results-list {
+    padding-left: 0;
+    list-style: none;
+    text-align: center;
+}
+
+span.search-term {
+    background-color: yellow;
+}
+
+/* Editor */
+
+div.content-editor {
+    margin-top: -10px;
+    min-height: 400px;
+}
+
+label.checkbox-label {
+    display: inline;
+}

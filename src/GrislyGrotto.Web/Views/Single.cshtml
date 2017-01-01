@@ -1,0 +1,95 @@
+@model SingleViewModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<article>
+    <div class="single-title">
+        <h2>@Model.Title</h2>
+        @Model.Author.DisplayName, @Model.DateFormatted
+    </div>
+
+    <div>
+        @Html.Raw(Model.Content)
+    </div>
+</article>
+
+@if(User.Identity.Name == Model.Author.Username)
+{
+    <div>
+        <a class="button" asp-action="Edit" asp-controller="Secure" asp-route-key="@Model.Key">Edit</a>
+    </div>
+}
+
+<nav class="page-nav">
+    <div class="page-prev">
+        <a class="button" asp-action="Previous" asp-route-currentKey="@Model.Key">◄ Previous</a>
+    </div>
+    <div class="page-next">
+        <a class="button" asp-action="Next" asp-route-currentKey="@Model.Key">Next ►</a>
+    </div>
+    <div class="clear"></div>
+</nav>
+
+<a name="comments"></a>
+<h3>Comments</h3>
+
+<div>
+    @if (Model.Comments.Count > 0)
+    {
+        foreach (var comment in Model.Comments)
+        {
+            <p class="comment" id="comment-@comment.Id">
+                <b>@comment.Author, @comment.DateFormatted</b>
+                <br />
+                @Html.Raw(comment.Content)
+                @if(User.Identity.IsAuthenticated)
+                {
+                    <br />
+                    <a href="#" class="delete-comment" data-id="@comment.Id">delete</a>
+                }
+            </p>
+        }
+    }
+</div>
+
+<a name="commentsend"></a>
+<div>
+    <form method="POST" asp-action="PostComment" asp-route-key="@Model.Key">
+        <div>
+            <label asp-for="CommentAuthor">Author</label>
+            <input asp-for="CommentAuthor" />
+            <span asp-validation-for="CommentAuthor"></span>
+
+            <label asp-for="CommentContent">Content</label>
+            <textarea asp-for="CommentContent" cols="50" rows="3"></textarea>
+            <span asp-validation-for="CommentContent"></span>
+        </div>
+        <button type="submit">Add Comment</button>
+    </form>
+</div>
+
+@if(User.Identity.IsAuthenticated)
+{
+    @section scripts {
+        <script type="text/javascript">
+            function deleteComment(id) {
+                var request = new XMLHttpRequest();
+                request.open('POST', '/api/deletecomment/' + id, true);
+                request.onload = function() {
+                    el('comment-' + id).style.display = 'none';
+                };
+                request.send();
+            }            
+            var elements = document.getElementsByClassName('delete-comment');
+            for(var i in elements) {
+                elements[i].onclick = function() {
+                    if(confirm('Are you sure? This is irreversible - use wisely.'))
+                        deleteComment(this.getAttribute('data-id'));
+                    return false;
+                }
+            }
+        </script>
+    }
+}

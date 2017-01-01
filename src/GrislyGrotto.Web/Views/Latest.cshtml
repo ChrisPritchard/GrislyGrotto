@@ -1,0 +1,48 @@
+@model LatestViewModel
+
+@{
+    var isMonth = Model.Month.HasValue;
+    ViewBag.Title = isMonth ? Model.Month.Value.ToString("MMMM yyyy") : "Latest";
+}
+
+@if(isMonth)
+{
+    <h1 class="month-title">@ViewBag.Title</h1>
+    @Html.Partial("_MonthNav", Model);
+}
+
+@foreach(var post in Model.Posts)
+{
+    <div>
+        <h2 class="post-title">
+            <a asp-action="Single" asp-route-key="@post.Key">@post.Title</a>
+        </h2>
+        <div class="post-info">
+            @($"Posted by {post.Author.DisplayName} at {post.DateFormatted}.".ToLower())
+            <a asp-action="Single" asp-route-key="@post.Key" asp-fragment="comments">comments (@post.Comments.Count)</a>
+        </div>
+        <div class="post-content">
+            @Html.Raw(post.Content)
+        </div>
+    </div>
+}
+
+@if(isMonth)
+{
+    @Html.Partial("_MonthNav", Model);
+}
+else
+{
+    <nav class="page-nav">
+        @if (Model.Page > 1)
+        {
+            <div class="page-prev">
+                <a class="button" asp-action="Latest" asp-route-pageNum="@(Model.Page - 1)">◄ Newer</a>
+            </div>
+        }
+        <div class="page-next">
+            <a class="button" asp-action="Latest" asp-route-pageNum="@(Model.Page + 1)">Older ►</a>
+        </div>
+    </nav>
+    <div class="clear"></div>
+}
