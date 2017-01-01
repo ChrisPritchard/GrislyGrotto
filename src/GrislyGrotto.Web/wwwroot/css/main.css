@@ -196,12 +196,25 @@ div.search-form {
     margin-top: 50px;
 }
 
+div.search-form input {
+    margin-bottom: 0;
+}
+
+div.search-form p {
+    margin-bottom: 0;
+}
+
+.search-progress {
+    text-align: center;
+    display: none;
+}
+
 .results-header {
     text-align: center;
 }
 
 ul.results-list {
-    padding-left: none;
+    padding-left: 0;
     list-style: none;
     text-align: center;
 }

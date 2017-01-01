@@ -9,15 +9,17 @@
 }
 
 <form method="GET">
-    <div class="search-form">
+    <div class="search-form" id="search-form">
         <p>
             <label for="searchTerm">Search Term</label>
             <input type="text" id="searchTerm" name="searchTerm"/>
         </p>
-        <button type="submit">Search</button>
+        <button type="submit" id="search-go">Search</button>
         <p>Warning: Searches can take a long time to run (sometimes ~30 seconds or longer)</p>
     </div>
 </form>
+
+<h2 class="search-progress" id="search-progress">Searching...</h2>
 
 @if(Model.Results != null)
 {
@@ -41,3 +43,10 @@
         }
     </ul>
 }
+
+<script type="text/javascript">
+    document.getElementById('search-go').onclick = function() {
+        document.getElementById('search-form').style.display = 'none';
+        document.getElementById('search-progress').style.display = 'block';
+    };
+</script>
