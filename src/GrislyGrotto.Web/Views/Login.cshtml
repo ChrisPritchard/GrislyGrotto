@@ -1,0 +1,23 @@
+@model Author
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<form method="POST" asp-anti-forgery="true">
+    <div class="login">
+        <p>
+            <label asp-for="Username">Username</label>
+            <input type="text" asp-for="Username" />
+            <span asp-validation-for="Username"></span>
+        </p>
+
+        <p>
+            <label asp-for="Password">Password</label>
+            <input type="password" asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </p>
+
+        <button type="submit">Submit</button>
+    </div>
+</form>
