@@ -208,20 +208,20 @@ namespace GrislyGrotto
         public IActionResult Login() => View();
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(Author model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = await _db.Authors.SingleOrDefaultAsync(o => o.Username == model.Username && o.Password == model.Password);
-            if (user == null)
+            var author = await _db.Authors.SingleOrDefaultAsync(o => o.Username == model.Username);
+            if (author == null || Author.GenerateHash(model.Password, author.PasswordSalt) != author.PasswordHash)
             {
                 ModelState.AddModelError(nameof(model.Username), "Username and Password not recognised");
                 return View(model);
             }
 
             var identity = new ClaimsIdentity(new[] {
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, author.Username)
             }, "Cookie");
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.Authentication.SignInAsync("Cookie", principal);
