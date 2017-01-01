@@ -186,3 +186,24 @@ div.single-title h2 {
 .month-title {
     text-align: center;
 }
+
+/* Search */
+
+div.search-form {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.results-header {
+    text-align: center;
+}
+
+ul.results-list {
+    padding-left: none;
+    list-style: none;
+    text-align: center;
+}
+
+span.search-term {
+    background-color: yellow;
+}

@@ -89,16 +89,19 @@ namespace GrislyGrotto
         public async Task<IActionResult> Search(string searchTerm)
         {
             if(string.IsNullOrWhiteSpace(searchTerm))
-                return View();
+                return View(new SearchViewModel());
 
-            var model = await _db.Posts.Where(o =>
-                o.Title.Contains(searchTerm) || o.Content.Contains(searchTerm))
+            var results = await _db.Posts.Where(o => o.Title.Contains(searchTerm) || o.Content.Contains(searchTerm))
+                .Include(o => o.Author)
                 .OrderByDescending(o => o.Date)
                 .Take(_maxSearchResults)
                 .ToListAsync();
-            model.ForEach(o => o.Content = TrimToSearchTerm(searchTerm, o.Content));
+            results.ForEach(o => o.Content = TrimToSearchTerm(searchTerm, o.Content));
 
-            return View(model);
+            return View(new SearchViewModel
+            {
+                SearchTerm = searchTerm, Results = results.ToArray()
+            });
         }
 
         private string TrimToSearchTerm(string searchTerm, string content)
