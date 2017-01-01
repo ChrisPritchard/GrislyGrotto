@@ -44,9 +44,11 @@
     </ul>
 }
 
-<script type="text/javascript">
-    document.getElementById('search-go').onclick = function() {
-        document.getElementById('search-form').style.display = 'none';
-        document.getElementById('search-progress').style.display = 'block';
-    };
-</script>
+@section scripts {
+    <script type="text/javascript">
+        el('search-go').onclick = function() {
+            el('search-form').style.display = 'none';
+            el('search-progress').style.display = 'block';
+        };
+    </script>
+}
