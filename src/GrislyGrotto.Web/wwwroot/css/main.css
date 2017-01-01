@@ -43,6 +43,8 @@ button, a.button {
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+    display: inline-block;
+    margin: 10px 0;
 }
 
 .field-validation-error {

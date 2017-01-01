@@ -17,7 +17,9 @@
 
 @if(User.Identity.Name == Model.Author.Username)
 {
-    <a class="button" asp-action="Edit" asp-controller="Secure" asp-route-key="@Model.Key">Edit</a>
+    <div>
+        <a class="button" asp-action="Edit" asp-controller="Secure" asp-route-key="@Model.Key">Edit</a>
+    </div>
 }
 
 <nav class="page-nav">
