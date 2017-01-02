@@ -199,7 +199,7 @@ namespace GrislyGrotto
             post.Comments.Add(comment);
             await _db.SaveChangesAsync();
 
-            Program.AddEvent($"{model.Author} posted a comment on '{post.Title}'");
+            Program.AddEvent($"{model.CommentAuthor} posted a comment on '{post.Title}'");
 
             return RedirectToAction(nameof(Single), new {key});
         }
