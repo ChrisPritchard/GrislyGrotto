@@ -73,11 +73,10 @@ div.recent-events {
     width: 100%;
     position: absolute;
     top: 0;
-    color: #888;
+    color: #999;
     z-index: -1;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     text-align: right;
-    text-transform: lowercase;
 }
 
 div.recent-events ul {
