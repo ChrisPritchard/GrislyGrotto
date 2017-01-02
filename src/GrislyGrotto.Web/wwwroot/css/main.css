@@ -4,6 +4,7 @@
 body {
     font-family: 'Bitter', serif;
     font-size: 16px;
+    overflow-x: hidden;
 }
 
 div.container {
@@ -139,6 +140,12 @@ div.login {
 
 /* Posts */
 
+img.author-image {
+    float: left;
+    margin-right: 10px;
+    border: 1px solid black;
+}
+
 h2.post-title {
     margin-bottom: 0;
 }
@@ -149,7 +156,7 @@ h2.post-title a {
 
 div.post-info {
     color: #666;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
     font-size: 14px;
 }
 
