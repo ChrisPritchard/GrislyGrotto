@@ -9,17 +9,17 @@
     <ul>
         @foreach (var year in Model.Years)
         {
-            <li class="year">
-                <h2>@year.Year</h2>
-                <ul>
-                    @foreach (var month in year.Months)
-                    {
-                        <li>
-                            <a asp-action="Month" asp-route-month="@month.Month" asp-route-year="@year.Year">@month.Month (@month.Count)</a>
-                        </li>
-                    }
-                </ul>
-            </li>
+        <li class="year">
+            <h2>@year.Year</h2>
+            <ul>
+                @foreach (var month in year.Months)
+                {
+                <li>
+                    <a asp-action="Month" asp-route-month="@month.Month" asp-route-year="@year.Year">@month.Month (@month.Count)</a>
+                </li>
+                }
+            </ul>
+        </li>
         }
     </ul>
 
@@ -29,16 +29,16 @@
     <ul class="stories-list">
         @foreach (var story in Model.Stories)
         {
-            <li>
-                <article>
-                    <h2 class="post-title">
-                        <a asp-action="Single" asp-route-key="@story.Key">@story.Title (@story.WordCount words)</a>
-                    </h2>
-                    <div class="post-info">
-                        Posted by @story.Author.DisplayName on <span>@story.DateFormatted</span>.
-                    </div>
-                </article>
-            </li>
+        <li>
+            <article>
+                <h2 class="post-title">
+                    <a asp-action="Single" asp-route-key="@story.Key">@story.Title (@story.WordCount words)</a>
+                </h2>
+                <div class="post-info">
+                    Posted by @story.Author.DisplayName on <span>@story.DateFormatted</span>.
+                </div>
+            </article>
+        </li>
         }
     </ul>
 </div>

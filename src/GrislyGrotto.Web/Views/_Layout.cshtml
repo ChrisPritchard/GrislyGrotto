@@ -25,7 +25,7 @@
         <ul>
             @foreach(var evt in Program.GetEvents())
             {
-                <li>@evt</li>
+            <li>@evt</li>
             }
         </ul>
     </div>
@@ -42,11 +42,11 @@
                 <li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-action="New" asp-controller="Secure">New Post</a>
+                    <a asp-action="New" asp-controller="Secure">New Post</a>
                     }
                     else
                     {
-                        <a asp-action="Login" asp-controller="Open">Login</a>
+                    <a asp-action="Login" asp-controller="Open">Login</a>
                     }
                 </li>
                 <li>
@@ -70,9 +70,6 @@
         </footer>
     </div>
 
-    <script type="text/javascript">
-        function el(id) { return document.getElementById(id); }
-    </script>
     @RenderSection("scripts", false)
 </body>
 </html>

@@ -35,39 +35,40 @@
 </form>
 
 @section scripts {
-    <script type="text/javascript">
-        el('html-edit').onclick = function() {
-            var editor = el('content-editor');
-            if(this.checked)
-                editor.innerText = editor.innerHTML;
-            else
-                editor.innerHTML = editor.innerText;
-        };
-        function getHtml() {
-            var editor = el('content-editor');
-            return el('html-edit').checked ? editor.innerText : editor.innerHTML;
-        }
-        el('editor-form').onsubmit = function() {
-            var editor = el('content-editor');
-            el('Content').value = getHtml();
-        };
-        function postContent(callback) {
-            var request = new XMLHttpRequest();
-            request.open('POST', '@Url.Action("SaveEditorContent")', true);
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.onload = callback;
-            var data = getHtml();
-            request.send(JSON.stringify(data));
-        }
-        setInterval(function() {
-            var status = el('saving-status');
-            status.innerText = 'Saving...';
-            postContent(function() {
-                setTimeout(function() {
-                    status.innerText = 'Saved';
-                    setTimeout(function() { status.innerText = ''; }, 1000);
-                }, 1000);                
-            });
-        }, 10000);
-    </script>
+<script type="text/javascript">
+    function el(id) { return document.getElementById(id); }
+    el('html-edit').onclick = function() {
+        var editor = el('content-editor');
+        if(this.checked)
+            editor.innerText = editor.innerHTML;
+        else
+            editor.innerHTML = editor.innerText;
+    };
+    function getHtml() {
+        var editor = el('content-editor');
+        return el('html-edit').checked ? editor.innerText : editor.innerHTML;
+    }
+    el('editor-form').onsubmit = function() {
+        var editor = el('content-editor');
+        el('Content').value = getHtml();
+    };
+    function postContent(callback) {
+        var request = new XMLHttpRequest();
+        request.open('POST', '@Url.Action("SaveEditorContent")', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.onload = callback;
+        var data = getHtml();
+        request.send(JSON.stringify(data));
+    }
+    setInterval(function() {
+        var status = el('saving-status');
+        status.innerText = 'Saving...';
+        postContent(function() {
+            setTimeout(function() {
+                status.innerText = 'Saved';
+                setTimeout(function() { status.innerText = ''; }, 1000);
+            }, 1000);                
+        });
+    }, 10000);
+</script>
 }

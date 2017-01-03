@@ -2,24 +2,24 @@
 @model LatestViewModel
 
 <nav class="page-nav">
-    @{
-        var previous = Model.Month.Value.AddMonths(-1);
-        if (previous >= new DateTime(2006, 6, 1))
-        {
-            <div class="page-prev">
-                @{ var previousText = previous.ToString("MMMM/yyyy").Split('/'); }
-                <a class="button" asp-action="Month" asp-route-month="@previousText[0]" asp-route-year="@previousText[1]">◄ @string.Join(" ", previousText)</a>
-            </div>
-        }
-
-        var next = Model.Month.Value.AddMonths(1);
-        if (next < DateTime.Now)
-        {
-            <div class="page-next">
-                @{ var nextText = next.ToString("MMMM/yyyy").Split('/'); }
-                <a class="button" asp-action="Month" asp-route-month="@nextText[0]" asp-route-year="@nextText[1]">@string.Join(" ", nextText) ►</a>
-            </div>
-        }
+@{
+    var previous = Model.Month.Value.AddMonths(-1);
+    if (previous >= new DateTime(2006, 6, 1))
+    {
+    <div class="page-prev">
+        @{ var previousText = previous.ToString("MMMM/yyyy").Split('/'); }
+        <a class="button" asp-action="Month" asp-route-month="@previousText[0]" asp-route-year="@previousText[1]">◄ @string.Join(" ", previousText)</a>
+    </div>
     }
+
+    var next = Model.Month.Value.AddMonths(1);
+    if (next < DateTime.Now)
+    {
+    <div class="page-next">
+        @{ var nextText = next.ToString("MMMM/yyyy").Split('/'); }
+        <a class="button" asp-action="Month" asp-route-month="@nextText[0]" asp-route-year="@nextText[1]">@string.Join(" ", nextText) ►</a>
+    </div>
+    }
+}
     <div class="clear"></div>
 </nav>

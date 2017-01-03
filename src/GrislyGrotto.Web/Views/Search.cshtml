@@ -27,28 +27,29 @@
     <ul class="results-list">
         @foreach (var result in Model.Results)
         {
-            <li>
-                <article>
-                    <h2 class="post-title">
-                        <a asp-action="Single" asp-route-key="@result.Key">@result.Title</a>
-                    </h2>
-                    <div>
-                        @Html.Raw(result.Content)
-                    </div>
-                    <div class="post-info">
-                        Posted by @result.Author.DisplayName on <span>@result.DateFormatted</span>.
-                    </div>
-                </article>
-            </li>
+        <li>
+            <article>
+                <h2 class="post-title">
+                    <a asp-action="Single" asp-route-key="@result.Key">@result.Title</a>
+                </h2>
+                <div>
+                    @Html.Raw(result.Content)
+                </div>
+                <div class="post-info">
+                    Posted by @result.Author.DisplayName on <span>@result.DateFormatted</span>.
+                </div>
+            </article>
+        </li>
         }
     </ul>
 }
 
 @section scripts {
-    <script type="text/javascript">
-        el('search-go').onclick = function() {
-            el('search-form').style.display = 'none';
-            el('search-progress').style.display = 'block';
-        };
-    </script>
+<script type="text/javascript">
+    function el(id) { return document.getElementById(id); }
+    el('search-go').onclick = function() {
+        el('search-form').style.display = 'none';
+        el('search-progress').style.display = 'block';
+    };
+</script>
 }
