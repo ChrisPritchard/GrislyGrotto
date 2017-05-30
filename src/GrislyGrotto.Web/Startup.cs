@@ -9,8 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-[assembly: UserSecretsId("aspnet-grislygrotto-b1df08ac-697f-446b-a583-604dd8754733")]
-
 namespace GrislyGrotto
 {
     public class Startup
