@@ -27,7 +27,6 @@
     function renderChart(canvas) {
         var userName = canvas.getAttribute('data-wrimo');
         getApiResult(userName, function (wrimoData) {
-
             var counts = [];
             var runningTotal = 0;
             for (var j in wrimoData.wordcounts) {
@@ -74,6 +73,7 @@
                 }
             });
 
+            document.getElementById('wrimo-header').style.display = '';
         });
     }
 
