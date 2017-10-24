@@ -10,6 +10,23 @@
 <h1 class="month-title">@ViewBag.Title</h1>
 @Html.Partial("_MonthNav", Model);
 }
+else
+{
+<div style="text-align: center">
+    <h4 id="wrimo-header" style="display: none">NaNoWriMo 2017</h4>
+    <div style="width: 400px; text-align: center; float: left;">
+        <a></a>
+        <canvas id="myChart" data-wrimo="scribeaquinas"></canvas>
+        <span style="font-weight:bold"></span>
+    </div>
+    <div style="width: 400px; text-align: center; float: left;">
+        <a></a>
+        <canvas id="myChart" data-wrimo="pdcnz"></canvas>
+        <span style="font-weight:bold"></span>
+    </div>
+    <div style="clear:both"></div>
+</div>
+}
 
 @foreach(var post in Model.Posts)
 {
