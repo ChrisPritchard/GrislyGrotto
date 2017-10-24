@@ -261,3 +261,13 @@ div.content-editor {
 label.checkbox-label {
     display: inline;
 }
+
+/* 14.1 Css Adjustments */
+
+body {
+    font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+}
+
+img.author-image {
+    margin-top: 8px;
+}
