@@ -266,8 +266,51 @@ label.checkbox-label {
 
 body {
     font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+    background-image: url('riOLFJl.jpg');
+    background-position-x: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: whitesmoke;
+    /* color: white; */
+}
+
+button, a.button {
+    font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+    background-color: rgba(200, 200, 200, 0.3);
+    color: whitesmoke;
+}
+
+input[type='text'], input[type='password'], textarea, div.content-editor {
+    border-radius: 4px;
+    padding: 6px 10px;
+    box-shadow: 0;
+    font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+    background-color: rgba(200, 200, 200, 0.3);
+    color: whitesmoke;
+    border: 1px solid black;
+    margin-bottom: 1em;
+}
+
+header h1 {
+    text-shadow: 0 0 3px whitesmoke;
+}
+
+a, a:visited {
+    color: whitesmoke;
 }
 
 img.author-image {
     margin-top: 8px;
+}
+
+article {
+    background-color: rgba(50, 50, 50, 0.6);
+    padding: 2px 20px 10px 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div.post-info, div.post-info a, div.post-info a:visited {
+    color: whitesmoke;
+    filter: brightness(85%);
 }
