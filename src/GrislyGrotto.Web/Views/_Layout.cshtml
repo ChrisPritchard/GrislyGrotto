@@ -59,7 +59,22 @@
                     <a asp-action="About" asp-controller="Open">About</a>
                 </li>
             </ul>
-            </nav>
+        </nav>
+
+        <div>
+            <h4>NaNoWriMo 2017</h4>
+            <div style="width: 400px; text-align: center; float: left;">
+                <a></a>
+                <canvas id="myChart" data-wrimo="scribeaquinas"></canvas>
+                <span style="font-weight:bold"></span>
+            </div>
+            <div style="width: 400px; text-align: center; float: left;">
+                <a></a>
+                <canvas id="myChart" data-wrimo="pdcnz"></canvas>
+                <span style="font-weight:bold"></span>
+            </div>
+            <div style="clear:both"></div>
+        </div>
 
         <div>
             @RenderBody()
@@ -71,5 +86,7 @@
     </div>
 
     @RenderSection("scripts", false)
+    <script type="text/javascript" src="~/Chart.min.js"></script>
+    <script type="text/javascript" src="~/wrimo.js"></script>
 </body>
 </html>
