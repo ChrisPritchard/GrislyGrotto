@@ -10,6 +10,8 @@
         parCounts.push(i * 1667 + adjustment);
     }
 
+    Chart.defaults.global.defaultFontColor = "whitesmoke";
+
     function getApiResult(username, onSuccess) {
         var request = new XMLHttpRequest();
         request.open('GET', '/wrimo/' + username, true);
@@ -58,6 +60,7 @@
                         {
                             type: 'line',
                             label: 'Par',
+                            backgroundColor: 'whitesmoke',
                             data: parCounts
                         }
                     ]
