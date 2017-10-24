@@ -310,7 +310,7 @@ article {
     margin-bottom: 10px;
 }
 
-div.post-info, div.post-info a, div.post-info a:visited {
+div.post-info, div.post-info a, div.post-info a:visited, footer {
     color: whitesmoke;
     filter: brightness(85%);
 }
