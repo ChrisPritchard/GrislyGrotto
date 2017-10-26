@@ -262,7 +262,7 @@ label.checkbox-label {
     display: inline;
 }
 
-/* 14.1 Css Adjustments */
+/* 14.1-2 Css Adjustments */
 
 body {
     font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
@@ -271,7 +271,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     color: whitesmoke;
-    /* color: white; */
+    background-color: black;
 }
 
 button, a.button {
