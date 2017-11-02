@@ -66,10 +66,12 @@
                     ]
                 },
                 options: {
+                    maintainAspectRatio: false,
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: true
+                                beginAtZero: true, 
+                                max: 60000
                             }
                         }]
                     }
