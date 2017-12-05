@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace GrislyGrotto
 {
@@ -20,9 +20,6 @@ namespace GrislyGrotto
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddEnvironmentVariables();
-
-            if(env.IsDevelopment())
-                builder.AddUserSecrets<Startup>();
 
             Configuration = builder.Build();
         }
@@ -37,6 +34,9 @@ namespace GrislyGrotto
                 options.ViewLocationExpanders.Add(new ShallowViewLocationExpander());
             });
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(o => o.LoginPath = new PathString("/login"));
+
             services.AddMvc();
             services.AddSession();
         }
@@ -46,14 +46,7 @@ namespace GrislyGrotto
             loggerFactory.AddDebug();
             app.UseDeveloperExceptionPage(); // even in prod - my site, want to see my bugs
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions()
-            {
-                AuthenticationScheme = "Cookie",
-                LoginPath = new PathString("/Login"),
-                AccessDeniedPath = new PathString("/Login"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true
-            });
+            app.UseAuthentication();
 
             app.UseStaticFiles();
             app.UseSession();
