@@ -44,6 +44,8 @@ namespace GrislyGrotto
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddDebug();
+            loggerFactory.AddConsole();
+
             app.UseDeveloperExceptionPage(); // even in prod - my site, want to see my bugs
 
             app.UseAuthentication();

@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web)",
+            "name": "Debug Web",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}\\src\\GrislyGrotto.Web\\bin\\Debug\\netcoreapp1.1\\GrislyGrotto.Web.dll",
+            "program": "${workspaceRoot}\\src\\GrislyGrotto.Web\\bin\\Debug\\netcoreapp2.0\\GrislyGrotto.Web.dll",
             "args": [],
             "cwd": "${workspaceRoot}\\src\\GrislyGrotto.Web",
             "stopAtEntry": false,

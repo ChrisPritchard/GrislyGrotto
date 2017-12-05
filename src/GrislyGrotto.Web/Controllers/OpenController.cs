@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace GrislyGrotto
 {
@@ -225,7 +226,7 @@ namespace GrislyGrotto
                 new Claim(ClaimTypes.Name, author.Username)
             }, "Cookie");
             var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync("Cookie", principal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             var returnUrl = (string)Request.Query["ReturnUrl"] ?? "/";
             return Redirect(returnUrl);
