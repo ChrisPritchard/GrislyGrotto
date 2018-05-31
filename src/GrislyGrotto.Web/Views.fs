@@ -19,6 +19,6 @@ let layout menuItems content =
 
 let post (model: Models.Post) = 
     div [] [
-        h2 [] [ encodedText model.title ]
-        div [] [ rawText model.content ]
+        h2 [] [ encodedText model.Title ]
+        div [] [ rawText model.Content ]
     ]

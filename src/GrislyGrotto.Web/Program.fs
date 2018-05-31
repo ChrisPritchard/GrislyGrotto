@@ -10,7 +10,14 @@ open Models
 open Microsoft.AspNetCore.Http
 
 let latestHandler (data: GrislyData) = 
-    let posts = data.Posts |> Seq.sortByDescending (fun o -> o.Date) |> Seq.take 5 |> Seq.toList
+    //let posts = data.Posts |> Seq.sortByDescending (fun o -> o.Date) |> Seq.take 5 |> Seq.toList
+    let posts = 
+        query {
+            for post in data.Posts do
+                sortByDescending post.Date
+                take 5
+                select post
+        } |> Seq.toList
     posts |> List.map Views.post |> Views.layout [] |> htmlView
 
 let webApp =
@@ -29,9 +36,10 @@ let configureApp (app : IApplicationBuilder) =
         .UseStaticFiles()
         .UseGiraffe(webApp)
 
+let connString = "Server=tcp:grislygrotto.database.windows.net,1433;Data Source=grislygrotto.database.windows.net;Initial Catalog=grislygrotto;Persist Security Info=False;User ID=grislygrotto_user;Password=***REMOVED***;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+
 let configureServices (services : IServiceCollection) =
-    (services.AddDbContext<GrislyData> : Action<DbContextOptions> * ServiceLifetime -> ServiceCollection)
-        ((fun o -> o.UseSqlServer("")), ServiceLifetime.Scoped) |> ignore
+    services.AddDbContext<GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
     services.AddGiraffe() |> ignore
 
 let configureLogging (builder : ILoggingBuilder) =
