@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}\\src\\GrislyGrotto.Web\\GrislyGrotto.Web.csproj"
+                "${workspaceRoot}\\src\\GrislyGrotto.Web\\GrislyGrotto.Web.fsproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}\\src\\GrislyGrotto.Web\\bin\\Debug\\netcoreapp2.0\\GrislyGrotto.Web.dll",
+            "program": "${workspaceRoot}\\src\\GrislyGrotto.Web\\bin\\Debug\\netcoreapp2.1\\GrislyGrotto.Web.dll",
             "args": [],
             "cwd": "${workspaceRoot}\\src\\GrislyGrotto.Web",
             "stopAtEntry": false,

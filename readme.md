@@ -1,13 +1,14 @@
-## Release 14.3
+## Release 15
 
-<b>Release Date:</b> 5th December 2017
+<b>Release Date:</b> TBC
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/grisly-grotto-140">Grisly Grotto 14.0</a>
+<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/">Grisly Grotto 15.0</a>
 
-<b>Frontend:</b> ASP.NET Core, .NET Core 2.0 and C#6
+<b>Frontend:</b> F# on .NET Core 2.1 with <a href="https://github.com/giraffe-fsharp">Giraffe</a>
 
 <b>Backend:</b> Azure SQL Server
 
 <b>Dev Tool:</b> Visual Studio Code
 
-More or less the same as GG 13, except rebuilt in .NET Core. Also constructed from the ground up using VS Code - no templates or otherwise. Light and minimalist, 14 uses only vanilla javascript and a CSS file hand written - no bootstrap or skeleton etc.
+The first version of GG to not use C# or JS in its construction, instead using my new favourite language, F#
+However, via the Giraffe framework, it is still built on top of the excellent ASP.NET Core and .NET Core 2.1 Runtime
