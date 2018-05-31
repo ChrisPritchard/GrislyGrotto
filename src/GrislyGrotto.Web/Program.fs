@@ -4,20 +4,18 @@ open Microsoft.Extensions.Logging
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Hosting
+open Microsoft.EntityFrameworkCore
 open Giraffe
 open Models
+open Microsoft.AspNetCore.Http
 
-let latestHandler () = 
-    let posts = 
-        Data.latest |> List.map (fun e -> 
-        {
-            title = e.Title; author = "test"; content = e.Content; date = e.Date; comments = []; isStory = e.IsStory
-        })
+let latestHandler (data: GrislyData) = 
+    let posts = data.Posts |> Seq.sortByDescending (fun o -> o.Date) |> Seq.take 5 |> Seq.toList
     posts |> List.map Views.post |> Views.layout [] |> htmlView
 
 let webApp =
     choose [
-        route "/" >=> latestHandler () ]
+        route "/" >=> warbler (fun (_, (ctx:HttpContext)) -> latestHandler (ctx.GetService<GrislyData>()) ) ]
 
 let errorHandler (ex : Exception) (logger : ILogger) =
     logger.LogError(EventId(), ex, "An unhandled exception has occurred while executing the request.")
@@ -32,6 +30,8 @@ let configureApp (app : IApplicationBuilder) =
         .UseGiraffe(webApp)
 
 let configureServices (services : IServiceCollection) =
+    (services.AddDbContext<GrislyData> : Action<DbContextOptions> * ServiceLifetime -> ServiceCollection)
+        ((fun o -> o.UseSqlServer("")), ServiceLifetime.Scoped) |> ignore
     services.AddGiraffe() |> ignore
 
 let configureLogging (builder : ILoggingBuilder) =

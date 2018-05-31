@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Data.fs" />
     <Compile Include="Models.fs" />
     <Compile Include="Views.fs" />
     <Compile Include="Program.fs" />
@@ -15,7 +14,6 @@
   <ItemGroup>
     <PackageReference Include="Giraffe" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0" />
-    <PackageReference Include="SqlProvider" Version="1.1.42" />
   </ItemGroup>
 
 </Project>
