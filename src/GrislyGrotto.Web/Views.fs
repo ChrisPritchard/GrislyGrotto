@@ -2,7 +2,7 @@ module Views
 
 open Giraffe.GiraffeViewEngine
 
-let layout (content: XmlNode list) =
+let layout menuItems content =
     html [] [
         head [] [
             title []  [ encodedText "The Grisly Grotto" ]
@@ -10,14 +10,15 @@ let layout (content: XmlNode list) =
                    _type "text/css"
                    _href "/site.css" ]
         ]
-        body [] content
+        body [] [
+            h1 [] [ rawText "The Grisly Grotto" ]
+            nav [] menuItems
+            section [] content
+        ]
     ]
 
-let partial () =
-    h1 [] [ encodedText "The Grisly Grotto" ]
-
-let index (model : string) =
-    [
-        partial()
-        p [] [ encodedText model ]
-    ] |> layout
+let post (model: Models.Post) = 
+    div [] [
+        h2 [] [ encodedText model.title ]
+        div [] [ rawText model.content ]
+    ]
