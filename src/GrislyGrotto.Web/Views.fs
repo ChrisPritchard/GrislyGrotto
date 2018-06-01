@@ -17,7 +17,7 @@ let layout menuItems content =
         ]
     ]
 
-let listPost (model: Models.Post) = 
+let listPost (model: Data.Post) = 
     div [] [
         h2 [] [ encodedText model.Title ]
         span [] [ 

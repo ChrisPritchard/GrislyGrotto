@@ -1,4 +1,4 @@
-module Models
+module Data
 open System
 open Microsoft.EntityFrameworkCore
 open System.ComponentModel.DataAnnotations
@@ -41,3 +41,5 @@ type GrislyData (options) =
     member __.Posts with get() = __.posts and set v = __.posts <- v
     [<DefaultValue>] val mutable comments : DbSet<Comment>
     member __.Comments with get() = __.comments and set v = __.comments <- v
+
+    member __.FullPosts () = __.Posts.Include(fun p -> p.Author).Include(fun p -> p.Comments)
