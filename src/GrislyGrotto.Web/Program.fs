@@ -10,15 +10,12 @@ open Models
 open Microsoft.AspNetCore.Http
 
 let latestHandler (data: GrislyData) = 
-    //let posts = data.Posts |> Seq.sortByDescending (fun o -> o.Date) |> Seq.take 5 |> Seq.toList
-    let posts = 
-        query {
-            for post in data.Posts.Include(fun p -> p.Comments).Include(fun p -> p.Author) do
-                sortByDescending post.Date
-                take 5
-                select post
-        } |> Seq.toList
-    posts |> List.map Views.listPost |> Views.layout [] |> htmlView
+    query {
+        for post in data.Posts.Include(fun p -> p.Comments).Include(fun p -> p.Author) do
+            sortByDescending post.Date
+            take 5
+            select post
+    } |> Seq.toList |> List.map Views.listPost |> Views.layout [] |> htmlView
 
 let webApp =
     choose [
