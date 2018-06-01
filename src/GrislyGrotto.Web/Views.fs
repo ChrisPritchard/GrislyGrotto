@@ -19,9 +19,6 @@ let layout menuItems content =
 
 let listPost (model: Models.Post) = 
     div [] [
-        img [
-            _src model.Author.ImageUrl
-        ]
         h2 [] [ encodedText model.Title ]
         span [] [ 
                 sprintf "posted by %s on %O" model.Author.DisplayName model.Date |> rawText
