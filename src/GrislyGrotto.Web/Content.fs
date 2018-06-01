@@ -1,4 +1,5 @@
 module Content
+
 open Giraffe
 
 let private css = @"

@@ -1,4 +1,5 @@
 module Data
+
 open System
 open Microsoft.EntityFrameworkCore
 open System.ComponentModel.DataAnnotations
