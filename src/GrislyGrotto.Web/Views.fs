@@ -17,8 +17,15 @@ let layout menuItems content =
         ]
     ]
 
-let post (model: Models.Post) = 
+let listPost (model: Models.Post) = 
     div [] [
+        img [
+            _src model.Author.ImageUrl
+        ]
         h2 [] [ encodedText model.Title ]
+        span [] [ 
+                sprintf "posted by %s on %O" model.Author.DisplayName model.Date |> rawText
+                a [ _href "#" ] [ Seq.length model.Comments |> sprintf "comments (%i)" |> rawText ]
+            ]
         div [] [ rawText model.Content ]
     ]

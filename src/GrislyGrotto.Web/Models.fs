@@ -15,7 +15,7 @@ type Post = {
     Content: string
     IsStory: bool
     WordCount: int
-    Comments: Comment list
+    Comments: System.Collections.Generic.List<Comment>
 } and [<CLIMutable>]Author = {
     [<Key>]
     Username: string
@@ -24,8 +24,9 @@ type Post = {
     ImageUrl: string
 } and [<CLIMutable>]Comment = {
     Id: int
-    [<ForeignKey("Post_Key")>]
     Post_Key: string
+    [<ForeignKey("Post_Key")>]
+    Post: Post
     Author: string
     Date: DateTime
     Content: string
