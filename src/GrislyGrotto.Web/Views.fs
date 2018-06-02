@@ -126,6 +126,7 @@ let about =
                     "Other than the above, v15 shares a lot with v14: Database storage is Azure SQL Server, and web hosting is as an Azure App Service. I host the source code in Visual Studio Team Services, in a Git repository. 
                     VSTS provides a build &amp; release pipeline which automatically deploys the latest code into Azure."
             ]
+            p [] [ rawText "Cheers." ]
         ] 
     ]
     layout content
