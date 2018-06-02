@@ -66,7 +66,3 @@ let single (post : Data.Post) =
             ]
         ]
     layout content
-
-let pageNotFound =
-    let content = [ h1 [] [ rawText "Page Not Found" ] ]
-    layout content
