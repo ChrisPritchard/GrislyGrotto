@@ -77,10 +77,11 @@ let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) 
                     ]) |> Seq.toList |> ul []
              ]) |> Seq.toList
     let storyList = 
-        stories |> Seq.map (fun p -> div [] [
-            h3 [] [ a [ sprintf "/post/%s" p.Key |> _href ] [ sprintf "%s (%i words)" p.Title p.WordCount |> rawText ] ]
-            span [] [ sprintf "Posted by %s on %O" p.Author.DisplayName p.Date |> rawText ]
-        ]) |> Seq.toList
+        stories |> Seq.map (fun p -> 
+            div [] [
+                h3 [] [ a [ sprintf "/post/%s" p.Key |> _href ] [ sprintf "%s (%i words)" p.Title p.WordCount |> rawText ] ]
+                span [] [ sprintf "Posted by %s on %O" p.Author.DisplayName p.Date |> rawText ]
+            ]) |> Seq.toList
     let content = [
             [h2 [] [ rawText "Archives" ]]
             yearList
