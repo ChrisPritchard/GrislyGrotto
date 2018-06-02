@@ -96,7 +96,32 @@ let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) 
     List.concat content |> layout
 
 let search (results: Data.Post list option) =
-    layout [ rawText "TBC" ]
+    let searchBox = [
+            h2 [] [ rawText "Search" ]
+            form [ _method "GET" ] [
+                p [] [
+                    label [] [ 
+                        rawText "Search term"
+                        br []
+                        input [ _type "text"; _name "searchTerm" ] ]
+                    ]
+                input [ _type "submit"; _value "Search" ]
+                p [] [ rawText "Max 50 results. Note, searches can take some time." ]
+            ]
+        ]
+    match results with
+    | None -> layout searchBox
+    | Some r -> 
+        let results = [
+            h3 [] [ rawText "Results" ]
+            r |> List.map (fun post -> 
+                li [] [
+                    h4 [] [ rawText post.Title ]
+                    p [] [ rawText post.Content ]
+                    span [] [ sprintf "Posted by %s on %O" post.Author.DisplayName post.Date |> rawText ]
+                ]) |> ul []
+        ]
+        layout (searchBox @ results)
 
 let about = 
     let content = [ 

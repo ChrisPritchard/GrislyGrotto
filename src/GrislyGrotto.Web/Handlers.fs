@@ -84,6 +84,17 @@ let archives =
             return! htmlView (Views.archives years stories) next ctx
         }
 
+let private trimToSearchTerm (term:string) content =
+    let stripped = System.Text.RegularExpressions.Regex.Replace(content, "<[^>]*>", "")
+    let index = stripped.IndexOf(term)
+    match index with 
+    | -1 -> ""
+    | _ -> 
+        let start,stop = max (index - 20) 0, min (index + term.Length + 20) stripped.Length
+        let section = stripped.Substring(start, stop - start)
+        "..." + section + "..."
+
+
 let search = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
@@ -91,7 +102,18 @@ let search =
                 match ctx.TryGetQueryStringValue "searchTerm" with
                 | None -> htmlView (Views.search None) next ctx
                 | Some term ->
-                    let results = []
+                    let data = ctx.GetService<GrislyData> ()
+                    let posts = query {
+                            for post in data.FullPosts () do
+                                where (post.Title.Contains(term) || post.Content.Contains(term))
+                                sortByDescending post.Date
+                                take 50
+                                select post
+                        } 
+                    let results = 
+                        posts 
+                            |> Seq.map (fun p -> { p with Content = trimToSearchTerm term p.Content })
+                            |> Seq.toList
                     htmlView (results |> Some |> Views.search) next ctx
         }
 
