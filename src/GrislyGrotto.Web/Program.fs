@@ -13,6 +13,8 @@ let webApp =
         GET >=>
             choose [
                 route "/site.css" >=> Content.css
+                route "/favicon.png" >=> Content.favicon
+
                 route "/" >=> Handlers.latest 0
                 routef "/post/%s" Handlers.single
                 route "/login" >=> Handlers.login

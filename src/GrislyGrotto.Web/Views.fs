@@ -13,13 +13,18 @@ let layout content =
     ]
     html [] [
         head [] [
-            title []  [ a [ _href "/" ] [ encodedText "The Grisly Grotto" ] ]
-            link [ _rel  "stylesheet"
+            title [] [ rawText "The Grisly Grotto" ]
+            meta [ _name "description"
+                   _content "The personal blog of Chris Pritchard and Peter Coleman" ]
+            link [ _rel "shortcut icon" 
+                   _type "image/x-icon"
+                   _href "/favicon.png" ]
+            link [ _rel "stylesheet"
                    _type "text/css"
                    _href "/site.css" ]
         ]
         body [] [
-            header [] [ h1 [] [ rawText "The Grisly Grotto" ] ]
+            header [] [ h1 [] [ a [ _href "/" ] [ rawText "The Grisly Grotto" ] ] ]
             nav [] menuItems
             section [] content
             footer [] [ rawText "Grisly Grotto v15. Site designed and coded by Christopher Pritchard, 2018" ]
