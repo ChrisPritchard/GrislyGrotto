@@ -18,7 +18,7 @@ let webApp =
                 route "/login" >=> Handlers.login
                 route "/archives" >=> Handlers.archives
                 route "/search" >=> Handlers.search            
-                route "/about" >=> Handlers.about
+                route "/about" >=> htmlView Views.about
                 route "/new" >=> mustBeUser >=> Handlers.editor None
                 routef "/edit/%s" (fun key -> mustBeUser >=> (Some key |> Handlers.editor)) 
             ]

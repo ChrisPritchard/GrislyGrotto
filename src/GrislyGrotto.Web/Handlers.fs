@@ -56,12 +56,6 @@ let search =
             return! text "TBC" next ctx
         }
 
-let about = 
-    fun (next : HttpFunc) (ctx : HttpContext) -> 
-        task {
-            return! text "TBC" next ctx
-        }
-
 let editor key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
