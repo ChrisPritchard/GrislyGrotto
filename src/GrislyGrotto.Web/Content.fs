@@ -1,11 +1,17 @@
 module Content
 
 open Giraffe
+open Microsoft.AspNetCore.Http
 
-let private css = @"
+let private cssContent = @"
 body {
     font-family: Arial
-}
-"
+}"
 
-let siteCss () = Successful.OK css
+let css = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            ctx.SetHttpHeader "Content-Type" "text/css"
+            ctx.WriteStringAsync cssContent |> ignore
+            return! next ctx
+        }
