@@ -13,7 +13,7 @@ let layout content =
     ]
     html [] [
         head [] [
-            title []  [ encodedText "The Grisly Grotto" ]
+            title []  [ a [ _href "/" ] [ encodedText "The Grisly Grotto" ] ]
             link [ _rel  "stylesheet"
                    _type "text/css"
                    _href "/site.css" ]
