@@ -66,6 +66,29 @@ let single (post : Data.Post) =
         ]
     layout content
 
+let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) = 
+    let yearList = 
+        years |> Seq.map (fun (y,months) -> 
+            div [] [ 
+                h3 [] [ string y |> rawText ]
+                months |> Seq.map (fun (m,c) -> 
+                    li [] [ 
+                        a [ sprintf "/month/%s/%i" m y |> _href ] [ sprintf "%s (%i)" m c |> rawText ] 
+                    ]) |> Seq.toList |> ul []
+             ]) |> Seq.toList
+    let storyList = 
+        stories |> Seq.map (fun p -> div [] [
+            h3 [] [ a [ sprintf "/post/%s" p.Key |> _href ] [ sprintf "%s (%i words)" p.Title p.WordCount |> rawText ] ]
+            span [] [ sprintf "Posted by %s on %O" p.Author.DisplayName p.Date |> rawText ]
+        ]) |> Seq.toList
+    let content = [
+            [h2 [] [ rawText "Archives" ]]
+            yearList
+            [h2 [] [ rawText "Stories" ]]
+            storyList
+        ]
+    List.concat content |> layout
+
 let about = 
     let content = [ 
         article [] [

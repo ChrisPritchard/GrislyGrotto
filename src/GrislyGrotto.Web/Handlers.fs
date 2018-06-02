@@ -2,6 +2,7 @@ module Handlers
 
 open Giraffe
 open Microsoft.AspNetCore.Http
+open Data
 
 let accessDenied : HttpHandler = 
     setStatusCode 401 >=> text "Access Denied"
@@ -11,7 +12,7 @@ let pageNotFound : HttpHandler =
 let latest page = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            let data = ctx.GetService<Data.GrislyData> ()
+            let data = ctx.GetService<GrislyData> ()
             let skipCount = page * 5
             let posts = query {
                 for post in data.FullPosts () do
@@ -26,7 +27,7 @@ let latest page =
 let single key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            let data = ctx.GetService<Data.GrislyData> ()
+            let data = ctx.GetService<GrislyData> ()
             let post = query {
                 for post in data.FullPosts () do
                     where (post.Key = key)
@@ -44,10 +45,43 @@ let login =
             return! text "TBC" next ctx
         }
 
+let private monthNames = 
+    [""; "january"; "february"; "march"; "april";
+    "may"; "june"; "july"; "august"; "september";
+    "october"; "november"; "december"]
+
 let archives = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! text "TBC" next ctx
+            let data = ctx.GetService<GrislyData> ()
+            let allByDate = query {
+                for post in data.FullPosts () do
+                    sortBy post.Date
+                    select (post.Date.Month, post.Date.Year)
+            }   
+            let years = 
+                allByDate 
+                |> Seq.groupBy (fun (_,year) -> year)
+                |> Seq.map (fun (year,posts) -> 
+                    year, posts 
+                        |> Seq.groupBy (fun (month,_) -> month) 
+                        |> Seq.map (fun (month,posts) -> monthNames.[month],Seq.length posts))
+            let stories = query {
+                for post in data.FullPosts () do
+                    sortByDescending post.Date
+                    where post.IsStory
+                    select {
+                        Key = post.Key
+                        Title = post.Title
+                        Author = post.Author
+                        Date = post.Date
+                        Content = ""
+                        IsStory = true
+                        WordCount = post.WordCount
+                        Comments = new System.Collections.Generic.List<Comment>()
+                    }
+            }
+            return! htmlView (Views.archives years stories) next ctx
         }
 
 let search = 
