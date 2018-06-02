@@ -5,6 +5,7 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Hosting
 open Microsoft.EntityFrameworkCore
 open Giraffe
+open System.IO
 
 let mustBeUser = requiresAuthentication Handlers.accessDenied
 
@@ -12,10 +13,8 @@ let webApp =
     choose [
         GET >=>
             choose [
-                route "/site.css" >=> Content.css
-                route "/favicon.png" >=> Content.favicon
-
                 route "/" >=> Handlers.latest 0
+                routef "/page/%i" Handlers.latest
                 routef "/post/%s" Handlers.single
                 route "/login" >=> Handlers.login
                 route "/archives" >=> Handlers.archives
@@ -42,6 +41,7 @@ let configureApp (app : IApplicationBuilder) =
     (match env.IsDevelopment() with
     | true  -> app.UseDeveloperExceptionPage()
     | false -> app.UseGiraffeErrorHandler errorHandler)
+        .UseStaticFiles()
         .UseGiraffe(webApp)
 
 let connString = "Server=tcp:grislygrotto.database.windows.net,1433;Data Source=grislygrotto.database.windows.net;Initial Catalog=grislygrotto;Persist Security Info=False;User ID=grislygrotto_user;Password=***REMOVED***;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
@@ -56,9 +56,13 @@ let configureLogging (builder : ILoggingBuilder) =
 
 [<EntryPoint>]
 let main __ =
+    let contentRoot = Directory.GetCurrentDirectory()
+    let webRoot     = Path.Combine(contentRoot, "wwwroot")
     WebHostBuilder()
         .UseKestrel()
+        .UseContentRoot(contentRoot)
         .UseIISIntegration()
+        .UseWebRoot(webRoot)
         .Configure(Action<IApplicationBuilder> configureApp)
         .ConfigureServices(configureServices)
         .ConfigureLogging(configureLogging)
