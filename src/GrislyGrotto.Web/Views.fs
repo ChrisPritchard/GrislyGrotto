@@ -26,13 +26,47 @@ let layout content =
         ]
     ]
 
-let listPost (model: Data.Post) = 
-    let link = sprintf "/post/%s" model.Key |> _href
+let listPost (post : Data.Post) = 
+    let link = sprintf "/post/%s" post.Key |> _href
     article [] [
-        header [] [ h2 [] [ a [ link ] [ encodedText model.Title ] ] ]
+        header [] [ h2 [] [ a [ link ] [ encodedText post.Title ] ] ]
         footer [] [ 
-                sprintf "posted by %s on %O" model.Author.DisplayName model.Date |> rawText
-                a [ link ] [ Seq.length model.Comments |> sprintf "comments (%i)" |> rawText ]
+                sprintf "posted by %s on %O" post.Author.DisplayName post.Date |> rawText
+                a [ link ] [ Seq.length post.Comments |> sprintf "comments (%i)" |> rawText ]
             ]
-        section [] [ rawText model.Content ]
+        section [] [ rawText post.Content ]
     ]
+
+let latest posts page = 
+    let postList = posts |> Seq.toList |> List.map listPost
+    let navLink pg txt = a [ sprintf "/page/%i" pg |> _href ] [ rawText txt ]
+    let content = 
+        postList @ 
+        match page with 
+        | 0 -> [ navLink 1 "Next" ] 
+        | _ -> [ navLink (page - 1) "Prev";navLink (page + 1) "Next" ]
+    layout content
+
+let single (post : Data.Post) = 
+    let comment (c : Data.Comment) = 
+        [
+            b [] [ sprintf "%s. %O" c.Author c.Date |> rawText ]
+            p [] [ rawText c.Content ] 
+        ]
+    let content = 
+        [ 
+            article [] [
+                header [] [ h1 [] [ encodedText post.Title ] ]
+                footer [] [ sprintf "%s. %O" post.Author.DisplayName post.Date |> rawText ]
+                section [] [ rawText post.Content ]
+            ]
+            div [] [
+                h2 [] [ rawText "Comments" ]
+                post.Comments |> Seq.collect comment |> Seq.toList |> div []
+            ]
+        ]
+    layout content
+
+let pageNotFound =
+    let content = [ h1 [] [ rawText "Page Not Found" ] ]
+    layout content
