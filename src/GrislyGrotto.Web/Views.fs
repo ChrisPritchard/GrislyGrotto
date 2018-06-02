@@ -95,6 +95,9 @@ let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) 
         ]
     List.concat content |> layout
 
+let search (results: Data.Post list option) =
+    layout [ rawText "TBC" ]
+
 let about = 
     let content = [ 
         article [] [

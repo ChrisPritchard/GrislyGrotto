@@ -87,7 +87,12 @@ let archives =
 let search = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! text "TBC" next ctx
+            return! 
+                match ctx.TryGetQueryStringValue "searchTerm" with
+                | None -> htmlView (Views.search None) next ctx
+                | Some term ->
+                    let results = []
+                    htmlView (results |> Some |> Views.search) next ctx
         }
 
 let editor key = 
@@ -97,12 +102,6 @@ let editor key =
         }
 
 let tryLogin = 
-    fun (next : HttpFunc) (ctx : HttpContext) -> 
-        task {
-            return! text "TBC" next ctx
-        }
-
-let runSearch = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
             return! text "TBC" next ctx

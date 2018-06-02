@@ -27,7 +27,6 @@ let webApp =
         POST >=> 
             choose [
                 route "/login" >=> Handlers.tryLogin
-                route "/search" >=> Handlers.runSearch
                 routef "/post/%s" Handlers.createComment
                 route "/new" >=> mustBeUser >=> Handlers.createPost
                 routef "/edit/%s" (fun key -> mustBeUser >=> Handlers.editPost key)
