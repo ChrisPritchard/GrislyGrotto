@@ -198,6 +198,9 @@ let about isAuthor =
                 br []
                 rawText "My LinkedIn profile is "
                 a [ _href "https://nz.linkedin.com/pub/christopher-pritchard/a/9b6/a66" ] [ rawText "here." ]
+                br []
+                rawText "My Github profile is "
+                a [ _href "https://github.com/ChrisPritchard" ] [ rawText "here." ]
             ]
             h2 [] [ rawText "About the Grisly Grotto" ]
             p [] [
