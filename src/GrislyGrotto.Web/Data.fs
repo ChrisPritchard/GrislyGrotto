@@ -1,11 +1,11 @@
 module Data
 
 open System
-open Microsoft.EntityFrameworkCore
+open System.Text
 open System.ComponentModel.DataAnnotations
 open System.ComponentModel.DataAnnotations.Schema
 open System.Security.Cryptography
-open System.Text
+open Microsoft.EntityFrameworkCore
 
 [<CLIMutable>]
 type Post = {

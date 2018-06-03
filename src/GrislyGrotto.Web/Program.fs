@@ -1,12 +1,12 @@
 ﻿open System
-open Microsoft.Extensions.Logging
+open System.IO
 open Microsoft.AspNetCore.Builder
-open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Hosting
+open Microsoft.AspNetCore.Authentication.Cookies
+open Microsoft.Extensions.Logging
+open Microsoft.Extensions.DependencyInjection
 open Microsoft.EntityFrameworkCore
 open Giraffe
-open System.IO
-open Microsoft.AspNetCore.Authentication.Cookies
 
 let mustBeUser = requiresAuthentication Handlers.accessDenied
 

@@ -1,13 +1,13 @@
 module Handlers
 
-open Giraffe
-open Microsoft.AspNetCore.Http
-open Data
+open System
 open System.Security.Claims
+open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
-open System
+open Giraffe
+open Data
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -98,7 +98,6 @@ let private trimToSearchTerm (term:string) content =
         let section = stripped.Substring(start, stop - start)
         "..." + section + "..."
 
-
 let search = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
@@ -125,12 +124,6 @@ let about : HttpHandler =
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
             return!  next ctx
-        }
-
-let editor key = 
-    fun (next : HttpFunc) (ctx : HttpContext) -> 
-        task {
-            return! text "TBC" next ctx
         }
 
 [<CLIMutable>]
@@ -202,6 +195,12 @@ let createComment key =
                             Id = 0}) |> ignore
                     data.SaveChanges() |> ignore
                     redirectTo false (sprintf "/post/%s" key) next ctx
+        }
+
+let editor key = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            return! text "TBC" next ctx
         }
 
 let createPost = 
