@@ -43,7 +43,7 @@ let single key =
                 }
             return! 
                 match Seq.tryHead post with
-                | Some p -> htmlView (Views.single ctx.IsAuthor p) next ctx
+                | Some p -> htmlView (Views.single ctx.IsAuthor p false) next ctx
                 | None -> pageNotFound next ctx
         }
 
@@ -185,16 +185,29 @@ let createComment key =
                 | Error _ -> redirectTo false (sprintf "/post/%s" key) next ctx 
                 | Ok c ->
                     let data = ctx.GetService<GrislyData> ()
-                    data.Comments.Add 
-                        ({ 
-                            Author = c.author
-                            Date = DateTime.Now
-                            Content = c.content
-                            Post_Key = key 
-                            Post = Unchecked.defaultof<Post>
-                            Id = 0}) |> ignore
-                    data.SaveChanges() |> ignore
-                    redirectTo false (sprintf "/post/%s" key) next ctx
+                    let post = query {
+                        for post in data.FullPosts () do
+                            where (post.Key = key)
+                            select post
+                    }
+                    match Seq.tryHead post with
+                    | None -> redirectTo false "/" next ctx
+                    | Some p ->
+                        if p.Comments.Count >= 20 then
+                            redirectTo false "/" next ctx
+                        else if ["http:";"https:";"www."] |> List.exists (fun tk -> c.content.Contains(tk)) then
+                            htmlView (Views.single ctx.IsAuthor p true) next ctx
+                        else
+                            data.Comments.Add 
+                                ({ 
+                                    Author = c.author
+                                    Date = DateTime.Now
+                                    Content = c.content
+                                    Post_Key = key 
+                                    Post = Unchecked.defaultof<Post>
+                                    Id = 0}) |> ignore
+                            data.SaveChanges() |> ignore
+                            redirectTo false (sprintf "/post/%s#comments" key) next ctx
         }
 
 let editor key = 

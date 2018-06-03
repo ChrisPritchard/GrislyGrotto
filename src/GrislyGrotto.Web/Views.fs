@@ -34,12 +34,11 @@ let layout isAuthor content =
     ]
 
 let private listPost (post : Data.Post) = 
-    let link = sprintf "/post/%s" post.Key |> _href
     article [] [
-        header [] [ h2 [] [ a [ link ] [ encodedText post.Title ] ] ]
+        header [] [ h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ] ]
         footer [] [ 
                 sprintf "posted by %s on %O" post.Author.DisplayName post.Date |> rawText
-                a [ link ] [ Seq.length post.Comments |> sprintf "comments (%i)" |> rawText ]
+                a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "comments (%i)" |> rawText ]
             ]
         section [] [ rawText post.Content ]
     ]
@@ -59,7 +58,7 @@ let private comment (c : Data.Comment) = [
         p [] [ rawText c.Content ] 
     ]
 
-let single isAuthor (post : Data.Post) = 
+let single isAuthor (post : Data.Post) commentError = 
     let content = [ 
             article [] [
                 header [] [ h1 [] [ encodedText post.Title ] ]
@@ -67,28 +66,35 @@ let single isAuthor (post : Data.Post) =
                 section [] [ rawText post.Content ]
             ]
             div [] [
+                a [ _name "comments" ] []
                 h2 [] [ rawText "Comments" ]
                 post.Comments |> Seq.collect comment |> Seq.toList |> div []
             ]
-            form [ _method "POST" ] [
-                div [] [
-                    label [] [
-                        rawText "Author"
-                        br []
-                        input [ _type "text"; _name "author" ]
-                    ]
-                ]
-                div [] [
-                    label [] [
-                        rawText "Content"
-                        br []
-                        textarea [ _rows "3"; _cols "50"; _name "content" ] []
-                    ]
-                ]
-                input [ _type "submit"; _value "Comment" ]
-            ]
         ]
-    layout isAuthor content
+    let commentForm = [
+        form [ _method "POST" ] [
+            div [] [
+                label [] [
+                    rawText "Author"
+                    br []
+                    input [ _type "text"; _name "author" ]
+                ]
+            ]
+            div [] [
+                label [] [
+                    rawText "Content"
+                    br []
+                    textarea [ _rows "3"; _cols "50"; _name "content" ] []
+                ]
+            ]
+            input [ _type "submit"; _value "Comment" ]
+            span [] [ rawText (if commentError then "Invalid comment. Note, comments cannot contain links" else "") ]
+        ]
+    ]
+    if post.Comments.Count >= 20 then 
+        layout isAuthor content
+    else
+        layout isAuthor (content @ commentForm)
 
 let login isAuthor wasError = 
     layout isAuthor [
