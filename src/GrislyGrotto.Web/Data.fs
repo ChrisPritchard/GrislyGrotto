@@ -4,6 +4,8 @@ open System
 open Microsoft.EntityFrameworkCore
 open System.ComponentModel.DataAnnotations
 open System.ComponentModel.DataAnnotations.Schema
+open System.Security.Cryptography
+open System.Text
 
 [<CLIMutable>]
 type Post = {
@@ -44,3 +46,13 @@ type GrislyData (options) =
     member __.Comments with get() = __.comments and set v = __.comments <- v
 
     member __.FullPosts () = __.Posts.Include(fun p -> p.Author).Include(fun p -> p.Comments)
+
+type Author with
+    member __.Validate passwordToCheck =
+        match __.Password.Split(',') with
+        | [|hash;salt|] ->
+            let newHashSource =salt + passwordToCheck |> Encoding.UTF8.GetBytes
+            use hasher = SHA384.Create()
+            let newHash = hasher.ComputeHash newHashSource |> Convert.ToBase64String
+            newHash = hash
+        | _ -> false

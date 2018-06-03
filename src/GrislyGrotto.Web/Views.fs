@@ -71,6 +71,28 @@ let single (post : Data.Post) =
         ]
     layout content
 
+let login wasError = 
+    layout [
+        form [ _method "POST" ] [
+            div [] [
+                label [] [
+                    rawText "Username"
+                    br []
+                    input [ _type "text"; _name "username" ]
+                ]
+            ]
+            span [] [ rawText (if wasError then "Username and/or Password not recognised" else "") ]
+            div [] [
+                label [] [
+                    rawText "Password"
+                    br []
+                    input [ _type "password"; _name "password" ]
+                ]
+            ]
+            input [ _type "submit"; _value "Login" ]
+        ]
+    ]
+
 let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) = 
     let yearList = 
         years |> Seq.map (fun (y,months) -> 

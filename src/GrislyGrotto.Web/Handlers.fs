@@ -3,6 +3,10 @@ module Handlers
 open Giraffe
 open Microsoft.AspNetCore.Http
 open Data
+open System.Security.Claims
+open Microsoft.AspNetCore.Authentication
+open Microsoft.AspNetCore.Authentication.Cookies
+open FSharp.Control.Tasks.ContextInsensitive 
 
 let accessDenied : HttpHandler = 
     setStatusCode 401 >=> text "Access Denied"
@@ -39,11 +43,7 @@ let single key =
                 | None -> pageNotFound next ctx
         }
 
-let login = 
-    fun (next : HttpFunc) (ctx : HttpContext) -> 
-        task {
-            return! text "TBC" next ctx
-        }
+let login : HttpHandler = Views.login false |> htmlView
 
 let private monthNames = 
     [""; "january"; "february"; "march"; "april";
@@ -123,10 +123,48 @@ let editor key =
             return! text "TBC" next ctx
         }
 
+[<CLIMutable>]
+type LoginForm = {
+    username: string
+    password: string
+}
+
+let setUserAndRedirect (next : HttpFunc) (ctx : HttpContext) (author: Author) =
+    task {
+        let issuer = "http://grislygrotto.azurewebsites.net/"
+        let claims =
+            [
+                Claim(ClaimTypes.Name, author.Username,  ClaimValueTypes.String, issuer)
+            ]
+        let authScheme = CookieAuthenticationDefaults.AuthenticationScheme
+        let identity = ClaimsIdentity(claims, authScheme)
+        let user = ClaimsPrincipal(identity)
+        do! ctx.SignInAsync(authScheme, user)
+        
+        return! redirectTo false "/" next ctx
+    }
+
 let tryLogin = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! text "TBC" next ctx
+            let! form = ctx.TryBindFormAsync<LoginForm> ()
+            let badLogin () = htmlView (Views.login true) next ctx
+            return! 
+                match form with
+                | Error _ -> badLogin ()
+                | Ok form -> 
+                    let data = ctx.GetService<GrislyData> ()
+                    let authors = query {
+                        for user in data.Authors do
+                            where (user.Username = form.username)
+                            select user
+                    }
+                    match Seq.tryHead authors with
+                    | None -> badLogin ()
+                    | Some a ->
+                        if a.Validate form.password then
+                            setUserAndRedirect next ctx a
+                        else badLogin ()
         }
 
 let createComment key = 

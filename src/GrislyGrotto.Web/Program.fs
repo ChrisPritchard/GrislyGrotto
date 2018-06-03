@@ -6,6 +6,7 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.EntityFrameworkCore
 open Giraffe
 open System.IO
+open Microsoft.AspNetCore.Authentication.Cookies
 
 let mustBeUser = requiresAuthentication Handlers.accessDenied
 
@@ -42,13 +43,22 @@ let configureApp (app : IApplicationBuilder) =
     | true  -> app.UseDeveloperExceptionPage()
     | false -> app.UseGiraffeErrorHandler errorHandler)
         .UseStaticFiles()
+        .UseAuthentication()
         .UseGiraffe(webApp)
 
 let connString = "Server=tcp:grislygrotto.database.windows.net,1433;Data Source=grislygrotto.database.windows.net;Initial Catalog=grislygrotto;Persist Security Info=False;User ID=grislygrotto_user;Password=***REMOVED***;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
+let cookieAuth (o : CookieAuthenticationOptions) =
+    do
+        o.SlidingExpiration   <- true
+        o.ExpireTimeSpan      <- TimeSpan.FromDays 1.
+
 let configureServices (services : IServiceCollection) =
     services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
-    services.AddGiraffe() |> ignore
+    services
+        .AddGiraffe()
+        .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(cookieAuth) |> ignore
 
 let configureLogging (builder : ILoggingBuilder) =
     let filter (l : LogLevel) = l.Equals LogLevel.Error
