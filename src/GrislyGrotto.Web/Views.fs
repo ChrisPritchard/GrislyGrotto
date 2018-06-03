@@ -2,10 +2,12 @@ module Views
 
 open Giraffe.GiraffeViewEngine
 
-let layout content =
+let layout isAuthor content =
     let menuItems = [
         ul [] [
-            li [] [ a [ _href "/login" ] [ rawText "Login" ] ]
+            li [] [ a 
+                [ _href (if isAuthor then "/new" else "/login") ] 
+                [ rawText (if isAuthor then "New Post" else "Login") ] ]
             li [] [ a [ _href "/archives" ] [ rawText "Archives" ] ]
             li [] [ a [ _href "/search" ] [ rawText "Search" ] ]
             li [] [ a [ _href "/about" ] [ rawText "About" ] ]
@@ -42,7 +44,7 @@ let private listPost (post : Data.Post) =
         section [] [ rawText post.Content ]
     ]
 
-let latest posts page = 
+let latest isAuthor posts page = 
     let postList = posts |> Seq.toList |> List.map listPost
     let navLink pg txt = a [ sprintf "/page/%i" pg |> _href ] [ rawText txt ]
     let content = 
@@ -50,14 +52,14 @@ let latest posts page =
         match page with 
         | 0 -> [ navLink 1 "Next" ] 
         | _ -> [ navLink (page - 1) "Prev";navLink (page + 1) "Next" ]
-    layout content
+    layout isAuthor content
 
 let private comment (c : Data.Comment) = [
         b [] [ sprintf "%s. %O" c.Author c.Date |> rawText ]
         p [] [ rawText c.Content ] 
     ]
 
-let single (post : Data.Post) = 
+let single isAuthor (post : Data.Post) = 
     let content = [ 
             article [] [
                 header [] [ h1 [] [ encodedText post.Title ] ]
@@ -69,10 +71,10 @@ let single (post : Data.Post) =
                 post.Comments |> Seq.collect comment |> Seq.toList |> div []
             ]
         ]
-    layout content
+    layout isAuthor content
 
-let login wasError = 
-    layout [
+let login isAuthor wasError = 
+    layout isAuthor [
         form [ _method "POST" ] [
             div [] [
                 label [] [
@@ -93,7 +95,7 @@ let login wasError =
         ]
     ]
 
-let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) = 
+let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) = 
     let yearList = 
         years |> Seq.map (fun (y,months) -> 
             div [] [ 
@@ -115,9 +117,9 @@ let archives (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) 
             [h2 [] [ rawText "Stories" ]]
             storyList
         ]
-    List.concat content |> layout
+    List.concat content |> layout isAuthor
 
-let search (results: Data.Post list option) =
+let search isAuthor (results: Data.Post list option) =
     let searchBox = [
             h2 [] [ rawText "Search" ]
             form [ _method "GET" ] [
@@ -132,7 +134,7 @@ let search (results: Data.Post list option) =
             ]
         ]
     match results with
-    | None -> layout searchBox
+    | None -> layout isAuthor searchBox
     | Some r -> 
         let results = [
             h3 [] [ rawText "Results" ]
@@ -143,9 +145,9 @@ let search (results: Data.Post list option) =
                     span [] [ sprintf "Posted by %s on %O" post.Author.DisplayName post.Date |> rawText ]
                 ]) |> ul []
         ]
-        layout (searchBox @ results)
+        layout isAuthor (searchBox @ results)
 
-let about = 
+let about isAuthor = 
     let content = [ 
         article [] [
             h1 [] [ rawText "About me" ]
@@ -208,4 +210,4 @@ let about =
             p [] [ rawText "Cheers." ]
         ] 
     ]
-    layout content
+    layout isAuthor content

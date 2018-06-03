@@ -8,6 +8,9 @@ open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
 
+type HttpContext with
+    member __.IsAuthor = __.User.Identity.IsAuthenticated
+
 let accessDenied : HttpHandler = 
     setStatusCode 401 >=> text "Access Denied"
 let pageNotFound : HttpHandler = 
@@ -25,7 +28,7 @@ let latest page =
                     take 5
                     select post
             }
-            return! htmlView (Views.latest posts page) next ctx
+            return! htmlView (Views.latest ctx.IsAuthor posts page) next ctx
         }
 
 let single key = 
@@ -39,11 +42,15 @@ let single key =
                 }
             return! 
                 match Seq.tryHead post with
-                | Some p -> htmlView (Views.single p) next ctx
+                | Some p -> htmlView (Views.single ctx.IsAuthor p) next ctx
                 | None -> pageNotFound next ctx
         }
 
-let login : HttpHandler = Views.login false |> htmlView
+let login = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            return! htmlView (Views.login ctx.IsAuthor false) next ctx
+        }
 
 let private monthNames = 
     [""; "january"; "february"; "march"; "april";
@@ -81,7 +88,7 @@ let archives =
                         Comments = new System.Collections.Generic.List<Comment>()
                     }
             }
-            return! htmlView (Views.archives years stories) next ctx
+            return! htmlView (Views.archives ctx.IsAuthor years stories) next ctx
         }
 
 let private trimToSearchTerm (term:string) content =
@@ -100,7 +107,7 @@ let search =
         task {
             return! 
                 match ctx.TryGetQueryStringValue "searchTerm" with
-                | None -> htmlView (Views.search None) next ctx
+                | None -> htmlView (Views.search ctx.IsAuthor None) next ctx
                 | Some term ->
                     let data = ctx.GetService<GrislyData> ()
                     let posts = query {
@@ -114,7 +121,13 @@ let search =
                         posts 
                             |> Seq.map (fun p -> { p with Content = trimToSearchTerm term p.Content })
                             |> Seq.toList
-                    htmlView (results |> Some |> Views.search) next ctx
+                    htmlView (results |> Some |> Views.search ctx.IsAuthor) next ctx
+        }
+
+let about = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            return! htmlView (Views.about ctx.IsAuthor) next ctx
         }
 
 let editor key = 
@@ -148,7 +161,7 @@ let tryLogin =
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
             let! form = ctx.TryBindFormAsync<LoginForm> ()
-            let badLogin () = htmlView (Views.login true) next ctx
+            let badLogin () = htmlView (Views.login ctx.IsAuthor true) next ctx
             return! 
                 match form with
                 | Error _ -> badLogin ()
