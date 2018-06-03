@@ -7,6 +7,7 @@ open System.Security.Claims
 open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
+open System
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -46,11 +47,7 @@ let single key =
                 | None -> pageNotFound next ctx
         }
 
-let login = 
-    fun (next : HttpFunc) (ctx : HttpContext) -> 
-        task {
-            return! htmlView (Views.login ctx.IsAuthor false) next ctx
-        }
+let login : HttpHandler = htmlView (Views.login false false)
 
 let private monthNames = 
     [""; "january"; "february"; "march"; "april";
@@ -124,10 +121,10 @@ let search =
                     htmlView (results |> Some |> Views.search ctx.IsAuthor) next ctx
         }
 
-let about = 
+let about : HttpHandler = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! htmlView (Views.about ctx.IsAuthor) next ctx
+            return!  next ctx
         }
 
 let editor key = 
@@ -180,10 +177,31 @@ let tryLogin =
                         else badLogin ()
         }
 
+[<CLIMutable>]
+type NewComment = {
+    author: string
+    content: string
+}
+
 let createComment key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! text "TBC" next ctx
+            let! newComment = ctx.TryBindFormAsync<NewComment> ()
+            return! 
+                match newComment with
+                | Error _ -> redirectTo false (sprintf "/post/%s" key) next ctx 
+                | Ok c ->
+                    let data = ctx.GetService<GrislyData> ()
+                    data.Comments.Add 
+                        ({ 
+                            Author = c.author
+                            Date = DateTime.Now
+                            Content = c.content
+                            Post_Key = key 
+                            Post = Unchecked.defaultof<Post>
+                            Id = 0}) |> ignore
+                    data.SaveChanges() |> ignore
+                    redirectTo false (sprintf "/post/%s" key) next ctx
         }
 
 let createPost = 

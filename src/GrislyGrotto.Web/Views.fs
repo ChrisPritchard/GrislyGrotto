@@ -70,6 +70,23 @@ let single isAuthor (post : Data.Post) =
                 h2 [] [ rawText "Comments" ]
                 post.Comments |> Seq.collect comment |> Seq.toList |> div []
             ]
+            form [ _method "POST" ] [
+                div [] [
+                    label [] [
+                        rawText "Author"
+                        br []
+                        input [ _type "text"; _name "author" ]
+                    ]
+                ]
+                div [] [
+                    label [] [
+                        rawText "Content"
+                        br []
+                        textarea [ _rows "3"; _cols "50"; _name "content" ] []
+                    ]
+                ]
+                input [ _type "submit"; _value "Comment" ]
+            ]
         ]
     layout isAuthor content
 
