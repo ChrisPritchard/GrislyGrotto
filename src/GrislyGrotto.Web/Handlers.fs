@@ -213,7 +213,19 @@ let createComment key =
 let editor key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! text "TBC" next ctx
+            return! 
+                match key with
+                | None -> htmlView (Views.editor None) next ctx
+                | Some k ->
+                    let data = ctx.GetService<GrislyData> ()
+                    let post = query {
+                        for post in data.FullPosts () do
+                            where (post.Key = k && post.Author.Username = ctx.User.Identity.Name)
+                            select post
+                    }
+                    match Seq.tryHead post with
+                    | None -> redirectTo false "/" next ctx
+                    | Some p -> htmlView (Views.editor (Some p)) next ctx
         }
 
 let createPost = 

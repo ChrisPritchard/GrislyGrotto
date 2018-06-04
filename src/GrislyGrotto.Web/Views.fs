@@ -170,6 +170,33 @@ let search isAuthor (results: Data.Post list option) =
         ]
         layout isAuthor (searchBox @ results)
 
+let editor (post : Data.Post option) = 
+    let title = 
+        [ _type "text"; _name "title" ] @ match post with | Some p -> [ _value p.Title ] | _ -> []
+        |> input
+    let content = 
+        match post with | Some p -> [ rawText p.Content ] | None -> []
+        |> div [ _contenteditable "contenteditable" ]
+    layout true [
+        form [ _method "POST" ] [
+            p [] [
+                label [] [
+                    rawText "Title"
+                    br []
+                    title
+                ]
+            ]
+            p [] [
+                label [] [
+                    rawText "Content"
+                    br []
+                    content
+                ]
+            ]
+            input [ _type "submit" _value "Submit" ]
+        ]
+    ]
+
 let about isAuthor = 
     let content = [ 
         article [] [
