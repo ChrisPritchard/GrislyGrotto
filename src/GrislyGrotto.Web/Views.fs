@@ -176,7 +176,10 @@ let editor (post : Data.Post option) =
         |> input
     let content = 
         match post with | Some p -> [ rawText p.Content ] | None -> []
-        |> div [ _contenteditable "contenteditable" ]
+        |> div [ _class "editor"; _contenteditable "true"; _id "editor" ]
+    let isStory = 
+         [ _name "isStory"; _type "checkbox" ] @ match post with | Some p when p.IsStory -> [ _checked ] | _ -> []
+         |> input
     layout true [
         form [ _method "POST" ] [
             p [] [
@@ -190,10 +193,28 @@ let editor (post : Data.Post option) =
                 label [] [
                     rawText "Content"
                     br []
+                    input [ _type "hidden"; _name "content"; _id "content" ]
                     content
                 ]
             ]
-            input [ _type "submit" _value "Submit" ]
+            p [] [
+                label [] [
+                    input [ _name "editmode"; _type "radio"; _value "rendered" ]
+                    rawText "Rendered"
+                ]
+                label [] [
+                    input [ _name "editmode"; _type "radio"; _value "html" ]
+                    rawText "HTML"
+                ]
+            ]
+            p [] [
+                label [] [
+                    isStory 
+                    rawText "Is Story"
+                ]
+            ]
+            input [ _type "submit"; _value "Submit"; _id "submit" ]
+            script [ _type "javascript"; _src "/editor.js" ] []
         ]
     ]
 
