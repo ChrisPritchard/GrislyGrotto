@@ -234,8 +234,31 @@ let createPost =
             return! text "TBC" next ctx
         }
 
+type NewPost = {
+    title: string
+    content: string
+    isStory: bool
+}
+
 let editPost key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return! text "TBC" next ctx
+            let! newPost = ctx.TryBindFormAsync<NewPost> ()
+            return! 
+                match newPost with
+                | Error _ -> redirectTo false "/" next ctx  // todo: validation error
+                | Ok f ->
+                    let data = ctx.GetService<GrislyData> ()
+                    let post = query {
+                        for post in data.FullPosts () do
+                            where (post.Key = key)
+                            select post
+                        }
+                    match Seq.tryHead post with
+                    | None -> redirectTo false "/" next ctx  // todo: validation error
+                    | Some p -> 
+                        let updated = { p with Title = f.title; Content = f.content; IsStory = f.isStory }
+                        data.Update(updated) |> ignore
+                        data.SaveChanges() |> ignore
+                        redirectTo false (sprintf "/post/%s" key) next ctx
         }
