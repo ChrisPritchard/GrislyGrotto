@@ -8,6 +8,7 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
 open Giraffe
 open Data
+open Microsoft.AspNetCore.Mvc.TagHelpers.Internal
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -43,7 +44,10 @@ let single key =
                 }
             return! 
                 match Seq.tryHead post with
-                | Some p -> htmlView (Views.single ctx.IsAuthor p false) next ctx
+                | Some p -> 
+                    let isAuthorsPost = ctx.IsAuthor && p.Author.Username = ctx.User.Identity.Name
+                    let view = Views.single ctx.IsAuthor isAuthorsPost p false
+                    htmlView view next ctx
                 | None -> pageNotFound next ctx
         }
 
@@ -196,7 +200,9 @@ let createComment key =
                         if p.Comments.Count >= 20 then
                             redirectTo false "/" next ctx
                         else if ["http:";"https:";"www."] |> List.exists (fun tk -> c.content.Contains(tk)) then
-                            htmlView (Views.single ctx.IsAuthor p true) next ctx
+                            let isAuthorsPost = ctx.IsAuthor && p.Author.Username = ctx.User.Identity.Name
+                            let view = Views.single ctx.IsAuthor isAuthorsPost p true
+                            htmlView view next ctx
                         else
                             data.Comments.Add 
                                 ({ 
@@ -234,6 +240,7 @@ let createPost =
             return! text "TBC" next ctx
         }
 
+[<CLIMutable>]
 type NewPost = {
     title: string
     content: string
@@ -258,7 +265,7 @@ let editPost key =
                     | None -> redirectTo false "/" next ctx  // todo: validation error
                     | Some p -> 
                         let updated = { p with Title = f.title; Content = f.content; IsStory = f.isStory }
-                        data.Update(updated) |> ignore
+                        data.Entry(p).CurrentValues.SetValues(updated) |> ignore
                         data.SaveChanges() |> ignore
                         redirectTo false (sprintf "/post/%s" key) next ctx
         }
