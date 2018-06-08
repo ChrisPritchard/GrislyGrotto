@@ -19,6 +19,7 @@ let webApp =
                 routef "/post/%s" Handlers.single
                 route "/login" >=> Handlers.login
                 route "/archives" >=> Handlers.archives
+                routef "/month/%s/%i" Handlers.month
                 route "/search" >=> Handlers.search            
                 route "/about" >=> Handlers.about
                 route "/new" >=> mustBeUser >=> Handlers.editor None

@@ -148,6 +148,17 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
         ]
     List.concat content |> layout isAuthor
 
+let month isAuthor posts = 
+    let postList = posts |> Seq.toList |> List.map listPost
+    //let navLink pg txt = a [ sprintf "/page/%i" pg |> _href ] [ rawText txt ]
+    let content = 
+        postList
+        //  @ 
+        // match page with 
+        // | 0 -> [ navLink 1 "Next" ] 
+        // | _ -> [ navLink (page - 1) "Prev";navLink (page + 1) "Next" ]
+    layout isAuthor content
+
 let search isAuthor (results: Data.Post list option) =
     let searchBox = [
             h2 [] [ rawText "Search" ]

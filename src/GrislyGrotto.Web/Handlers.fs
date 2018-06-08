@@ -96,6 +96,24 @@ let archives =
             return! htmlView (Views.archives ctx.IsAuthor years stories) next ctx
         }
 
+let month (monthName, year) = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            let monthNumber = List.tryFindIndex (fun o -> o = monthName) monthNames
+            return!
+                match monthNumber with
+                | None -> pageNotFound next ctx
+                | Some m ->
+                    let data = ctx.GetService<GrislyData> ()
+                    let posts = query {
+                        for post in data.FullPosts () do
+                            sortBy post.Date
+                            where (post.Date.Year = year && post.Date.Month = m)
+                            select post
+                    }
+                    htmlView (Views.month ctx.IsAuthor posts) next ctx
+        }
+
 let private trimToSearchTerm (term:string) content =
     let stripped = System.Text.RegularExpressions.Regex.Replace(content, "<[^>]*>", "")
     let index = stripped.IndexOf(term)
