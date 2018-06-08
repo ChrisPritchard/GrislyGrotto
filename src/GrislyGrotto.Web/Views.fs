@@ -58,18 +58,24 @@ let private comment (c : Data.Comment) = [
         p [] [ rawText c.Content ] 
     ]
 
-let single isAuthor (post : Data.Post) commentError = 
-    let content = [ 
+let single isAuthor isOwnedPost (post : Data.Post) commentError = 
+    let content = 
+        [ 
             article [] [
                 header [] [ h1 [] [ encodedText post.Title ] ]
                 footer [] [ sprintf "%s. %O" post.Author.DisplayName post.Date |> rawText ]
                 section [] [ rawText post.Content ]
-            ]
+            ] 
+        ]
+        @
+        if isOwnedPost then [ a [ sprintf "/edit/%s" post.Key |> _href ] [ rawText "Edit" ] ] else []
+        @
+        [ 
             div [] [
                 a [ _name "comments" ] []
                 h2 [] [ rawText "Comments" ]
                 post.Comments |> Seq.collect comment |> Seq.toList |> div []
-            ]
+            ] 
         ]
     let commentForm = [
         form [ _method "POST" ] [
@@ -178,7 +184,7 @@ let editor (post : Data.Post option) =
         match post with | Some p -> [ rawText p.Content ] | None -> []
         |> div [ _class "editor"; _contenteditable "true"; _id "editor" ]
     let isStory = 
-         [ _name "isStory"; _type "checkbox" ] @ match post with | Some p when p.IsStory -> [ _checked ] | _ -> []
+         [ _id "isStoryToggle"; _type "checkbox" ] @ match post with | Some p when p.IsStory -> [ _checked ] | _ -> []
          |> input
     layout true [
         form [ _method "POST" ] [
@@ -199,7 +205,7 @@ let editor (post : Data.Post option) =
             ]
             p [] [
                 label [] [
-                    input [ _name "editmode"; _type "radio"; _value "rendered" ]
+                    input [ _name "editmode"; _type "radio"; _value "rendered"; _checked ]
                     rawText "Rendered"
                 ]
                 label [] [
@@ -208,13 +214,14 @@ let editor (post : Data.Post option) =
                 ]
             ]
             p [] [
+                input [ _type "hidden"; _name "isStory"; _id "isStory"; _value "false" ]
                 label [] [
                     isStory 
                     rawText "Is Story"
                 ]
             ]
             input [ _type "submit"; _value "Submit"; _id "submit" ]
-            script [ _type "javascript"; _src "/editor.js" ] []
+            script [ _type "text/javascript"; _src "/editor.js" ] []
         ]
     ]
 
