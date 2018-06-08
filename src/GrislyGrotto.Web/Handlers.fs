@@ -8,6 +8,7 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
 open Giraffe
 open Data
+open Microsoft.Extensions.Logging
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -16,6 +17,10 @@ let accessDenied : HttpHandler =
     setStatusCode 401 >=> text "Access Denied"
 let pageNotFound : HttpHandler = 
     setStatusCode 404 >=> text "Page Not Found"
+
+let error (ex : Exception) (logger : ILogger) =
+    logger.LogError(EventId(), ex, "An unhandled exception has occurred while executing the request.")
+    clearResponse >=> setStatusCode 500 >=> text ex.Message
 
 let latest page = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 

@@ -7,10 +7,10 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.EntityFrameworkCore
 open Giraffe
-
-let mustBeUser = requiresAuthentication Handlers.accessDenied
+open Microsoft.Extensions.Configuration
 
 let webApp = 
+    let mustBeUser = requiresAuthentication Handlers.accessDenied
     choose [
         GET >=>
             choose [
@@ -33,46 +33,47 @@ let webApp =
             ]
     ]
 
-let errorHandler (ex : Exception) (logger : ILogger) =
-    logger.LogError(EventId(), ex, "An unhandled exception has occurred while executing the request.")
-    clearResponse >=> setStatusCode 500 >=> text ex.Message
-
-let configureApp (app : IApplicationBuilder) =
-    let env = app.ApplicationServices.GetService<IHostingEnvironment>()
-    (match env.IsDevelopment() with
-    | true  -> app.UseDeveloperExceptionPage()
-    | false -> app.UseGiraffeErrorHandler errorHandler)
-        .UseStaticFiles()
-        .UseAuthentication()
-        .UseGiraffe(webApp)
-
-let connString = "Server=tcp:grislygrotto.database.windows.net,1433;Data Source=grislygrotto.database.windows.net;Initial Catalog=grislygrotto;Persist Security Info=False;User ID=grislygrotto_user;Password=***REMOVED***;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-
-let cookieAuth (o : CookieAuthenticationOptions) =
-    do
-        o.SlidingExpiration   <- true
-        o.ExpireTimeSpan      <- TimeSpan.FromDays 1.
-
-let configureServices (services : IServiceCollection) =
-    services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
-    services
-        .AddGiraffe()
-        .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(cookieAuth) |> ignore
-
-let configureLogging (builder : ILoggingBuilder) =
-    let filter (l : LogLevel) = l.Equals LogLevel.Error
-    builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
-
 [<EntryPoint>]
 let main __ =
     let contentRoot = Directory.GetCurrentDirectory()
-    let webRoot     = Path.Combine(contentRoot, "wwwroot")
+    let webRoot = Path.Combine(contentRoot, "wwwroot")
+    let configuration = 
+        (new ConfigurationBuilder())
+            .SetBasePath(contentRoot)
+            .AddEnvironmentVariables().Build()
+
+    let configureApp (app : IApplicationBuilder) =
+        let env = app.ApplicationServices.GetService<IHostingEnvironment>()
+        (match env.IsDevelopment() with
+        | true  -> app.UseDeveloperExceptionPage()
+        | false -> app.UseGiraffeErrorHandler Handlers.error)
+            .UseStaticFiles()
+            .UseAuthentication()
+            .UseGiraffe(webApp)
+
+    let cookieAuth (o : CookieAuthenticationOptions) =
+        do
+            o.SlidingExpiration   <- true
+            o.ExpireTimeSpan      <- TimeSpan.FromDays 1.
+
+    let configureServices (services : IServiceCollection) =
+        let connString = configuration.GetConnectionString("default")
+        services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
+        services
+            .AddGiraffe()
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(cookieAuth) |> ignore
+
+    let configureLogging (builder : ILoggingBuilder) =
+        let filter (l : LogLevel) = l.Equals LogLevel.Error
+        builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
+
     WebHostBuilder()
         .UseKestrel()
         .UseContentRoot(contentRoot)
         .UseIISIntegration()
         .UseWebRoot(webRoot)
+        .UseConfiguration(configuration)
         .Configure(Action<IApplicationBuilder> configureApp)
         .ConfigureServices(configureServices)
         .ConfigureLogging(configureLogging)
