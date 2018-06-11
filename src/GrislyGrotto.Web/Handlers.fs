@@ -18,6 +18,8 @@ let accessDenied : HttpHandler =
     setStatusCode 401 >=> text "Access Denied"
 let pageNotFound : HttpHandler = 
     setStatusCode 404 >=> text "Page Not Found"
+let badRequest : HttpHandler = 
+    setStatusCode 400 >=> text "Bad Request"
 
 let error (ex : Exception) (logger : ILogger) =
     logger.LogError(EventId(), ex, "An unhandled exception has occurred while executing the request.")
@@ -210,7 +212,7 @@ let createComment key =
             let! newComment = ctx.TryBindFormAsync<NewComment> ()
             return! 
                 match newComment with
-                | Error _ -> redirectTo false (sprintf "/post/%s" key) next ctx 
+                | Error _ -> badRequest next ctx
                 | Ok c ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -245,7 +247,7 @@ let editor key =
         task {
             return! 
                 match key with
-                | None -> htmlView (Views.editor None) next ctx
+                | None -> htmlView (Views.editor None false) next ctx
                 | Some k ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -255,15 +257,10 @@ let editor key =
                     }
                     match Seq.tryHead post with
                     | None -> redirectTo false "/" next ctx
-                    | Some p -> htmlView (Views.editor (Some p)) next ctx
+                    | Some p ->
+                        let model : Views.PostViewModel = { title = p.Title; content = p.Content; isStory = p.IsStory }
+                        htmlView (Views.editor (Some model) false) next ctx
         }
-
-[<CLIMutable>]
-type NewPost = {
-    title: string
-    content: string
-    isStory: bool
-}
 
 let getKey (title: string) = 
     let clean = title.ToLower().Replace (" ", "-")
@@ -276,10 +273,10 @@ let getWordCount (content: string) =
 let createPost = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            let! newPost = ctx.TryBindFormAsync<NewPost> ()
+            let! newPost = ctx.TryBindFormAsync<Views.PostViewModel> ()
             return! 
                 match newPost with
-                | Error _ -> redirectTo false "/" next ctx  // todo: validation error
+                | Error _ -> badRequest next ctx
                 | Ok f ->
                     let data = ctx.GetService<GrislyData> ()
                     let key = getKey f.title
@@ -289,7 +286,7 @@ let createPost =
                             select post
                         }
                     match Seq.tryHead existing with
-                    | Some _ -> redirectTo false "/" next ctx  // todo: validation error
+                    | Some _ -> htmlView (Views.editor (Some f) true) next ctx
                     | None ->
                         let wordCount = getWordCount f.content
                         let postEntity = {
@@ -311,10 +308,10 @@ let createPost =
 let editPost key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            let! newPost = ctx.TryBindFormAsync<NewPost> ()
+            let! newPost = ctx.TryBindFormAsync<Views.PostViewModel> ()
             return! 
                 match newPost with
-                | Error _ -> redirectTo false "/" next ctx  // todo: validation error
+                | Error _ -> badRequest next ctx
                 | Ok f ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -323,7 +320,7 @@ let editPost key =
                             select post
                         }
                     match Seq.tryHead post with
-                    | None -> redirectTo false "/" next ctx  // todo: validation error
+                    | None -> badRequest next ctx
                     | Some p -> 
                         let key = getKey f.title
                         let existing = query {
@@ -332,7 +329,7 @@ let editPost key =
                                 select post
                             }
                         match Seq.tryHead existing with
-                        | Some _ -> redirectTo false "/" next ctx  // todo: validation error
+                        | Some _ -> htmlView (Views.editor (Some f) true) next ctx
                         | None ->
                             let wordCount = getWordCount f.content
                             let updated = 

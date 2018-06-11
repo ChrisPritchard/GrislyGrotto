@@ -187,15 +187,23 @@ let search isAuthor (results: Data.Post list option) =
         ]
         layout isAuthor (searchBox @ results)
 
-let editor (post : Data.Post option) = 
+
+[<CLIMutable>]
+type PostViewModel = {
+    title: string
+    content: string
+    isStory: bool
+}
+
+let editor (post : PostViewModel option) existingError = 
     let title = 
-        [ _type "text"; _name "title" ] @ match post with | Some p -> [ _value p.Title ] | _ -> []
+        [ _type "text"; _name "title" ] @ match post with | Some p -> [ _value p.title ] | _ -> []
         |> input
     let content = 
-        match post with | Some p -> [ rawText p.Content ] | None -> []
+        match post with | Some p -> [ rawText p.content ] | None -> []
         |> div [ _class "editor"; _contenteditable "true"; _id "editor" ]
     let isStory = 
-         [ _id "isStoryToggle"; _type "checkbox" ] @ match post with | Some p when p.IsStory -> [ _checked ] | _ -> []
+         [ _id "isStoryToggle"; _type "checkbox" ] @ match post with | Some p when p.isStory -> [ _checked ] | _ -> []
          |> input
     layout true [
         form [ _method "POST" ] [
@@ -205,6 +213,7 @@ let editor (post : Data.Post option) =
                     br []
                     title
                 ]
+                span [] [ rawText (if existingError then "A post with a similar title already exists" else "") ]
             ]
             p [] [
                 label [] [
