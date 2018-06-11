@@ -12,6 +12,7 @@ type Post = {
     [<Key>]
     Key: string
     Title: string
+    Author_Username: string
     [<ForeignKey("Author_Username")>]
     Author: Author
     Date: DateTime

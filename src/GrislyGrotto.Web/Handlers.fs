@@ -9,6 +9,7 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
 open Giraffe
 open Data
+open System.Text.RegularExpressions
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -85,6 +86,7 @@ let archives =
                     select {
                         Key = post.Key
                         Title = post.Title
+                        Author_Username = post.Author_Username
                         Author = post.Author
                         Date = post.Date
                         Content = ""
@@ -115,7 +117,7 @@ let month (monthName, year) =
         }
 
 let private trimToSearchTerm (term:string) content =
-    let stripped = System.Text.RegularExpressions.Regex.Replace(content, "<[^>]*>", "")
+    let stripped = Regex.Replace(content, "<[^>]*>", "")
     let index = stripped.IndexOf(term)
     match index with 
     | -1 -> ""
@@ -256,18 +258,47 @@ let editor key =
                     | Some p -> htmlView (Views.editor (Some p)) next ctx
         }
 
-let createPost = 
-    fun (next : HttpFunc) (ctx : HttpContext) -> 
-        task {
-            return! text "TBC" next ctx
-        }
-
 [<CLIMutable>]
 type NewPost = {
     title: string
     content: string
     isStory: bool
 }
+
+let getKey (title: string) = 
+    let clean = title.ToLower().Replace (" ", "-")
+    Regex.Replace (clean, "[^A-Za-z0-9 -]+", "")
+
+let getWordCount (content: string) = 
+    let stripped = Regex.Replace (content, "<[^>]*>", "")
+    stripped.Split([|' '|], StringSplitOptions.RemoveEmptyEntries).Length
+
+let createPost = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            let! newPost = ctx.TryBindFormAsync<NewPost> ()
+            return! 
+                match newPost with
+                | Error _ -> redirectTo false "/" next ctx  // todo: validation error
+                | Ok f ->
+                    let data = ctx.GetService<GrislyData> ()
+                    let key = getKey f.title
+                    let wordCount = getWordCount f.content
+                    let postEntity = {
+                        Author_Username = ctx.User.Identity.Name
+                        Author = Unchecked.defaultof<Author>
+                        Key = key
+                        Title = f.title
+                        Content = f.content
+                        IsStory = f.isStory
+                        Date = DateTime.Now
+                        WordCount = wordCount
+                        Comments = new System.Collections.Generic.List<Comment>()
+                    }
+                    data.Posts.Add(postEntity) |> ignore
+                    data.SaveChanges() |> ignore
+                    redirectTo false (sprintf "/post/%s" key) next ctx
+        }
 
 let editPost key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
@@ -280,13 +311,21 @@ let editPost key =
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
                         for post in data.FullPosts () do
-                            where (post.Key = key)
+                            where (post.Key = key && post.Author.Username = ctx.User.Identity.Name)
                             select post
                         }
                     match Seq.tryHead post with
                     | None -> redirectTo false "/" next ctx  // todo: validation error
                     | Some p -> 
-                        let updated = { p with Title = f.title; Content = f.content; IsStory = f.isStory }
+                        let key = getKey f.title
+                        let wordCount = getWordCount f.content
+                        let updated = 
+                            { p with 
+                                Key = key
+                                Title = f.title
+                                Content = f.content 
+                                IsStory = f.isStory
+                                WordCount = wordCount }
                         data.Entry(p).CurrentValues.SetValues(updated) |> ignore
                         data.SaveChanges() |> ignore
                         redirectTo false (sprintf "/post/%s" key) next ctx
