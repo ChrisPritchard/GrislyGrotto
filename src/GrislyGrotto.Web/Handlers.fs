@@ -283,21 +283,29 @@ let createPost =
                 | Ok f ->
                     let data = ctx.GetService<GrislyData> ()
                     let key = getKey f.title
-                    let wordCount = getWordCount f.content
-                    let postEntity = {
-                        Author_Username = ctx.User.Identity.Name
-                        Author = Unchecked.defaultof<Author>
-                        Key = key
-                        Title = f.title
-                        Content = f.content
-                        IsStory = f.isStory
-                        Date = DateTime.Now
-                        WordCount = wordCount
-                        Comments = new System.Collections.Generic.List<Comment>()
-                    }
-                    data.Posts.Add(postEntity) |> ignore
-                    data.SaveChanges() |> ignore
-                    redirectTo false (sprintf "/post/%s" key) next ctx
+                    let existing = query {
+                        for post in data.Posts do
+                            where (post.Key = key)
+                            select post
+                        }
+                    match Seq.tryHead existing with
+                    | Some _ -> redirectTo false "/" next ctx  // todo: validation error
+                    | None ->
+                        let wordCount = getWordCount f.content
+                        let postEntity = {
+                            Author_Username = ctx.User.Identity.Name
+                            Author = Unchecked.defaultof<Author>
+                            Key = key
+                            Title = f.title
+                            Content = f.content
+                            IsStory = f.isStory
+                            Date = DateTime.Now
+                            WordCount = wordCount
+                            Comments = new System.Collections.Generic.List<Comment>()
+                        }
+                        data.Posts.Add(postEntity) |> ignore
+                        data.SaveChanges() |> ignore
+                        redirectTo false (sprintf "/post/%s" key) next ctx
         }
 
 let editPost key = 
@@ -318,15 +326,23 @@ let editPost key =
                     | None -> redirectTo false "/" next ctx  // todo: validation error
                     | Some p -> 
                         let key = getKey f.title
-                        let wordCount = getWordCount f.content
-                        let updated = 
-                            { p with 
-                                Key = key
-                                Title = f.title
-                                Content = f.content 
-                                IsStory = f.isStory
-                                WordCount = wordCount }
-                        data.Entry(p).CurrentValues.SetValues(updated) |> ignore
-                        data.SaveChanges() |> ignore
-                        redirectTo false (sprintf "/post/%s" key) next ctx
+                        let existing = query {
+                            for post in data.Posts do
+                                where (post.Key = key && post.Key <> p.Key)
+                                select post
+                            }
+                        match Seq.tryHead existing with
+                        | Some _ -> redirectTo false "/" next ctx  // todo: validation error
+                        | None ->
+                            let wordCount = getWordCount f.content
+                            let updated = 
+                                { p with 
+                                    Key = key
+                                    Title = f.title
+                                    Content = f.content 
+                                    IsStory = f.isStory
+                                    WordCount = wordCount }
+                            data.Entry(p).CurrentValues.SetValues(updated) |> ignore
+                            data.SaveChanges() |> ignore
+                            redirectTo false (sprintf "/post/%s" key) next ctx
         }
