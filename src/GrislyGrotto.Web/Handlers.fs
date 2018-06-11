@@ -165,7 +165,7 @@ type LoginForm = {
 
 let setUserAndRedirect (next : HttpFunc) (ctx : HttpContext) (author: Author) =
     task {
-        let issuer = "http://grislygrotto.azurewebsites.net/"
+        let issuer = sprintf "%s://%s" ctx.Request.Scheme ctx.Request.Host.Value
         let claims =
             [
                 Claim(ClaimTypes.Name, author.Username,  ClaimValueTypes.String, issuer)
