@@ -49,11 +49,12 @@ let single key =
                     where (post.Key = key)
                     select post
                 }
+            let commentError = match ctx.GetQueryStringValue "invalidcomment" with | Ok _ -> true | _ -> false
             return! 
                 match Seq.tryHead post with
                 | Some p -> 
                     let isAuthorsPost = ctx.IsAuthor && p.Author.Username = ctx.User.Identity.Name
-                    let view = Views.single ctx.IsAuthor isAuthorsPost p false
+                    let view = Views.single ctx.IsAuthor isAuthorsPost p commentError
                     htmlView view next ctx
                 | None -> pageNotFound next ctx
         }
@@ -224,11 +225,9 @@ let createComment key =
                     | None -> redirectTo false "/" next ctx
                     | Some p ->
                         if p.Comments.Count >= 20 then
-                            redirectTo false "/" next ctx
+                            badRequest next ctx
                         else if ["http:";"https:";"www."] |> List.exists (fun tk -> c.content.Contains(tk)) then
-                            let isAuthorsPost = ctx.IsAuthor && p.Author.Username = ctx.User.Identity.Name
-                            let view = Views.single ctx.IsAuthor isAuthorsPost p true
-                            htmlView view next ctx
+                            redirectTo false (sprintf "/post/%s?invalidcomment=true#comments" key) next ctx
                         else
                             data.Comments.Add 
                                 ({ 
