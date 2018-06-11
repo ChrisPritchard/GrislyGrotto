@@ -9,11 +9,15 @@ document.getElementById("submit").onclick = function() {
     return true;
 }
 
-document.getElementsByName("editmode").forEach(o => o.onclick = function() {
-    let checked = document.querySelector("[name='editmode']:checked").value;
-    let editor = document.getElementById("editor");
-    if(checked == "html")
-        editor.innerText = editor.innerHTML;
-    else
-        editor.innerHTML = editor.innerText;
-});
+let editmodeRadios = document.getElementsByName("editmode");
+for(var index in editmodeRadios) {
+    let radio = editmodeRadios[index];
+    radio.onchange = function() {
+        let checked = document.querySelector("[name='editmode']:checked").value;
+        let editor = document.getElementById("editor");
+        if(checked == "html")
+            editor.innerText = editor.innerHTML;
+        else
+            editor.innerHTML = editor.innerText;
+    }
+}
