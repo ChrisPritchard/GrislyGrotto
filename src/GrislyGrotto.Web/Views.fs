@@ -49,8 +49,8 @@ let latest isAuthor posts page =
     let content = 
         postList @ 
         match page with 
-        | 0 -> [ navLink 1 "Next" ] 
-        | _ -> [ navLink (page - 1) "Prev";navLink (page + 1) "Next" ]
+        | 0 -> [ navLink 1 "Next Page" ] 
+        | _ -> [ navLink (page - 1) "Previous Page";navLink (page + 1) "Next Page" ]
     layout isAuthor content
 
 let private comment (c : Data.Comment) = [
@@ -148,15 +148,13 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
         ]
     List.concat content |> layout isAuthor
 
-let month isAuthor posts = 
+let month isAuthor posts prevUrl nextUrl = 
     let postList = posts |> Seq.toList |> List.map listPost
-    //let navLink pg txt = a [ sprintf "/page/%i" pg |> _href ] [ rawText txt ]
+    let navLink url txt = a [ _href url ] [ rawText txt ]
     let content = 
         postList
-        //  @ 
-        // match page with 
-        // | 0 -> [ navLink 1 "Next" ] 
-        // | _ -> [ navLink (page - 1) "Prev";navLink (page + 1) "Next" ]
+        @ 
+        [ navLink prevUrl "Previous Month"; navLink nextUrl "Next Month" ]
     layout isAuthor content
 
 let search isAuthor (results: Data.Post list option) =
