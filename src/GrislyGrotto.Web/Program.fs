@@ -8,6 +8,8 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.EntityFrameworkCore
 open Giraffe
 open Microsoft.Extensions.Configuration
+open System.Globalization
+open Microsoft.AspNetCore.Localization
 
 let webApp = 
     let mustBeUser = requiresAuthentication Handlers.accessDenied
@@ -43,11 +45,21 @@ let main __ =
             .SetBasePath(contentRoot)
             .AddEnvironmentVariables().Build()
 
+    let configureCulture = 
+        let nzCulture = new CultureInfo("en-nz")
+        let nzCultureList = new System.Collections.Generic.List<CultureInfo>([ nzCulture ])
+        let localisation = new RequestLocalizationOptions()
+        localisation.SupportedCultures <- nzCultureList
+        localisation.SupportedUICultures <- nzCultureList
+        localisation.DefaultRequestCulture <- new RequestCulture(nzCulture)
+        localisation
+
     let configureApp (app : IApplicationBuilder) =
         let env = app.ApplicationServices.GetService<IHostingEnvironment>()
         (match env.IsDevelopment() with
         | true  -> app.UseDeveloperExceptionPage()
         | false -> app.UseGiraffeErrorHandler Handlers.error)
+            .UseRequestLocalization(configureCulture)
             .UseStaticFiles()
             .UseAuthentication()
             .UseGiraffe(webApp)
