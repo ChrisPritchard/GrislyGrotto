@@ -61,14 +61,12 @@ let main __ =
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(cookieAuth) |> ignore
 
-    let configureCulture = 
+    let configureCulture (o : RequestLocalizationOptions) = 
         let nzCulture = new CultureInfo("en-nz")
         let nzCultureList = new System.Collections.Generic.List<CultureInfo>([ nzCulture ])
-        let localisation = new RequestLocalizationOptions()
-        localisation.SupportedCultures <- nzCultureList
-        localisation.SupportedUICultures <- nzCultureList
-        localisation.DefaultRequestCulture <- new RequestCulture(nzCulture)
-        localisation
+        o.SupportedCultures <- nzCultureList
+        o.SupportedUICultures <- nzCultureList
+        o.DefaultRequestCulture <- new RequestCulture(nzCulture)
 
     let configureApp (app : IApplicationBuilder) =
         let env = app.ApplicationServices.GetService<IHostingEnvironment>()
