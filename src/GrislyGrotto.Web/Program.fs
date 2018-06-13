@@ -33,6 +33,7 @@ let webApp =
                 routef "/post/%s" Handlers.createComment
                 route "/new" >=> mustBeUser >=> Handlers.createPost
                 routef "/edit/%s" (fun key -> mustBeUser >=> Handlers.editPost key)
+                route "/api/savework" >=> mustBeUser >=> Handlers.saveWork
             ]
     ]
 
@@ -44,6 +45,21 @@ let main __ =
         (new ConfigurationBuilder())
             .SetBasePath(contentRoot)
             .AddEnvironmentVariables().Build()
+
+    let cookieAuth (o : CookieAuthenticationOptions) =
+        do
+            o.SlidingExpiration   <- true
+            o.ExpireTimeSpan      <- TimeSpan.FromDays 1.
+
+    let configureServices (services : IServiceCollection) =
+        let connString = configuration.GetConnectionString("default")
+        services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
+        services
+            .AddDistributedMemoryCache()
+            .AddSession()
+            .AddGiraffe()
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(cookieAuth) |> ignore
 
     let configureCulture = 
         let nzCulture = new CultureInfo("en-nz")
@@ -62,20 +78,8 @@ let main __ =
             .UseRequestLocalization(configureCulture)
             .UseStaticFiles()
             .UseAuthentication()
+            .UseSession()
             .UseGiraffe(webApp)
-
-    let cookieAuth (o : CookieAuthenticationOptions) =
-        do
-            o.SlidingExpiration   <- true
-            o.ExpireTimeSpan      <- TimeSpan.FromDays 1.
-
-    let configureServices (services : IServiceCollection) =
-        let connString = configuration.GetConnectionString("default")
-        services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
-        services
-            .AddGiraffe()
-            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(cookieAuth) |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =
         let filter (l : LogLevel) = l.Equals LogLevel.Error

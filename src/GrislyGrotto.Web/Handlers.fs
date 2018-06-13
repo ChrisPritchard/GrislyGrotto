@@ -244,12 +244,20 @@ let createComment key =
                             redirectTo false (sprintf "/post/%s#comments" key) next ctx
         }
 
+let savedContentKey = "savedContent"
+
 let editor key = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
             return! 
                 match key with
-                | None -> htmlView (Views.editor None false) next ctx
+                | None -> 
+                    let saved = ctx.Session.GetString(savedContentKey)
+                    let model : Views.PostViewModel = { 
+                        title = ""
+                        content = if saved = null then "" else saved
+                        isStory = false }
+                    htmlView (Views.editor model false) next ctx
                 | Some k ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -261,7 +269,7 @@ let editor key =
                     | None -> redirectTo false "/" next ctx
                     | Some p ->
                         let model : Views.PostViewModel = { title = p.Title; content = p.Content; isStory = p.IsStory }
-                        htmlView (Views.editor (Some model) false) next ctx
+                        htmlView (Views.editor model false) next ctx
         }
 
 let getKey (title: string) = 
@@ -279,31 +287,32 @@ let createPost =
             return! 
                 match newPost with
                 | Error _ -> badRequest next ctx
-                | Ok f ->
+                | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
-                    let key = getKey f.title
+                    let key = getKey form.title
                     let existing = query {
                         for post in data.Posts do
                             where (post.Key = key)
                             select post
                         }
                     match Seq.tryHead existing with
-                    | Some _ -> htmlView (Views.editor (Some f) true) next ctx
+                    | Some _ -> htmlView (Views.editor form true) next ctx
                     | None ->
-                        let wordCount = getWordCount f.content
+                        let wordCount = getWordCount form.content
                         let postEntity = {
                             Author_Username = ctx.User.Identity.Name
                             Author = Unchecked.defaultof<Author>
                             Key = key
-                            Title = f.title
-                            Content = f.content
-                            IsStory = f.isStory
+                            Title = form.title
+                            Content = form.content
+                            IsStory = form.isStory
                             Date = DateTime.Now
                             WordCount = wordCount
                             Comments = new System.Collections.Generic.List<Comment>()
                         }
                         data.Posts.Add(postEntity) |> ignore
                         data.SaveChanges() |> ignore
+                        ctx.Session.Remove(savedContentKey)
                         redirectTo false (sprintf "/post/%s" key) next ctx
         }
 
@@ -314,7 +323,7 @@ let editPost key =
             return! 
                 match newPost with
                 | Error _ -> badRequest next ctx
-                | Ok f ->
+                | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
                         for post in data.FullPosts () do
@@ -324,24 +333,33 @@ let editPost key =
                     match Seq.tryHead post with
                     | None -> badRequest next ctx
                     | Some p -> 
-                        let key = getKey f.title
+                        let key = getKey form.title
                         let existing = query {
                             for post in data.Posts do
                                 where (post.Key = key && post.Key <> p.Key)
                                 select post
                             }
                         match Seq.tryHead existing with
-                        | Some _ -> htmlView (Views.editor (Some f) true) next ctx
+                        | Some _ -> htmlView (Views.editor form true) next ctx
                         | None ->
-                            let wordCount = getWordCount f.content
+                            let wordCount = getWordCount form.content
                             let updated = 
                                 { p with 
                                     Key = key
-                                    Title = f.title
-                                    Content = f.content 
-                                    IsStory = f.isStory
+                                    Title = form.title
+                                    Content = form.content 
+                                    IsStory = form.isStory
                                     WordCount = wordCount }
                             data.Entry(p).CurrentValues.SetValues(updated) |> ignore
                             data.SaveChanges() |> ignore
+                            ctx.Session.Remove(savedContentKey)
                             redirectTo false (sprintf "/post/%s" key) next ctx
+        }
+
+let saveWork =
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            let! body = ctx.BindJsonAsync<string>()
+            ctx.Request.HttpContext.Session.SetString(savedContentKey, body)
+            return! Successful.OK "" next ctx
         }

@@ -193,23 +193,14 @@ type PostViewModel = {
     isStory: bool
 }
 
-let editor (post : PostViewModel option) existingError = 
-    let title = 
-        [ _type "text"; _name "title" ] @ match post with | Some p -> [ _value p.title ] | _ -> []
-        |> input
-    let content = 
-        match post with | Some p -> [ rawText p.content ] | None -> []
-        |> div [ _class "editor"; _contenteditable "true"; _id "editor" ]
-    let isStory = 
-         [ _id "isStoryToggle"; _type "checkbox" ] @ match post with | Some p when p.isStory -> [ _checked ] | _ -> []
-         |> input
+let editor (post : PostViewModel) existingError = 
     layout true [
         form [ _method "POST" ] [
             p [] [
                 label [] [
                     rawText "Title"
                     br []
-                    title
+                    input [ _type "text"; _name "title"; _value post.title ]
                 ]
                 span [] [ rawText (if existingError then "A post with a similar title already exists" else "") ]
             ]
@@ -218,7 +209,7 @@ let editor (post : PostViewModel option) existingError =
                     rawText "Content"
                     br []
                     input [ _type "hidden"; _name "content"; _id "content" ]
-                    content
+                    div [ _class "editor"; _contenteditable "true"; _id "editor" ] [ rawText post.content ]
                 ]
             ]
             p [] [
@@ -234,11 +225,12 @@ let editor (post : PostViewModel option) existingError =
             p [] [
                 input [ _type "hidden"; _name "isStory"; _id "isStory"; _value "false" ]
                 label [] [
-                    isStory 
+                    [ _id "isStoryToggle"; _type "checkbox" ] @ (if post.isStory then [ _checked ] else []) |> input
                     rawText "Is Story"
                 ]
             ]
             input [ _type "submit"; _value "Submit"; _id "submit" ]
+            span [ _id "saving-status" ] []
             script [ _type "text/javascript"; _src "/editor.js" ] []
         ]
     ]
