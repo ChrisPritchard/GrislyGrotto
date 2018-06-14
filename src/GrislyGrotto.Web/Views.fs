@@ -58,6 +58,8 @@ let private comment (c : Data.Comment) = [
         p [] [ rawText c.Content ] 
     ]
 
+type CommentsError = | NoCommentError | RequiredCommentFields | InvalidCommentContent
+
 let single isAuthor isOwnedPost (post : Data.Post) commentError = 
     let content = 
         [ 
@@ -94,7 +96,10 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
                 ]
             ]
             input [ _type "submit"; _value "Comment" ]
-            span [] [ rawText (if commentError then "Invalid comment. Note, comments cannot contain links" else "") ]
+            (match commentError with
+            | NoCommentError -> []
+            | RequiredCommentFields -> [ rawText "Both author and content are required fields" ]
+            | InvalidCommentContent -> [ rawText "Comments cannot contain links" ]) |> span []
         ]
     ]
     if post.Comments.Count >= 20 then 
@@ -193,7 +198,10 @@ type PostViewModel = {
     isStory: bool
 }
 
-let editor (post : PostViewModel) existingError = 
+type EditorErrors = 
+    | NoEditorErrors | RequiredEditorFields | ExistingPostKey
+
+let editor (post : PostViewModel) errors = 
     layout true [
         form [ _method "POST" ] [
             p [] [
@@ -202,7 +210,10 @@ let editor (post : PostViewModel) existingError =
                     br []
                     input [ _type "text"; _name "title"; _value post.title ]
                 ]
-                span [] [ rawText (if existingError then "A post with a similar title already exists" else "") ]
+                (match errors with
+                | NoEditorErrors -> []
+                | RequiredEditorFields -> [ rawText "Both title and content are required fields" ]
+                | ExistingPostKey -> [ rawText "A post with a similar title already exists" ]) |> span []
             ]
             p [] [
                 label [] [

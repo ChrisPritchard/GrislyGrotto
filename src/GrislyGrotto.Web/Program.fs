@@ -18,7 +18,7 @@ let webApp =
             choose [
                 route "/" >=> Handlers.latest 0
                 routef "/page/%i" Handlers.latest
-                routef "/post/%s" Handlers.single
+                routef "/post/%s" (fun key -> Handlers.single key Views.NoCommentError)
                 route "/login" >=> Handlers.login
                 route "/archives" >=> Handlers.archives
                 routef "/month/%s/%i" Handlers.month

@@ -40,7 +40,7 @@ let latest page =
             return! htmlView (Views.latest ctx.IsAuthor posts page) next ctx
         }
 
-let single key = 
+let single key commentError = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
             let data = ctx.GetService<GrislyData> ()
@@ -49,7 +49,6 @@ let single key =
                     where (post.Key = key)
                     select post
                 }
-            let commentError = match ctx.GetQueryStringValue "invalidcomment" with | Ok _ -> true | _ -> false
             return! 
                 match Seq.tryHead post with
                 | Some p -> 
@@ -229,8 +228,10 @@ let createComment key =
                     | Some p ->
                         if p.Comments.Count >= 20 then
                             badRequest next ctx
+                        else if c.author = "" || c.content = "" then
+                            single key Views.RequiredCommentFields next ctx
                         else if ["http:";"https:";"www."] |> List.exists (fun tk -> c.content.Contains(tk)) then
-                            redirectTo false (sprintf "/post/%s?invalidcomment=true#comments" key) next ctx
+                            single key Views.InvalidCommentContent next ctx
                         else
                             data.Comments.Add 
                                 ({ 
@@ -257,7 +258,7 @@ let editor key =
                         title = ""
                         content = if saved = null then "" else saved
                         isStory = false }
-                    htmlView (Views.editor model false) next ctx
+                    htmlView (Views.editor model Views.NoEditorErrors) next ctx
                 | Some k ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -269,7 +270,7 @@ let editor key =
                     | None -> redirectTo false "/" next ctx
                     | Some p ->
                         let model : Views.PostViewModel = { title = p.Title; content = p.Content; isStory = p.IsStory }
-                        htmlView (Views.editor model false) next ctx
+                        htmlView (Views.editor model Views.NoEditorErrors) next ctx
         }
 
 let getKey (title: string) = 
@@ -286,7 +287,10 @@ let createPost =
             let! newPost = ctx.TryBindFormAsync<Views.PostViewModel> ()
             return! 
                 match newPost with
-                | Error _ -> badRequest next ctx
+                | Error _ -> 
+                    badRequest next ctx
+                | Ok form when form.title = "" || form.content = "" ->
+                    htmlView (Views.editor form Views.RequiredEditorFields) next ctx
                 | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
                     let key = getKey form.title
@@ -296,7 +300,7 @@ let createPost =
                             select post
                         }
                     match Seq.tryHead existing with
-                    | Some _ -> htmlView (Views.editor form true) next ctx
+                    | Some _ -> htmlView (Views.editor form Views.ExistingPostKey) next ctx
                     | None ->
                         let wordCount = getWordCount form.content
                         let postEntity = {
@@ -323,6 +327,8 @@ let editPost key =
             return! 
                 match newPost with
                 | Error _ -> badRequest next ctx
+                | Ok form when form.title = "" || form.content = "" ->
+                    htmlView (Views.editor form Views.RequiredEditorFields) next ctx
                 | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -340,7 +346,7 @@ let editPost key =
                                 select post
                             }
                         match Seq.tryHead existing with
-                        | Some _ -> htmlView (Views.editor form true) next ctx
+                        | Some _ -> htmlView (Views.editor form Views.ExistingPostKey) next ctx
                         | None ->
                             let wordCount = getWordCount form.content
                             let updated = 
