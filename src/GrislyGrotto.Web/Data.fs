@@ -52,7 +52,7 @@ type Author with
     member __.Validate passwordToCheck =
         match __.Password.Split(',') with
         | [|hash;salt|] ->
-            let newHashSource =salt + passwordToCheck |> Encoding.UTF8.GetBytes
+            let newHashSource = salt + passwordToCheck |> Encoding.UTF8.GetBytes
             use hasher = SHA384.Create()
             let newHash = hasher.ComputeHash newHashSource |> Convert.ToBase64String
             newHash = hash

@@ -68,9 +68,11 @@ fieldset label, fieldset input {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
+
 .inline label, .inline input {
     display: inline
 }
+
 .inline label {
     margin-right: 1em;
 }
