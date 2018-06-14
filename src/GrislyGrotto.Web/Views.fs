@@ -3,6 +3,26 @@ module Views
 open Giraffe.GiraffeViewEngine
 
 let layout isAuthor content =
+    let head = 
+        head [] [
+            title [] [ rawText "The Grisly Grotto" ]
+            meta [ _name "description"
+                   _content "The personal blog of Chris Pritchard and Peter Coleman" ]
+            meta [ _name "viewport"
+                   _content "width=device-width, initial-scale=1" ]
+            link [ _rel "shortcut icon" 
+                   _type "image/x-icon"
+                   _href "/favicon.png" ]
+            link [ _rel "stylesheet"
+                   _type "text/css"
+                   _href "https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+                   attr "integrity" "sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
+                   _crossorigin "anonymous" ]
+            link [ _rel "stylesheet"
+                   _type "text/css"
+                   _href "/site.css" ]
+        ]
+    let sitehead = header [] [ h1 [] [ a [ _href "/" ] [ rawText "The Grisly Grotto" ] ] ]
     let menuItems = [
         ul [] [
             li [] [ a 
@@ -14,19 +34,9 @@ let layout isAuthor content =
         ]
     ]
     html [] [
-        head [] [
-            title [] [ rawText "The Grisly Grotto" ]
-            meta [ _name "description"
-                   _content "The personal blog of Chris Pritchard and Peter Coleman" ]
-            link [ _rel "shortcut icon" 
-                   _type "image/x-icon"
-                   _href "/favicon.png" ]
-            link [ _rel "stylesheet"
-                   _type "text/css"
-                   _href "/site.css" ]
-        ]
+        head
         body [] [
-            header [] [ h1 [] [ a [ _href "/" ] [ rawText "The Grisly Grotto" ] ] ]
+            sitehead
             nav [] menuItems
             section [] content
             footer [] [ rawText "Grisly Grotto v15. Site designed and coded by Christopher Pritchard, 2018" ]
