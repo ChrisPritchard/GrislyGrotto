@@ -156,7 +156,7 @@ let search =
 let about : HttpHandler = 
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {
-            return!  next ctx
+            return! htmlView (Views.about ctx.IsAuthor) next ctx
         }
 
 [<CLIMutable>]

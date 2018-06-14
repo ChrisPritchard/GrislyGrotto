@@ -8,45 +8,39 @@ let layout isAuthor content =
             title [] [ rawText "The Grisly Grotto" ]
             meta [ _name "description"
                    _content "The personal blog of Chris Pritchard and Peter Coleman" ]
-            meta [ _name "viewport"
-                   _content "width=device-width, initial-scale=1" ]
             link [ _rel "shortcut icon" 
                    _type "image/x-icon"
                    _href "/favicon.png" ]
             link [ _rel "stylesheet"
                    _type "text/css"
-                   _href "https://unpkg.com/purecss@1.0.0/build/pure-min.css"
-                   attr "integrity" "sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
-                   _crossorigin "anonymous" ]
-            link [ _rel "stylesheet"
-                   _type "text/css"
                    _href "/site.css" ]
         ]
     let sitehead = header [] [ h1 [] [ a [ _href "/" ] [ rawText "The Grisly Grotto" ] ] ]
-    let menuItems = [
-        ul [] [
-            li [] [ a 
-                [ _href (if isAuthor then "/new" else "/login") ] 
-                [ rawText (if isAuthor then "New Post" else "Login") ] ]
-            li [] [ a [ _href "/archives" ] [ rawText "Archives" ] ]
-            li [] [ a [ _href "/search" ] [ rawText "Search" ] ]
-            li [] [ a [ _href "/about" ] [ rawText "About" ] ]
+    let navigation = 
+        nav [] [
+            ul [] [
+                li [] [ a 
+                    [ _href (if isAuthor then "/new" else "/login") ] 
+                    [ rawText (if isAuthor then "New Post" else "Login") ] ]
+                li [] [ a [ _href "/archives" ] [ rawText "Archives" ] ]
+                li [] [ a [ _href "/search" ] [ rawText "Search" ] ]
+                li [] [ a [ _href "/about" ] [ rawText "About" ] ]
+            ]
         ]
-    ]
     html [] [
         head
         body [] [
             sitehead
-            nav [] menuItems
-            section [] content
+            navigation
+            section [ _class "content" ] content
             footer [] [ rawText "Grisly Grotto v15. Site designed and coded by Christopher Pritchard, 2018" ]
         ]
     ]
 
 let private listPost (post : Data.Post) = 
     article [] [
-        header [] [ h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ] ]
-        footer [] [ 
+        h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ]
+        h5 [] [ 
                 sprintf "posted by %s on %O" post.Author.DisplayName post.Date |> rawText
                 a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "comments (%i)" |> rawText ]
             ]
@@ -91,25 +85,21 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
         ]
     let commentForm = [
         form [ _method "POST" ] [
-            div [] [
-                label [] [
-                    rawText "Author"
-                    br []
-                    input [ _type "text"; _name "author" ]
-                ]
+            fieldset [] [
+                label [ _for "author" ] [ rawText "Author" ]
+                input [ _type "text"; _id "author"; _name "author" ]
+
+                label [ _for "content" ] [ rawText "Content" ]
+                textarea [ _rows "3"; _cols "50"; _id "content"; _name "content" ] []
+
+                input [ _type "submit"; _value "Comment" ]
+
+                (match commentError with
+                | NoCommentError -> []
+                | RequiredCommentFields -> [ rawText "Both author and content are required fields" ]
+                | InvalidCommentContent -> [ rawText "Comments cannot contain links" ]) 
+                    |> span [ _class "error-message" ]
             ]
-            div [] [
-                label [] [
-                    rawText "Content"
-                    br []
-                    textarea [ _rows "3"; _cols "50"; _name "content" ] []
-                ]
-            ]
-            input [ _type "submit"; _value "Comment" ]
-            (match commentError with
-            | NoCommentError -> []
-            | RequiredCommentFields -> [ rawText "Both author and content are required fields" ]
-            | InvalidCommentContent -> [ rawText "Comments cannot contain links" ]) |> span []
         ]
     ]
     if post.Comments.Count >= 20 then 
@@ -120,29 +110,23 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
 let login isAuthor wasError = 
     layout isAuthor [
         form [ _method "POST" ] [
-            div [] [
-                label [] [
-                    rawText "Username"
-                    br []
-                    input [ _type "text"; _name "username" ]
-                ]
+            fieldset [] [
+                label [ _for "username" ] [ rawText "Username" ]
+                input [ _type "text"; _id "username"; _name "username" ]
+
+                label [ _for "password" ] [ rawText "Password" ]
+                input [ _type "password"; _id "password"; _name "password" ]
+
+                input [ _type "submit"; _value "Login" ]
+                span [ _class "error-message" ] [ rawText (if wasError then "Username and/or Password not recognised" else "") ]
             ]
-            span [] [ rawText (if wasError then "Username and/or Password not recognised" else "") ]
-            div [] [
-                label [] [
-                    rawText "Password"
-                    br []
-                    input [ _type "password"; _name "password" ]
-                ]
-            ]
-            input [ _type "submit"; _value "Login" ]
         ]
     ]
 
 let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) = 
     let yearList = 
         years |> Seq.map (fun (y,months) -> 
-            div [] [ 
+            div [ _class "archive-month" ] [ 
                 h3 [] [ string y |> rawText ]
                 months |> Seq.map (fun (m,c) -> 
                     li [] [ 
@@ -156,9 +140,10 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
                 span [] [ sprintf "Posted by %s on %O" p.Author.DisplayName p.Date |> rawText ]
             ]) |> Seq.toList
     let content = [
-            [h2 [] [ rawText "Archives" ]]
+            [ h2 [] [ rawText "Archives" ]]
             yearList
-            [h2 [] [ rawText "Stories" ]]
+            [ div [ _class "after-archive-months" ] [] ]
+            [ h2 [] [ rawText "Stories" ]]
             storyList
         ]
     List.concat content |> layout isAuthor
@@ -176,15 +161,13 @@ let search isAuthor (results: Data.Post list option) =
     let searchBox = [
             h2 [] [ rawText "Search" ]
             form [ _method "GET" ] [
-                p [] [
-                    label [] [ 
-                        rawText "Search term"
-                        br []
-                        input [ _type "text"; _name "searchTerm" ] ]
-                    ]
-                input [ _type "submit"; _value "Search" ]
-                p [] [ rawText "Max 50 results. Note, searches can take some time." ]
+                fieldset [] [
+                    label [ _for "searchTerm" ] [ rawText "Search term" ]
+                    input [ _type "text"; _id "searchTerm"; _name "searchTerm" ]
+                    input [ _type "submit"; _value "Search"; _class "pure-button pure-button-primary" ]
+                ]
             ]
+            p [ ] [ rawText "Max 50 results. Note, searches can take some time." ]
         ]
     match results with
     | None -> layout isAuthor searchBox
@@ -217,52 +200,47 @@ type EditorAutoSave =
 let editor (post : PostViewModel) autosave errors = 
     layout true [
         form [ _method "POST" ] [
-            p [] [
-                label [] [
-                    rawText "Title"
-                    br []
-                    input [ _type "text"; _name "title"; _value post.title ]
-                ]
+            fieldset [] [
+                label [ _for "title" ] [ rawText "Title" ]
+                input [ _type "text"; _id "title"; _name "title"; _value post.title ]
                 (match errors with
                 | NoEditorErrors -> []
                 | RequiredEditorFields -> [ rawText "Both title and content are required fields" ]
-                | ExistingPostKey -> [ rawText "A post with a similar title already exists" ]) |> span []
-            ]
-            p [] [
-                label [] [
-                    rawText "Content"
-                    br []
-                    input [ _type "hidden"; _name "content"; _id "content" ]
-                    div [ _class "editor"; _contenteditable "true"; _id "editor" ] [ rawText post.content ]
+                | ExistingPostKey -> [ rawText "A post with a similar title already exists" ]) 
+                    |> span [ _class "error-message" ]
+
+                label [ _for "editor" ] [ rawText "Content" ]
+                input [ _type "hidden"; _name "content" ]
+                div [ _class "editor"; _contenteditable "true"; _id "editor" ] [ rawText post.content ]
+
+                div [ _class "inline" ] [
+                    label [] [
+                        input [ _name "editmode"; _type "radio"; _value "rendered"; _checked ]
+                        rawText "Rendered"
+                    ]
+                    label [] [
+                        input [ _name "editmode"; _type "radio"; _value "html" ]
+                        rawText "HTML"
+                    ]
+                    input [ _type "hidden"; _name "isStory"; _id "isStory"; _value "false" ]
+                    label [] [
+                        [ _id "isStoryToggle"; _type "checkbox" ] @ (if post.isStory then [ _checked ] else []) |> input
+                        rawText "Is Story"
+                    ]
                 ]
+                
+                input [ _type "submit"; _value "Submit"; _id "submit" ]
+                (match autosave with | AutoSaveEnabled -> span [ _id "saving-status" ] [] | _ -> br [])
+
+                script [ _type "text/javascript"; _src "/editor.js" ] []
             ]
-            p [] [
-                label [] [
-                    input [ _name "editmode"; _type "radio"; _value "rendered"; _checked ]
-                    rawText "Rendered"
-                ]
-                label [] [
-                    input [ _name "editmode"; _type "radio"; _value "html" ]
-                    rawText "HTML"
-                ]
-            ]
-            p [] [
-                input [ _type "hidden"; _name "isStory"; _id "isStory"; _value "false" ]
-                label [] [
-                    [ _id "isStoryToggle"; _type "checkbox" ] @ (if post.isStory then [ _checked ] else []) |> input
-                    rawText "Is Story"
-                ]
-            ]
-            input [ _type "submit"; _value "Submit"; _id "submit" ]
-            (match autosave with | AutoSaveEnabled -> span [ _id "saving-status" ] [] | _ -> br [])
-            script [ _type "text/javascript"; _src "/editor.js" ] []
         ]
     ]
 
 let about isAuthor = 
     let content = [ 
         article [] [
-            h1 [] [ rawText "About me" ]
+            h2 [] [ rawText "About me" ]
             p [] [
                 rawText 
                     "My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. 
