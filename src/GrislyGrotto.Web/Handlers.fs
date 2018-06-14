@@ -258,7 +258,8 @@ let editor key =
                         title = ""
                         content = if saved = null then "" else saved
                         isStory = false }
-                    htmlView (Views.editor model Views.NoEditorErrors) next ctx
+                    let view = Views.editor model Views.AutoSaveEnabled Views.NoEditorErrors
+                    htmlView view next ctx
                 | Some k ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -270,7 +271,8 @@ let editor key =
                     | None -> redirectTo false "/" next ctx
                     | Some p ->
                         let model : Views.PostViewModel = { title = p.Title; content = p.Content; isStory = p.IsStory }
-                        htmlView (Views.editor model Views.NoEditorErrors) next ctx
+                        let view = Views.editor model Views.AutoSaveDisabled Views.NoEditorErrors
+                        htmlView view next ctx
         }
 
 let getKey (title: string) = 
@@ -290,7 +292,8 @@ let createPost =
                 | Error _ -> 
                     badRequest next ctx
                 | Ok form when form.title = "" || form.content = "" ->
-                    htmlView (Views.editor form Views.RequiredEditorFields) next ctx
+                    let view = Views.editor form Views.AutoSaveEnabled Views.RequiredEditorFields
+                    htmlView view next ctx
                 | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
                     let key = getKey form.title
@@ -300,7 +303,9 @@ let createPost =
                             select post
                         }
                     match Seq.tryHead existing with
-                    | Some _ -> htmlView (Views.editor form Views.ExistingPostKey) next ctx
+                    | Some _ -> 
+                        let view = Views.editor form Views.AutoSaveEnabled Views.ExistingPostKey
+                        htmlView view next ctx
                     | None ->
                         let wordCount = getWordCount form.content
                         let postEntity = {
@@ -328,7 +333,8 @@ let editPost key =
                 match newPost with
                 | Error _ -> badRequest next ctx
                 | Ok form when form.title = "" || form.content = "" ->
-                    htmlView (Views.editor form Views.RequiredEditorFields) next ctx
+                    let view = Views.editor form Views.AutoSaveDisabled Views.RequiredEditorFields
+                    htmlView view next ctx
                 | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
                     let post = query {
@@ -346,7 +352,9 @@ let editPost key =
                                 select post
                             }
                         match Seq.tryHead existing with
-                        | Some _ -> htmlView (Views.editor form Views.ExistingPostKey) next ctx
+                        | Some _ -> 
+                            let view = Views.editor form Views.AutoSaveDisabled Views.ExistingPostKey
+                            htmlView view next ctx
                         | None ->
                             let wordCount = getWordCount form.content
                             let updated = 

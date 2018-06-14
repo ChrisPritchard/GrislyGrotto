@@ -201,7 +201,10 @@ type PostViewModel = {
 type EditorErrors = 
     | NoEditorErrors | RequiredEditorFields | ExistingPostKey
 
-let editor (post : PostViewModel) errors = 
+type EditorAutoSave = 
+    | AutoSaveEnabled | AutoSaveDisabled
+
+let editor (post : PostViewModel) autosave errors = 
     layout true [
         form [ _method "POST" ] [
             p [] [
@@ -241,7 +244,7 @@ let editor (post : PostViewModel) errors =
                 ]
             ]
             input [ _type "submit"; _value "Submit"; _id "submit" ]
-            span [ _id "saving-status" ] []
+            (match autosave with | AutoSaveEnabled -> span [ _id "saving-status" ] [] | _ -> br [])
             script [ _type "text/javascript"; _src "/editor.js" ] []
         ]
     ]

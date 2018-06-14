@@ -22,24 +22,26 @@ for(var index in editmodeRadios) {
     }
 }
 
-setInterval(function() {
-    var status = document.getElementById('saving-status');
-    status.innerText = 'Saving...';
+var autosaveStatus = document.getElementById('saving-status');
+if(autosaveStatus)
+    setInterval(function() {
+        
+        autosaveStatus.innerText = 'Saving...';
 
-    var request = new XMLHttpRequest();
-    request.open('POST', '/api/savework', true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.onload = function() {
-        setTimeout(function() {
-            status.innerText = 'Saved';
-            setTimeout(function() { status.innerText = ''; }, 1000);
-        }, 1000);                
-    };
-    
-    let editor = document.getElementById("editor");
-    let checked = document.querySelector("[name='editmode']:checked").value;
-    if(checked == "html")
-        request.send(JSON.stringify(editor.innerText));
-    else
-        request.send(JSON.stringify(editor.innerHTML));
-}, 10000);
+        var request = new XMLHttpRequest();
+        request.open('POST', '/api/savework', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.onload = function() {
+            setTimeout(function() {
+                autosaveStatus.innerText = 'Saved';
+                setTimeout(function() { autosaveStatus.innerText = ''; }, 1000);
+            }, 1000);                
+        };
+        
+        let editor = document.getElementById("editor");
+        let checked = document.querySelector("[name='editmode']:checked").value;
+        if(checked == "html")
+            request.send(JSON.stringify(editor.innerText));
+        else
+            request.send(JSON.stringify(editor.innerHTML));
+    }, 10000);
