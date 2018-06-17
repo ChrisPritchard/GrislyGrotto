@@ -118,7 +118,8 @@ let month (monthName, year) =
                     let monthUrl targetMonth targetYear = sprintf "/month/%s/%i" targetMonth targetYear
                     let prevMonth = if m = 1 then monthUrl "december" (year - 1) else monthUrl monthNames.[m - 1] year
                     let nextMonth = if m = 12 then monthUrl "january" (year + 1) else monthUrl monthNames.[m + 1] year
-                    htmlView (Views.month ctx.IsAuthor posts prevMonth nextMonth) next ctx
+                    let view = Views.month ctx.IsAuthor monthName year posts prevMonth nextMonth
+                    htmlView view next ctx
         }
 
 let private trimToSearchTerm (term:string) content =

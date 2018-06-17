@@ -1,6 +1,7 @@
 module Views
 
 open Giraffe.GiraffeViewEngine
+open System
 
 let layout isAuthor content =
     let head = 
@@ -152,7 +153,7 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
                 span [] [ sprintf "Posted by %s on %O" p.Author.DisplayName p.Date |> rawText ]
             ]) |> Seq.toList
     let content = [
-            [ h2 [] [ rawText "Archives" ]]
+            [ h2 [ _class "page-heading" ] [ rawText "Archives" ]]
             yearList
             [ div [ _class "after-archive-months" ] [] ]
             [ h2 [] [ rawText "Stories" ]]
@@ -160,9 +161,12 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
         ]
     List.concat content |> layout isAuthor
 
-let month isAuthor posts prevUrl nextUrl = 
+let month isAuthor (monthName : string) year posts prevUrl nextUrl = 
     let postList = posts |> Seq.toList |> List.map listPost
+    let capitilisedMonth = (Seq.head monthName |> Char.ToUpper)::(Seq.tail monthName |> Seq.toList) |> String.Concat
     let content = 
+        [ h2 [ _class "page-heading" ] [ rawText <| sprintf "%s, %i" capitilisedMonth year ] ]
+        @
         postList
         @ 
         [ buttonLink "Previous Month" "prev-btn" prevUrl; buttonLink "Next Month" "next-btn" nextUrl ]
@@ -170,7 +174,7 @@ let month isAuthor posts prevUrl nextUrl =
 
 let search isAuthor searchTerm (results: Data.Post list option) =
     let searchBox = [
-            h2 [] [ rawText "Search" ]
+            h2 [ _class "page-heading" ] [ rawText "Search" ]
             form [ _method "GET" ] [
                 fieldset [] [
                     label [ _for "searchTerm" ] [ rawText "Search term" ]
@@ -251,7 +255,7 @@ let editor (post : PostViewModel) autosave errors =
 let about isAuthor = 
     let content = [ 
         article [] [
-            h2 [] [ rawText "About me" ]
+            h2 [ _class "page-heading" ] [ rawText "About me" ]
             p [] [
                 rawText 
                     "My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. 
