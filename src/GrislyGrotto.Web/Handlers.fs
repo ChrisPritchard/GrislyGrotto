@@ -370,6 +370,24 @@ let editPost key =
                             redirectTo false (sprintf "/post/%s" key) next ctx
         }
 
+let deletePost key = 
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            let data = ctx.GetService<GrislyData> ()
+            let post = query {
+                for post in data.FullPosts () do
+                    where (post.Key = key && post.Author.Username = ctx.User.Identity.Name)
+                    select post
+                }
+            return!
+                    match Seq.tryHead post with
+                    | None -> badRequest next ctx
+                    | Some p -> 
+                        data.Remove(p) |> ignore
+                        data.SaveChanges() |> ignore
+                        redirectTo false "/" next ctx
+        }
+
 let saveWork =
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {

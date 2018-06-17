@@ -97,3 +97,13 @@ input.prev-btn {
 input.next-btn {
     float: right;
 }
+
+form.owned-post-btn {
+    display: inline;
+}
+
+input.owned-post-btn {
+    width: 120px;
+    margin-top: 1em;
+    margin-right: 1em;
+}

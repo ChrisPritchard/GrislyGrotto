@@ -79,7 +79,14 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
             ] 
         ]
         @
-        if isOwnedPost then [ a [ sprintf "/edit/%s" post.Key |> _href ] [ rawText "Edit" ] ] else []
+        if isOwnedPost then 
+            [ 
+                form [ _method "GET"; _class "owned-post-btn"; _action <| sprintf "/edit/%s" post.Key ] 
+                    [ input [ _type "submit"; _value "Edit"; _class "owned-post-btn" ] ]
+                form [ _method "POST"; _class "owned-post-btn"; _action <| sprintf "/delete/%s" post.Key ] 
+                    [ input [ _type "submit"; _value "Delete"; _class "owned-post-btn"; attr "onclick" "return confirm('Are you sure? This is irreversible.');" ] ]
+                ] 
+            else []
         @
         [ 
             div [] [
