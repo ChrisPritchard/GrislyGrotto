@@ -37,6 +37,9 @@ let layout isAuthor content =
         ]
     ]
 
+let buttonLink text url =
+    form [ _method "GET"; _action url ] [ input [ _type "submit"; _value text ] ]
+
 let private listPost (post : Data.Post) = 
     article [] [
         h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ]
@@ -49,7 +52,7 @@ let private listPost (post : Data.Post) =
 
 let latest isAuthor posts page = 
     let postList = posts |> Seq.toList |> List.map listPost
-    let navLink pg txt = a [ sprintf "/page/%i" pg |> _href ] [ rawText txt ]
+    let navLink pg txt = sprintf "/page/%i" pg |> buttonLink txt
     let content = 
         postList @ 
         match page with 
@@ -150,11 +153,10 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
 
 let month isAuthor posts prevUrl nextUrl = 
     let postList = posts |> Seq.toList |> List.map listPost
-    let navLink url txt = a [ _href url ] [ rawText txt ]
     let content = 
         postList
         @ 
-        [ navLink prevUrl "Previous Month"; navLink nextUrl "Next Month" ]
+        [ buttonLink "Previous Month" prevUrl; buttonLink "Next Month" nextUrl ]
     layout isAuthor content
 
 let search isAuthor (results: Data.Post list option) =
