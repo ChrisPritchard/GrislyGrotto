@@ -185,7 +185,11 @@ let search isAuthor searchTerm (results: Data.Post list option) =
                 fieldset [] [
                     label [ _for "searchTerm" ] [ rawText "Search term" ]
                     input [ _type "text"; _id "searchTerm"; _name "searchTerm"; _value searchTerm ]
-                    input [ _type "submit"; _value "Search"; _class "pure-button pure-button-primary" ]
+                    input [ 
+                        _type "submit"
+                        _value "Search"
+                        _class "pure-button pure-button-primary"
+                        attr "onclick" "this.style.display = 'none';return true;" ]
                     span [] [ rawText "Max 50 results. Note, searches can take some time." ]
                 ]
             ]
