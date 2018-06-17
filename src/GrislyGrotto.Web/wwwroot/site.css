@@ -23,6 +23,10 @@ nav ul li {
     margin-right: auto;
 }
 
+footer {
+    clear: both;
+}
+
 h5 {
     margin-top: -1.5em;
     margin-bottom: 0.5em;
@@ -80,4 +84,16 @@ fieldset label, fieldset input {
 span.error-message {
     display: block;
     color: red;
+}
+
+input.prev-btn, input.next-btn {
+    width: 150px;
+}
+
+input.prev-btn {
+    float: left;
+}
+
+input.next-btn {
+    float: right;
 }

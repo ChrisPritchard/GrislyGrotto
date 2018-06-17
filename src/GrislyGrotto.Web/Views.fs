@@ -37,8 +37,8 @@ let layout isAuthor content =
         ]
     ]
 
-let buttonLink text url =
-    form [ _method "GET"; _action url ] [ input [ _type "submit"; _value text ] ]
+let buttonLink text cssClass url =
+    form [ _method "GET"; _action url ] [ input [ _type "submit"; _value text; _class cssClass ] ]
 
 let private listPost (post : Data.Post) = 
     article [] [
@@ -52,12 +52,14 @@ let private listPost (post : Data.Post) =
 
 let latest isAuthor posts page = 
     let postList = posts |> Seq.toList |> List.map listPost
-    let navLink pg txt = sprintf "/page/%i" pg |> buttonLink txt
     let content = 
         postList @ 
         match page with 
-        | 0 -> [ navLink 1 "Next Page" ] 
-        | _ -> [ navLink (page - 1) "Previous Page";navLink (page + 1) "Next Page" ]
+        | 0 -> [ buttonLink "Next Page" "next-btn" <| sprintf "/page/%i" 1 ] 
+        | _ -> 
+            [ 
+                buttonLink "Previous Page" "prev-btn" <| sprintf "/page/%i" (page - 1)
+                buttonLink "Next Page" "next-btn" <| sprintf "/page/%i" (page + 1) ]
     layout isAuthor content
 
 let private comment (c : Data.Comment) = [
@@ -156,7 +158,7 @@ let month isAuthor posts prevUrl nextUrl =
     let content = 
         postList
         @ 
-        [ buttonLink "Previous Month" prevUrl; buttonLink "Next Month" nextUrl ]
+        [ buttonLink "Previous Month" "prev-btn" prevUrl; buttonLink "Next Month" "next-btn" nextUrl ]
     layout isAuthor content
 
 let search isAuthor (results: Data.Post list option) =
