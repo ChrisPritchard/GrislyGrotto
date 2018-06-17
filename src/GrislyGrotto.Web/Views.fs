@@ -41,11 +41,14 @@ let layout isAuthor content =
 let buttonLink text cssClass url =
     form [ _method "GET"; _action url ] [ input [ _type "submit"; _value text; _class cssClass ] ]
 
+let formatDate (date : DateTime) = date.ToLocalTime().ToString("hh:mm tt, 'on' dddd, dd MMMM yyyy")
+
 let private listPost (post : Data.Post) = 
+    let date = formatDate post.Date
     article [] [
         h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ]
         h5 [] [ 
-                sprintf "posted by %s on %O" post.Author.DisplayName post.Date |> rawText
+                rawText <| sprintf "posted by %s at %s" post.Author.DisplayName date
                 a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "comments (%i)" |> rawText ]
             ]
         section [] [ rawText post.Content ]
@@ -63,19 +66,22 @@ let latest isAuthor posts page =
                 buttonLink "Next Page" "next-btn" <| sprintf "/page/%i" (page + 1) ]
     layout isAuthor content
 
-let private comment (c : Data.Comment) = [
-        b [] [ sprintf "%s. %O" c.Author c.Date |> rawText ]
+let private comment (c : Data.Comment) = 
+    let date = formatDate c.Date
+    [
+        b [] [ sprintf "%s. %s" c.Author date |> rawText ]
         p [] [ rawText c.Content ] 
     ]
 
 type CommentsError = | NoCommentError | RequiredCommentFields | InvalidCommentContent
 
 let single isAuthor isOwnedPost (post : Data.Post) commentError = 
+    let date = formatDate post.Date
     let content = 
         [ 
             article [] [
                 header [] [ h1 [] [ encodedText post.Title ] ]
-                footer [] [ sprintf "%s. %O" post.Author.DisplayName post.Date |> rawText ]
+                footer [] [ sprintf "%s. %s" post.Author.DisplayName date |> rawText ]
                 section [] [ rawText post.Content ]
             ] 
         ]
@@ -148,9 +154,10 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
              ]) |> Seq.toList
     let storyList = 
         stories |> Seq.map (fun p -> 
+            let date = formatDate p.Date
             div [] [
                 h3 [] [ a [ sprintf "/post/%s" p.Key |> _href ] [ sprintf "%s (%i words)" p.Title p.WordCount |> rawText ] ]
-                span [] [ sprintf "Posted by %s on %O" p.Author.DisplayName p.Date |> rawText ]
+                span [] [ sprintf "Posted by %s at %s" p.Author.DisplayName date |> rawText ]
             ]) |> Seq.toList
     let content = [
             [ h2 [ _class "page-heading" ] [ rawText "Archives" ]]
@@ -191,10 +198,11 @@ let search isAuthor searchTerm (results: Data.Post list option) =
                     let results = [
                         h3 [] [ rawText <| sprintf "Results for '%s'" searchTerm ]
                         r |> List.map (fun post -> 
+                            let date = formatDate post.Date
                             li [] [
                                 a [ _href <| sprintf "/post/%s" post.Key ] [ h4 [] [ rawText post.Title ] ]
                                 p [] [ rawText post.Content ]
-                                span [] [ sprintf "Posted by %s on %O" post.Author.DisplayName post.Date |> rawText ]
+                                span [] [ sprintf "Posted by %s at %s" post.Author.DisplayName date |> rawText ]
                             ]) |> ul []
                     ]
                     searchBox @ results
