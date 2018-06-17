@@ -168,13 +168,13 @@ let month isAuthor posts prevUrl nextUrl =
         [ buttonLink "Previous Month" "prev-btn" prevUrl; buttonLink "Next Month" "next-btn" nextUrl ]
     layout isAuthor content
 
-let search isAuthor (results: Data.Post list option) =
+let search isAuthor searchTerm (results: Data.Post list option) =
     let searchBox = [
             h2 [] [ rawText "Search" ]
             form [ _method "GET" ] [
                 fieldset [] [
                     label [ _for "searchTerm" ] [ rawText "Search term" ]
-                    input [ _type "text"; _id "searchTerm"; _name "searchTerm" ]
+                    input [ _type "text"; _id "searchTerm"; _name "searchTerm"; _value searchTerm ]
                     input [ _type "submit"; _value "Search"; _class "pure-button pure-button-primary" ]
                 ]
             ]
@@ -184,10 +184,10 @@ let search isAuthor (results: Data.Post list option) =
     | None -> layout isAuthor searchBox
     | Some r -> 
         let results = [
-            h3 [] [ rawText "Results" ]
+            h3 [] [ rawText <| sprintf "Results for '%s'" searchTerm ]
             r |> List.map (fun post -> 
                 li [] [
-                    h4 [] [ rawText post.Title ]
+                    a [ _href <| sprintf "/post/%s" post.Key ] [ h4 [] [ rawText post.Title ] ]
                     p [] [ rawText post.Content ]
                     span [] [ sprintf "Posted by %s on %O" post.Author.DisplayName post.Date |> rawText ]
                 ]) |> ul []

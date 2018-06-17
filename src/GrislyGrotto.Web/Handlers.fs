@@ -123,7 +123,7 @@ let month (monthName, year) =
 
 let private trimToSearchTerm (term:string) content =
     let stripped = Regex.Replace(content, "<[^>]*>", "")
-    let index = stripped.IndexOf(term)
+    let index = stripped.ToLower().IndexOf(term.ToLower())
     match index with 
     | -1 -> ""
     | _ -> 
@@ -136,7 +136,7 @@ let search =
         task {
             return! 
                 match ctx.TryGetQueryStringValue "searchTerm" with
-                | None -> htmlView (Views.search ctx.IsAuthor None) next ctx
+                | None -> htmlView (Views.search ctx.IsAuthor "" None) next ctx
                 | Some term ->
                     let data = ctx.GetService<GrislyData> ()
                     let posts = query {
@@ -150,7 +150,7 @@ let search =
                         posts 
                             |> Seq.map (fun p -> { p with Content = trimToSearchTerm term p.Content })
                             |> Seq.toList
-                    htmlView (results |> Some |> Views.search ctx.IsAuthor) next ctx
+                    htmlView (results |> Some |> Views.search ctx.IsAuthor term) next ctx
         }
 
 let about : HttpHandler = 
