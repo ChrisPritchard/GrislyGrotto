@@ -66,13 +66,6 @@ let latest isAuthor posts page =
                 buttonLink "Next Page" "next-btn" <| sprintf "/page/%i" (page + 1) ]
     layout isAuthor content
 
-let private comment (c : Data.Comment) = 
-    let date = formatDate c.Date
-    [
-        b [] [ sprintf "%s. %s" c.Author date |> rawText ]
-        p [] [ rawText c.Content ] 
-    ]
-
 type CommentsError = | NoCommentError | RequiredCommentFields | InvalidCommentContent
 
 let single isAuthor isOwnedPost (post : Data.Post) commentError = 
@@ -80,10 +73,10 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
     let content = 
         [ 
             article [] [
-                header [] [ h1 [] [ encodedText post.Title ] ]
-                footer [] [ sprintf "%s. %s" post.Author.DisplayName date |> rawText ]
+                h2 [] [ encodedText post.Title ]
+                h5 [] [ rawText <| sprintf "posted by %s at %s" post.Author.DisplayName date ]
                 section [] [ rawText post.Content ]
-            ] 
+            ]
         ]
         @
         if isOwnedPost then 
@@ -99,7 +92,13 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
             div [] [
                 a [ _name "comments" ] []
                 h2 [] [ rawText "Comments" ]
-                post.Comments |> Seq.collect comment |> Seq.toList |> div []
+                post.Comments |> Seq.map (fun c ->
+                    let date = formatDate c.Date
+                    li [] [
+                        b [] [ sprintf "Commented by %s at %s:" c.Author date |> rawText ]
+                        br []
+                        rawText c.Content
+                    ]) |> Seq.toList |> ul [ _class "comments" ]
             ] 
         ]
     let commentForm = [
