@@ -15,8 +15,8 @@
                 "enabled": true,
                 "args": "${auto-detect-url}",
                 "windows": {
-                    "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}"
+                    "command": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe",
+                    "args": "${auto-detect-url}"
                 },
                 "osx": {
                     "command": "open"

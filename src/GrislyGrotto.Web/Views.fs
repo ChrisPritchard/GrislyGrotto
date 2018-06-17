@@ -145,28 +145,27 @@ let login isAuthor wasError =
 let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data.Post> ) = 
     let yearList = 
         years |> Seq.map (fun (y,months) -> 
-            div [ _class "archive-month" ] [ 
+            li [] [ 
                 h3 [] [ string y |> rawText ]
                 months |> Seq.map (fun (m,c) -> 
                     li [] [ 
                         a [ sprintf "/month/%s/%i" m y |> _href ] [ sprintf "%s (%i)" m c |> rawText ] 
-                    ]) |> Seq.toList |> ul []
-             ]) |> Seq.toList
+                    ]) |> Seq.toList |> ul [ _class "months" ]
+             ]) |> Seq.toList |> ul [ _class "years" ]
     let storyList = 
         stories |> Seq.map (fun p -> 
             let date = formatDate p.Date
-            div [] [
+            li [] [
                 h3 [] [ a [ sprintf "/post/%s" p.Key |> _href ] [ sprintf "%s (%i words)" p.Title p.WordCount |> rawText ] ]
                 span [] [ sprintf "Posted by %s at %s" p.Author.DisplayName date |> rawText ]
-            ]) |> Seq.toList
+            ]) |> Seq.toList |> ul [ _class "stories" ]
     let content = [
-            [ h2 [ _class "page-heading" ] [ rawText "Archives" ]]
+            h2 [ _class "page-heading" ] [ rawText "Archives" ]
             yearList
-            [ div [ _class "after-archive-months" ] [] ]
-            [ h2 [] [ rawText "Stories" ]]
+            h2 [ _class "page-heading" ] [ rawText "Stories" ]
             storyList
         ]
-    List.concat content |> layout isAuthor
+    layout isAuthor content
 
 let month isAuthor (monthName : string) year posts prevUrl nextUrl = 
     let postList = posts |> Seq.toList |> List.map listPost

@@ -36,22 +36,41 @@ h5 a {
     margin-left: 1em;
 }
 
-.archive-month {
-    float: left;
-    margin-right: 2em;
+h2.page-heading {
+    text-align: center;
+    clear: both;
 }
 
-.archive-month ul {
+ul.years {
     list-style: none;
     padding: 0;
 }
 
-.archive-month ul li {
-    margin-left: 0;
+ul.years > li {
+    float: left;
 }
 
-.after-archive-months {
-    clear: both;
+ul.years > li > h3 {
+    margin-bottom: 0;
+}
+
+ul.months {
+    list-style: none;
+    padding: 0;
+}
+
+ul.months li {
+    margin-right: 2em;
+}
+
+ul.stories {
+    text-align: center;
+    list-style: none;
+    padding: 0;
+}
+
+ul.stories h3 {
+    margin-bottom: 0;
 }
 
 div.editor {
@@ -106,10 +125,6 @@ input.owned-post-btn {
     width: 120px;
     margin-top: 1em;
     margin-right: 1em;
-}
-
-h2.page-heading {
-    text-align: center;
 }
 
 div.search-page, div.search-page form {
