@@ -111,3 +111,32 @@ input.owned-post-btn {
 h2.page-heading {
     text-align: center;
 }
+
+div.search-page, div.search-page form {
+    text-align: center;
+}
+
+div.search-page input {
+    display: inline-block;
+}
+
+div.search-page input + span {
+    display: block;
+}
+
+div.search-page ul {
+    list-style: none;
+    padding: 0;
+}
+
+div.search-page ul li h4 {
+    margin-bottom: 0;
+}
+
+div.search-page ul li p {
+    margin: 0;
+}
+
+div.search-page ul li p + span {
+    font-size: 0.9em
+}

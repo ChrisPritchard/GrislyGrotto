@@ -174,29 +174,31 @@ let month isAuthor (monthName : string) year posts prevUrl nextUrl =
 
 let search isAuthor searchTerm (results: Data.Post list option) =
     let searchBox = [
-            h2 [ _class "page-heading" ] [ rawText "Search" ]
             form [ _method "GET" ] [
                 fieldset [] [
                     label [ _for "searchTerm" ] [ rawText "Search term" ]
                     input [ _type "text"; _id "searchTerm"; _name "searchTerm"; _value searchTerm ]
                     input [ _type "submit"; _value "Search"; _class "pure-button pure-button-primary" ]
+                    span [] [ rawText "Max 50 results. Note, searches can take some time." ]
                 ]
             ]
-            p [ ] [ rawText "Max 50 results. Note, searches can take some time." ]
         ]
-    match results with
-    | None -> layout isAuthor searchBox
-    | Some r -> 
-        let results = [
-            h3 [] [ rawText <| sprintf "Results for '%s'" searchTerm ]
-            r |> List.map (fun post -> 
-                li [] [
-                    a [ _href <| sprintf "/post/%s" post.Key ] [ h4 [] [ rawText post.Title ] ]
-                    p [] [ rawText post.Content ]
-                    span [] [ sprintf "Posted by %s on %O" post.Author.DisplayName post.Date |> rawText ]
-                ]) |> ul []
+    layout isAuthor
+        [ div [ _class "search-page" ]
+            <| match results with
+                | None -> searchBox
+                | Some r -> 
+                    let results = [
+                        h3 [] [ rawText <| sprintf "Results for '%s'" searchTerm ]
+                        r |> List.map (fun post -> 
+                            li [] [
+                                a [ _href <| sprintf "/post/%s" post.Key ] [ h4 [] [ rawText post.Title ] ]
+                                p [] [ rawText post.Content ]
+                                span [] [ sprintf "Posted by %s on %O" post.Author.DisplayName post.Date |> rawText ]
+                            ]) |> ul []
+                    ]
+                    searchBox @ results
         ]
-        layout isAuthor (searchBox @ results)
 
 
 [<CLIMutable>]
