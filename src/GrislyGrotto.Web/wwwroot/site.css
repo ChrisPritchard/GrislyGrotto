@@ -1,5 +1,5 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+body, input, textarea {
+    font-family: 'Courier New', Courier, monospace
 }
 
 header, footer, nav {

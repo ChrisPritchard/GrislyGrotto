@@ -31,10 +31,24 @@ let layout isAuthor content =
     html [] [
         head
         body [] [
+            canvas [ _id "backgroundCanvas"; _style "position: absolute; z-index:-1;" ] []
             sitehead
             navigation
             section [ _class "content" ] content
             footer [] [ rawText "Grisly Grotto v15. Site designed and coded by Christopher Pritchard, 2018" ]
+            script [
+                _src "https://chrispritchard.github.io/Wandering-Triangles/background-animation.js"
+            ] []
+            script [] [
+                rawText 
+                        "let anim = new GrislyGrotto.BackgroundAnimation()
+                        anim.entityCount = 5
+                        anim.initialise(
+                                document.getElementById('backgroundCanvas'), 
+                                'white', 
+                                '#EEEEEE', 
+                                '#CCCCCC')"
+            ]
         ]
     ]
 
@@ -314,13 +328,16 @@ let about isAuthor =
             p [] [
                 rawText 
                     "This version still uses ASP.NET Core like the previous version, and has been built using VS Code.
-                    However, it marks a major change as well, as it has been entirely built using my new favourite language of choice, F#, in contrast to my 'day job' standard of C#.
-                    F# is a functional, ML syntax language that I find a pleasure to work with, almost like C# with the fat burnt off and with the best coding style baked in as the default.
-                    To work effectively in F# for web dev, I am using the web framework "
+                    However, it has been entirely coded using my new favourite language of choice, F#, in contrast to my 'day job' standard of C#.
+                    F# is a functional, ML-syntax language that I find a pleasure to work with - its almost like C# with all the fat burnt off.
+                    I started learning F# a few months prior to starting GG15, and haven't looked back :)"
+            ]
+            p [] [
+                rawText "To work effectively in F# for web dev, I am using the web framework "
                 a [ _href "https://github.com/giraffe-fsharp/Giraffe" ] [ rawText "Giraffe" ]
-                rawText ", which is a ASP.NET extension based on the excellent standalone F# Suave framework."
+                rawText ", which is an ASP.NET Core extension that allows building an ASP.NET Core website using functional semantics."
                 br []
-                rawText "As a result of the use of Giraffe program, the HTML views are expressed with the in-code Graffe View Engine. Aside from code, there are no seperate files at all!"
+                rawText "Giraffe includes the GiraffeViewEngine as an optional way to design HTML views entirely in code, which I have used. As a result, the shipped content for this site is just a dll and a few css/js files."
             ]
             p [] [
                 rawText 
