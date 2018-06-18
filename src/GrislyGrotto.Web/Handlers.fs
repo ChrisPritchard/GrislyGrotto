@@ -2,6 +2,7 @@ module Handlers
 
 open System
 open System.Security.Claims
+open System.Text.RegularExpressions
 open Microsoft.Extensions.Logging
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Authentication
@@ -9,7 +10,6 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
 open Giraffe
 open Data
-open System.Text.RegularExpressions
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -259,7 +259,7 @@ let editor key =
                         title = ""
                         content = if saved = null then "" else saved
                         isStory = false }
-                    let view = Views.editor model Views.AutoSaveEnabled Views.NoEditorErrors
+                    let view = Views.editor true model Views.AutoSaveEnabled Views.NoEditorErrors
                     htmlView view next ctx
                 | Some k ->
                     let data = ctx.GetService<GrislyData> ()
@@ -272,7 +272,7 @@ let editor key =
                     | None -> redirectTo false "/" next ctx
                     | Some p ->
                         let model : Views.PostViewModel = { title = p.Title; content = p.Content; isStory = p.IsStory }
-                        let view = Views.editor model Views.AutoSaveDisabled Views.NoEditorErrors
+                        let view = Views.editor false model Views.AutoSaveDisabled Views.NoEditorErrors
                         htmlView view next ctx
         }
 
@@ -293,7 +293,7 @@ let createPost =
                 | Error _ -> 
                     badRequest next ctx
                 | Ok form when form.title = "" || form.content = "" ->
-                    let view = Views.editor form Views.AutoSaveEnabled Views.RequiredEditorFields
+                    let view = Views.editor true form Views.AutoSaveEnabled Views.RequiredEditorFields
                     htmlView view next ctx
                 | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
@@ -305,7 +305,7 @@ let createPost =
                         }
                     match Seq.tryHead existing with
                     | Some _ -> 
-                        let view = Views.editor form Views.AutoSaveEnabled Views.ExistingPostKey
+                        let view = Views.editor true form Views.AutoSaveEnabled Views.ExistingPostKey
                         htmlView view next ctx
                     | None ->
                         let wordCount = getWordCount form.content
@@ -334,7 +334,7 @@ let editPost key =
                 match newPost with
                 | Error _ -> badRequest next ctx
                 | Ok form when form.title = "" || form.content = "" ->
-                    let view = Views.editor form Views.AutoSaveDisabled Views.RequiredEditorFields
+                    let view = Views.editor false form Views.AutoSaveDisabled Views.RequiredEditorFields
                     htmlView view next ctx
                 | Ok form ->
                     let data = ctx.GetService<GrislyData> ()
@@ -354,7 +354,7 @@ let editPost key =
                             }
                         match Seq.tryHead existing with
                         | Some _ -> 
-                            let view = Views.editor form Views.AutoSaveDisabled Views.ExistingPostKey
+                            let view = Views.editor false form Views.AutoSaveDisabled Views.ExistingPostKey
                             htmlView view next ctx
                         | None ->
                             let wordCount = getWordCount form.content

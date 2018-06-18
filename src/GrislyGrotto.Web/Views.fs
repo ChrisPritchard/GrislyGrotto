@@ -239,8 +239,9 @@ type EditorErrors =
 type EditorAutoSave = 
     | AutoSaveEnabled | AutoSaveDisabled
 
-let editor (post : PostViewModel) autosave errors = 
+let editor isNew (post : PostViewModel) autosave errors = 
     layout true [
+        h2 [ _class "page-heading" ] [ rawText <| if isNew then "New Post" else "Edit Post" ]
         form [ _method "POST" ] [
             fieldset [] [
                 label [ _for "title" ] [ rawText "Title" ]
