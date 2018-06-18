@@ -52,6 +52,15 @@ h5 a {
     margin-left: 1em;
 }
 
+form.login-box {
+    text-align: center;
+}
+
+form.login-box input {
+    display: inline-block;
+    text-align: center;
+}
+
 h2.page-heading {
     text-align: center;
     clear: both;
@@ -127,7 +136,7 @@ fieldset label, fieldset input {
     margin-right: 1em;
 }
 
-span.error-message {
+.error-message {
     display: block;
     color: red;
 }

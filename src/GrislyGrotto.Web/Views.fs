@@ -141,7 +141,8 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
 
 let login isAuthor wasError = 
     layout isAuthor [
-        form [ _method "POST" ] [
+        h2 [ _class "page-heading" ] [ rawText "Login as an Author" ]
+        form [ _method "POST"; _class "login-box" ] [
             fieldset [] [
                 label [ _for "username" ] [ rawText "Username" ]
                 input [ _type "text"; _id "username"; _name "username" ]
@@ -149,8 +150,8 @@ let login isAuthor wasError =
                 label [ _for "password" ] [ rawText "Password" ]
                 input [ _type "password"; _id "password"; _name "password" ]
 
+                label [ _class "error-message" ] [ rawText (if wasError then "Username and/or Password not recognised" else "") ]
                 input [ _type "submit"; _value "Login" ]
-                span [ _class "error-message" ] [ rawText (if wasError then "Username and/or Password not recognised" else "") ]
             ]
         ]
     ]
@@ -173,9 +174,9 @@ let archives isAuthor (years : seq<int * seq<string * int>>) (stories : seq<Data
                 span [] [ sprintf "Posted by %s at %s" p.Author.DisplayName date |> rawText ]
             ]) |> Seq.toList |> ul [ _class "stories" ]
     let content = [
-            h2 [ _class "page-heading" ] [ rawText "Archives" ]
+            h2 [ _class "page-heading" ] [ rawText "Archives by Year" ]
             yearList
-            h2 [ _class "page-heading" ] [ rawText "Stories" ]
+            h2 [ _class "page-heading" ] [ rawText "Stories by Date" ]
             storyList
         ]
     layout isAuthor content
