@@ -62,8 +62,8 @@ let private listPost (post : Data.Post) =
     article [] [
         h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ]
         h5 [] [ 
-                rawText <| sprintf "posted by %s at %s" post.Author.DisplayName date
-                a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "comments (%i)" |> rawText ]
+                rawText <| sprintf "Posted by %s at %s. " post.Author.DisplayName date
+                a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "Comments (%i)" |> rawText ]
             ]
         section [] [ rawText post.Content ]
     ]
@@ -88,7 +88,7 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
         [ 
             article [] [
                 h2 [] [ encodedText post.Title ]
-                h5 [] [ rawText <| sprintf "posted by %s at %s" post.Author.DisplayName date ]
+                h5 [] [ rawText <| sprintf "Posted by %s at %s." post.Author.DisplayName date ]
                 section [] [ rawText post.Content ]
             ]
         ]

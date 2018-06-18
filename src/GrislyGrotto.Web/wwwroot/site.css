@@ -3,8 +3,8 @@ body {
 }
 
 h1 {
-    font-size: 3em;
-    margin: 0;
+    font-size: 3.5em;
+    margin: 0 0 0 0.2em;
 }
 
 h1, h2, h3, h4, h5, nav {
@@ -14,6 +14,11 @@ h1, h2, h3, h4, h5, nav {
 
 a, a:visited {
     color: #CC0000;
+}
+
+input[type='button'], input[type='submit'] {
+    background: white;
+    border: 1px solid black;
 }
 
 header, footer, nav {
@@ -34,7 +39,7 @@ nav ul li {
 }
 
 .content, header, footer {
-    width: 80%;
+    width: 60%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -46,10 +51,6 @@ footer {
 h5 {
     margin-top: -1.5em;
     margin-bottom: 0.5em;
-}
-
-h5 a {
-    margin-left: 1em;
 }
 
 form.login-box {
@@ -143,6 +144,7 @@ fieldset label, fieldset input {
 
 input.prev-btn, input.next-btn {
     width: 150px;
+    margin-top: 1em;
 }
 
 input.prev-btn {
