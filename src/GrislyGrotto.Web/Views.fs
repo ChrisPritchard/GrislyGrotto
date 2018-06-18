@@ -193,10 +193,10 @@ let month isAuthor (monthName : string) year posts prevUrl nextUrl =
 
 let search isAuthor searchTerm (results: Data.Post list option) =
     let searchBox = [
+            h2 [ _class "page-heading" ] [ rawText "Search for term" ]
             form [ _method "GET" ] [
                 fieldset [] [
-                    label [ _for "searchTerm" ] [ rawText "Search term" ]
-                    input [ _type "text"; _id "searchTerm"; _name "searchTerm"; _value searchTerm ]
+                    input [ _type "text"; _name "searchTerm"; _value searchTerm ]
                     input [ 
                         _type "submit"
                         _value "Search"

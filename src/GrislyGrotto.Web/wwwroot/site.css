@@ -1,5 +1,19 @@
-body, input, textarea {
-    font-family: 'Courier New', Courier, monospace
+body {
+    font-family: Arial, Helvetica, sans-serif
+}
+
+h1 {
+    font-size: 3em;
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, nav {
+    font-family: 'Courier New', Courier, monospace;
+    color: #CC0000;
+}
+
+a, a:visited {
+    color: #CC0000;
 }
 
 header, footer, nav {
@@ -8,6 +22,7 @@ header, footer, nav {
 
 nav ul {
     list-style-type: none;
+    margin: 0;
     padding: 0;
 }
 
@@ -15,6 +30,7 @@ nav ul li {
     margin-left: 1em;
     margin-right: 1em;
     display: inline;
+    font-weight: bold;
 }
 
 .content, header, footer {
@@ -48,6 +64,7 @@ ul.years {
 
 ul.years > li {
     float: left;
+    margin-bottom: 2em;
 }
 
 ul.years > li > h3 {
