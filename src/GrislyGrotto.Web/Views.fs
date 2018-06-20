@@ -253,7 +253,7 @@ let editor isNew (post : PostViewModel) autosave errors =
                     |> span [ _class "error-message" ]
 
                 label [ _for "editor" ] [ rawText "Content" ]
-                input [ _type "hidden"; _name "content" ]
+                input [ _type "hidden"; _name "content"; _id "content" ]
                 div [ _class "editor"; _contenteditable "true"; _id "editor" ] [ rawText post.content ]
 
                 div [ _class "inline" ] [
