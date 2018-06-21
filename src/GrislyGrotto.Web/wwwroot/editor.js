@@ -1,20 +1,22 @@
-document.getElementById("isStoryToggle").onclick = function() {
-    document.getElementById("isStory").value = (document.querySelector("#isStory:checked") != null).toString();
+let query = document.querySelector;
+
+query("#isStoryToggle").onclick = function() {
+    query("#isStory").value = (query("#isStory:checked") != null).toString();
 }
 
-document.getElementById("submit").onclick = function() {
-    let content = document.querySelector("[name='editmode']:checked").value == "html"
-        ? document.getElementById("editor").innerText : document.getElementById("editor").innerHTML;
-    document.getElementById("content").value = content;
+query("#submit").onclick = function() {
+    let content = query("[name='editmode']:checked").value == "html"
+        ? query("#editor").innerText : query("#editor").innerHTML;
+    query("#content").value = content;
     return true;
 }
 
-let editmodeRadios = document.getElementsByName("editmode");
+let editmodeRadios = document.querySelectorAll("[name='editmode']");
 for(var index in editmodeRadios) {
     let radio = editmodeRadios[index];
     radio.onchange = function() {
-        let checked = document.querySelector("[name='editmode']:checked").value;
-        let editor = document.getElementById("editor");
+        let checked = query("[name='editmode']:checked").value;
+        let editor = query("#editor");
         if(checked == "html")
             editor.innerText = editor.innerHTML;
         else
@@ -22,7 +24,7 @@ for(var index in editmodeRadios) {
     }
 }
 
-var autosaveStatus = document.getElementById('saving-status');
+var autosaveStatus = query("#saving-status");
 if(autosaveStatus)
     setInterval(function() {
         
@@ -38,8 +40,8 @@ if(autosaveStatus)
             }, 1000);                
         };
         
-        let editor = document.getElementById("editor");
-        let checked = document.querySelector("[name='editmode']:checked").value;
+        let editor = query("#editor");
+        let checked = query("[name='editmode']:checked").value;
         if(checked == "html")
             request.send(JSON.stringify(editor.innerText));
         else
