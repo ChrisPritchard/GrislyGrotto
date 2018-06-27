@@ -68,7 +68,7 @@ let private listPost (post : Data.Post) =
                 rawText <| sprintf "Posted by %s at %s. " post.Author.DisplayName date
                 a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "Comments (%i)" |> rawText ]
             ]
-        section [] [ rawText post.Content ]
+        section [ _class "post-content" ] [ rawText post.Content ]
     ]
 
 let latest isAuthor posts page = 
@@ -92,7 +92,7 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
             article [] [
                 h2 [] [ encodedText post.Title ]
                 h5 [] [ rawText <| sprintf "Posted by %s at %s." post.Author.DisplayName date ]
-                section [] [ rawText post.Content ]
+                section [ _class "post-content" ] [ rawText post.Content ]
             ]
         ]
         @
