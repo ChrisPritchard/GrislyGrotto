@@ -14,7 +14,7 @@ let layout isAuthor content =
                    _href "/favicon.png" ]
             link [ _rel "stylesheet"
                    _type "text/css"
-                   _href "/site.css" ]
+                   _href "/site.css?v=2" ]
         ]
     let sitehead = header [] [ h1 [] [ a [ _href "/" ] [ rawText "The Grisly Grotto" ] ] ]
     let navigation = 
