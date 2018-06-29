@@ -1,13 +1,12 @@
-let query = document.querySelector;
 
-query("#isStoryToggle").onclick = function() {
-    query("#isStory").value = (query("#isStory:checked") != null).toString();
+document.querySelector("#isStoryToggle").onclick = function() {
+    document.querySelector("#isStory").value = (document.querySelector("#isStory:checked") != null).toString();
 }
 
-query("#submit").onclick = function() {
-    let content = query("[name='editmode']:checked").value == "html"
-        ? query("#editor").innerText : query("#editor").innerHTML;
-    query("#content").value = content;
+document.querySelector("#submit").onclick = function() {
+    let content = document.querySelector("[name='editmode']:checked").value == "html"
+        ? document.querySelector("#editor").innerText : document.querySelector("#editor").innerHTML;
+        document.querySelector("#content").value = content;
     return true;
 }
 
@@ -15,8 +14,8 @@ let editmodeRadios = document.querySelectorAll("[name='editmode']");
 for(var index in editmodeRadios) {
     let radio = editmodeRadios[index];
     radio.onchange = function() {
-        let checked = query("[name='editmode']:checked").value;
-        let editor = query("#editor");
+        let checked = document.querySelector("[name='editmode']:checked").value;
+        let editor = document.querySelector("#editor");
         if(checked == "html")
             editor.innerText = editor.innerHTML;
         else
@@ -24,7 +23,7 @@ for(var index in editmodeRadios) {
     }
 }
 
-var autosaveStatus = query("#saving-status");
+var autosaveStatus = document.querySelector("#saving-status");
 if(autosaveStatus)
     setInterval(function() {
         
@@ -40,8 +39,8 @@ if(autosaveStatus)
             }, 1000);                
         };
         
-        let editor = query("#editor");
-        let checked = query("[name='editmode']:checked").value;
+        let editor = document.querySelector("#editor");
+        let checked = document.querySelector("[name='editmode']:checked").value;
         if(checked == "html")
             request.send(JSON.stringify(editor.innerText));
         else
