@@ -9,6 +9,7 @@ let layout isAuthor content =
             title [] [ rawText "The Grisly Grotto" ]
             meta [ _name "description"
                    _content "The personal blog of Chris Pritchard and Peter Coleman" ]
+            meta [ _charset "UTF-8" ]
             link [ _rel "shortcut icon" 
                    _type "image/x-icon"
                    _href "/favicon.png" ]
