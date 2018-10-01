@@ -36,7 +36,7 @@ let layout isAuthor content =
             sitehead
             navigation
             section [ _class "content" ] content
-            footer [] [ rawText "Grisly Grotto v15. Site designed and coded by Christopher Pritchard, 2018" ]
+            footer [] [ rawText "Grisly Grotto v15.1. Site designed and coded by Christopher Pritchard, 2018" ]
             script [
                 _src "https://chrispritchard.github.io/Wandering-Triangles/background-animation.js"
             ] []
@@ -283,7 +283,7 @@ let editor isNew (post : PostViewModel) autosave errors =
                 input [ _type "submit"; _value "Submit"; _id "submit" ]
                 (match autosave with | AutoSaveEnabled -> span [ _id "saving-status" ] [] | _ -> br [])
 
-                script [ _type "text/javascript"; _src "/editor.js" ] []
+                script [ _type "text/javascript"; _src "/editor.js?v=2" ] []
             ]
         ]
     ]
