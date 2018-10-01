@@ -63,8 +63,8 @@ let formatDate (date : DateTime) =
 
 let private listPost (post : Data.Post) = 
     let content = 
-        if post.IsStory || post.WordCount > 2200 then 
-            sprintf "<p><a href='/post/%s'>Click through to read this story (%i words)...</a></p>" post.Key post.WordCount 
+        if post.IsStory || post.WordCount > 2000 then 
+            sprintf "<p><a href='/post/%s'>Click through to read (%i words)...</a></p>" post.Key post.WordCount 
         else post.Content
     let date = formatDate post.Date
     article [] [
