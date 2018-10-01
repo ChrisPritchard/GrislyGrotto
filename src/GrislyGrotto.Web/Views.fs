@@ -62,6 +62,10 @@ let formatDate (date : DateTime) =
     date.ToString("hh:mm tt, 'on' dddd, dd MMMM yyyy")
 
 let private listPost (post : Data.Post) = 
+    let content = 
+        if post.IsStory then 
+            sprintf "<p><a href='/post/%s'>Click through to read this story (%i words)...</a></p>" post.Key post.WordCount 
+        else post.Content
     let date = formatDate post.Date
     article [] [
         h2 [] [ a [ sprintf "/post/%s" post.Key |> _href ] [ encodedText post.Title ] ]
@@ -69,7 +73,7 @@ let private listPost (post : Data.Post) =
                 rawText <| sprintf "Posted by %s at %s. " post.Author.DisplayName date
                 a [ sprintf "/post/%s#comments" post.Key |> _href ] [ Seq.length post.Comments |> sprintf "Comments (%i)" |> rawText ]
             ]
-        section [ _class "post-content" ] [ rawText post.Content ]
+        section [ _class "post-content" ] [ rawText content ]
     ]
 
 let latest isAuthor posts page = 
