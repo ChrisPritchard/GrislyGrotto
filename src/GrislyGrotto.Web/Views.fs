@@ -273,7 +273,7 @@ let editor isNew (post : PostViewModel) autosave errors =
                         input [ _name "editmode"; _type "radio"; _value "html" ]
                         rawText "HTML"
                     ]
-                    input [ _type "hidden"; _name "isStory"; _id "isStory"; _value "false" ]
+                    input [ _type "hidden"; _name "isStory"; _id "isStory"; _value (string post.isStory) ]
                     label [] [
                         [ _id "isStoryToggle"; _type "checkbox" ] @ (if post.isStory then [ _checked ] else []) |> input
                         rawText "Is Story"

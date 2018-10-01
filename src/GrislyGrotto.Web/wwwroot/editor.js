@@ -1,6 +1,6 @@
 
 document.querySelector("#isStoryToggle").onclick = function() {
-    document.querySelector("#isStory").value = (document.querySelector("#isStory:checked") != null).toString();
+    document.querySelector("#isStory").value = (document.querySelector("#isStoryToggle:checked") != null).toString();
 }
 
 document.querySelector("#submit").onclick = function() {
