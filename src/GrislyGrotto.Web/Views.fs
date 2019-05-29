@@ -119,7 +119,7 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
                     li [] [
                         b [] [ sprintf "Commented by %s at %s:" c.Author date |> rawText ]
                         br []
-                        rawText c.Content
+                        encodedText c.Content
                     ]) |> Seq.toList |> ul [ _class "comments" ]
             ] 
         ]
