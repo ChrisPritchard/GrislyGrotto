@@ -295,10 +295,10 @@ let about isAuthor =
             p [] [
                 rawText 
                     "My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. 
-                    I operate operate through my company, "
+                    I operate through my company, "
                 a [ _href "https://aquinas.nz" ] [ rawText "Aquinas IT" ]
                 rawText
-                    ", as both the director and chief contractor. We provide development services in the .NET space for our clients.
+                    ", of which I am the director. My professional goals over the next few years include trying to grow this business.
                     In the past, I have worked for long periods as a full-time employee (largely at the IT vendor Provoke Solutions)."
             ]
             p [] [
