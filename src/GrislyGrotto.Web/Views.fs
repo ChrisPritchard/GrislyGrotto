@@ -295,12 +295,15 @@ let about isAuthor =
             p [] [
                 rawText 
                     "My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. 
-                    I operate as a contractor, preferring short to mid-term length contracts (1-8 months), so I can work on lots of different things with different people, while also being able to set time aside for my own projects.
-                    In the past, I have worked for long periods as a full-time employee (largely at the IT vendor Provoke Solutions), generally in the Microsoft technology stack."
+                    I operate operate through my company, "
+                a [ _href "https://aquinas.nz" ] [ rawText "Aquinas IT" ]
+                rawText
+                    ", as both the director and chief contractor. We provide development services in the .NET space for our clients.
+                    In the past, I have worked for long periods as a full-time employee (largely at the IT vendor Provoke Solutions)."
             ]
             p [] [
                 rawText 
-                    "I have been working in the IT industry for over twelve years now, primary in development or development-related roles. While management, 
+                    "I have been working in the IT industry for over fifteen years now, primary in development or development-related roles. While management, 
                     solution design and technical leadership have increasingly been part of my responsibilities, I always prefer to stay close to the code. 
                     I think I'm pretty good at what I do :D"
             ]
@@ -313,6 +316,9 @@ let about isAuthor =
             p [] [
                 rawText "I can be reached most easily by my personal email address: "
                 a [ _href "mailto:chrispritchard.nz@gmail.com" ] [ rawText "chrispritchard.nz@gmail.com." ]
+                br []
+                rawText "Company queries can be made via my company address: "
+                a [ _href "mailto:contact@aquinas.nz" ] [ rawText "contact@aquinas.nz." ]
                 br []
                 rawText "My LinkedIn profile is "
                 a [ _href "https://nz.linkedin.com/pub/christopher-pritchard/a/9b6/a66" ] [ rawText "here." ]
