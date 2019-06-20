@@ -1,4 +1,4 @@
-module Views
+module GrislyGrotto.Views
 
 open Giraffe.GiraffeViewEngine
 open System

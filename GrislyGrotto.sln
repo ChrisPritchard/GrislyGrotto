@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{704E37F2-D
 		readme.md = readme.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "JsonToSqlite", "tools\JsonToSqlite\JsonToSqlite.fsproj", "{D5EAEA15-FC74-4259-AC75-006D606B8925}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +27,17 @@ Global
 		{0D87CAE8-33F5-4320-B4AC-9B540F4DA372}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D87CAE8-33F5-4320-B4AC-9B540F4DA372}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D87CAE8-33F5-4320-B4AC-9B540F4DA372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5EAEA15-FC74-4259-AC75-006D606B8925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5EAEA15-FC74-4259-AC75-006D606B8925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5EAEA15-FC74-4259-AC75-006D606B8925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5EAEA15-FC74-4259-AC75-006D606B8925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0D87CAE8-33F5-4320-B4AC-9B540F4DA372} = {63D04956-0FB8-461E-9EA0-9D322AE17F44}
+		{D5EAEA15-FC74-4259-AC75-006D606B8925} = {9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {724E4B20-A620-4FD1-90F9-BB85035841C8}

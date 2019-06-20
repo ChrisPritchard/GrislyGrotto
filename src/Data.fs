@@ -1,4 +1,4 @@
-module Data
+module GrislyGrotto.Data
 
 open System
 open System.Text

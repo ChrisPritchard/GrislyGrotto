@@ -1,4 +1,4 @@
-module Handlers
+module GrislyGrotto.Handlers
 
 open System
 open System.Security.Claims

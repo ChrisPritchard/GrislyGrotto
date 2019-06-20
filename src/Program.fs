@@ -1,4 +1,6 @@
-﻿open System
+﻿module GrislyGrotto.Program
+
+open System
 open System.IO
 open System.Globalization
 open Microsoft.AspNetCore.Builder
