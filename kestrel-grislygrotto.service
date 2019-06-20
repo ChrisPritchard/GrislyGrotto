@@ -1,0 +1,18 @@
+[Unit]
+Description=GrislyGrotto Website
+
+[Service]
+WorkingDirectory=/home/pi/GrislyGrotto/src/bin/Release/netcoreapp2.2/publish
+ExecStart=/home/pi/dotnet/dotnet /home/pi/GrislyGrotto/src/bin/Release/netcoreapp2.2/publish/GrislyGrotto.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-grislygrotto
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Development
+Environment=ASPNETCORE_URLS=http://*:5000
+Environment="ConnectionStrings__default=Data Source\x3dgrislygrotto.db"
+
+[Install]
+WantedBy=multi-user.target
