@@ -1,5 +1,7 @@
 module GrislyGrotto.Views
 
+open System.IO
+open HeyRed.MarkdownSharp
 open Giraffe.GiraffeViewEngine
 open System
 
@@ -275,79 +277,16 @@ let editor isNew (post : PostViewModel) autosave errors =
         ]
     ]
 
+let aboutContent = 
+    let markdownText = File.ReadAllText "./about-content.md"
+    let transformer = Markdown()
+    transformer.Transform markdownText
+
 let about isAuthor = 
     let content = [ 
         article [] [
             h2 [ _class "page-heading" ] [ rawText "About me" ]
-            p [] [
-                rawText 
-                    "My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. 
-                    I operate through my company, "
-                a [ _href "https://aquinas.nz" ] [ rawText "Aquinas IT" ]
-                rawText
-                    ", of which I am the director. My professional goals over the next few years include trying to grow this business.
-                    In the past, I have worked for long periods as a full-time employee (largely at the IT vendor Provoke Solutions)."
-            ]
-            p [] [
-                rawText 
-                    "I have been working in the IT industry for over fifteen years now, primary in development or development-related roles. While management, 
-                    solution design and technical leadership have increasingly been part of my responsibilities, I always prefer to stay close to the code. 
-                    I think I'm pretty good at what I do :D"
-            ]
-            p [] [
-                rawText 
-                    "Outside of work, my hobbies are writing (successive participant/winner in the NaNoWriMo competition each year I'm proud to say), and gaming. I also do a lot of personal projects, such as the one you are looking at now.
-                    Finally, and by no means least, I am a happily married man with a young daughter, as well as a small dog."
-            ]
-            h2 [] [ rawText "Contact" ]
-            p [] [
-                rawText "I can be reached most easily by my personal email address: "
-                a [ _href "mailto:chrispritchard.nz@gmail.com" ] [ rawText "chrispritchard.nz@gmail.com." ]
-                br []
-                rawText "Company queries can be made via my company address: "
-                a [ _href "mailto:contact@aquinas.nz" ] [ rawText "contact@aquinas.nz." ]
-                br []
-                rawText "My LinkedIn profile is "
-                a [ _href "https://nz.linkedin.com/pub/christopher-pritchard/a/9b6/a66" ] [ rawText "here." ]
-                br []
-                rawText "My Github profile is "
-                a [ _href "https://github.com/ChrisPritchard" ] [ rawText "here." ]
-            ]
-            h2 [] [ rawText "About the Grisly Grotto" ]
-            p [] [
-                rawText 
-                    "The first version of GG went live back in 2006. I had always wanted to have a blog, and thought having one was part of what made someone a developer.
-                    More importantly though, while I had learned much of the craft of web development (in ASP.NET Webforms back then), my day job did not afford me the opportunity to 'do it all': design, development, hosting, bug fixing etc. 
-                    So GG was born, a web application of manageable scope that allowed me to fully practice my craft. 
-                    While my skill set is now vastly greater than the meagre needs of this site, it still serves as a periodic 'zen' meditation: rebuilding the same structure over and over again, in the latest JS framework, database architecture or server-side technology that takes my fancy."
-            ]
-            p [] [
-                rawText 
-                    "So far there have been 15 versions, each one distinctive. Earlier versions used ASP.NET Webforms, some used XSLT transforms for markup, some were pure client side javascript (including a one-off version in pure NodeJS). 
-                    Multiple design frameworks have been used, although mostly I have done the CSS entirely myself for practice. At least six different data storage solutions (databases or otherwise) have been used, and multiple different hosting solutions before it ended up here, on Azure for v11+. 
-                    I expect there to be many more iterations as I seek to learn new things going forward."
-            ]
-            h2 [] [ rawText "About v15 specifically" ]
-            p [] [
-                rawText 
-                    "This version still uses ASP.NET Core like the previous version, and has been built using VS Code.
-                    However, it has been entirely coded using my new favourite language of choice, F#, in contrast to my 'day job' standard of C#.
-                    F# is a functional, ML-syntax language that I find a pleasure to work with - its almost like C# with all the fat burnt off.
-                    I started learning F# a few months prior to starting GG15, and haven't looked back :)"
-            ]
-            p [] [
-                rawText "To work effectively in F# for web dev, I am using the web framework "
-                a [ _href "https://github.com/giraffe-fsharp/Giraffe" ] [ rawText "Giraffe" ]
-                rawText ", which is an ASP.NET Core extension that allows building an ASP.NET Core website using functional semantics."
-                br []
-                rawText "Giraffe includes the GiraffeViewEngine as an optional way to design HTML views entirely in code, which I have used. As a result, the shipped content for this site is just a dll and a few css/js files."
-            ]
-            p [] [
-                rawText 
-                    "Other than the above, v15 shares a lot with v14: Database storage is Azure SQL Server, and web hosting is as an Azure App Service. I host the source code in Visual Studio Team Services, in a Git repository. 
-                    VSTS provides a build &amp; release pipeline which automatically deploys the latest code into Azure."
-            ]
-            p [] [ rawText "Cheers." ]
+            rawText aboutContent
         ] 
     ]
     layout isAuthor content
