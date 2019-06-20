@@ -1,6 +1,8 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.2em;
+    background-color: #333;
+    color: #EEE
 }
 
 textarea {
@@ -20,16 +22,16 @@ h1 {
 
 h1, h2, h3, h4, h5, nav {
     font-family: 'Courier New', Courier, monospace;
-    color: #CC0000;
+    color: #CC00CC;
 }
 
 a, a:visited {
-    color: #CC0000;
+    color: #CC00CC;
 }
 
 input[type='button'], input[type='submit'] {
-    background: white;
-    border: 1px solid black;
+    background: #666;
+    border: 1px solid white;
 }
 
 header, footer, nav {
@@ -127,7 +129,7 @@ ul.comments li {
 
 div.editor {
     min-height: 400px;
-    border: 1px solid black;
+    border: 1px solid white;
 }
 
 fieldset {
