@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{704E37F2-D
 		.gitignore = .gitignore
 		kestrel-grislygrotto.service = kestrel-grislygrotto.service
 		readme.md = readme.md
+		setup.md = setup.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}"
