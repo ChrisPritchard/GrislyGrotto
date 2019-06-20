@@ -9,7 +9,7 @@ let main argv =
     match argv with
     | [|jsonDirectory;databasePath|] ->
         
-        let json = Directory.GetFiles (jsonDirectory, "*.json") |> Array.rev |> Array.take 10
+        let json = Directory.GetFiles (jsonDirectory, "*.json")
         printfn "found %i files" json.Length
 
         File.Copy ("./blank_grislygrotto.db", databasePath, true)
@@ -22,9 +22,10 @@ let main argv =
             printfn "could not connect to db :("
             ()
         else
-            for file in json do
+            for i in [0..json.Length - 1] do
+                let file = json.[i]
                 let post = File.ReadAllText file |> JsonConvert.DeserializeObject<Post>
-                printfn "processing '%s'" post.Title
+                printfn "processing %i of %i: '%s'" (i + 1) json.Length post.Title
                 dbContext.Posts.Add post |> ignore
                 dbContext.SaveChanges () |> ignore
             ()
