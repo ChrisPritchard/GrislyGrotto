@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 1.2em;
     background-color: #333;
     color: #EEE
@@ -7,12 +7,16 @@ body {
 
 textarea {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.2em;
+    font-size: 1em;
+    background-color: #555;
+    color: white;
 }
 
-button, input {
+input {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1em;
+    background: #555;
+    color: #FFF;
 }
 
 h1 {
@@ -22,15 +26,19 @@ h1 {
 
 h1, h2, h3, h4, h5, nav {
     font-family: 'Courier New', Courier, monospace;
-    color: #CC00CC;
+    text-shadow: 1px 1px 1px #FFF;
+    color: #FFF;
 }
 
 a, a:visited {
-    color: #CC00CC;
+    color: #FFF;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px #FFF;
 }
 
 input[type='button'], input[type='submit'] {
-    background: #666;
+    background: #555;
+    color: #FFF;
     border: 1px solid white;
 }
 
