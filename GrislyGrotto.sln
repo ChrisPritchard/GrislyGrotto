@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{704E37F2-D1F8-4B4F-807F-F6541F7E7A52}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		kestrel-grislygrotto.service = kestrel-grislygrotto.service
 		readme.md = readme.md
 	EndProjectSection
 EndProject

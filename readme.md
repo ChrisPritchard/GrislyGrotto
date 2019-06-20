@@ -1,6 +1,6 @@
 # Release 16
 
-__Release Date:__ TBC
+__Release Date:__ 20th June 2019
 
 __Release Post:__ [Grisly Grotto 16.0](http://grislygrotto.nz/)
 
