@@ -1,14 +1,14 @@
-# Release 15
+# Release 16
 
 __Release Date:__ TBC
 
-__Release Post:__ [Grisly Grotto 15.0](http://grislygrotto.azurewebsites.net/)
+__Release Post:__ [Grisly Grotto 16.0](http://grislygrotto.nz/)
 
-__Frontend:__ F# on .NET Core 2.1 with [Giraffe](https://github.com/giraffe-fsharp)
+__Frontend:__ F# on .NET Core 2.2 with [Giraffe](https://github.com/giraffe-fsharp) and [FSProjects Markdown](https://fsprojects.github.io/FSharp.Formatting/markdown.html)
 
-__Backend:__ Azure SQL Server
+__Data Store:__ SQLite
 
-__Dev Tool:__ Visual Studio Code
+__Dev Tool:__ Visual Studio 2019
 
-The first version of GG to not use C# or JS in its construction, instead using my new favourite language, F#.
-It uses the Giraffe framework, and therefore is still built on top of the excellent ASP.NET Core and .NET Core 2.1 Runtime.
+The second version to use F#, and the first in a while not to be hosted on Azure. Instead, in another first, it is running on Linux on a server I run at home, via a static IP and domain I have registered with my provider.
+The other major difference is that instead of using content-editable as the last bunch of versions have used, v16 instead uses a markdown editor which is converted to HTML via FSProjects markdown (link above).
