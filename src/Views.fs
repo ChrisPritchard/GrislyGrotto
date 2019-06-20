@@ -36,7 +36,7 @@ let layout isAuthor content =
             sitehead
             navigation
             section [ _class "content" ] content
-            footer [] [ rawText "Grisly Grotto v15.1. Site designed and coded by Christopher Pritchard, 2018" ]
+            footer [] [ rawText "Grisly Grotto v16.0. Site designed and coded by Christopher Pritchard, 2018" ]
             script [
                 _src "https://chrispritchard.github.io/Wandering-Triangles/background-animation.js"
             ] []

@@ -1,15 +1,15 @@
 ﻿open System
 open System.IO
+open System.Globalization
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
+open Microsoft.AspNetCore.Localization
 open Microsoft.AspNetCore.Authentication.Cookies
+open Microsoft.EntityFrameworkCore
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
-open Microsoft.EntityFrameworkCore
-open Giraffe
 open Microsoft.Extensions.Configuration
-open System.Globalization
-open Microsoft.AspNetCore.Localization
+open Giraffe
 
 let webApp = 
     let mustBeUser = requiresAuthentication Handlers.accessDenied
@@ -54,7 +54,7 @@ let main __ =
 
     let configureServices (services : IServiceCollection) =
         let connString = configuration.GetConnectionString("default")
-        services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlServer connString |> ignore) |> ignore
+        services.AddDbContext<Data.GrislyData>(fun o -> o.UseSqlite connString |> ignore) |> ignore
         services
             .AddDistributedMemoryCache()
             .AddSession()
