@@ -37,19 +37,6 @@ let layout isAuthor content =
             navigation
             section [ _class "content" ] content
             footer [] [ rawText "Grisly Grotto v16.0. Site designed and coded by Christopher Pritchard, 2019" ]
-            script [
-                _src "https://chrispritchard.github.io/Wandering-Triangles/background-animation.js"
-            ] []
-            script [] [
-                rawText 
-                        "let anim = new GrislyGrotto.BackgroundAnimation()
-                        anim.entityCount = 5
-                        anim.initialise(
-                                document.getElementById('backgroundCanvas'), 
-                                'white', 
-                                '#EEEEEE', 
-                                '#CCCCCC')"
-            ]
         ]
     ]
 
