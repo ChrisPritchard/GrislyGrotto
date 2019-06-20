@@ -39,7 +39,7 @@ let webApp =
     ]
 
 [<EntryPoint>]
-let main __ =
+let main _ =
     let contentRoot = Directory.GetCurrentDirectory()
     let webRoot = Path.Combine(contentRoot, "wwwroot")
     let configuration = 
