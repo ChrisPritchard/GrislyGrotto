@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__default": "Data Source=./grislygrotto.db"
       },
-      "applicationUrl": "http://localhost:64523/"
+      "applicationUrl": "http://0.0.0.0:5000/"
     }
   }
 }
