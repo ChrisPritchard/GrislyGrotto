@@ -30,7 +30,7 @@ I expect there to be many more iterations as I seek to learn new things going fo
 
 v16 is the second version to be built entirely in F#, using the Giraffe framework and ASPNET.Core. It is the first version in a while to not be hosted on Azure - instead I am hosting it on my own server, with my own purchased domain (which I haven't done for over a decade). Its database backend has been switched from SQL Server to SQLite, something that was very easy given I had the database content backed up to serialised JSON, and both SQL Server and SQLite can be accessed identically using Entity Framework Core. I just had to change the connection string and nuget packages, then do a small migration and I was done!
 
-v16 addtionally integrates markdown for editing and page content (including this page) and makes a number of other small improvements. In the time between v15 and v16 my F# knowledge expanded exponentially - I even won the honour of being recognised as an 'F# Expert' for one of my side projects - so that is being reflected in this build.
+v16 additionally integrates markdown for editing and page content (including this page) and makes a number of other small improvements. In the time between v15 and v16 my F# knowledge expanded exponentially - I even won the honour of being recognised as an 'F# Expert' for one of my side projects - so that is being reflected in this build.
 
 Hosting wise, the site at present is running on a small Raspberry PI 3 B+, with no issues :)
 
