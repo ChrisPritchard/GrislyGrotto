@@ -21,6 +21,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "JsonToSqlite", "tools\JsonT
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PasswordGenerator", "tools\PasswordGenerator\PasswordGenerator.fsproj", "{FA168C43-9F98-49FD-9945-55504828BD26}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SqliteToJson", "tools\SqliteToJson\SqliteToJson.fsproj", "{85475FAC-3797-4F16-A714-9E89C6632019}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FA168C43-9F98-49FD-9945-55504828BD26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA168C43-9F98-49FD-9945-55504828BD26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA168C43-9F98-49FD-9945-55504828BD26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85475FAC-3797-4F16-A714-9E89C6632019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85475FAC-3797-4F16-A714-9E89C6632019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85475FAC-3797-4F16-A714-9E89C6632019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85475FAC-3797-4F16-A714-9E89C6632019}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 		{0D87CAE8-33F5-4320-B4AC-9B540F4DA372} = {63D04956-0FB8-461E-9EA0-9D322AE17F44}
 		{D5EAEA15-FC74-4259-AC75-006D606B8925} = {9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}
 		{FA168C43-9F98-49FD-9945-55504828BD26} = {9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}
+		{85475FAC-3797-4F16-A714-9E89C6632019} = {9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {724E4B20-A620-4FD1-90F9-BB85035841C8}
