@@ -22,10 +22,12 @@ let main argv =
                     .ToArrayAsync().GetAwaiter().GetResult();
             printfn "found %i posts" posts.Length
 
+            let jsonSettings = JsonSerializerSettings(ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
+
             for i in [0..posts.Length - 1] do
                 let post = posts.[i]
                 printfn "processing %i of %i: '%s'" (i + 1) posts.Length post.Title
-                let json = JsonConvert.SerializeObject(post)
+                let json = JsonConvert.SerializeObject(post, jsonSettings)
                 let fileName = sprintf "%s-%s.json" (post.Date.ToString("yyyy-MM-dd-hh-mm-ss-tt")) post.Key
                 let path = Path.Combine(jsonDirectory, fileName);
                 File.WriteAllText(path, json)
