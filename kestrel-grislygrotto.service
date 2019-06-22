@@ -2,8 +2,8 @@
 Description=GrislyGrotto Website
 
 [Service]
-WorkingDirectory=/home/pi/GrislyGrotto/src/bin/Release/netcoreapp2.2/publish
-ExecStart=/home/pi/dotnet/dotnet /home/pi/GrislyGrotto/src/bin/Release/netcoreapp2.2/publish/GrislyGrotto.dll
+WorkingDirectory=/var/www/grislygrotto
+ExecStart=/home/pi/dotnet/dotnet /var/www/grislygrotto/GrislyGrotto.dll
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
