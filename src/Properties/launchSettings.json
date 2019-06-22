@@ -1,13 +1,13 @@
 {
   "profiles": {
-    "GrislyGrotto.Web": {
+    "GrislyGrotto on Windows": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__default": "Data Source=./grislygrotto.db"
       },
-      "applicationUrl": "http://0.0.0.0:5000/"
+      "applicationUrl": "http://localhost:5000/"
     }
   }
 }
