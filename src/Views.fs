@@ -4,7 +4,6 @@ open System.IO
 open HeyRed.MarkdownSharp
 open Giraffe.GiraffeViewEngine
 open System
-open System.Runtime.InteropServices
 
 let layout isAuthor content =
     let head = 
@@ -46,14 +45,7 @@ let layout isAuthor content =
 let buttonLink text cssClass url =
     form [ _method "GET"; _action url ] [ input [ _type "submit"; _value text; _class cssClass ] ]
 
-let timeZone = 
-    if RuntimeInformation.IsOSPlatform OSPlatform.Windows then
-        TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time")
-    else
-        TimeZoneInfo.FindSystemTimeZoneById("Pacific/Auckland")
-
 let formatDate (date : DateTime) = 
-    let date = TimeZoneInfo.ConvertTimeFromUtc(date, timeZone)
     date.ToString("hh:mm tt, 'on' dddd, dd MMMM yyyy")
 
 let private listPost (post : Data.Post) = 
