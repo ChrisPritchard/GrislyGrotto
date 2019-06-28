@@ -10,8 +10,8 @@ RestartSec=10
 KillSignal=SIGINT
 SyslogIdentifier=dotnet-grislygrotto
 User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Development
-Environment=ASPNETCORE_URLS=http://*:5000
+Environment=ASPNETCORE_ENVIRONMENT=Release
+Environment=ASPNETCORE_URLS=http://localhost:5000
 Environment="ConnectionStrings__default=Data Source\x3dgrislygrotto.db"
 
 [Install]

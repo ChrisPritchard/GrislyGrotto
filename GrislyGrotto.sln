@@ -11,17 +11,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{704E37F2-D
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		kestrel-grislygrotto.service = kestrel-grislygrotto.service
+		linux-setup.md = linux-setup.md
+		nginx.yaml = nginx.yaml
 		readme.md = readme.md
-		setup.md = setup.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9E2FB6CA-9C51-4D9D-A52C-6C5E9DDB212F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "JsonToSqlite", "tools\JsonToSqlite\JsonToSqlite.fsproj", "{D5EAEA15-FC74-4259-AC75-006D606B8925}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "JsonToSqlite", "tools\JsonToSqlite\JsonToSqlite.fsproj", "{D5EAEA15-FC74-4259-AC75-006D606B8925}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PasswordGenerator", "tools\PasswordGenerator\PasswordGenerator.fsproj", "{FA168C43-9F98-49FD-9945-55504828BD26}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "PasswordGenerator", "tools\PasswordGenerator\PasswordGenerator.fsproj", "{FA168C43-9F98-49FD-9945-55504828BD26}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SqliteToJson", "tools\SqliteToJson\SqliteToJson.fsproj", "{85475FAC-3797-4F16-A714-9E89C6632019}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "SqliteToJson", "tools\SqliteToJson\SqliteToJson.fsproj", "{85475FAC-3797-4F16-A714-9E89C6632019}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
