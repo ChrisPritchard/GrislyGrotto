@@ -11,4 +11,4 @@ __Data Store:__ SQLite
 __Dev Tool:__ Visual Studio 2019
 
 The second version to use F#, and the first in a while not to be hosted on Azure. Instead, in another first, it is running on Linux on a server I run at home, via a static IP and domain I have registered with my provider.
-The other major difference is that instead of using content-editable as the last bunch of versions have used, v16 instead uses a markdown editor which is converted to HTML via FSProjects markdown (link above).
+The other major difference is that instead of using content-editable as the last bunch of versions have used, v16 instead uses a markdown editor which is converted to HTML via an external project.
