@@ -4,7 +4,7 @@ __Release Date:__ 20th June 2019
 
 __Release Post:__ [Grisly Grotto 16.0](http://grislygrotto.nz/)
 
-__Frontend:__ F# on .NET Core 2.2 with [Giraffe](https://github.com/giraffe-fsharp) and [FSProjects Markdown](https://fsprojects.github.io/FSharp.Formatting/markdown.html)
+__Frontend:__ F# on .NET Core 2.2 with [Giraffe](https://github.com/giraffe-fsharp) and [HeyRed's Markdown](https://github.com/hey-red/Markdown)
 
 __Data Store:__ SQLite
 
