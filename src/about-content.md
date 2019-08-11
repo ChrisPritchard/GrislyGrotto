@@ -1,6 +1,6 @@
 ﻿My name is Christopher Pritchard, and I work as a senior-level software developer and architect in Wellington, New Zealand. 
 I operate through my company, [Aquinas IT](https://aquinas.nz), of which I am the director. My professional goals over the next few years include trying to grow this business.
-In the past, I have worked for long periods as a full-time employee (largely at the IT vendor Provoke Solutions)."
+In the past, I have worked for long periods as a full-time employee (largely at the IT vendor Provoke Solutions).
 
 I have been working in the IT industry for over fifteen years now, primary in development or development-related roles. While management, solution design and technical leadership have increasingly been part of my responsibilities, I always prefer to stay close to the code. I think I'm pretty good at what I do :D
 
