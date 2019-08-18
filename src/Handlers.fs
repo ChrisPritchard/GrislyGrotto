@@ -231,7 +231,7 @@ let createComment key =
                             badRequest next ctx
                         else if c.author = "" || c.content = "" then
                             single key Views.RequiredCommentFields next ctx
-                        else if ["http:";"https:";"www."] |> List.exists (fun tk -> c.content.Contains(tk)) then
+                        else if ["http:";"https:";"www.";"@";".co"] |> List.exists (fun tk -> c.content.Contains(tk)) then
                             single key Views.InvalidCommentContent next ctx
                         else
                             data.Comments.Add 
