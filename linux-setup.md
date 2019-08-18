@@ -10,7 +10,7 @@ On your local router, find the port forwarding section and forward both port 80 
 
 ## Step Two - Dotnet Service
 
-1. Create a dir on the server under `/var/www` called grislygrotto works. Change the ownership of the new folder to www-data with the command `sudo chown www-data grislygrotto/`
+1. Create a dir on the server under `/var/www` called `grislygrotto`. Change the ownership of the new folder to www-data with the command `sudo chown www-data grislygrotto/`
 2. Publish the project on a dev machine, targetting the linux architecture, e.g. `dotnet publish -r linux-arm -c Release`
 3. Copy the published files and the Sqlite database into the linux directory. E.g., from the publish folder on the dev machine, run `scp * pi@192.168.1.69:/var/www/grislygrotto`
 3. Copy the service file into systemd's service file location: `/etc/systemd/system/kestrel-grislygrotto.service`. It can be copied using scp like above.
