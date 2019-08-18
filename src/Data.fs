@@ -47,6 +47,7 @@ type GrislyData (options) =
     member __.Comments with get() = __.comments and set v = __.comments <- v
 
     member __.FullPosts () = __.Posts.Include(fun p -> p.Author).Include(fun p -> p.Comments)
+    member __.FullComments () = __.Comments.Include(fun c -> c.Post).Include(fun c -> c.Post.Author)
 
 type Author with
     member __.Validate passwordToCheck =

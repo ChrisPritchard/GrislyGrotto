@@ -36,6 +36,7 @@ let webApp =
                 route "/new" >=> mustBeUser >=> Handlers.createPost
                 routef "/edit/%s" (fun key -> mustBeUser >=> Handlers.editPost key)
                 routef "/delete/%s" (fun key -> mustBeUser >=> Handlers.deletePost key)
+                routef "/delete-comment/%i" (fun id -> mustBeUser >=> Handlers.deleteComment id)
                 route "/api/savework" >=> mustBeUser >=> Handlers.saveWork
             ]
     ]

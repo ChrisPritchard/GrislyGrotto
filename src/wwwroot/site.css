@@ -137,6 +137,10 @@ ul.comments li {
     margin-bottom: 1em;
 }
 
+form.delete-comment-btn {
+    display: inline
+}
+
 div.editor {
     min-height: 400px;
     border: 1px solid white;

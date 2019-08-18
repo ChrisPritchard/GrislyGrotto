@@ -389,6 +389,24 @@ let deletePost key =
                         redirectTo false "/" next ctx
         }
 
+let deleteComment id =
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            let data = ctx.GetService<GrislyData> ()
+            let comment = query {
+                for comment in data.FullComments () do
+                    where (comment.Id = id)
+                    select comment
+                }
+            return!
+                match Seq.tryHead comment with
+                | Some c when c.Post.Author.Username = ctx.User.Identity.Name -> 
+                    data.Remove(c) |> ignore
+                    data.SaveChanges() |> ignore
+                    redirectTo false (sprintf "/post/%s#comments" c.Post_Key) next ctx
+                | _ -> badRequest next ctx
+        }
+
 let saveWork =
     fun (next : HttpFunc) (ctx : HttpContext) -> 
         task {

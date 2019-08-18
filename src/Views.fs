@@ -103,11 +103,16 @@ let single isAuthor isOwnedPost (post : Data.Post) commentError =
                 h2 [] [ rawText "Comments" ]
                 post.Comments |> Seq.map (fun c ->
                     let date = formatDate c.Date
-                    li [] [
+                    let elements = [
                         b [] [ sprintf "Commented by %s at %s:" c.Author date |> rawText ]
                         br []
                         encodedText c.Content
-                    ]) |> Seq.toList |> ul [ _class "comments" ]
+                    ]
+                    let deleteButton = 
+                        form [ _method "POST"; _class "delete-comment-btn"; _action <| sprintf "/delete-comment/%i" c.Id ] 
+                            [ input [ _type "submit"; _value "Delete"; _class "delete-comment-btn"; attr "onclick" "return confirm('Are you sure? This is irreversible.');" ] ]
+                    li [] (if isOwnedPost then elements @ [deleteButton] else elements)) 
+                    |> Seq.toList |> ul [ _class "comments" ]
             ] 
         ]
     let commentForm = [
