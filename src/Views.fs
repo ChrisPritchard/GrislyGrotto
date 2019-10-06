@@ -213,7 +213,7 @@ let search isAuthor searchTerm (results: Data.Post list option) =
                 | None -> searchBox
                 | Some r -> 
                     let results = [
-                        h3 [] [ rawText <| sprintf "Results for '%s'" searchTerm ]
+                        h3 [] [ encodedText <| sprintf "Results for '%s'" searchTerm ]
                         r |> List.map (fun post -> 
                             let date = formatDate post.Date
                             li [] [
