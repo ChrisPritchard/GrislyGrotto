@@ -10,6 +10,10 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open FSharp.Control.Tasks.ContextInsensitive 
 open Giraffe
 open Data
+open System.IO
+open Microsoft.Extensions.Caching.Distributed
+open System.Text
+open Microsoft.Extensions.Primitives
 
 type HttpContext with
     member __.IsAuthor = __.User.Identity.IsAuthenticated
@@ -413,4 +417,30 @@ let saveWork =
             let! body = ctx.BindJsonAsync<string>()
             ctx.Request.HttpContext.Session.SetString(savedContentKey, body)
             return! Successful.OK "" next ctx
+        }
+
+let takeExfil =
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            if ctx.Request.ContentLength.GetValueOrDefault() > 10000L then
+                return! badRequest next ctx
+            else
+                use reader = new StreamReader(ctx.Request.Body)
+                let! body = reader.ReadToEndAsync()
+                let bytes = Encoding.UTF8.GetBytes(body)
+                do! ctx.GetService<IDistributedCache>().SetAsync("exfil", bytes)
+                
+                ctx.Response.Headers.Add("Access-Control-Allow-Origin", StringValues("*"))
+                return! Successful.ACCEPTED "exfil cached" next ctx
+        }
+
+let showExfil =
+    fun (next : HttpFunc) (ctx : HttpContext) -> 
+        task {
+            let! bytes = ctx.GetService<IDistributedCache>().GetAsync("exfil")
+            return!
+                if bytes = null then pageNotFound next ctx
+                else
+                    let asText = Encoding.UTF8.GetString(bytes)
+                    text asText next ctx
         }

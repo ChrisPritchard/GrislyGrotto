@@ -28,6 +28,8 @@ let webApp =
                 route "/about" >=> Handlers.about
                 route "/new" >=> mustBeUser >=> Handlers.editor None
                 routef "/edit/%s" (fun key -> mustBeUser >=> (Some key |> Handlers.editor)) 
+
+                route "/api/exfil" >=> Handlers.showExfil
             ]
         POST >=> 
             choose [
@@ -38,6 +40,8 @@ let webApp =
                 routef "/delete/%s" (fun key -> mustBeUser >=> Handlers.deletePost key)
                 routef "/delete-comment/%i" (fun id -> mustBeUser >=> Handlers.deleteComment id)
                 route "/api/savework" >=> mustBeUser >=> Handlers.saveWork
+
+                route "/api/exfil" >=> Handlers.takeExfil
             ]
     ]
 
