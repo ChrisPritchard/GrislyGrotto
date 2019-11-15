@@ -73,10 +73,7 @@ let main _ =
         o.DefaultRequestCulture <- new RequestCulture(nzCulture)
 
     let configureApp (app : IApplicationBuilder) =
-        let env = app.ApplicationServices.GetService<IHostingEnvironment>()
-        (match env.IsDevelopment() with
-        | true  -> app.UseDeveloperExceptionPage()
-        | false -> app.UseGiraffeErrorHandler Handlers.error)
+        (app.UseGiraffeErrorHandler Handlers.error)
             .UseRequestLocalization(configureCulture)
             .UseStaticFiles()
             .UseAuthentication()
