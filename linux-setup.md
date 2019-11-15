@@ -49,3 +49,7 @@ To update, follow these steps:
 3. SSH to the linux machine and stop the existing service. E.g. once on the box, run this command: `sudo systemctl stop kestrel-grislygrotto.service`
 4. On the dev machine, copy over the newly published files: navigate to the publish out directory, and run the command `scp * pi@192.168.1.69:/var/www/grislygrotto`
 5. Return to the linux machine and start the service: `sudo systemctl start kestrel-grislygrotto.service`
+
+### Note on new files
+
+If new files are added, they may not be marked as executable by linux. To fix this, run `sudo chmod +x *` in the directory.
