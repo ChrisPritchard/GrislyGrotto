@@ -53,3 +53,9 @@ To update, follow these steps:
 ### Note on new files
 
 If new files are added, they may not be marked as executable by linux. To fix this, run `sudo chmod +x *` in the directory.
+
+They also might not be accessible to the www-data user. To fix _this_ use the command `sudo chown www-data *` in affected directories (e.g. base and wwwroot)
+
+### Single File Mode
+
+If using this 

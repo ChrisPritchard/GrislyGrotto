@@ -10,6 +10,7 @@
   <ItemGroup>
     <None Include="about-content.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <Compile Include="Data.fs" />
     <Compile Include="Views.fs" />
