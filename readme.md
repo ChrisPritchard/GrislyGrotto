@@ -19,3 +19,5 @@ Objectives: Overall security hardening, and code simplicity with my now advanced
 - possible exfil support, still?
 - markdown editor
 - possible api integration with azure blob or backend api
+- enforce HTTPS!
+- csa policy?
