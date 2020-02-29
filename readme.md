@@ -4,7 +4,7 @@ __Release Date:__ TBD
 
 __Release Post:__ TBD
 
-__Frontend:__ F# on .NET Core 3.1 with [Giraffe](https://github.com/giraffe-fsharp) and [HeyRed's Markdown](https://github.com/hey-red/Markdown)
+__Frontend:__ Golang with SQLite extension? Golang html templates?
 
 __Data Store:__ SQLite
 
