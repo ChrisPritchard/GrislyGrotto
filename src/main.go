@@ -9,24 +9,24 @@ import (
 )
 
 func main() {
-	views := CompileViews()
+	views := compileViews()
 	setupRoutes(views)
 
 	log.Println("listening")
 	log.Println(http.ListenAndServe(":3000", nil))
 }
 
-func setupRoutes(views Views) {
+func setupRoutes(views views) {
 	http.Handle("/static/",
 		http.StripPrefix("/static/",
 			http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		posts, err := GetLatestPosts()
+		posts, err := getLatestPosts()
 		if err != nil {
 			serverError(w, err)
 		}
-		model := LatestViewModel{posts}
+		model := latestViewModel{posts}
 		renderView(w, model, views.Latest)
 	})
 }

@@ -7,8 +7,7 @@ import (
 
 const dbName = "./grislygrotto.db"
 
-// GetLatestPosts gets the top 5 posts from the db
-func GetLatestPosts() ([]BlogPost, error) {
+func getLatestPosts() ([]blogPost, error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {
 		return nil, err
@@ -16,12 +15,12 @@ func GetLatestPosts() ([]BlogPost, error) {
 
 	rows, err := database.Query("SELECT Title, Content, Date FROM Posts ORDER BY Date DESC LIMIT 5")
 
-	posts := make([]BlogPost, 0)
+	posts := make([]blogPost, 0)
 	var title, content string
 	var date time.Time
 	for rows.Next() {
 		rows.Scan(&title, &content, &date)
-		posts = append(posts, BlogPost{title, content, date})
+		posts = append(posts, blogPost{title, content, date})
 	}
 
 	return posts, nil

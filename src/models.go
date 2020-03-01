@@ -2,13 +2,11 @@ package main
 
 import "time"
 
-// LatestViewModel holds data for rendering the view Latest
-type LatestViewModel struct {
-	Posts []BlogPost
+type latestViewModel struct {
+	Posts []blogPost
 }
 
-// BlogPost represents a single blog post by an author
-type BlogPost struct {
+type blogPost struct {
 	Title, Body string
 	Date        time.Time
 }
