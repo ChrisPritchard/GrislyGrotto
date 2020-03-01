@@ -20,6 +20,6 @@ func createView(contentFileName string) *template.Template {
 // CompileViews will create and return a set of all templates in the application
 func CompileViews() Views {
 	return Views{
-		Latest: createView("home.html"),
+		Latest: createView("latest.html"),
 	}
 }

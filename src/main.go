@@ -11,15 +11,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type HomeModel struct {
-	Posts []BlogPost
-}
-
-type BlogPost struct {
-	Title, Body string
-	Date        time.Time
-}
-
 func main() {
 
 	views := CompileViews()
@@ -38,7 +29,7 @@ func main() {
 		posts = append(posts, BlogPost{title, content, date})
 	}
 
-	homeModel := HomeModel{
+	model := LatestViewModel{
 		posts,
 	}
 
@@ -47,15 +38,15 @@ func main() {
 			http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := views.Latest.ExecuteTemplate(w, "master", homeModel); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		renderView(w, model, views.Latest)
 	})
 
 	fmt.Println("listening")
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }
 
-func unescape(s string) template.HTML {
-	return template.HTML(s)
+func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {
+	if err := view.ExecuteTemplate(w, "master", model); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
