@@ -1,17 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-
 	views := CompileViews()
+	setupRoutes(views)
 
+	log.Println("listening")
+	log.Println(http.ListenAndServe(":3000", nil))
+}
+
+func setupRoutes(views Views) {
 	http.Handle("/static/",
 		http.StripPrefix("/static/",
 			http.FileServer(http.Dir("static"))))
@@ -24,9 +29,6 @@ func main() {
 		model := LatestViewModel{posts}
 		renderView(w, model, views.Latest)
 	})
-
-	fmt.Println("listening")
-	fmt.Println(http.ListenAndServe(":3000", nil))
 }
 
 func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {
