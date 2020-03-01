@@ -18,7 +18,7 @@ type BlogPost struct {
 
 func main() {
 
-	templates := template.Must(template.ParseFiles("templates/home.html"))
+	homeTemplate := template.Must(template.New("").ParseFiles("templates/home.html", "templates/_master.html"))
 
 	homeModel := HomeModel{
 		[]BlogPost{
@@ -33,7 +33,8 @@ func main() {
 			http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := templates.ExecuteTemplate(w, "home.html", homeModel); err != nil {
+
+		if err := homeTemplate.ExecuteTemplate(w, "master", homeModel); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})

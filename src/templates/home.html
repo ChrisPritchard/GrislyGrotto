@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>The Grisly Grotto - Deviant Minds Think Alike</title>
-        <link href="/static/site.css" rel="stylesheet" />
-    </head>
-    <body>
-        {{range .Posts}}
-            <div>
-                <h1>{{.Title}}</h1>
-                <div>
-                    {{.Body}}
-                </div>
-            </div>
-        {{end}}
-    </body>
-</html>
+{{define "content"}}
+{{range .Posts}}
+    <h2>Latest Posts</h2>
+    <div>
+        <h3>{{.Title}}</h3>
+        <div>
+            {{.Body}}
+        </div>
+    </div>
+{{end}}
+{{end}}
