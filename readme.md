@@ -1,16 +1,24 @@
-# Release 17
+# GrislyGrotto
+
+The is my personal blogging website, where I mainly blog about games I play, books I read, stuff I write and and my boring little life. My friend Pete also blogs here, where he mostly talks about Doctor Who, writing and other stuff.
+
+However, content aside, the main point of this blog for me is as a kata-like exercise of website development. Almost every single version has been a complete rebuild in a new technology stack, or a refinement / alteration of an existing technology stack.
+
+To date there have been ASP.NET WebForms versions (unfortunately the code for those has been lost), MVC, Node.JS, F#, XSLT view-based transforms, paid-for hosting, Azure hosting, Raspberry Pi hosting, Go etc. Building a complete website with code, styling, hosting, ssl and domain names etc by yourself is a strong educational experience and I recommend anyone who is in or adjacent to web development have a go at doing this.
+
+## Release 17
 
 __Release Date:__ TBD
 
 __Release Post:__ TBD
 
-__Frontend:__ Golang with SQLite extension? Golang html templates?
+__Frontend:__ Golang with SQLite extension and golang html templates.
 
 __Data Store:__ SQLite
 
-__Dev Tool:__ Visual Studio 2019 / VS Code
+__Dev Tool:__ VS Code via Remote WSL (Windows 10 onto Ubuntu 18.04 WSL)
 
-Objectives: Overall security hardening, and code simplicity with my now advanced knowledge of F#
+Objectives: Pure go solution, with no frameworks not required. Also lots of security hardening.
 
 - XSS protection
 - password brute force / spraying protection
@@ -20,4 +28,4 @@ Objectives: Overall security hardening, and code simplicity with my now advanced
 - markdown editor
 - possible api integration with azure blob or backend api
 - enforce HTTPS!
-- csa policy?
+- csa policy
