@@ -6,3 +6,4 @@
 project.lock.json
 grislygrotto.db
 /**/*.exe
+/**/*.so
