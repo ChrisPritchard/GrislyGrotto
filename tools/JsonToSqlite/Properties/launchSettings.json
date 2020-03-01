@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "JsonToSqlite": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\\\Dev\\\\BackupScripts\\\\_latest\\\\posts grislygrotto.db"
-    }
-  }
-}
