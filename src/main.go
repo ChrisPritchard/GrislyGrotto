@@ -22,7 +22,7 @@ type BlogPost struct {
 
 func main() {
 
-	homeTemplate := template.Must(template.New("").Funcs(template.FuncMap{"unescape": unescape}).ParseFiles("templates/home.html", "templates/_master.html"))
+	views := CompileViews()
 
 	database, err := sql.Open("sqlite3", "./grislygrotto.db")
 	if err != nil {
@@ -47,8 +47,7 @@ func main() {
 			http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
-		if err := homeTemplate.ExecuteTemplate(w, "master", homeModel); err != nil {
+		if err := views.Latest.ExecuteTemplate(w, "master", homeModel); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
