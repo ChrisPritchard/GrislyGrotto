@@ -2,5 +2,7 @@
 /**/bin
 /**/obj
 /.vs
+/.vscode
 project.lock.json
 grislygrotto.db
+/**/*.exe
