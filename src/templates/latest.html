@@ -3,7 +3,7 @@
 {{range .Posts}}
     <div>
         <a href="/post/{{ .Key }}"><h3>{{.Title}}</h3></a>
-        <span>Posted by {{ .Author }} at {{ .Date }}. <a href="/post/{{ .Key }}#comments">Comments ({{ .CommentCount }})</a></span>
+        <span>Posted by {{ .Author }} at {{ formatDate .Date }}. <a href="/post/{{ .Key }}#comments">Comments ({{ .CommentCount }})</a></span>
         <div>
             {{ raw .Content }}
         </div>

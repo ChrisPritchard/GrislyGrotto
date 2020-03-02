@@ -1,6 +1,9 @@
 package main
 
-import "html/template"
+import (
+	"html/template"
+	"time"
+)
 
 type views struct {
 	Latest, Single *template.Template
@@ -15,10 +18,16 @@ func compileViews() views {
 
 func createView(contentFileName string) *template.Template {
 	baseDir := "templates/"
-	funcMap := template.FuncMap{"raw": raw}
+	funcMap := template.FuncMap{"raw": raw, "formatDate": formatDate}
 	return template.Must(template.New("").Funcs(funcMap).ParseFiles(baseDir+contentFileName, baseDir+"_master.html"))
 }
 
 func raw(s string) template.HTML {
 	return template.HTML(s)
+}
+
+func formatDate(s string) string {
+	// "Mon Jan 2 15:04:05 -0700 MST 2006"
+	asTime, _ := time.Parse("2006-01-02 15:04:05", s)
+	return asTime.Format("15:04 PM, on Monday, 02 January 2006")
 }
