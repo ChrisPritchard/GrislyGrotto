@@ -29,6 +29,24 @@ func setupRoutes(views views) {
 		model := latestViewModel{posts}
 		renderView(w, model, views.Latest)
 	})
+
+	// /			latest
+	//	-> next page
+	//	-> previous page
+	// /post/key	single
+	//	-> post comment
+	//	-> delete comment (if author)
+	// /login		login
+	//	-> try login
+	// /new			new post
+	//	-> try create
+	// /edit/key	edit
+	//	-> try edit
+	// /archives
+	// /month
+	// /search
+	//	-> get results
+	// /about
 }
 
 func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {
