@@ -27,7 +27,6 @@ func raw(s string) template.HTML {
 }
 
 func formatDate(s string) string {
-	// "Mon Jan 2 15:04:05 -0700 MST 2006"
 	asTime, _ := time.Parse("2006-01-02 15:04:05", s)
 	return asTime.Format("15:04 PM, on Monday, 02 January 2006")
 }
