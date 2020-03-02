@@ -30,6 +30,15 @@ func setupRoutes(views views) {
 		renderView(w, model, views.Latest)
 	})
 
+	http.HandleFunc("/post/", func(w http.ResponseWriter, r *http.Request) {
+		key := r.URL.Path["/post/":]
+		post, err := getSinglePost(key)
+		if err != nil {
+			serverError(w, err)
+		}
+		renderView(w, post, views.Single)
+	})
+
 	// /			latest
 	//	-> next page
 	//	-> previous page
