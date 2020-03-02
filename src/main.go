@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -22,11 +23,25 @@ func setupRoutes(views views) {
 			http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		posts, err := getLatestPosts()
+		pageParam, hasPage := r.URL.Query()["page"]
+		page := 0
+		notFirstPage := false
+		if hasPage && len(pageParam[0]) > 0 {
+			page, _ = strconv.Atoi(pageParam[0])
+			if page < 0 {
+				page = 0
+			}
+			if page != 0 {
+				notFirstPage = true
+			}
+		}
+
+		posts, err := getLatestPosts(page)
 		if err != nil {
 			serverError(w, err)
 		}
-		model := latestViewModel{posts}
+
+		model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
 		renderView(w, model, views.Latest)
 	})
 

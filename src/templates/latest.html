@@ -9,4 +9,10 @@
         </div>
     </div>
 {{end}}
+<div>
+    {{ if .NotFirstPage }}
+        <a href="/?page={{ .PrevPage }}">Prev</a>
+    {{ end }}
+    <a href="/?page={{ .NextPage }}">Next</a>
+</div>
 {{end}}

@@ -5,8 +5,9 @@ import (
 )
 
 const dbName = "./grislygrotto.db"
+const pageLength = 5
 
-func getLatestPosts() ([]blogPost, error) {
+func getLatestPosts(page int) ([]blogPost, error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {
 		return nil, err
@@ -19,7 +20,7 @@ func getLatestPosts() ([]blogPost, error) {
 			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
 		FROM Posts p
 		ORDER BY p.Date DESC 
-		LIMIT 5`)
+		LIMIT ? OFFSET ?`, pageLength, page*pageLength)
 	if err != nil {
 		return nil, err
 	}

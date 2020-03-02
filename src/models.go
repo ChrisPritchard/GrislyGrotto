@@ -1,7 +1,10 @@
 package main
 
 type latestViewModel struct {
-	Posts []blogPost
+	NotFirstPage bool
+	PrevPage     int
+	NextPage     int
+	Posts        []blogPost
 }
 
 type blogPost struct {
