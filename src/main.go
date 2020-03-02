@@ -31,7 +31,7 @@ func setupRoutes(views views) {
 	})
 
 	http.HandleFunc("/post/", func(w http.ResponseWriter, r *http.Request) {
-		key := r.URL.Path
+		key := r.URL.Path[len("/post/"):]
 		post, err := getSinglePost(key)
 		if err != nil {
 			serverError(w, err)

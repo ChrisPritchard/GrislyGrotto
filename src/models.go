@@ -1,18 +1,15 @@
 package main
 
-import "time"
-
 type latestViewModel struct {
 	Posts []blogPost
 }
 
 type blogPost struct {
-	Author                  []author
-	Key, Title, Content     string
-	Date                    time.Time
-	IsStory                 bool
-	WordCount, CommentCount int
-	Comments                []comment
+	Author, Key, Title, Content string
+	Date                        string
+	IsStory                     bool
+	WordCount, CommentCount     int
+	Comments                    []comment
 }
 
 type author struct {
@@ -20,7 +17,6 @@ type author struct {
 }
 
 type comment struct {
-	ID              int
-	Author, Content string
-	Date            time.Time
+	ID                    int
+	Author, Content, Date string
 }

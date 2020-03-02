@@ -1,8 +1,16 @@
 {{define "content"}}
+<h2>{{.Title}}</h2>
+<span>Posted by {{ .Author }} at {{ .Date }}.</span>
 <div>
-    <h2>{{.Title}}</h2>
+    {{ raw .Content }}
+</div>
+<h2>Comments</h2>
+{{range .Comments}}
+<div>
+    <h4>Commented by {{ .Author }} at {{ .Date }}:</h4>
     <div>
         {{ raw .Content }}
     </div>
 </div>
+{{end}}
 {{end}}
