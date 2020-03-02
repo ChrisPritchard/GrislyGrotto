@@ -7,6 +7,20 @@ type latestViewModel struct {
 }
 
 type blogPost struct {
-	Title, Body string
-	Date        time.Time
+	Author                  []author
+	Key, Title, Content     string
+	Date                    time.Time
+	IsStory                 bool
+	WordCount, CommentCount int
+	Comments                []comment
+}
+
+type author struct {
+	Username, Password, DisplayName, ImageURL string
+}
+
+type comment struct {
+	ID              int
+	Author, Content string
+	Date            time.Time
 }

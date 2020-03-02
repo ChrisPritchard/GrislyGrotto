@@ -30,7 +30,14 @@ func setupRoutes(views views) {
 		renderView(w, model, views.Latest)
 	})
 
-	http.HandleFunc("/post/", singlePostHandler)
+	http.HandleFunc("/post/", func(w http.ResponseWriter, r *http.Request) {
+		key := r.URL.Path
+		post, err := getSinglePost(key)
+		if err != nil {
+			serverError(w, err)
+		}
+		renderView(w, post, views.Single)
+	})
 
 	// /			latest
 	//	-> next page
@@ -49,15 +56,6 @@ func setupRoutes(views views) {
 	// /search
 	//	-> get results
 	// /about
-}
-
-func singlePostHandler(w http.ResponseWriter, r *http.Request) {
-	key := r.URL
-	post, err := getSinglePost(key)
-	if err != nil {
-		serverError(w, err)
-	}
-	renderView(w, post, views.Single)
 }
 
 func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {

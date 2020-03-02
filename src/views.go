@@ -3,12 +3,13 @@ package main
 import "html/template"
 
 type views struct {
-	Latest *template.Template
+	Latest, Single *template.Template
 }
 
 func compileViews() views {
 	return views{
 		Latest: createView("latest.html"),
+		Single: createView("single.html"),
 	}
 }
 
