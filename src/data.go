@@ -40,10 +40,10 @@ func getLatestPosts(page int) ([]blogPost, error) {
 	return posts, nil
 }
 
-func getSinglePost(key string) (post blogPost, err error) {
+func getSinglePost(key string) (post blogPost, pageNotFound bool, err error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {
-		return post, err
+		return post, false, err
 	}
 
 	row := database.QueryRow(`
@@ -55,12 +55,15 @@ func getSinglePost(key string) (post blogPost, err error) {
 	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date)
 
 	if err != nil {
-		return post, err
+		if err == sql.ErrNoRows {
+			return post, true, nil
+		}
+		return post, false, err
 	}
 
 	post.Comments, err = getPostComments(database, key)
 
-	return post, err
+	return post, false, err
 }
 
 func getPostComments(database *sql.DB, key string) (comments []comment, err error) {

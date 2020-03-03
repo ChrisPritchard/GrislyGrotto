@@ -23,35 +23,27 @@ func setupRoutes(views views) {
 			http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		pageParam, hasPage := r.URL.Query()["page"]
-		page := 0
-		notFirstPage := false
-		if hasPage && len(pageParam[0]) > 0 {
-			page, _ = strconv.Atoi(pageParam[0])
-			if page < 0 {
-				page = 0
-			}
-			if page != 0 {
-				notFirstPage = true
-			}
-		}
+		page, notFirstPage := getPageFromQuery(r)
 
 		posts, err := getLatestPosts(page)
 		if err != nil {
 			serverError(w, err)
+		} else {
+			model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
+			renderView(w, model, views.Latest)
 		}
-
-		model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
-		renderView(w, model, views.Latest)
 	})
 
 	http.HandleFunc("/post/", func(w http.ResponseWriter, r *http.Request) {
 		key := r.URL.Path[len("/post/"):]
-		post, err := getSinglePost(key)
-		if err != nil {
+		post, pageNotFound, err := getSinglePost(key)
+		if pageNotFound {
+			http.NotFound(w, r)
+		} else if err != nil {
 			serverError(w, err)
+		} else {
+			renderView(w, post, views.Single)
 		}
-		renderView(w, post, views.Single)
 	})
 
 	// /			latest
@@ -71,6 +63,22 @@ func setupRoutes(views views) {
 	// /search
 	//	-> get results
 	// /about
+}
+
+func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
+	pageParam, hasPage := r.URL.Query()["page"]
+	page = 0
+	notFirstPage = false
+	if hasPage && len(pageParam[0]) > 0 {
+		page, _ = strconv.Atoi(pageParam[0])
+		if page < 0 {
+			page = 0
+		}
+		if page != 0 {
+			notFirstPage = true
+		}
+	}
+	return page, notFirstPage
 }
 
 func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {
