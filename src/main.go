@@ -45,24 +45,6 @@ func setupRoutes(views views) {
 			renderView(w, post, views.Single)
 		}
 	})
-
-	// /			latest
-	//	-> next page
-	//	-> previous page
-	// /post/key	single
-	//	-> post comment
-	//	-> delete comment (if author)
-	// /login		login
-	//	-> try login
-	// /new			new post
-	//	-> try create
-	// /edit/key	edit
-	//	-> try edit
-	// /archives
-	// /month
-	// /search
-	//	-> get results
-	// /about
 }
 
 func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {

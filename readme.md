@@ -29,3 +29,25 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 - possible api integration with azure blob or backend api
 - enforce HTTPS!
 - csa policy
+
+Remaining work:
+
+```
+	-> post comment
+			recapcha? custom recapcha?
+		-> delete comment (if author)
+	/login		login
+		-> try login
+			recapcha? custom recapcha?
+	/new			new post
+		-> try create
+	/edit/key	edit
+		-> try edit
+	/archives
+	/month
+	/search
+		-> get results
+	/about
+    
+    security hardening aside from already done
+```
