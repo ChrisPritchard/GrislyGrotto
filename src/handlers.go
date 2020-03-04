@@ -72,6 +72,26 @@ func createComment(w http.ResponseWriter, r *http.Request, postKey string) {
 	}
 }
 
+func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			http.NotFound(w, r)
+		} else {
+			searchParam, hasSearch := r.URL.Query()["searchTerm"]
+			if !hasSearch || len(searchParam[0]) == 0 {
+				renderView(w, nil, views.Search)
+			} else {
+				results, err := getSearchResults(searchParam[0])
+				if err != nil {
+					serverError(w, err)
+				}
+				zeroResults := len(results) == 0
+				renderView(w, searchViewModel{searchParam[0], zeroResults, results}, views.Search)
+			}
+		}
+	}
+}
+
 func areDangerous(values ...string) bool {
 	for _, v := range values {
 		if strings.ContainsAny(v, "<>") {

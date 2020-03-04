@@ -6,13 +6,14 @@ import (
 )
 
 type views struct {
-	Latest, Single *template.Template
+	Latest, Single, Search *template.Template
 }
 
 func compileViews() views {
 	return views{
 		Latest: createView("latest.html"),
 		Single: createView("single.html"),
+		Search: createView("search.html"),
 	}
 }
 

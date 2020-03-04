@@ -12,6 +12,12 @@ type singleViewModel struct {
 	Post       blogPost
 }
 
+type searchViewModel struct {
+	SearchTerm  string
+	ZeroResults bool
+	Results     []blogPost
+}
+
 type blogPost struct {
 	Author, Key, Title, Content string
 	Date                        string

@@ -8,6 +8,7 @@ import (
 const dbName = "./grislygrotto.db"
 const pageLength = 5
 const maxCommentCount = 20
+const maxSearchResults = 50
 
 func getLatestPosts(page int) ([]blogPost, error) {
 	database, err := sql.Open("sqlite3", dbName)
@@ -105,4 +106,37 @@ func addCommentToBlog(author, content, postKey string) (err error) {
 	_, err = database.Exec("INSERT INTO Comments (Author, Date, Content, Post_Key) VALUES (?, ?, ?, ?)",
 		author, date, content, postKey)
 	return err
+}
+
+func getSearchResults(searchTerm string) (results []blogPost, err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := database.Query(`
+		SELECT 
+			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+			p.Key, p.Title, p.Content, p.Date
+		FROM Posts p
+		WHERE 
+			p.Title LIKE ? OR p.Content LIKE ?
+		ORDER BY p.Date DESC 
+		LIMIT ?`, "%"+searchTerm+"%", "%"+searchTerm+"%", maxSearchResults)
+	if err != nil {
+		return nil, err
+	}
+
+	posts := make([]blogPost, 0)
+	var post blogPost
+	for rows.Next() {
+		err = rows.Scan(
+			&post.Author, &post.Key, &post.Title, &post.Content, &post.Date)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
 }
