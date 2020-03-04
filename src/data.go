@@ -2,6 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -9,6 +11,7 @@ const dbName = "./grislygrotto.db"
 const pageLength = 5
 const maxCommentCount = 20
 const maxSearchResults = 50
+const searchStripPad = 20
 
 func getLatestPosts(page int) ([]blogPost, error) {
 	database, err := sql.Open("sqlite3", dbName)
@@ -135,8 +138,28 @@ func getSearchResults(searchTerm string) (results []blogPost, err error) {
 		if err != nil {
 			return nil, err
 		}
+		post.Content = stripToSearchTerm(post.Content, searchTerm)
 		posts = append(posts, post)
 	}
 
 	return posts, nil
+}
+
+func stripToSearchTerm(content, searchTerm string) (result string) {
+	regex := regexp.MustCompile("<[^>]*>")
+	result = regex.ReplaceAllString(content, "")
+	loc := strings.Index(strings.ToLower(result), strings.ToLower(searchTerm))
+	if loc == -1 {
+		return ""
+	}
+
+	start, end := 0, len(result)-1
+	if loc-searchStripPad > start {
+		start = loc - searchStripPad
+	}
+	if loc+searchStripPad < end {
+		end = loc + searchStripPad
+	}
+
+	return "..." + result[start:end] + "..."
 }
