@@ -33,13 +33,9 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 Remaining work:
 
 ```
-	-> post comment
-			recapcha? custom recapcha?
-            csrf tokens
 		-> delete comment (if author)
 	/login		login
 		-> try login
-			recapcha? custom recapcha?
 	/new			new post
 		-> try create
 	/edit/key	edit
@@ -51,4 +47,6 @@ Remaining work:
 	/about
     
     security hardening aside from already done
+    recapcha? custom recapcha?
+    csrf tokens
 ```
