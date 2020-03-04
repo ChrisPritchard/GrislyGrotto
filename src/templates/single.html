@@ -1,16 +1,25 @@
 {{define "content"}}
-<h2>{{.Title}}</h2>
-<span>Posted by {{ .Author }} at {{ formatDate .Date }}.</span>
+<h2>{{.Post.Title}}</h2>
+<span>Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
 <div>
-    {{ raw .Content }}
+    {{ raw .Post.Content }}
 </div>
 <h2>Comments</h2>
-{{range .Comments}}
+{{range .Post.Comments}}
 <div>
     <h4>Commented by {{ .Author }} at {{ formatDate .Date }}:</h4>
     <div>
         {{ raw .Content }}
     </div>
 </div>
+{{end}}
+{{ if .CanComment }}
+<form method="POST">
+    <label for="author">Author</label>
+    <input type="text" id="author" name="author">
+    <label for="content">Content</label>
+    <textarea rows="3" cols="50" id="content" name="content"></textarea>
+    <input type="submit" value="Comment">
+</form>
 {{end}}
 {{end}}

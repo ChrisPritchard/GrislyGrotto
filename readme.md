@@ -35,6 +35,7 @@ Remaining work:
 ```
 	-> post comment
 			recapcha? custom recapcha?
+            csrf tokens
 		-> delete comment (if author)
 	/login		login
 		-> try login

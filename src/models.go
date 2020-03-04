@@ -7,6 +7,11 @@ type latestViewModel struct {
 	Posts        []blogPost
 }
 
+type singleViewModel struct {
+	CanComment bool
+	Post       blogPost
+}
+
 type blogPost struct {
 	Author, Key, Title, Content string
 	Date                        string

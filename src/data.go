@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"time"
 )
 
 const dbName = "./grislygrotto.db"
 const pageLength = 5
+const maxCommentCount = 20
 
 func getLatestPosts(page int) ([]blogPost, error) {
 	database, err := sql.Open("sqlite3", dbName)
@@ -61,6 +63,7 @@ func getSinglePost(key string) (post blogPost, pageNotFound bool, err error) {
 		return post, false, err
 	}
 
+	post.Key = key
 	post.Comments, err = getPostComments(database, key)
 
 	return post, false, err
@@ -90,4 +93,16 @@ func getPostComments(database *sql.DB, key string) (comments []comment, err erro
 	}
 
 	return comments, err
+}
+
+func addCommentToBlog(author, content, postKey string) (err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return err
+	}
+
+	date := time.Now().Format("2006-01-02 15:04:05")
+	_, err = database.Exec("INSERT INTO Comments (Author, Date, Content, Post_Key) VALUES (?, ?, ?, ?)",
+		author, date, content, postKey)
+	return err
 }
