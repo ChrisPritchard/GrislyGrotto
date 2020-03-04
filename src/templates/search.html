@@ -12,6 +12,7 @@
         <div>
             <a href="/post/{{ .Key }}"><h4>{{ .Title }}</h4></a>
             <div>{{ .Content }}</div>
+            <span>Posted by {{ .Author }} at {{ formatDate .Date }}</span>
         </div>
     {{ end }}
 {{ end }}
