@@ -204,3 +204,84 @@ func getAllMonthCounts() (results []monthCount, err error) {
 
 	return results, nil
 }
+
+func getStories() ([]blogPost, error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := database.Query(`
+		SELECT 
+			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+			p.Key, p.Title, p.Date, p.IsStory, p.WordCount
+		FROM Posts p
+		ORDER BY p.Date DESC 
+		WHERE p.IsStory = 1`)
+	if err != nil {
+		return nil, err
+	}
+
+	posts := make([]blogPost, 0)
+	var post blogPost
+	for rows.Next() {
+		err = rows.Scan(
+			&post.Author, &post.Key, &post.Title,
+			&post.Date, &post.IsStory, &post.WordCount)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func getPostsForMonth(month, year string) ([]blogPost, error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return nil, err
+	}
+
+	monthIndexes := map[string]string{
+		"January":   "01",
+		"February":  "02",
+		"March":     "03",
+		"April":     "04",
+		"May":       "05",
+		"June":      "06",
+		"July":      "07",
+		"August":    "08",
+		"September": "09",
+		"October":   "10",
+		"November":  "11",
+		"December":  "12",
+	}
+	monthToken := year + "-" + monthIndexes[month]
+
+	rows, err := database.Query(`
+		SELECT 
+			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+			p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
+			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
+		FROM Posts p
+		WHERE SUBSTR(p.Date, 0, 8) = ?
+		ORDER BY p.Date`, monthToken)
+	if err != nil {
+		return nil, err
+	}
+
+	posts := make([]blogPost, 0)
+	var post blogPost
+	for rows.Next() {
+		err = rows.Scan(
+			&post.Author, &post.Key, &post.Title, &post.Content,
+			&post.Date, &post.IsStory, &post.WordCount, &post.CommentCount)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}

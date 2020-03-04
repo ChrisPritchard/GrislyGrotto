@@ -33,6 +33,7 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 Remaining work:
 
 ```
+    -> trim post content if story
 		-> delete comment (if author)
 	/login		login
 		-> try login
@@ -41,6 +42,8 @@ Remaining work:
 	/edit/key	edit
 		-> try edit
 	/archives
+        -> get stories
+        -> get posts for month
 	/month
 	/search
 		-> get results
