@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -162,4 +163,44 @@ func stripToSearchTerm(content, searchTerm string) (result string) {
 	}
 
 	return "..." + result[start:end] + "..."
+}
+
+func getAllMonthCounts() (results []monthCount, err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := database.Query(`
+		SELECT 
+			SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
+		FROM 
+			Posts 
+		GROUP BY 
+			Month 
+		ORDER BY 
+			Date`)
+	if err != nil {
+		return nil, err
+	}
+
+	months := []string{
+		"", "January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December"}
+
+	results = make([]monthCount, 0)
+	var month monthCount
+	for rows.Next() {
+		err = rows.Scan(&month.Month, &month.Count)
+		if err != nil {
+			return results, err
+		}
+		month.Year = month.Month[:4]
+		monthNum := month.Month[5:]
+		monthIndex, _ := strconv.Atoi(monthNum)
+		month.Month = months[monthIndex]
+		results = append(results, month)
+	}
+
+	return results, nil
 }
