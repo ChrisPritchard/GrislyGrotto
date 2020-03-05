@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,7 +18,7 @@ func latestPostsHandler(views views) func(w http.ResponseWriter, r *http.Request
 				serverError(w, err)
 			} else {
 				model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
-				renderView(w, model, views.Latest)
+				renderView(w, r, model, views.Latest)
 			}
 		}
 	}
@@ -61,7 +60,7 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 				if len(post.Comments) == maxCommentCount {
 					model.CanComment = false
 				}
-				renderView(w, model, views.Single)
+				renderView(w, r, model, views.Single)
 			} else {
 				http.NotFound(w, r)
 			}
@@ -102,7 +101,7 @@ func archivesHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 				serverError(w, err)
 			}
 			model := archivesViewModel{yearSets, stories}
-			renderView(w, model, views.Archives)
+			renderView(w, r, model, views.Archives)
 		}
 	}
 }
@@ -133,7 +132,7 @@ func monthHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 			prevMonth, prevYear := getPrevMonth(month, yearN)
 			nextMonth, nextYear := getNextMonth(month, yearN)
 			model := monthViewModel{month, year, prevMonth, prevYear, nextMonth, nextYear, posts}
-			renderView(w, model, views.Month)
+			renderView(w, r, model, views.Month)
 		}
 	}
 }
@@ -170,14 +169,14 @@ func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 		} else {
 			searchParam, hasSearch := r.URL.Query()["searchTerm"]
 			if !hasSearch || len(searchParam[0]) == 0 {
-				renderView(w, nil, views.Search)
+				renderView(w, r, nil, views.Search)
 			} else {
 				results, err := getSearchResults(searchParam[0])
 				if err != nil {
 					serverError(w, err)
 				}
 				zeroResults := len(results) == 0
-				renderView(w, searchViewModel{searchParam[0], zeroResults, results}, views.Search)
+				renderView(w, r, searchViewModel{searchParam[0], zeroResults, results}, views.Search)
 			}
 		}
 	}
@@ -188,7 +187,7 @@ func aboutHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			http.NotFound(w, r)
 		} else {
-			renderView(w, nil, views.About)
+			renderView(w, r, nil, views.About)
 		}
 	}
 }
@@ -200,12 +199,6 @@ func areDangerous(values ...string) bool {
 		}
 	}
 	return false
-}
-
-func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {
-	if err := view.ExecuteTemplate(w, "master", model); err != nil {
-		serverError(w, err)
-	}
 }
 
 func serverError(w http.ResponseWriter, err error) {

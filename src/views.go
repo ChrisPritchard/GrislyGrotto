@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"net/http"
 	"time"
 )
 
@@ -22,7 +23,11 @@ func compileViews() views {
 
 func createView(contentFileName string) *template.Template {
 	baseDir := "templates/"
-	funcMap := template.FuncMap{"raw": raw, "formatDate": formatDate}
+	funcMap := template.FuncMap{
+		"raw":        raw,
+		"formatDate": formatDate,
+		"loggedIn":   func() bool { return false }, // overriden on renderView
+	}
 	return template.Must(template.New("").Funcs(funcMap).ParseFiles(baseDir+contentFileName, baseDir+"_master.html"))
 }
 
@@ -33,4 +38,14 @@ func raw(s string) template.HTML {
 func formatDate(s string) string {
 	asTime, _ := time.Parse("2006-01-02 15:04:05", s)
 	return asTime.Format("15:04 PM, on Monday, 02 January 2006")
+}
+
+func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view *template.Template) {
+	_, err := readCookie("user", r)
+	loggedIn := err == nil
+	view.Funcs(template.FuncMap{"loggedIn": func() bool { return loggedIn }})
+
+	if err := view.ExecuteTemplate(w, "master", model); err != nil {
+		serverError(w, err)
+	}
 }

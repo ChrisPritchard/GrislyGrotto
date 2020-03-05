@@ -8,6 +8,11 @@
     <body>
         <a href="/"><h1>The Grisly Grotto</h1></a>
         <div>
+            {{ if loggedIn }}
+                <a href="/editor">New Post</a>
+            {{ else }}
+                <a href="/login">Login</a>
+            {{ end }}
             <a href="/archives">Archives</a>
             <a href="/search">Search</a>
             <a href="/about">About</a>
