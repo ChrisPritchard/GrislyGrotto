@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -89,6 +90,39 @@ func archivesHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 			renderView(w, model, views.Archives)
 		}
 	}
+}
+
+func monthHandler(views views) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			http.NotFound(w, r)
+		} else {
+			token := r.URL.Path[len("/month/"):]
+			split := strings.Index(token, "/")
+			if len(token) == 0 || split == -1 {
+				http.NotFound(w, r)
+			}
+			month, year := token[:split], token[split+1:]
+			log.Print(month + "|" + year)
+
+			posts, err := getPostsForMonth(month, year)
+			if err != nil {
+				serverError(w, err)
+			}
+			prevMonth, prevYear := getPrevMonth(month, year)
+			nextMonth, nextYear := getNextMonth(month, year)
+			model := monthViewModel{month, year, prevMonth, prevYear, nextMonth, nextYear, posts}
+			renderView(w, model, views.Month)
+		}
+	}
+}
+
+func getPrevMonth(month, year string) (string, string) {
+	return "", ""
+}
+
+func getNextMonth(month, year string) (string, string) {
+	return "", ""
 }
 
 func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {

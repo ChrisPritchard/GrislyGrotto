@@ -12,15 +12,22 @@ type singleViewModel struct {
 	Post       blogPost
 }
 
+type archivesViewModel struct {
+	Years   []yearSet
+	Stories []blogPost
+}
+
+type monthViewModel struct {
+	Month, Year         string
+	PrevMonth, PrevYear string
+	NextMonth, NextYear string
+	Posts               []blogPost
+}
+
 type searchViewModel struct {
 	SearchTerm  string
 	ZeroResults bool
 	Results     []blogPost
-}
-
-type archivesViewModel struct {
-	Years   []yearSet
-	Stories []blogPost
 }
 
 type blogPost struct {
