@@ -44,4 +44,5 @@ Remaining work:
     security hardening aside from already done
     recapcha? custom recapcha?
     csrf tokens
+    markdown editor?
 ```
