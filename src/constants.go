@@ -5,6 +5,7 @@ const pageLength = 5
 const maxCommentCount = 20
 const maxSearchResults = 50
 const searchStripPad = 20
+const listenPort = 3000
 
 var months = []string{
 	"", "January", "February", "March", "April", "May", "June",

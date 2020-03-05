@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,8 +12,8 @@ func main() {
 	views := compileViews()
 	setupRoutes(views)
 
-	log.Println("listening")
-	log.Println(http.ListenAndServe(":3000", nil))
+	log.Printf("listening locally on port :%d\n", listenPort)
+	log.Println(http.ListenAndServe(fmt.Sprintf(":%d", listenPort), nil))
 }
 
 func setupRoutes(views views) {

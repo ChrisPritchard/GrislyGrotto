@@ -8,3 +8,5 @@ grislygrotto.db
 /**/*.exe
 /**/*.so
 **/__debug_bin
+src/.main.go.swp
+.DS_Store
