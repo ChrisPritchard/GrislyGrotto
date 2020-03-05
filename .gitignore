@@ -10,3 +10,4 @@ grislygrotto.db
 **/__debug_bin
 src/.main.go.swp
 .DS_Store
+.secret
