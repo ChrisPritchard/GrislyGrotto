@@ -19,7 +19,7 @@ type searchViewModel struct {
 }
 
 type archivesViewModel struct {
-	Years   []monthCount
+	Years   []yearSet
 	Stories []blogPost
 }
 
@@ -38,6 +38,11 @@ type author struct {
 type comment struct {
 	ID                    int
 	Author, Content, Date string
+}
+
+type yearSet struct {
+	Year   string
+	Months []monthCount
 }
 
 type monthCount struct {

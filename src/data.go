@@ -165,7 +165,7 @@ func stripToSearchTerm(content, searchTerm string) (result string) {
 	return "..." + result[start:end] + "..."
 }
 
-func getAllMonthCounts() (results []monthCount, err error) {
+func getYearMonthCounts() (years []yearSet, err error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {
 		return nil, err
@@ -188,21 +188,27 @@ func getAllMonthCounts() (results []monthCount, err error) {
 		"", "January", "February", "March", "April", "May", "June",
 		"July", "August", "September", "October", "November", "December"}
 
-	results = make([]monthCount, 0)
+	years = make([]yearSet, 0)
 	var month monthCount
 	for rows.Next() {
 		err = rows.Scan(&month.Month, &month.Count)
 		if err != nil {
-			return results, err
+			return years, err
 		}
 		month.Year = month.Month[:4]
 		monthNum := month.Month[5:]
 		monthIndex, _ := strconv.Atoi(monthNum)
 		month.Month = months[monthIndex]
-		results = append(results, month)
+
+		if len(years) == 0 || years[len(years)-1].Year != month.Year {
+			year := yearSet{month.Year, []monthCount{month}}
+			years = append(years, year)
+		} else {
+			years[len(years)-1].Months = append(years[len(years)-1].Months, month)
+		}
 	}
 
-	return results, nil
+	return years, nil
 }
 
 func getStories() ([]blogPost, error) {
@@ -215,9 +221,9 @@ func getStories() ([]blogPost, error) {
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Key, p.Title, p.Date, p.IsStory, p.WordCount
-		FROM Posts p
-		ORDER BY p.Date DESC 
-		WHERE p.IsStory = 1`)
+		FROM Posts p 
+		WHERE p.IsStory = 1
+		ORDER BY p.Date DESC`)
 	if err != nil {
 		return nil, err
 	}

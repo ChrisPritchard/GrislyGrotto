@@ -1,0 +1,26 @@
+{{ define "content" }}
+<h2>Archives</h2>
+<ul>
+    {{ range .Years }}
+        <li>
+            <h3>{{ .Year }}</h3>
+            <ul>
+                {{ range .Months }}
+                    <li>
+                        <a href="/month/{{ .Month }}/{{ .Year }}">{{ .Month }} ({{ .Count }})</a>
+                    </li>
+                {{ end }}
+            </ul>
+        </li>
+    {{ end }}
+</ul>
+<h2>Stories</h2>
+<ul>
+    {{ range .Stories }}
+    <li>
+        <a href="/post/{{ .Key }}"><h3>{{ .Title }} ({{ .WordCount }} words)</h3></a>
+        <span>Posted by {{ .Author }} at {{ formatDate .Date }}</span>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}

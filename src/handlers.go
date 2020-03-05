@@ -72,6 +72,25 @@ func createComment(w http.ResponseWriter, r *http.Request, postKey string) {
 	}
 }
 
+func archivesHandler(views views) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			http.NotFound(w, r)
+		} else {
+			yearSets, err := getYearMonthCounts()
+			if err != nil {
+				serverError(w, err)
+			}
+			stories, err := getStories()
+			if err != nil {
+				serverError(w, err)
+			}
+			model := archivesViewModel{yearSets, stories}
+			renderView(w, model, views.Archives)
+		}
+	}
+}
+
 func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
