@@ -41,12 +41,6 @@ Remaining work:
 		-> try create
 	/edit/key	edit
 		-> try edit
-	/archives
-        -> get stories
-        -> get posts for month
-	/month
-	/search
-		-> get results
 	/about
     
     security hardening aside from already done

@@ -5,7 +5,11 @@
         <a href="/post/{{ .Key }}"><h3>{{.Title}}</h3></a>
         <span>Posted by {{ .Author }} at {{ formatDate .Date }}. <a href="/post/{{ .Key }}#comments">Comments ({{ .CommentCount }})</a></span>
         <div>
-            {{ raw .Content }}
+            {{ if .IsStory }}
+                <p><a href="/post/{{ .Key }}">Click through to read ({{ .WordCount }} words)...</a></p>
+            {{ else }}
+                {{ raw .Content }}
+            {{ end }}
         </div>
     </div>
 {{ end }}
