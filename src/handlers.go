@@ -25,6 +25,22 @@ func latestPostsHandler(views views) func(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
+	pageParam, hasPage := r.URL.Query()["page"]
+	page = 0
+	notFirstPage = false
+	if hasPage && len(pageParam[0]) > 0 {
+		page, _ = strconv.Atoi(pageParam[0])
+		if page < 0 {
+			page = 0
+		}
+		if page != 0 {
+			notFirstPage = true
+		}
+	}
+	return page, notFirstPage
+}
+
 func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := r.URL.Path[len("/post/"):]
@@ -167,6 +183,16 @@ func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func aboutHandler(views views) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			http.NotFound(w, r)
+		} else {
+			renderView(w, nil, views.About)
+		}
+	}
+}
+
 func areDangerous(values ...string) bool {
 	for _, v := range values {
 		if strings.ContainsAny(v, "<>") {
@@ -174,22 +200,6 @@ func areDangerous(values ...string) bool {
 		}
 	}
 	return false
-}
-
-func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
-	pageParam, hasPage := r.URL.Query()["page"]
-	page = 0
-	notFirstPage = false
-	if hasPage && len(pageParam[0]) > 0 {
-		page, _ = strconv.Atoi(pageParam[0])
-		if page < 0 {
-			page = 0
-		}
-		if page != 0 {
-			notFirstPage = true
-		}
-	}
-	return page, notFirstPage
 }
 
 func renderView(w http.ResponseWriter, model interface{}, view *template.Template) {

@@ -1,0 +1,52 @@
+{{ define "content" }}
+<h2>About Me</h2>
+<p>
+My name is Christopher Pritchard, and I work as a security consultant in the infosec industry, based in Wellington, New Zealand. Specifically, I work for the excellent <a href="https://www.aurainfosec.com/">Aura Information Security</a>.
+</p>
+<p>
+I also do development contracting on occasion through through my company, <a href="https://aquinas.nz">Aquinas IT</a>. 
+In the past, I have worked for long periods as a full-time employee and as a contractor at various Wellington businesses.
+</p>
+<p>
+I have been working in the IT industry for over fifteen years now, primary in development or development-related roles. While management, solution design and technical leadership have increasingly been part of my responsibilities, I always prefer to stay close to the code. My move into information security is the next step in my career, and I am enjoying it immensely so far.
+</p>
+<p>
+Outside of work, my hobbies are writing (successive participant/winner in the NaNoWriMo competition each year I'm proud to say), and gaming. I also do a lot of personal projects, such as the one you are looking at now.
+</p>
+<p>
+Finally, and by no means least, I am a happily married man with a young daughter, as well as a small dog.
+</p>
+<h2>Contact</h2>
+<p>
+I can be reached most easily by my personal email address: <a href="mailto:chrispritchard.nz@gmail.com">chrispritchard.nz@gmail.com</a>.<br/>
+My LinkedIn profile is <a href="https://nz.linkedin.com/pub/christopher-pritchard/a/9b6/a66">here</a>.<br/>
+My Github profile is <a href="https://github.com/ChrisPritchard">here</a>.
+</p>
+<h2>About the Grisly Grotto</h2>
+<p>
+The first version of GG went live back in 2006. I had always wanted to have a blog, and thought having one was part of what made someone a developer.
+More importantly though, while I had learned much of the craft of web development (in ASP.NET Webforms back then), my day job did not afford me the opportunity to 'do it all': design, development, hosting, bug fixing etc. 
+So GG was born, a web application of manageable scope that allowed me to fully practice my craft. 
+While my skill set is now vastly greater than the meagre needs of this site, it still serves as a periodic 'zen' meditation: rebuilding the same structure over and over again, in the latest JS framework, database architecture or server-side technology that takes my fancy.
+</p>
+<p>
+So far there have been 17 versions, each one distinctive. Earlier versions used ASP.NET Webforms, some used XSLT transforms for markup, some were pure client side javascript and there was a one-off version in pure NodeJS, though most have been partly or entirely .NET code. 
+Multiple design frameworks have been used, but mostly I have done the CSS entirely myself for practice. At least six different data storage solutions (databases or otherwise) have been used, and multiple different hosting solutions including Azure cloud for a long time before it ended up here, running a Raspberry PI 3B+ for v16-v17. 
+</p>
+<p>
+I expect there to be many more iterations as I seek to learn new things going forward.
+</p>
+<h2>About v17 specifically</h2>
+<p>
+v17 is the first version to be built in the language Go, and a reasonably anaemic use of the language too: aside from a library to use Sqlite, I am using nothing but the packages shipped with the core install (mainly http, database/sql and template/html). The previous two versions of the website were in F# (though in truth largely the same codebase), a language that is one of my favourites for its simplicity and functional style. However, I have really enjoyed building this version in Go.
+</p>
+<p>
+Why use Go? I use it at work, in my infosec job. Its simplicity and the fact it builds to a nice small, fast executable is very useful for the point work I use it for. I decided to see how easy it would be to use it for web sites, and when I discovered <it>how</it> easy it would be, I thought I would have a go at building my standing 'kata' project: this site. I am glad I did.
+</p>
+<p>
+Hosting wise, the site is running on a small <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/">Raspberry PI 3 B+</a>, with no issues :) GG is started via a system service, sits behind a reverse proxy (nginx), and enforces HTTPS via a <a href="https://letsencrypt.org/">LetsEncrypt</a> certificate. Very nice.
+</p>
+<p>
+Cheers.
+</p>
+{{ end }}

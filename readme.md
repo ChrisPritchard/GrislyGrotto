@@ -33,7 +33,6 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 Remaining work:
 
 ```
-    -> trim post content if story
 		-> delete comment (if author)
 	/login		login
 		-> try login
@@ -41,7 +40,6 @@ Remaining work:
 		-> try create
 	/edit/key	edit
 		-> try edit
-	/about
     
     security hardening aside from already done
     recapcha? custom recapcha?

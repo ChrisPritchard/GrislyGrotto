@@ -25,4 +25,5 @@ func setupRoutes(views views) {
 	http.HandleFunc("/archives", archivesHandler(views))
 	http.HandleFunc("/month/", monthHandler(views))
 	http.HandleFunc("/search", searchHandler(views))
+	http.HandleFunc("/about", aboutHandler(views))
 }
