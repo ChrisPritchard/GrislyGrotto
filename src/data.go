@@ -8,12 +8,6 @@ import (
 	"time"
 )
 
-const dbName = "./grislygrotto.db"
-const pageLength = 5
-const maxCommentCount = 20
-const maxSearchResults = 50
-const searchStripPad = 20
-
 func getLatestPosts(page int) ([]blogPost, error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {
@@ -184,10 +178,6 @@ func getYearMonthCounts() (years []yearSet, err error) {
 		return nil, err
 	}
 
-	months := []string{
-		"", "January", "February", "March", "April", "May", "June",
-		"July", "August", "September", "October", "November", "December"}
-
 	years = make([]yearSet, 0)
 	var month monthCount
 	for rows.Next() {
@@ -249,20 +239,6 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 		return nil, err
 	}
 
-	monthIndexes := map[string]string{
-		"January":   "01",
-		"February":  "02",
-		"March":     "03",
-		"April":     "04",
-		"May":       "05",
-		"June":      "06",
-		"July":      "07",
-		"August":    "08",
-		"September": "09",
-		"October":   "10",
-		"November":  "11",
-		"December":  "12",
-	}
 	monthToken := year + "-" + monthIndexes[month]
 
 	rows, err := database.Query(`

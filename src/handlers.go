@@ -2,7 +2,6 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -103,26 +102,49 @@ func monthHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 				http.NotFound(w, r)
 			}
 			month, year := token[:split], token[split+1:]
-			log.Print(month + "|" + year)
+			if monthIndex(month) == -1 {
+				http.NotFound(w, r)
+			}
+			yearN, err := strconv.Atoi(year)
+			if err != nil || yearN < 2006 || yearN > 2100 {
+				http.NotFound(w, r)
+			}
 
 			posts, err := getPostsForMonth(month, year)
 			if err != nil {
 				serverError(w, err)
 			}
-			prevMonth, prevYear := getPrevMonth(month, year)
-			nextMonth, nextYear := getNextMonth(month, year)
+			prevMonth, prevYear := getPrevMonth(month, yearN)
+			nextMonth, nextYear := getNextMonth(month, yearN)
 			model := monthViewModel{month, year, prevMonth, prevYear, nextMonth, nextYear, posts}
 			renderView(w, model, views.Month)
 		}
 	}
 }
 
-func getPrevMonth(month, year string) (string, string) {
-	return "", ""
+func getPrevMonth(month string, year int) (string, string) {
+	if strings.ToLower(month) == "january" {
+		return "December", strconv.Itoa(year - 1)
+	}
+	index := monthIndex(month)
+	return months[index-1], strconv.Itoa(year)
 }
 
-func getNextMonth(month, year string) (string, string) {
-	return "", ""
+func getNextMonth(month string, year int) (string, string) {
+	if strings.ToLower(month) == "december" {
+		return "January", strconv.Itoa(year + 1)
+	}
+	index := monthIndex(month)
+	return months[index+1], strconv.Itoa(year)
+}
+
+func monthIndex(month string) int {
+	for i, m := range months {
+		if strings.ToLower(m) == strings.ToLower(month) {
+			return i
+		}
+	}
+	return -1
 }
 
 func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {
