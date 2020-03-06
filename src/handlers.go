@@ -53,11 +53,19 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 				if len(post.Comments) >= maxCommentCount {
 					badRequest(w, "max comments reached")
 				} else {
-					createComment(w, r, post.Key)
+					commentError, err := createComment(r, post.Key)
+					if err != nil {
+						serverError(w, err)
+					}
+					model := singleViewModel{post, true, commentError}
+					if len(post.Comments)+1 >= maxCommentCount {
+						model.CanComment = false
+					}
+					renderView(w, r, model, views.Single)
 				}
 			} else if r.Method == "GET" {
 				model := singleViewModel{post, true, ""}
-				if len(post.Comments) == maxCommentCount {
+				if len(post.Comments) >= maxCommentCount {
 					model.CanComment = false
 				}
 				renderView(w, r, model, views.Single)
@@ -68,23 +76,22 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func createComment(w http.ResponseWriter, r *http.Request, postKey string) {
-	err := r.ParseForm()
+func createComment(r *http.Request, postKey string) (commentError string, err error) {
+	err = r.ParseForm()
 	if err != nil {
-		serverError(w, err)
+		return "", err
 	}
 
 	author, content := r.Form["author"], r.Form["content"]
-	if len(author) != 1 || len(content) != 1 || areDangerous(author[0], content[0]) {
-		badRequest(w, "both author and content are required and must be safe values")
-	} else {
-		err := addCommentToBlog(author[0], content[0], postKey)
-		if err != nil {
-			serverError(w, err)
-		} else {
-			http.Redirect(w, r, r.URL.Path, http.StatusFound)
-		}
+	if len(author) != 1 || len(author[0]) == 0 || len(content) != 1 || len(content[0]) == 0 || areDangerous(author[0], content[0]) {
+		return "both author and content are required and must be safe values", nil
 	}
+
+	err = addCommentToBlog(author[0], content[0], postKey)
+	if err != nil {
+		return "", err
+	}
+	return "", nil
 }
 
 func archivesHandler(views views) func(w http.ResponseWriter, r *http.Request) {

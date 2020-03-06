@@ -4,7 +4,7 @@
 <div>
     {{ raw .Post.Content }}
 </div>
-<h2>Comments</h2>
+<h2 id="comments">Comments</h2>
 {{ range .Post.Comments }}
 <div>
     <h4>Commented by {{ .Author }} at {{ formatDate .Date }}:</h4>
