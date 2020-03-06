@@ -192,6 +192,34 @@ func aboutHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func loginHandler(views views) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			err := r.ParseForm()
+			if err != nil {
+				serverError(w, err)
+			}
+
+			username, password := r.Form["username"], r.Form["password"]
+			if len(username) != 1 || len(password) != 1 {
+				renderView(w, r, loginViewModel{"both username and password are required"}, views.Login)
+			} else {
+				user, err := getUser(username[0], password[0])
+				if err != nil {
+					renderView(w, r, loginViewModel{"invalid credentials"}, views.Login)
+				} else {
+					setCookie("user", user, w)
+					http.Redirect(w, r, "/", http.StatusFound)
+				}
+			}
+		} else if r.Method == "GET" {
+			renderView(w, r, loginViewModel{""}, views.Login)
+		} else {
+			http.NotFound(w, r)
+		}
+	}
+}
+
 func areDangerous(values ...string) bool {
 	for _, v := range values {
 		if strings.ContainsAny(v, "<>") {

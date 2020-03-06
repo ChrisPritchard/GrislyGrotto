@@ -34,6 +34,7 @@ Remaining work:
 
 ```
 		-> delete comment (if author)
+		-> comment error
 	/login		login
 		-> try login
 	/new			new post
@@ -45,4 +46,5 @@ Remaining work:
     recapcha? custom recapcha?
     csrf tokens
     markdown editor?
+	returnurl for login with open redirect protection
 ```

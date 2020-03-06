@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/sha512"
 	"database/sql"
+	"errors"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -266,4 +269,40 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 	}
 
 	return posts, nil
+}
+
+func getUser(username, password string) (user string, err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return "", err
+	}
+
+	row := database.QueryRow(`
+		SELECT 
+			Password
+		FROM Authors
+		WHERE Username = ?`, username)
+	var hashAndSalt string
+	err = row.Scan(&hashAndSalt)
+	if err != nil {
+		return "", err
+	}
+
+	split := strings.Index(hashAndSalt, ",")
+	if split == -1 {
+		return "", errors.New("invalid user password field")
+	}
+
+	toCheck := []byte(hashAndSalt[split+1:] + password)
+	hasher := sha512.New384()
+	result := string(hasher.Sum(toCheck))
+
+	log.Printf(result + "\n")
+	log.Printf(hashAndSalt[:split] + "\n")
+
+	if result != hashAndSalt[:split] {
+		return "", errors.New("no match found")
+	}
+
+	return user, nil
 }

@@ -1,0 +1,11 @@
+{{ define "content" }}
+    <h2>Login</h2>
+    <form method="POST">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" />
+        <input type="submit" value="Submit">
+        <span>{{ .Error }}</span>
+    </form>
+{{ end }}

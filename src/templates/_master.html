@@ -6,8 +6,10 @@
         <link href="/static/site.css" rel="stylesheet" />
     </head>
     <body>
-        <a href="/"><h1>The Grisly Grotto</h1></a>
-        <div>
+        <header>
+            <a href="/"><h1>The Grisly Grotto</h1></a>
+        </header>
+        <nav>
             {{ if loggedIn }}
                 <a href="/editor">New Post</a>
             {{ else }}
@@ -16,8 +18,11 @@
             <a href="/archives">Archives</a>
             <a href="/search">Search</a>
             <a href="/about">About</a>
-        </div>
+        </nav>
         {{template "content" .}}
+        <footer>
+            Grisly Grotto v17.0. Site designed and coded by Christopher Pritchard, 2020
+        </footer>
     </body>
 </html>
 {{end}}

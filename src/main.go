@@ -44,6 +44,7 @@ func setupRoutes(views views) {
 	http.HandleFunc("/month/", monthHandler(views))
 	http.HandleFunc("/search", searchHandler(views))
 	http.HandleFunc("/about", aboutHandler(views))
+	http.HandleFunc("/login", loginHandler(views))
 }
 
 func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {

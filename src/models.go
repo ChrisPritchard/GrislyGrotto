@@ -30,6 +30,10 @@ type searchViewModel struct {
 	Results     []blogPost
 }
 
+type loginViewModel struct {
+	Error string
+}
+
 type blogPost struct {
 	Author, Key, Title, Content string
 	Date                        string
