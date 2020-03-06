@@ -34,7 +34,6 @@ Remaining work:
 
 ```
 		-> delete comment (if author)
-		-> comment error
 	/new			new post
 		-> try create
 	/edit/key	edit
