@@ -18,6 +18,7 @@ import (
 )
 
 var secret []byte
+var compiledViews views
 
 func main() {
 	var err error
@@ -26,26 +27,26 @@ func main() {
 		log.Fatal(err)
 	}
 
-	views := compileViews()
-	setupRoutes(views)
+	compiledViews = compileViews()
+	setupRoutes()
 
 	log.Printf("listening locally on port :%d\n", listenPort)
 	log.Println(http.ListenAndServe(fmt.Sprintf(":%d", listenPort), nil))
 }
 
-func setupRoutes(views views) {
+func setupRoutes() {
 	http.Handle("/static/",
 		http.StripPrefix("/static/",
 			http.FileServer(http.Dir("static"))))
 
-	http.HandleFunc("/", latestPostsHandler(views))
-	http.HandleFunc("/post/", singlePostHandler(views))
+	http.HandleFunc("/", latestPostsHandler)
+	http.HandleFunc("/post/", singlePostHandler)
 	http.HandleFunc("/delete-comment/", deleteCommentHandler)
-	http.HandleFunc("/archives", archivesHandler(views))
-	http.HandleFunc("/month/", monthHandler(views))
-	http.HandleFunc("/search", searchHandler(views))
-	http.HandleFunc("/about", aboutHandler(views))
-	http.HandleFunc("/login", loginHandler(views))
+	http.HandleFunc("/archives", archivesHandler)
+	http.HandleFunc("/month/", monthHandler)
+	http.HandleFunc("/search/", searchHandler)
+	http.HandleFunc("/about", aboutHandler)
+	http.HandleFunc("/login", loginHandler)
 }
 
 func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {

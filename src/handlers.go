@@ -6,23 +6,21 @@ import (
 	"strings"
 )
 
-func latestPostsHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			http.NotFound(w, r)
-			return
-		}
-
-		page, notFirstPage := getPageFromQuery(r)
-		posts, err := getLatestPosts(page)
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
-		renderView(w, r, model, views.Latest)
+func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
 	}
+
+	page, notFirstPage := getPageFromQuery(r)
+	posts, err := getLatestPosts(page)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
+	renderView(w, r, model, compiledViews.Latest)
 }
 
 func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
@@ -41,55 +39,53 @@ func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
 	return page, notFirstPage
 }
 
-func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		key := r.URL.Path[len("/post/"):]
-		post, pageNotFound, err := getSinglePost(key)
-		if pageNotFound {
-			http.NotFound(w, r)
-			return
-		}
+func singlePostHandler(w http.ResponseWriter, r *http.Request) {
+	key := r.URL.Path[len("/post/"):]
+	post, pageNotFound, err := getSinglePost(key)
+	if pageNotFound {
+		http.NotFound(w, r)
+		return
+	}
 
-		if err != nil {
-			serverError(w, err)
-			return
-		}
+	if err != nil {
+		serverError(w, err)
+		return
+	}
 
-		currentUser, err := readCookie("user", r)
-		ownBlog := err == nil && currentUser == post.AuthorUsername
+	currentUser, err := readCookie("user", r)
+	ownBlog := err == nil && currentUser == post.AuthorUsername
 
-		if r.Method == "GET" {
-			model := singleViewModel{post, ownBlog, true, ""}
-			if len(post.Comments) >= maxCommentCount {
-				model.CanComment = false
-			}
-			renderView(w, r, model, views.Single)
-			return
-		}
-
-		if r.Method != "POST" {
-			http.NotFound(w, r)
-			return
-		}
-
+	if r.Method == "GET" {
+		model := singleViewModel{post, ownBlog, true, ""}
 		if len(post.Comments) >= maxCommentCount {
-			badRequest(w, "max comments reached")
-			return
-		}
-
-		commentError, err := createComment(r, post.Key)
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		model := singleViewModel{post, ownBlog, true, commentError}
-		if len(post.Comments)+1 >= maxCommentCount {
 			model.CanComment = false
 		}
-
-		renderView(w, r, model, views.Single)
+		renderView(w, r, model, compiledViews.Single)
+		return
 	}
+
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	if len(post.Comments) >= maxCommentCount {
+		badRequest(w, "max comments reached")
+		return
+	}
+
+	commentError, err := createComment(r, post.Key)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	model := singleViewModel{post, ownBlog, true, commentError}
+	if len(post.Comments)+1 >= maxCommentCount {
+		model.CanComment = false
+	}
+
+	renderView(w, r, model, compiledViews.Single)
 }
 
 func createComment(r *http.Request, postKey string) (commentError string, err error) {
@@ -141,76 +137,72 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	postKey := r.URL.Query()["postKey"]
-	returnUrl = "/"
+	returnURL := "/"
 
 	if len(postKey) != 0 && len(postKey[0]) > 0 {
-		returnUrl = "/post/" + postKey[0] + "#comments"
+		returnURL = "/post/" + postKey[0] + "#comments"
 	}
 
-	http.Redirect(w, r, returnUrl, http.StatusFound)
+	http.Redirect(w, r, returnURL, http.StatusFound)
 }
 
-func archivesHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			http.NotFound(w, r)
-			return
-		}
-
-		yearSets, err := getYearMonthCounts()
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		stories, err := getStories()
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		model := archivesViewModel{yearSets, stories}
-		renderView(w, r, model, views.Archives)
+func archivesHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
 	}
+
+	yearSets, err := getYearMonthCounts()
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	stories, err := getStories()
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	model := archivesViewModel{yearSets, stories}
+	renderView(w, r, model, compiledViews.Archives)
 }
 
-func monthHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			http.NotFound(w, r)
-			return
-		}
-
-		token := r.URL.Path[len("/month/"):]
-		split := strings.Index(token, "/")
-		if len(token) == 0 || split == -1 {
-			http.NotFound(w, r)
-			return
-		}
-
-		month, year := token[:split], token[split+1:]
-		if monthIndex(month) == -1 {
-			http.NotFound(w, r)
-			return
-		}
-
-		yearN, err := strconv.Atoi(year)
-		if err != nil || yearN < 2006 || yearN > 2100 {
-			http.NotFound(w, r)
-			return
-		}
-
-		posts, err := getPostsForMonth(month, year)
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		prevMonth, prevYear := getPrevMonth(month, yearN)
-		nextMonth, nextYear := getNextMonth(month, yearN)
-		model := monthViewModel{month, year, prevMonth, prevYear, nextMonth, nextYear, posts}
-		renderView(w, r, model, views.Month)
+func monthHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
 	}
+
+	token := r.URL.Path[len("/month/"):]
+	split := strings.Index(token, "/")
+	if len(token) == 0 || split == -1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	month, year := token[:split], token[split+1:]
+	if monthIndex(month) == -1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	yearN, err := strconv.Atoi(year)
+	if err != nil || yearN < 2006 || yearN > 2100 {
+		http.NotFound(w, r)
+		return
+	}
+
+	posts, err := getPostsForMonth(month, year)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	prevMonth, prevYear := getPrevMonth(month, yearN)
+	nextMonth, nextYear := getNextMonth(month, yearN)
+	model := monthViewModel{month, year, prevMonth, prevYear, nextMonth, nextYear, posts}
+	renderView(w, r, model, compiledViews.Month)
 }
 
 func getPrevMonth(month string, year int) (string, string) {
@@ -238,79 +230,73 @@ func monthIndex(month string) int {
 	return -1
 }
 
-func searchHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			http.NotFound(w, r)
-			return
-		}
-
-		searchParam, hasSearch := r.URL.Query()["searchTerm"]
-		if !hasSearch || len(searchParam[0]) == 0 {
-			renderView(w, r, nil, views.Search)
-			return
-		}
-
-		results, err := getSearchResults(searchParam[0])
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		zeroResults := len(results) == 0
-		renderView(w, r, searchViewModel{searchParam[0], zeroResults, results}, views.Search)
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
 	}
+
+	searchParam, hasSearch := r.URL.Query()["searchTerm"]
+	if !hasSearch || len(searchParam[0]) == 0 {
+		renderView(w, r, nil, compiledViews.Search)
+		return
+	}
+
+	results, err := getSearchResults(searchParam[0])
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	zeroResults := len(results) == 0
+	renderView(w, r, searchViewModel{searchParam[0], zeroResults, results}, compiledViews.Search)
 }
 
-func aboutHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			http.NotFound(w, r)
-			return
-		}
-
-		renderView(w, r, nil, views.About)
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
 	}
+
+	renderView(w, r, nil, compiledViews.About)
 }
 
-func loginHandler(views views) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			renderView(w, r, loginViewModel{""}, views.Login)
-			return
-		}
-
-		if r.Method != "POST" {
-			http.NotFound(w, r)
-			return
-		}
-
-		err := r.ParseForm()
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		username, password := r.Form["username"], r.Form["password"]
-		if len(username) != 1 || len(password) != 1 {
-			renderView(w, r, loginViewModel{"both username and password are required"}, views.Login)
-			return
-		}
-
-		user, err := getUser(username[0], password[0])
-		if err != nil {
-			renderView(w, r, loginViewModel{"invalid credentials"}, views.Login)
-			return
-		}
-
-		err = setCookie("user", user, w)
-		if err != nil {
-			serverError(w, err)
-			return
-		}
-
-		http.Redirect(w, r, "/", http.StatusFound)
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		renderView(w, r, loginViewModel{""}, compiledViews.Login)
+		return
 	}
+
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	username, password := r.Form["username"], r.Form["password"]
+	if len(username) != 1 || len(password) != 1 {
+		renderView(w, r, loginViewModel{"both username and password are required"}, compiledViews.Login)
+		return
+	}
+
+	user, err := getUser(username[0], password[0])
+	if err != nil {
+		renderView(w, r, loginViewModel{"invalid credentials"}, compiledViews.Login)
+		return
+	}
+
+	err = setCookie("user", user, w)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func areDangerous(values ...string) bool {
