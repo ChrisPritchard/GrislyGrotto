@@ -50,6 +50,7 @@ func setupRoutes(views views) {
 func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
 	data := time.Now().Format(time.RFC3339) + "|" + unencodedData
 	cipher, err := encrypt([]byte(data), secret)
+	log.Println(err)
 	if err != nil {
 		return err
 	}

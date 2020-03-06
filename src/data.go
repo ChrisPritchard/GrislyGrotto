@@ -302,5 +302,5 @@ func getUser(username, password string) (user string, err error) {
 		return "", errors.New("no match found")
 	}
 
-	return user, nil
+	return username, nil
 }

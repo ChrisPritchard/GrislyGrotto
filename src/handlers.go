@@ -208,7 +208,10 @@ func loginHandler(views views) func(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					renderView(w, r, loginViewModel{"invalid credentials"}, views.Login)
 				} else {
-					setCookie("user", user, w)
+					err = setCookie("user", user, w)
+					if err != nil {
+						serverError(w, err)
+					}
 					http.Redirect(w, r, "/", http.StatusFound)
 				}
 			}
