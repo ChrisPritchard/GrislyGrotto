@@ -109,6 +109,28 @@ func addCommentToBlog(author, content, postKey string) (err error) {
 	return err
 }
 
+func deleteComment(id int, currentUser string) (success bool, err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return false, err
+	}
+
+	result, err := database.Exec(`
+		DELETE FROM Comments
+		WHERE Id = ? 
+		AND (SELECT p.Author_Username FROM Posts p where p.Key = Post_Key) = ?`,
+		id, currentUser)
+	if err != nil {
+		return false, err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	return rowsAffected > 0, err
+}
+
 func getSearchResults(searchTerm string) (results []blogPost, err error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {

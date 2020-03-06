@@ -39,7 +39,6 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 Remaining work:
 
 ```
-		-> delete comment (if author)
 	/new			new post
 		-> try create
 	/edit/key	edit

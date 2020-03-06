@@ -12,7 +12,7 @@
         {{ raw .Content }}
     </div>
     {{ if $.OwnBlog }}
-        <form method="POST" action="/delete-comment/{{ .ID }}">
+        <form method="POST" action="/delete-comment/{{ .ID }}?postKey={{ $.Post.Key }}">
             <input type="submit" value="Delete" onclick="return confirm('Are you sure? This action is irreversible!')" />
         </form>
     {{ end }}

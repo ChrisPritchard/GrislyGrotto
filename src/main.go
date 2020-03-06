@@ -40,6 +40,7 @@ func setupRoutes(views views) {
 
 	http.HandleFunc("/", latestPostsHandler(views))
 	http.HandleFunc("/post/", singlePostHandler(views))
+	http.HandleFunc("/delete-comment/", deleteCommentHandler)
 	http.HandleFunc("/archives", archivesHandler(views))
 	http.HandleFunc("/month/", monthHandler(views))
 	http.HandleFunc("/search", searchHandler(views))

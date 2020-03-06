@@ -46,35 +46,40 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 		post, pageNotFound, err := getSinglePost(key)
 		if pageNotFound {
 			http.NotFound(w, r)
-		} else if err != nil {
-			serverError(w, err)
-		} else {
-			currentUser, err := readCookie("user", r)
-			ownBlog := err == nil && currentUser == post.AuthorUsername
+			return
+		}
 
-			if r.Method == "POST" {
-				if len(post.Comments) >= maxCommentCount {
-					badRequest(w, "max comments reached")
-				} else {
-					commentError, err := createComment(r, post.Key)
-					if err != nil {
-						serverError(w, err)
-					}
-					model := singleViewModel{post, ownBlog, true, commentError}
-					if len(post.Comments)+1 >= maxCommentCount {
-						model.CanComment = false
-					}
-					renderView(w, r, model, views.Single)
-				}
-			} else if r.Method == "GET" {
-				model := singleViewModel{post, ownBlog, true, ""}
-				if len(post.Comments) >= maxCommentCount {
-					model.CanComment = false
-				}
-				renderView(w, r, model, views.Single)
-			} else {
-				http.NotFound(w, r)
+		if err != nil {
+			serverError(w, err)
+			return
+		}
+
+		currentUser, err := readCookie("user", r)
+		ownBlog := err == nil && currentUser == post.AuthorUsername
+
+		if r.Method == "POST" {
+			if len(post.Comments) >= maxCommentCount {
+				badRequest(w, "max comments reached")
+				return
 			}
+
+			commentError, err := createComment(r, post.Key)
+			if err != nil {
+				serverError(w, err)
+			}
+			model := singleViewModel{post, ownBlog, true, commentError}
+			if len(post.Comments)+1 >= maxCommentCount {
+				model.CanComment = false
+			}
+			renderView(w, r, model, views.Single)
+		} else if r.Method == "GET" {
+			model := singleViewModel{post, ownBlog, true, ""}
+			if len(post.Comments) >= maxCommentCount {
+				model.CanComment = false
+			}
+			renderView(w, r, model, views.Single)
+		} else {
+			http.NotFound(w, r)
 		}
 	}
 }
@@ -95,6 +100,40 @@ func createComment(r *http.Request, postKey string) (commentError string, err er
 		return "", err
 	}
 	return "", nil
+}
+
+func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	id := r.URL.Path[len("/delete-comment/"):]
+	idN, err := strconv.Atoi(id)
+	if err != nil {
+		badRequest(w, "invalid comment id")
+		return
+	}
+
+	user, err := readCookie("user", r)
+	if err != nil {
+		unauthorised(w)
+		return
+	}
+
+	success, err := deleteComment(idN, user)
+	if err != nil {
+		serverError(w, err)
+	} else if !success {
+		unauthorised(w)
+	} else {
+		postKey := r.URL.Query()["postKey"]
+		if len(postKey) != 0 && len(postKey[0]) > 0 {
+			http.Redirect(w, r, "/post/"+postKey[0]+"#comments", http.StatusFound)
+		} else {
+			http.Redirect(w, r, "/", http.StatusFound)
+		}
+	}
 }
 
 func archivesHandler(views views) func(w http.ResponseWriter, r *http.Request) {
@@ -248,4 +287,8 @@ func serverError(w http.ResponseWriter, err error) {
 
 func badRequest(w http.ResponseWriter, message string) {
 	http.Error(w, message, http.StatusBadRequest)
+}
+
+func unauthorised(w http.ResponseWriter) {
+	http.Error(w, "unauthorised", http.StatusUnauthorized)
 }
