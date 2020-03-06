@@ -8,9 +8,9 @@ type latestViewModel struct {
 }
 
 type singleViewModel struct {
-	Post         blogPost
-	CanComment   bool
-	CommentError string
+	Post                blogPost
+	OwnBlog, CanComment bool
+	CommentError        string
 }
 
 type archivesViewModel struct {
@@ -36,11 +36,12 @@ type loginViewModel struct {
 }
 
 type blogPost struct {
-	Author, Key, Title, Content string
-	Date                        string
-	IsStory                     bool
-	WordCount, CommentCount     int
-	Comments                    []comment
+	Author, AuthorUsername  string
+	Key, Title, Content     string
+	Date                    string
+	IsStory                 bool
+	WordCount, CommentCount int
+	Comments                []comment
 }
 
 type author struct {

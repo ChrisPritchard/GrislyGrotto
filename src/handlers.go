@@ -49,6 +49,9 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 		} else if err != nil {
 			serverError(w, err)
 		} else {
+			currentUser, err := readCookie("user", r)
+			ownBlog := err == nil && currentUser == post.AuthorUsername
+
 			if r.Method == "POST" {
 				if len(post.Comments) >= maxCommentCount {
 					badRequest(w, "max comments reached")
@@ -57,14 +60,14 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 					if err != nil {
 						serverError(w, err)
 					}
-					model := singleViewModel{post, true, commentError}
+					model := singleViewModel{post, ownBlog, true, commentError}
 					if len(post.Comments)+1 >= maxCommentCount {
 						model.CanComment = false
 					}
 					renderView(w, r, model, views.Single)
 				}
 			} else if r.Method == "GET" {
-				model := singleViewModel{post, true, ""}
+				model := singleViewModel{post, ownBlog, true, ""}
 				if len(post.Comments) >= maxCommentCount {
 					model.CanComment = false
 				}

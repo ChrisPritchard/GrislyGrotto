@@ -53,10 +53,10 @@ func getSinglePost(key string) (post blogPost, pageNotFound bool, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
-			p.Title, p.Content, p.Date 
+			p.Title, p.Content, p.Date, p.Author_Username 
 		FROM Posts p
 		WHERE Key = ?`, key)
-	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date)
+	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date, &post.AuthorUsername)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

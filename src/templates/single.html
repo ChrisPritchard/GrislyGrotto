@@ -11,6 +11,11 @@
     <div>
         {{ raw .Content }}
     </div>
+    {{ if $.OwnBlog }}
+        <form method="POST" action="/delete-comment/{{ .ID }}">
+            <input type="submit" value="Delete" onclick="return confirm('Are you sure? This action is irreversible!')" />
+        </form>
+    {{ end }}
 </div>
 {{ end }}
 {{ if .CanComment }}
