@@ -56,7 +56,7 @@ func singlePostHandler(views views) func(w http.ResponseWriter, r *http.Request)
 					createComment(w, r, post.Key)
 				}
 			} else if r.Method == "GET" {
-				model := singleViewModel{true, post}
+				model := singleViewModel{post, true, ""}
 				if len(post.Comments) == maxCommentCount {
 					model.CanComment = false
 				}

@@ -8,8 +8,9 @@ type latestViewModel struct {
 }
 
 type singleViewModel struct {
-	CanComment bool
-	Post       blogPost
+	Post         blogPost
+	CanComment   bool
+	CommentError string
 }
 
 type archivesViewModel struct {

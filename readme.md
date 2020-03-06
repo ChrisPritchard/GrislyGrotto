@@ -35,8 +35,6 @@ Remaining work:
 ```
 		-> delete comment (if author)
 		-> comment error
-	/login		login
-		-> try login
 	/new			new post
 		-> try create
 	/edit/key	edit
