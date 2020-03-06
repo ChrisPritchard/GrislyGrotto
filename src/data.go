@@ -3,8 +3,8 @@ package main
 import (
 	"crypto/sha512"
 	"database/sql"
+	"encoding/base64"
 	"errors"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -295,10 +295,8 @@ func getUser(username, password string) (user string, err error) {
 
 	toCheck := []byte(hashAndSalt[split+1:] + password)
 	hasher := sha512.New384()
-	result := string(hasher.Sum(toCheck))
-
-	log.Printf(result + "\n")
-	log.Printf(hashAndSalt[:split] + "\n")
+	hasher.Write(toCheck)
+	result := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
 
 	if result != hashAndSalt[:split] {
 		return "", errors.New("no match found")
