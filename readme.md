@@ -39,11 +39,10 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 Remaining work:
 
 ```
-    /delete-post/
-    
     security hardening aside from already done
     recapcha? custom recapcha?
     csrf tokens
     markdown editor?
 	returnurl for login with open redirect protection
+    rolling cookie expiry? expiry time in cookie val?
 ```

@@ -134,6 +134,20 @@ func deleteComment(id int, currentUser string) (success bool, err error) {
 	return rowsAffected > 0, err
 }
 
+func deletePost(key string) (err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return err
+	}
+
+	_, err = database.Exec(`
+		DELETE FROM Posts
+		WHERE Key = ?`,
+		key)
+
+	return err
+}
+
 func getSearchResults(searchTerm string) (results []blogPost, err error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {

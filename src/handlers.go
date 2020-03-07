@@ -147,6 +147,49 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, returnURL, http.StatusFound)
 }
 
+func deletePostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	key := r.URL.Path[len("/delete-post/"):]
+	if len(key) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	user, err := readCookie("user", r)
+	if err != nil {
+		unauthorised(w)
+		return
+	}
+
+	post, notFound, err := getSinglePost(key)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	if notFound {
+		http.NotFound(w, r)
+		return
+	}
+
+	if post.AuthorUsername != user {
+		unauthorised(w)
+		return
+	}
+
+	err = deletePost(key)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusFound)
+}
+
 func archivesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.NotFound(w, r)

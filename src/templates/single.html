@@ -9,6 +9,9 @@
         <form method="GET" action="/editor/{{ .Post.Key }}">
             <input type="submit" value="Edit" />
         </form>
+        <form method="POST" action="/delete-post/{{ .Post.Key }}">
+            <input type="submit" value="Delete" onclick="return confirm('Are you sure? This action is irreversible!')" />
+        </form>
     {{ end }}
 </div>
 <h2 id="comments">Comments</h2>
