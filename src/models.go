@@ -35,6 +35,13 @@ type loginViewModel struct {
 	Error string
 }
 
+type editorViewModel struct {
+	NewPost        bool
+	Title, Content string
+	IsStory        bool
+	PostError      string
+}
+
 type blogPost struct {
 	Author, AuthorUsername  string
 	Key, Title, Content     string

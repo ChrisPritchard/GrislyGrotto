@@ -1,0 +1,22 @@
+{{ define "content" }}
+
+<h2>
+    {{ if .NewPost }}
+        New Post
+    {{ else }}
+        Edit Post
+    {{ end }}
+</h2>
+
+<form method="POST">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="{{ .Title }}" />
+    <label for="content"></label>
+    <textarea id="content" name="content" cols="50" rows="50">{{ raw .Content }}</textarea>
+    <input type="checkbox" id="isStory" name="isStory" value="{{ .IsStory }}" />
+    <lable for="isStory">Is Story</lable>
+    <input type="submit" value="Submit" />
+    <span>{{ .PostError }}</span>
+</form>
+
+{{ end }}
