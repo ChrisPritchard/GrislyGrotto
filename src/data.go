@@ -44,7 +44,7 @@ func getLatestPosts(page int) ([]blogPost, error) {
 	return posts, nil
 }
 
-func getSinglePost(key string) (post blogPost, pageNotFound bool, err error) {
+func getSinglePost(key string) (post blogPost, notFound bool, err error) {
 	database, err := sql.Open("sqlite3", dbName)
 	if err != nil {
 		return post, false, err

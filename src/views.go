@@ -7,7 +7,7 @@ import (
 )
 
 type views struct {
-	Latest, Single, Archives, Month, Search, About, Login *template.Template
+	Latest, Single, Archives, Month, Search, About, Login, Editor *template.Template
 }
 
 func compileViews() views {
@@ -19,6 +19,7 @@ func compileViews() views {
 		Search:   createView("search.html"),
 		About:    createView("about.html"),
 		Login:    createView("login.html"),
+		Editor:   createView("editor.html"),
 	}
 }
 

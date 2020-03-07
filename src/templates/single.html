@@ -4,6 +4,13 @@
 <div>
     {{ raw .Post.Content }}
 </div>
+<div>
+    {{ if .OwnBlog }}
+        <form method="GET" action="/editor/{{ .Post.Key }}">
+            <input type="submit" value="Edit" />
+        </form>
+    {{ end }}
+</div>
 <h2 id="comments">Comments</h2>
 {{ range .Post.Comments }}
 <div>

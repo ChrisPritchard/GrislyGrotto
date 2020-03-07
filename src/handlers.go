@@ -41,14 +41,14 @@ func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
 
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path[len("/post/"):]
-	post, pageNotFound, err := getSinglePost(key)
-	if pageNotFound {
-		http.NotFound(w, r)
+	post, notFound, err := getSinglePost(key)
+	if err != nil {
+		serverError(w, err)
 		return
 	}
 
-	if err != nil {
-		serverError(w, err)
+	if notFound {
+		http.NotFound(w, r)
 		return
 	}
 
@@ -297,6 +297,60 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func editorHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" && r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	user, err := readCookie("user", r)
+	if err != nil {
+		unauthorised(w)
+		return
+	}
+
+	key := r.URL.Path[len("/editor/"):]
+	if len(key) == 0 {
+		newPostHandler(w, r, user)
+	} else {
+		editPostHandler(w, r, key, user)
+	}
+}
+
+func newPostHandler(w http.ResponseWriter, r *http.Request, user string) {
+	if r.Method == "GET" {
+		model := editorViewModel{true, "", "", false, ""}
+		renderView(w, r, model, compiledViews.Editor)
+	}
+
+	// todo create new
+}
+
+func editPostHandler(w http.ResponseWriter, r *http.Request, key string, user string) {
+	post, notFound, err := getSinglePost(key)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	if notFound {
+		http.NotFound(w, r)
+		return
+	}
+
+	if post.AuthorUsername != user {
+		unauthorised(w)
+		return
+	}
+
+	if r.Method == "GET" {
+		model := editorViewModel{false, post.Title, post.Content, post.IsStory, ""}
+		renderView(w, r, model, compiledViews.Editor)
+	}
+
+	// todo update post
 }
 
 func areDangerous(values ...string) bool {

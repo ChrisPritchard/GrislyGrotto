@@ -47,6 +47,7 @@ func setupRoutes() {
 	http.HandleFunc("/search/", searchHandler)
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/editor/", editorHandler)
 }
 
 func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
