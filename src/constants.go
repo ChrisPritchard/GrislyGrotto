@@ -9,6 +9,7 @@ const maxSearchResults = 50
 const searchStripPad = 20
 const listenPort = 3000
 const cookieAge = time.Hour
+const minWordCount = 100
 
 var months = []string{
 	"", "January", "February", "March", "April", "May", "June",

@@ -104,7 +104,10 @@ func addCommentToBlog(author, content, postKey string) (err error) {
 	}
 
 	date := time.Now().Format("2006-01-02 15:04:05")
-	_, err = database.Exec("INSERT INTO Comments (Author, Date, Content, Post_Key) VALUES (?, ?, ?, ?)",
+	_, err = database.Exec(`
+		INSERT INTO 
+			Comments (Author, Date, Content, Post_Key) 
+		VALUES (?, ?, ?, ?)`,
 		author, date, content, postKey)
 	return err
 }
@@ -325,4 +328,19 @@ func getUser(username, password string) (user string, err error) {
 	}
 
 	return username, nil
+}
+
+func createNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return err
+	}
+
+	date := time.Now().Format("2006-01-02 15:04:05")
+	_, err = database.Exec(`
+		INSERT INTO 
+			Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
+		VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		user, key, title, date, content, wordCount, isStory)
+	return err
 }

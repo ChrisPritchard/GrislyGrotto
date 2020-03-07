@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -323,9 +324,57 @@ func newPostHandler(w http.ResponseWriter, r *http.Request, user string) {
 	if r.Method == "GET" {
 		model := editorViewModel{true, "", "", false, ""}
 		renderView(w, r, model, compiledViews.Editor)
+		return
 	}
 
-	// todo create new
+	err := r.ParseForm()
+	if err != nil {
+		badRequest(w, "unable to parse form")
+		return
+	}
+
+	titleF, contentF := r.Form["title"], r.Form["content"]
+	if len(titleF) != 1 || len(contentF) != 1 {
+		badRequest(w, "invalid form")
+		return
+	}
+
+	isStory := len(r.Form["isStory"]) > 0
+	title, content := titleF[0], contentF[0]
+
+	if len(title) == 0 || len(content) == 0 {
+		model := editorViewModel{true, title, content, isStory, "both title and content are required to be set"}
+		renderView(w, r, model, compiledViews.Editor)
+		return
+	}
+
+	wordCount := calculateWordCount(content)
+	if wordCount < minWordCount {
+		model := editorViewModel{true, title, content, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		renderView(w, r, model, compiledViews.Editor)
+		return
+	}
+
+	key := createPostKey(title)
+	_, notFound, err := getSinglePost(key)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	if !notFound {
+		model := editorViewModel{true, title, content, isStory, "a post with a similar title already exists"}
+		renderView(w, r, model, compiledViews.Editor)
+		return
+	}
+
+	err = createNewPost(key, title, content, isStory, wordCount, user)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, "/post/"+key, http.StatusFound)
 }
 
 func editPostHandler(w http.ResponseWriter, r *http.Request, key string, user string) {
@@ -348,9 +397,22 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string, user st
 	if r.Method == "GET" {
 		model := editorViewModel{false, post.Title, post.Content, post.IsStory, ""}
 		renderView(w, r, model, compiledViews.Editor)
+		return
 	}
 
 	// todo update post
+}
+
+func createPostKey(title string) string {
+	clean := strings.ReplaceAll(strings.ToLower(title), " ", "-")
+	regex, _ := regexp.Compile("[^A-Za-z0-9 -]+")
+	return string(regex.ReplaceAll([]byte(clean), []byte("")))
+}
+
+func calculateWordCount(content string) int {
+	regex, _ := regexp.Compile("<[^>]*>")
+	stripped := string(regex.ReplaceAll([]byte(content), []byte("")))
+	return len(strings.Split(stripped, " "))
 }
 
 func areDangerous(values ...string) bool {
