@@ -313,6 +313,7 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	key := r.URL.Path[len("/editor/"):]
+
 	if len(key) == 0 {
 		newPostHandler(w, r, user)
 	} else {
@@ -400,7 +401,41 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string, user st
 		return
 	}
 
-	// todo update post
+	err = r.ParseForm()
+	if err != nil {
+		badRequest(w, "unable to parse form")
+		return
+	}
+
+	titleF, contentF := r.Form["title"], r.Form["content"]
+	if len(titleF) != 1 || len(contentF) != 1 {
+		badRequest(w, "invalid form")
+		return
+	}
+
+	isStory := len(r.Form["isStory"]) > 0
+	title, content := titleF[0], contentF[0]
+
+	if len(title) == 0 || len(content) == 0 {
+		model := editorViewModel{false, title, content, isStory, "both title and content are required to be set"}
+		renderView(w, r, model, compiledViews.Editor)
+		return
+	}
+
+	wordCount := calculateWordCount(content)
+	if wordCount < minWordCount {
+		model := editorViewModel{false, title, content, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		renderView(w, r, model, compiledViews.Editor)
+		return
+	}
+
+	err = updatePost(key, title, content, isStory, wordCount)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, "/post/"+key, http.StatusFound)
 }
 
 func createPostKey(title string) string {

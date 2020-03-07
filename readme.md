@@ -39,10 +39,7 @@ Objectives: Pure go solution, with no frameworks not required. Also lots of secu
 Remaining work:
 
 ```
-	/new			new post
-		-> try create
-	/edit/key	edit
-		-> try edit
+    /delete-post/
     
     security hardening aside from already done
     recapcha? custom recapcha?

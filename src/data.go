@@ -53,10 +53,10 @@ func getSinglePost(key string) (post blogPost, notFound bool, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
-			p.Title, p.Content, p.Date, p.Author_Username 
+			p.Title, p.Content, p.Date, p.Author_Username , p.IsStory
 		FROM Posts p
 		WHERE Key = ?`, key)
-	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date, &post.AuthorUsername)
+	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date, &post.AuthorUsername, &post.IsStory)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -342,5 +342,22 @@ func createNewPost(key, title, content string, isStory bool, wordCount int, user
 			Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
 		VALUES (?, ?, ?, ?, ?, ?, ?)`,
 		user, key, title, date, content, wordCount, isStory)
+	return err
+}
+
+func updatePost(key, title, content string, isStory bool, wordCount int) (err error) {
+	database, err := sql.Open("sqlite3", dbName)
+	if err != nil {
+		return err
+	}
+
+	_, err = database.Exec(`
+		UPDATE
+			Posts 
+		SET 
+			Title = ?, Content = ?, WordCount = ?, IsStory = ? 
+		WHERE
+			Key = ?`,
+		title, content, wordCount, isStory, key)
 	return err
 }
