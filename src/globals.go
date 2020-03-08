@@ -2,6 +2,14 @@ package main
 
 import "time"
 
+// globals and constants used in multiple places
+// most globals are set early in main
+
+var secret []byte
+var compiledViews views
+var connectionString string
+var listenURL string
+
 const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
 

@@ -12,11 +12,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var secret []byte
-var compiledViews views
-var connectionString string
-var listenURL string
-
 func main() {
 	log.SetFlags(0)
 
