@@ -15,9 +15,9 @@ import (
 func main() {
 	log.SetFlags(0)
 
-	getConfig()
-	compileViews()
-	setupRoutes()
+	getConfig()    // setup globals from envs, flags, files
+	compileViews() // parse template html files into compiled template vars
+	setupRoutes()  // configure handlers for url fragments
 
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
 	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), nil))
@@ -28,7 +28,7 @@ func setupRoutes() {
 		http.StripPrefix("/static/",
 			http.FileServer(http.Dir("static"))))
 
-	http.HandleFunc("/", latestPostsHandler)
+	http.HandleFunc("/", latestPostsHandler) // note: this will catch any request not caught by the others
 	http.HandleFunc("/post/", singlePostHandler)
 	http.HandleFunc("/delete-comment/", deleteCommentHandler)
 	http.HandleFunc("/delete-post/", deletePostHandler)
