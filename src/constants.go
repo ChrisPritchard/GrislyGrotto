@@ -3,7 +3,7 @@ package main
 import "time"
 
 const defaultConnectionString = "./grislygrotto.db"
-const defaultListenPort = "3000"
+const defaultListenAddr = ":3000"
 
 const pageLength = 5
 const maxCommentCount = 20

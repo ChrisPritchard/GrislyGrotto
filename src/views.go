@@ -10,8 +10,8 @@ type views struct {
 	Latest, Single, Archives, Month, Search, About, Login, Editor *template.Template
 }
 
-func compileViews() views {
-	return views{
+func compileViews() {
+	compiledViews = views{
 		Latest:   createView("latest.html"),
 		Single:   createView("single.html"),
 		Archives: createView("archives.html"),

@@ -21,6 +21,7 @@ import (
 var secret []byte
 var compiledViews views
 var connectionString string
+var listenURL string
 
 func main() {
 	var err error
@@ -29,22 +30,30 @@ func main() {
 		log.Fatal(err)
 	}
 
+	getConfig()
+	compileViews()
+	setupRoutes()
+
+	log.Printf("listening locally at %s\n", listenURL)
+	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), nil))
+}
+
+func getConfig() {
 	// env names come from prior .NET version of the site.
 	// kept the same to make server setup simpler/lulzy
 	connectionString = os.Getenv("ConnectionStrings__default")
 	if connectionString == "" {
 		connectionString = defaultConnectionString
 	}
-	listenURL := os.Getenv("ASPNETCORE_URLS")
+	listenURL = os.Getenv("ASPNETCORE_URLS")
 	if listenURL == "" {
-		listenURL = defaultListenPort
+		listenURL = defaultListenAddr
+	} else {
+		portStart := strings.LastIndex(listenURL, ":")
+		if portStart > 0 {
+			listenURL = listenURL[portStart:]
+		}
 	}
-
-	compiledViews = compileViews()
-	setupRoutes()
-
-	log.Printf("listening locally at %s\n", listenURL)
-	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), nil))
 }
 
 func setupRoutes() {
