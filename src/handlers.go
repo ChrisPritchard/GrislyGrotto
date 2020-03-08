@@ -126,7 +126,7 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	success, err := deleteComment(idN, user)
+	success, err := tryDeleteComment(idN, user) // only deletes if this is on a post the user owns
 	if err != nil {
 		serverError(w, err)
 		return

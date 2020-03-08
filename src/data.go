@@ -112,7 +112,7 @@ func addCommentToBlog(author, content, postKey string) (err error) {
 	return err
 }
 
-func deleteComment(id int, currentUser string) (success bool, err error) {
+func tryDeleteComment(id int, currentUser string) (success bool, err error) {
 	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return false, err
