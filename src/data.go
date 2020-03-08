@@ -12,7 +12,7 @@ import (
 )
 
 func getLatestPosts(page int) ([]blogPost, error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func getLatestPosts(page int) ([]blogPost, error) {
 }
 
 func getSinglePost(key string) (post blogPost, notFound bool, err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return post, false, err
 	}
@@ -98,7 +98,7 @@ func getPostComments(database *sql.DB, key string) (comments []comment, err erro
 }
 
 func addCommentToBlog(author, content, postKey string) (err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func addCommentToBlog(author, content, postKey string) (err error) {
 }
 
 func deleteComment(id int, currentUser string) (success bool, err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return false, err
 	}
@@ -135,7 +135,7 @@ func deleteComment(id int, currentUser string) (success bool, err error) {
 }
 
 func deletePost(key string) (err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func deletePost(key string) (err error) {
 }
 
 func getSearchResults(searchTerm string) (results []blogPost, err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +202,7 @@ func stripToSearchTerm(content, searchTerm string) (result string) {
 }
 
 func getYearMonthCounts() (years []yearSet, err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func getYearMonthCounts() (years []yearSet, err error) {
 }
 
 func getStories() ([]blogPost, error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +276,7 @@ func getStories() ([]blogPost, error) {
 }
 
 func getPostsForMonth(month, year string) ([]blogPost, error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return nil, err
 	}
@@ -311,7 +311,7 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 }
 
 func getUser(username, password string) (user string, err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return "", err
 	}
@@ -345,7 +345,7 @@ func getUser(username, password string) (user string, err error) {
 }
 
 func createNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return err
 	}
@@ -360,7 +360,7 @@ func createNewPost(key, title, content string, isStory bool, wordCount int, user
 }
 
 func updatePost(key, title, content string, isStory bool, wordCount int) (err error) {
-	database, err := sql.Open("sqlite3", dbName)
+	database, err := sql.Open("sqlite3", connectionString)
 	if err != nil {
 		return err
 	}

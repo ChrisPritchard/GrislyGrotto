@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -19,6 +20,7 @@ import (
 
 var secret []byte
 var compiledViews views
+var connectionString string
 
 func main() {
 	var err error
@@ -27,11 +29,22 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// env names come from prior .NET version of the site.
+	// kept the same to make server setup simpler/lulzy
+	connectionString = os.Getenv("ConnectionStrings__default")
+	if connectionString == "" {
+		connectionString = defaultConnectionString
+	}
+	listenURL := os.Getenv("ASPNETCORE_URLS")
+	if listenURL == "" {
+		listenURL = defaultListenPort
+	}
+
 	compiledViews = compileViews()
 	setupRoutes()
 
-	log.Printf("listening locally on port :%d\n", listenPort)
-	log.Println(http.ListenAndServe(fmt.Sprintf(":%d", listenPort), nil))
+	log.Printf("listening locally at %s\n", listenURL)
+	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), nil))
 }
 
 func setupRoutes() {

@@ -2,12 +2,13 @@ package main
 
 import "time"
 
-const dbName = "./grislygrotto.db"
+const defaultConnectionString = "./grislygrotto.db"
+const defaultListenPort = "3000"
+
 const pageLength = 5
 const maxCommentCount = 20
 const maxSearchResults = 50
 const searchStripPad = 20
-const listenPort = 3000
 const cookieAge = time.Hour
 const minWordCount = 100
 
