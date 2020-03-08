@@ -9,6 +9,7 @@ var secret []byte
 var compiledViews views
 var connectionString string
 var listenURL string
+var currentUser string
 
 const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"

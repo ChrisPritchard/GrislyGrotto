@@ -43,8 +43,7 @@ func formatDate(s string) string {
 }
 
 func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view *template.Template) {
-	_, err := readCookie("user", r)
-	loggedIn := err == nil
+	loggedIn := currentUser != ""
 
 	view.Funcs(template.FuncMap{"loggedIn": func() bool { return loggedIn }})
 	if err := view.ExecuteTemplate(w, "master", model); err != nil {

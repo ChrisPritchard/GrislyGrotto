@@ -19,8 +19,10 @@ func main() {
 	compileViews() // parse template html files into compiled template vars
 	setupRoutes()  // configure handlers for url fragments
 
+	server := globalHandler(http.DefaultServeMux)
+
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
-	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), nil))
+	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), server))
 }
 
 func setupRoutes() {
@@ -38,6 +40,22 @@ func setupRoutes() {
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/editor/", editorHandler)
+}
+
+func globalHandler(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		// set security headers
+		headers := w.Header()
+		headers.Set("X-Frame-Options", "SAMEORIGIN")
+		headers.Set("X-XSS-Protection", "1; mode=block")
+		headers.Set("X-Content-Type-Options", "nosniff")
+
+		// read the current user once per request
+		currentUser, _ = readCookie("user", r)
+
+		h.ServeHTTP(w, r)
+	})
 }
 
 func getConfig() {

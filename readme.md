@@ -45,4 +45,5 @@ Remaining work:
     markdown editor?
 	returnurl for login with open redirect protection
     rolling cookie expiry? expiry time in cookie val?
+	user in pipeline for shared access? what are pipelines?
 ```
