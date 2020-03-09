@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -28,7 +29,7 @@ func main() {
 func setupRoutes() {
 	http.Handle("/static/",
 		http.StripPrefix("/static/",
-			http.FileServer(http.Dir("static"))))
+			setMimeType(http.FileServer(http.Dir("static")))))
 
 	http.HandleFunc("/", latestPostsHandler) // note: this will catch any request not caught by the others
 	http.HandleFunc("/post/", singlePostHandler)
@@ -54,6 +55,25 @@ func globalHandler(h http.Handler) http.Handler {
 
 		// read the current user once per request
 		currentUser, _ = readCookie("user", r)
+
+		h.ServeHTTP(w, r)
+	})
+}
+
+func setMimeType(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		headers := w.Header()
+		ext := filepath.Ext(r.URL.Path)
+
+		switch ext {
+		case ".css":
+			headers.Set("Content-Type", "text/css")
+		case ".js":
+			headers.Set("Content-Type", "application/javascript")
+		default:
+			return
+		}
 
 		h.ServeHTTP(w, r)
 	})
