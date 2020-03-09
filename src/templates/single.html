@@ -10,7 +10,7 @@
             <input type="submit" value="Edit" />
         </form>
         <form method="POST" action="/delete-post/{{ .Post.Key }}">
-            <input type="submit" value="Delete" onclick="return confirm('Are you sure? This action is irreversible!')" />
+            <input type="submit" value="Delete" class="confirm-click" />
         </form>
     {{ end }}
 </div>
@@ -23,7 +23,7 @@
     </div>
     {{ if $.OwnBlog }}
         <form method="POST" action="/delete-comment/{{ .ID }}?postKey={{ $.Post.Key }}">
-            <input type="submit" value="Delete" onclick="return confirm('Are you sure? This action is irreversible!')" />
+            <input type="submit" value="Delete" class="confirm-click" />
         </form>
     {{ end }}
 </div>
