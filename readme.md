@@ -24,24 +24,15 @@ __Dev Tool(s):__
 
 The Go connection to SQlite was the biggest barrier, as it requires CGO, which requires GCC in path. Fine on linux/osx, harder on windows. Ultimately [tdm-gcc](http://tdm-gcc.tdragon.net/) was the easiest way to install this, and I recommend it. WSL2 remote worked great too, except that debugging didn't work (not as bad as it sounds for most of the development work).
 
-Objectives: Pure go solution, with no frameworks not required. Also lots of security hardening.
-
-- password brute force / spraying protection
-- request smuggling protection
-- very strong hashes
-- possible exfil support, still?
-- markdown editor
-- possible api integration with azure blob or backend api
-- enforce HTTPS!
-- csa policy
+Overall, this build was particularly enjoyable. Go is quite a pleasure to work with, something I found surprising coming from much higher-level functional languages. Simplicity has its merits.
 
 Remaining work:
 
 ```
-    security hardening aside from already done
     recapcha? custom recapcha?
     csrf tokens
     markdown editor?
 	returnurl for login with open redirect protection
     rolling cookie expiry? expiry time in cookie val?
+	possible api integration with azure blob or backend api for image storage
 ```
