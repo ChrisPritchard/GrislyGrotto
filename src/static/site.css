@@ -64,6 +64,11 @@ input[type=submit]:hover, input[type=button]:hover {
     background-color: rgba(154,204,20,.1);
 }
 
+footer {
+    clear: both;
+    text-align: center;
+}
+
 .site-title {
     margin-bottom: 0;
     font-size: 2.5em;
@@ -78,8 +83,19 @@ input[type=submit]:hover, input[type=button]:hover {
 
 .post-summary {
     font-weight: 700;
+    margin-bottom: 0.5em;
 }
 
 .post-content {
     text-align: justify;
+}
+
+.prev-link {
+    margin-top: 1em;
+    float: left;
+}
+
+.next-link {
+    margin-top: 1em;
+    float: right;
 }

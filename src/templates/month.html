@@ -15,10 +15,10 @@
     </div>
 {{ end }}
 <div>
-    <form method="GET" action="/month/{{ .PrevMonth }}/{{ .PrevYear }}">
+    <form method="GET" action="/month/{{ .PrevMonth }}/{{ .PrevYear }}" class="prev-link">
         <input type="submit" value="{{ .PrevMonth }}, {{ .PrevYear }}" />
     </form>
-    <form method="GET" action="/month/{{ .NextMonth }}/{{ .NextYear }}">
+    <form method="GET" action="/month/{{ .NextMonth }}/{{ .NextYear }}" class="next-link">
         <input type="submit" value="{{ .NextMonth }}, {{ .NextYear }}" />
     </form>
 </div>

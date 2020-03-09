@@ -15,11 +15,13 @@
 {{ end }}
 <div>
     {{ if .NotFirstPage }}
-        <form method="GET" action="/?page={{ .PrevPage }}">
+        <form method="GET" class="prev-link">
+            <input type="hidden" name="page" value="{{ .PrevPage }}" />
             <input type="submit" value="Previous Page" />
         </form>
     {{ end }}
-    <form method="GET" action="/?page={{ .NextPage }}">
+    <form method="GET" class="next-link">
+        <input type="hidden" name="page" value="{{ .NextPage }}" />
         <input type="submit" value="Next Page" />
     </form>
 </div>
