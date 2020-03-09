@@ -50,6 +50,7 @@ func globalHandler(h http.Handler) http.Handler {
 		headers.Set("X-Frame-Options", "SAMEORIGIN")
 		headers.Set("X-XSS-Protection", "1; mode=block")
 		headers.Set("X-Content-Type-Options", "nosniff")
+		headers.Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';")
 
 		// read the current user once per request
 		currentUser, _ = readCookie("user", r)

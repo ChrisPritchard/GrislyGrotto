@@ -26,7 +26,6 @@ The Go connection to SQlite was the biggest barrier, as it requires CGO, which r
 
 Objectives: Pure go solution, with no frameworks not required. Also lots of security hardening.
 
-- XSS protection
 - password brute force / spraying protection
 - request smuggling protection
 - very strong hashes
@@ -45,5 +44,4 @@ Remaining work:
     markdown editor?
 	returnurl for login with open redirect protection
     rolling cookie expiry? expiry time in cookie val?
-	user in pipeline for shared access? what are pipelines?
 ```
