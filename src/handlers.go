@@ -80,12 +80,12 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	model := singleViewModel{post, ownBlog, true, commentError}
-	if len(post.Comments)+1 >= maxCommentCount {
-		model.CanComment = false
+	if commentError != "" {
+		model := singleViewModel{post, ownBlog, true, commentError}
+		renderView(w, r, model, compiledViews.Single)
 	}
 
-	renderView(w, r, model, compiledViews.Single)
+	http.Redirect(w, r, "/post/"+post.Key+"#comments", http.StatusFound)
 }
 
 func createComment(r *http.Request, postKey string) (commentError string, err error) {
