@@ -2,9 +2,9 @@
 <h2>Latest Posts</h2>
 {{ range .Posts }}
     <div>
-        <a href="/post/{{ .Key }}"><h3>{{ .Title }}</h3></a>
-        <span>Posted by {{ .Author }} at {{ formatDate .Date }}. <a href="/post/{{ .Key }}#comments">Comments ({{ .CommentCount }})</a></span>
-        <div>
+        <a href="/post/{{ .Key }}"><h3 class="post-title">{{ .Title }}</h3></a>
+        <div class="post-summary">Posted by {{ .Author }} at {{ formatDate .Date }}. <a href="/post/{{ .Key }}#comments">Comments ({{ .CommentCount }})</a></div>
+        <div class="post-content">
             {{ if .IsStory }}
                 <p><a href="/post/{{ .Key }}">Click through to read ({{ .WordCount }} words)...</a></p>
             {{ else }}
@@ -15,8 +15,12 @@
 {{ end }}
 <div>
     {{ if .NotFirstPage }}
-        <a href="/?page={{ .PrevPage }}">Prev</a>
+        <form method="GET" action="/?page={{ .PrevPage }}">
+            <input type="submit" value="Previous Page" />
+        </form>
     {{ end }}
-    <a href="/?page={{ .NextPage }}">Next</a>
+    <form method="GET" action="/?page={{ .NextPage }}">
+        <input type="submit" value="Next Page" />
+    </form>
 </div>
 {{ end }}

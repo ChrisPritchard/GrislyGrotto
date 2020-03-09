@@ -12,7 +12,7 @@
     </head>
     <body>
         <header>
-            <a href="/"><h1>The Grisly Grotto</h1></a>
+            <a href="/"><h1 class="site-title">The Grisly Grotto</h1></a>
         </header>
         <nav>
             {{ if loggedIn }}
@@ -20,8 +20,11 @@
             {{ else }}
                 <a href="/login">Login</a>
             {{ end }}
+            <span>&nbsp;|&nbsp;</span>
             <a href="/archives">Archives</a>
+            <span>&nbsp;|&nbsp;</span>
             <a href="/search">Search</a>
+            <span>&nbsp;|&nbsp;</span>
             <a href="/about">About</a>
         </nav>
         {{template "content" .}}
