@@ -16,6 +16,10 @@ body {
     }
 }
 
+nav {
+    margin-left: 5px;
+}
+
 label {
     display: block;
     font-weight: 700;
@@ -147,4 +151,9 @@ ul.stories h3 {
 
 div.page-form {
     min-height: 1000px;
+}
+
+div.search-result h4 {
+    margin-bottom: 0;
+    text-transform: uppercase;
 }
