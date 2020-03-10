@@ -26,6 +26,12 @@ The Go connection to SQlite was the biggest barrier, as it requires CGO, which r
 
 Overall, this build was particularly enjoyable. Go is quite a pleasure to work with, something I found surprising coming from much higher-level functional languages. Simplicity has its merits.
 
+## Usage notes
+
+The site needs to be colocated with various static resources under the /static folder (just images, css and js, mainly). All templates are loaded in to Go via `go generate`.
+
+To run the site, it requires the port and database connection name. These can be specified via the command line (use -h to get details). They can also be specified via environment variables, using the same env vars as a standard ASPNET Core site for legacy reasons (and the lulz): `ASPNETCORE_URLS` and `ConnectionStrings__Default`.
+
 Remaining work:
 
 ```

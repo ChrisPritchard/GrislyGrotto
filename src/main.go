@@ -98,15 +98,7 @@ func getConfig() {
 
 	connArg := flag.String("db", "", "the sqlite connection string (e.g. ./grislygrotto.db)")
 	urlArg := flag.String("url", "", "the url with port to listen to (e.g. :3000)")
-	helpArg := flag.Bool("h", false, "print argument info (this page) and exit")
 	flag.Parse()
-
-	if *helpArg {
-		log.Print("The Grisly Grotto can be started with the following args (these override env vars):\n\n")
-		flag.PrintDefaults()
-		log.Print("\nexiting (run without -h to start)")
-		os.Exit(0)
-	}
 
 	if *connArg != "" {
 		connectionString = *connArg
