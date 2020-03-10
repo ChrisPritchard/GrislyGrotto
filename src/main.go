@@ -13,6 +13,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+//go:generate go run templates/loadContent.go
+
 func main() {
 	log.SetFlags(0)
 

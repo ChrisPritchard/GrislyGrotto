@@ -10,7 +10,13 @@ type views struct {
 	Latest, Single, Archives, Month, Search, About, Login, Editor *template.Template
 }
 
+// this gets populated via go generate in main
+var templateContent map[string]string
+
 func compileViews() {
+	templateContent = make(map[string]string)
+	loadTemplates() // function in the generated file
+
 	compiledViews = views{
 		Latest:   createView("latest.html"),
 		Single:   createView("single.html"),
@@ -24,13 +30,14 @@ func compileViews() {
 }
 
 func createView(contentFileName string) *template.Template {
-	baseDir := "templates/"
 	funcMap := template.FuncMap{
 		"raw":        raw,
 		"formatDate": formatDate,
 		"loggedIn":   func() bool { return false }, // overriden on renderView
 	}
-	return template.Must(template.New("").Funcs(funcMap).ParseFiles(baseDir+contentFileName, baseDir+"_master.html"))
+	baseTemplate := template.New("").Funcs(funcMap)
+	result, err := baseTemplate.Parse(templateContent[contentFileName])
+	return template.Must(result, err)
 }
 
 func raw(s string) template.HTML {
