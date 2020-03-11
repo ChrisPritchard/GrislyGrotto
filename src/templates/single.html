@@ -1,10 +1,10 @@
 {{ define "content" }}
-<h2>{{ .Post.Title }}</h2>
-<span>Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
-<div>
+<h2 class="post-title">{{ .Post.Title }}</h2>
+<span class="post-summary">Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
+<div class="post-content">
     {{ raw .Post.Content }}
 </div>
-<div>
+<div class="post-controls">
     {{ if .OwnBlog }}
         <form method="GET" action="/editor/{{ .Post.Key }}">
             <input type="submit" value="Edit" />
@@ -17,19 +17,19 @@
 <h2 id="comments">Comments</h2>
 {{ range .Post.Comments }}
 <div>
-    <div class="post-summary">Commented by {{ .Author }} at {{ formatDate .Date }}:</div>
-    <div class="post-content">
+    <div class="comment-summary">Commented by {{ .Author }} at {{ formatDate .Date }}:</div>
+    <div class="comment-content">
         {{ raw .Content }}
     </div>
     {{ if $.OwnBlog }}
-        <form method="POST" action="/delete-comment/{{ .ID }}?postKey={{ $.Post.Key }}">
+        <form class="comment-delete" method="POST" action="/delete-comment/{{ .ID }}?postKey={{ $.Post.Key }}">
             <input type="submit" value="Delete" class="confirm-click" />
         </form>
     {{ end }}
 </div>
 {{ end }}
 {{ if .CanComment }}
-<form method="POST">
+<form method="POST" class="create-comment-container">
     <label for="author">Author</label>
     <input type="text" id="author" name="author">
     <label for="content">Content</label>

@@ -158,6 +158,37 @@ div.search-result h4 {
     text-transform: uppercase;
 }
 
+div.post-controls {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div.post-controls form {
+    display: inline;
+    margin-right: 10px;
+}
+
+.comment-summary {
+    font-size: 0.8em;
+    margin-top: 15px;
+    margin-bottom: 4px;
+}
+
+.comment-delete input {
+    padding: 2px;
+    font-size: 0.8em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.create-comment-container {
+    margin-top: 20px;
+}
+
+div.post-controls form input {
+    width: 65px;
+}
+
 div.checkbox {
     margin-bottom: 6px;
 }
