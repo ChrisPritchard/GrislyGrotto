@@ -360,9 +360,11 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+var markdownToken = "markdown|"
+
 func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		model := editorViewModel{true, "", "", false, ""}
+		model := editorViewModel{true, "", "", true, false, ""}
 		renderView(w, r, model, compiledViews.Editor)
 		return
 	}
@@ -373,24 +375,24 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	titleF, contentF := r.Form["title"], r.Form["content"]
-	if len(titleF) != 1 || len(contentF) != 1 {
+	titleF, contentF, renderModeF := r.Form["title"], r.Form["content"], r.Form["render-mode"]
+	if len(titleF) != 1 || len(contentF) != 1 || len(renderModeF) != 1 {
 		badRequest(w, "invalid form")
 		return
 	}
 
 	isStory := len(r.Form["isStory"]) > 0
-	title, content := titleF[0], contentF[0]
+	title, content, isMarkdown := titleF[0], contentF[0], renderModeF[0] == "Markdown"
 
 	if len(title) == 0 || len(content) == 0 {
-		model := editorViewModel{true, title, content, isStory, "both title and content are required to be set"}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, "both title and content are required to be set"}
 		renderView(w, r, model, compiledViews.Editor)
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
-		model := editorViewModel{true, title, content, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
 		renderView(w, r, model, compiledViews.Editor)
 		return
 	}
@@ -403,9 +405,13 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !notFound {
-		model := editorViewModel{true, title, content, isStory, "a post with a similar title already exists"}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, "a post with a similar title already exists"}
 		renderView(w, r, model, compiledViews.Editor)
 		return
+	}
+
+	if isMarkdown {
+		content = markdownToken + content
 	}
 
 	err = createNewPost(key, title, content, isStory, wordCount, currentUser)
@@ -435,7 +441,12 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	}
 
 	if r.Method == "GET" {
-		model := editorViewModel{false, post.Title, post.Content, post.IsStory, ""}
+		postIsMarkdown := post.Content[:len(markdownToken)] == markdownToken
+		content := post.Content
+		if postIsMarkdown {
+			content = content[len(markdownToken):]
+		}
+		model := editorViewModel{false, post.Title, content, postIsMarkdown, post.IsStory, ""}
 		renderView(w, r, model, compiledViews.Editor)
 		return
 	}
@@ -446,26 +457,30 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
-	titleF, contentF := r.Form["title"], r.Form["content"]
-	if len(titleF) != 1 || len(contentF) != 1 {
+	titleF, contentF, renderModeF := r.Form["title"], r.Form["content"], r.Form["render-mode"]
+	if len(titleF) != 1 || len(contentF) != 1 || len(renderModeF) != 1 {
 		badRequest(w, "invalid form")
 		return
 	}
 
 	isStory := len(r.Form["isStory"]) > 0
-	title, content := titleF[0], contentF[0]
+	title, content, isMarkdown := titleF[0], contentF[0], renderModeF[0] == "Markdown"
 
 	if len(title) == 0 || len(content) == 0 {
-		model := editorViewModel{false, title, content, isStory, "both title and content are required to be set"}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, "both title and content are required to be set"}
 		renderView(w, r, model, compiledViews.Editor)
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
-		model := editorViewModel{false, title, content, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
 		renderView(w, r, model, compiledViews.Editor)
 		return
+	}
+
+	if isMarkdown {
+		content = markdownToken + content
 	}
 
 	err = updatePost(key, title, content, isStory, wordCount)

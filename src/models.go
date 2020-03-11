@@ -36,10 +36,10 @@ type loginViewModel struct {
 }
 
 type editorViewModel struct {
-	NewPost        bool
-	Title, Content string
-	IsStory        bool
-	PostError      string
+	NewPost             bool
+	Title, Content      string
+	IsMarkdown, IsStory bool
+	PostError           string
 }
 
 type blogPost struct {

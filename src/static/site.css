@@ -157,3 +157,23 @@ div.search-result h4 {
     margin-bottom: 0;
     text-transform: uppercase;
 }
+
+div.checkbox {
+    margin-bottom: 6px;
+}
+
+div.checkbox input, div.checkbox label {
+    display: inline;
+    vertical-align: center;
+}
+
+div.editor-help {
+    float: right;
+    width: 80%;
+}
+
+div.post-submit {
+    clear: both;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
