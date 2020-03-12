@@ -18,7 +18,7 @@
             {{ if and (loggedIn) (ne (page) "New Post") }}
                 <a href="/editor">New Post</a>
                 <span>&nbsp;|&nbsp;</span>
-            {{ else if (ne (page) "Login") }}
+            {{ else if and (not loggedIn) (ne (page) "Login") }}
                 <a href="/login">Login</a>
                 <span>&nbsp;|&nbsp;</span>
             {{ end }}
