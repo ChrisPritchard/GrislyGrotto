@@ -13,7 +13,7 @@
     <label for="title">Title</label>
     <input type="text" id="title" name="title" value="{{ .Title }}" />
 
-    <label for="content">Content</label>
+    <label for="content">Content <span class="error">{{ .PostError }}</span></label>
     <textarea id="content" name="content" cols="100" rows="35">{{ raw .Content }}</textarea>
 
     <div class="editor-help">
@@ -41,7 +41,7 @@
 
     <div class="post-submit">
         <input type="submit" value="Submit" />
-        <span>{{ .PostError }}</span>
+        <span class="error">{{ .PostError }}</span>
     </div>
 </form>
 

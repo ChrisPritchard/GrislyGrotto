@@ -45,7 +45,6 @@ input[type=text], input[type=password], textarea {
     display: block;
     border: 1px solid #9acc14;
     border-radius: 4px;
-    color: #9acc14;
     background-color: #292e33;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -207,4 +206,8 @@ div.post-submit {
     clear: both;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.error {
+    color: red;
 }
