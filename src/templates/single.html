@@ -2,7 +2,7 @@
 <h2 class="post-title">{{ .Post.Title }}</h2>
 <span class="post-summary">Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
 <div class="post-content">
-    {{ raw .Post.Content }}
+    {{ render .Post.Content }}
 </div>
 <div class="post-controls">
     {{ if .OwnBlog }}

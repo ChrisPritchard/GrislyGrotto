@@ -360,8 +360,6 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var markdownToken = "markdown|"
-
 func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		model := editorViewModel{true, "", "", true, false, ""}

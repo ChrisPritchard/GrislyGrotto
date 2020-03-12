@@ -21,6 +21,8 @@ const searchStripPad = 20
 const cookieAge = time.Hour
 const minWordCount = 100
 
+const markdownToken = "markdown|"
+
 var months = []string{
 	"", "January", "February", "March", "April", "May", "June",
 	"July", "August", "September", "October", "November", "December"}

@@ -44,6 +44,14 @@ func raw(s string) template.HTML {
 	return template.HTML(s)
 }
 
+func render(s string) template.HTML {
+	if s[:len(markdownToken)] == markdownToken {
+		// convert to markdown
+		return raw(s)
+	}
+	return raw(s)
+}
+
 func formatDate(s string) string {
 	asTime, _ := time.Parse("2006-01-02 15:04:05", s)
 	return asTime.Format("15:04 PM, on Monday, 02 January 2006")
