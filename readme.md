@@ -12,15 +12,19 @@ __Release Date:__ TBD
 
 __Release Post:__ TBD
 
-__Frontend:__ Golang with SQLite extension and golang html templates.
+__Technology:__ Go
+
+Also uses the following Go packages (outside of built-in go packages): [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3) and [yuin/goldmark](https://github.com/yuin/goldmark) for markdown.
 
 __Data Store:__ SQLite
 
-__Dev Tool(s):__ 
+__Dev Tool(s):__ VS Code
 
-- VS Code via Remote WSL (Windows 10 onto Ubuntu 18.04 WSL)
-- VS Code on OSX
-- VS Code to local windows with mingw-x64 for cGo
+VS Code was used in three different ways:
+
+- via Remote WSL (Windows 10 onto Ubuntu 18.04 WSL)
+- on OSX
+- on Windows 10 directly with mingw-x64 for cGo
 
 The Go connection to SQlite was the biggest barrier, as it requires CGO, which requires GCC in path. Fine on linux/osx, harder on windows. Ultimately [tdm-gcc](http://tdm-gcc.tdragon.net/) was the easiest way to install this, and I recommend it. WSL2 remote worked great too, except that debugging didn't work (not as bad as it sounds for most of the development work).
 
@@ -30,15 +34,14 @@ Overall, this build was particularly enjoyable. Go is quite a pleasure to work w
 
 The site needs to be colocated with various static resources under the /static folder (just images, css and js, mainly). All templates are loaded in to Go via `go generate`.
 
-To run the site, it requires the port and database connection name. These can be specified via the command line (use -h to get details). They can also be specified via environment variables, using the same env vars as a standard ASPNET Core site for legacy reasons (and the lulz): `ASPNETCORE_URLS` and `ConnectionStrings__Default`.
+To run the site, it requires the port and database connection name. These can be specified via the command line (use `-h` to get details). They can also be specified via environment variables, using the same env vars as a standard ASPNET Core site for legacy reasons (and the lulz): `ASPNETCORE_URLS` and `ConnectionStrings__Default`.
 
 Remaining work:
 
 ```
-    recapcha? custom recapcha?
-    csrf tokens
-    markdown editor?
-	returnurl for login with open redirect protection
-    rolling cookie expiry? expiry time in cookie val?
-	possible api integration with azure blob or backend api for image storage
+recapcha? custom recapcha?
+csrf tokens
+returnurl for login with open redirect protection
+rolling cookie expiry? expiry time in cookie val?
+possible api integration with azure blob or backend api for image storage
 ```
