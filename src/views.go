@@ -38,6 +38,7 @@ func createView(contentFileName string) *template.Template {
 		"render":     render,
 		"formatDate": formatDate,
 		"loggedIn":   func() bool { return false }, // overriden on renderView
+		"page":       func() string { return "" },  // overriden on renderView
 	}
 	baseTemplate := template.New("").Funcs(funcMap)
 	result, err := baseTemplate.Parse(templateContent[contentFileName])
@@ -67,10 +68,12 @@ func formatDate(s string) string {
 	return asTime.Format("15:04 PM, on Monday, 02 January 2006")
 }
 
-func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view *template.Template) {
+func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view *template.Template, pageName string) {
 	loggedIn := currentUser != ""
 
-	view.Funcs(template.FuncMap{"loggedIn": func() bool { return loggedIn }})
+	view.Funcs(template.FuncMap{
+		"loggedIn": func() bool { return loggedIn },
+		"page":     func() string { return pageName }})
 	if err := view.ExecuteTemplate(w, "master", model); err != nil {
 		serverError(w, err)
 	}

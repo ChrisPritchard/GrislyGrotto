@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>The Grisly Grotto - Deviant Minds Think Alike</title>
+        <title>The Grisly Grotto - {{ page }}</title>
         <link href="/static/site.css" rel="stylesheet" />
         <meta charset="utf-8" />
         <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
@@ -15,17 +15,26 @@
             <a href="/"><h1 class="site-title">The Grisly Grotto</h1></a>
         </header>
         <nav>
-            {{ if loggedIn }}
+            {{ if and (loggedIn) (ne (page) "New Post") }}
                 <a href="/editor">New Post</a>
-            {{ else }}
+                <span>&nbsp;|&nbsp;</span>
+            {{ else if (ne (page) "Login") }}
                 <a href="/login">Login</a>
+                <span>&nbsp;|&nbsp;</span>
             {{ end }}
-            <span>&nbsp;|&nbsp;</span>
-            <a href="/archives">Archives</a>
-            <span>&nbsp;|&nbsp;</span>
-            <a href="/search">Search</a>
-            <span>&nbsp;|&nbsp;</span>
-            <a href="/about">About</a>
+            {{ if (ne (page) "Archives") }}
+                <a href="/archives">Archives</a>
+                <span>&nbsp;|&nbsp;</span>
+            {{ end }}
+            {{ if (ne (page) "Search") }}
+                <a href="/search">Search</a>
+                {{ if (ne (page) "About") }}
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+            {{ end }}
+            {{ if (ne (page) "About") }}
+                <a href="/about">About</a>
+            {{ end }}
         </nav>
         {{template "content" .}}
         <footer>

@@ -21,7 +21,7 @@ func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	model := latestViewModel{notFirstPage, page - 1, page + 1, posts}
-	renderView(w, r, model, compiledViews.Latest)
+	renderView(w, r, model, compiledViews.Latest, "Latest Posts")
 }
 
 func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
@@ -60,7 +60,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		if len(post.Comments) >= maxCommentCount {
 			model.CanComment = false
 		}
-		renderView(w, r, model, compiledViews.Single)
+		renderView(w, r, model, compiledViews.Single, post.Title)
 		return
 	}
 
@@ -82,7 +82,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if commentError != "" {
 		model := singleViewModel{post, ownBlog, true, commentError}
-		renderView(w, r, model, compiledViews.Single)
+		renderView(w, r, model, compiledViews.Single, post.Title)
 	}
 
 	http.Redirect(w, r, "/post/"+post.Key+"#comments", http.StatusFound)
@@ -206,7 +206,7 @@ func archivesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	model := archivesViewModel{yearSets, stories}
-	renderView(w, r, model, compiledViews.Archives)
+	renderView(w, r, model, compiledViews.Archives, "Archives")
 }
 
 func monthHandler(w http.ResponseWriter, r *http.Request) {
@@ -243,7 +243,7 @@ func monthHandler(w http.ResponseWriter, r *http.Request) {
 	prevMonth, prevYear := getPrevMonth(month, yearN)
 	nextMonth, nextYear := getNextMonth(month, yearN)
 	model := monthViewModel{month, year, prevMonth, prevYear, nextMonth, nextYear, posts}
-	renderView(w, r, model, compiledViews.Month)
+	renderView(w, r, model, compiledViews.Month, month+" "+year)
 }
 
 func getPrevMonth(month string, year int) (string, string) {
@@ -279,7 +279,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	searchParam, hasSearch := r.URL.Query()["searchTerm"]
 	if !hasSearch || len(searchParam[0]) == 0 {
-		renderView(w, r, nil, compiledViews.Search)
+		renderView(w, r, nil, compiledViews.Search, "Search")
 		return
 	}
 
@@ -290,7 +290,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	zeroResults := len(results) == 0
-	renderView(w, r, searchViewModel{searchParam[0], zeroResults, results}, compiledViews.Search)
+	renderView(w, r, searchViewModel{searchParam[0], zeroResults, results}, compiledViews.Search, "Search")
 }
 
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
@@ -299,12 +299,12 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	renderView(w, r, nil, compiledViews.About)
+	renderView(w, r, nil, compiledViews.About, "About")
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		renderView(w, r, loginViewModel{""}, compiledViews.Login)
+		renderView(w, r, loginViewModel{""}, compiledViews.Login, "Login")
 		return
 	}
 
@@ -321,13 +321,13 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	username, password := r.Form["username"], r.Form["password"]
 	if len(username) != 1 || len(password) != 1 {
-		renderView(w, r, loginViewModel{"both username and password are required"}, compiledViews.Login)
+		renderView(w, r, loginViewModel{"both username and password are required"}, compiledViews.Login, "login")
 		return
 	}
 
 	user, err := getUser(username[0], password[0])
 	if err != nil {
-		renderView(w, r, loginViewModel{"invalid credentials"}, compiledViews.Login)
+		renderView(w, r, loginViewModel{"invalid credentials"}, compiledViews.Login, "login")
 		return
 	}
 
@@ -363,7 +363,7 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		model := editorViewModel{true, "", "", true, false, ""}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
 
@@ -384,14 +384,14 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if len(title) == 0 || len(content) == 0 {
 		model := editorViewModel{true, title, content, isMarkdown, isStory, "both title and content are required to be set"}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
 		model := editorViewModel{true, title, content, isMarkdown, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
 
@@ -404,7 +404,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if !notFound {
 		model := editorViewModel{true, title, content, isMarkdown, isStory, "a post with a similar title already exists"}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
 
@@ -445,7 +445,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 			content = content[len(markdownToken):]
 		}
 		model := editorViewModel{false, post.Title, content, postIsMarkdown, post.IsStory, ""}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "Edit Post")
 		return
 	}
 
@@ -466,14 +466,14 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 
 	if len(title) == 0 || len(content) == 0 {
 		model := editorViewModel{true, title, content, isMarkdown, isStory, "both title and content are required to be set"}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "Edit Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
 		model := editorViewModel{true, title, content, isMarkdown, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
-		renderView(w, r, model, compiledViews.Editor)
+		renderView(w, r, model, compiledViews.Editor, "Edit Post")
 		return
 	}
 
