@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"html/template"
 	"net/http"
 	"time"
+
+	"github.com/yuin/goldmark"
 )
 
 type views struct {
@@ -32,6 +35,7 @@ func compileViews() {
 func createView(contentFileName string) *template.Template {
 	funcMap := template.FuncMap{
 		"raw":        raw,
+		"render":     render,
 		"formatDate": formatDate,
 		"loggedIn":   func() bool { return false }, // overriden on renderView
 	}
@@ -45,11 +49,17 @@ func raw(s string) template.HTML {
 }
 
 func render(s string) template.HTML {
-	if s[:len(markdownToken)] == markdownToken {
-		// convert to markdown
+	if s[:len(markdownToken)] != markdownToken {
 		return raw(s)
 	}
-	return raw(s)
+
+	var buf bytes.Buffer
+	source := []byte(s[len(markdownToken):])
+	if err := goldmark.Convert(source, &buf); err != nil {
+		return raw("<b>Error parsing Markdown, falling back to raw</b><br/>" + s)
+	}
+
+	return raw(buf.String())
 }
 
 func formatDate(s string) string {
