@@ -42,6 +42,4 @@ Remaining work:
 recapcha? custom recapcha?
 csrf tokens
 returnurl for login with open redirect protection
-rolling cookie expiry? expiry time in cookie val?
-possible api integration with azure blob or backend api for image storage
 ```

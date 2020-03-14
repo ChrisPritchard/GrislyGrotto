@@ -14,7 +14,8 @@ import (
 )
 
 func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
-	data := time.Now().Format(time.RFC3339) + "|" + unencodedData
+	now := time.Now()
+	data := now.Format(time.RFC3339) + "|" + unencodedData
 	cipher, err := encrypt([]byte(data), secret)
 	log.Println(err)
 	if err != nil {
@@ -26,6 +27,7 @@ func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
 		Name:     name,
 		Value:    b64,
 		HttpOnly: true,
+		Expires:  now.Add(cookieAge),
 	}
 	http.SetCookie(w, &cookie)
 	return nil
