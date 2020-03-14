@@ -57,6 +57,9 @@ func globalHandler(h http.Handler) http.Handler {
 
 		// read the current user once per request
 		currentUser, _ = readCookie("user", r)
+		if currentUser != "" {
+			setCookie("user", currentUser, w)
+		}
 
 		h.ServeHTTP(w, r)
 	})
