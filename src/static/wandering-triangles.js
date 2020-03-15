@@ -3,9 +3,8 @@ var GrislyGrotto;
     var BackgroundAnimation = (function () {
         function BackgroundAnimation() {
             this.fadeAlpha = 0.1;
-            this.framerate = 20;
+            this.framerate = 18;
             this.entityCount = 20;
-            this.heightMultiplier = 1000;
             this.entitites = [];
         }
         BackgroundAnimation.prototype.initialise = function (canvas, backgroundColour, primaryColour, secondaryColour) {
@@ -17,7 +16,7 @@ var GrislyGrotto;
             this.resizeCanvas();
             var self = this;
             window.onresize = function () { self.resizeCanvas(); };
-            this.entityCount = this.entityCount * (this.context.canvas.height / this.heightMultiplier);
+            this.entityCount = this.entityCount;
             for (var i = 0; i < this.entityCount; i++)
                 this.entitites.push(new WanderingTriangle(this.context.canvas, primaryColour, secondaryColour));
         };
@@ -28,7 +27,8 @@ var GrislyGrotto;
         BackgroundAnimation.prototype.draw = function () {
             this.context.fillStyle = this.backgroundColour;
             this.context.globalAlpha = this.fadeAlpha;
-            this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            this.context.fillRect(0, scrollTop, this.context.canvas.width, window.innerHeight);
             this.context.globalAlpha = 1;
             for (var i = 0; i < this.entitites.length; i++)
                 this.entitites[i].draw(this.context);
@@ -54,9 +54,10 @@ var GrislyGrotto;
             this.jump();
         }
         WanderingTriangle.prototype.jump = function () {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             this.point = {
                 x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height
+                y: (Math.random() * window.innerHeight) + scrollTop
             };
             this.type = Math.floor(Math.random() * 4);
             if (Math.random() < this.changeOfSecondaryColour)
