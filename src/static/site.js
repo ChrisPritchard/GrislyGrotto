@@ -7,7 +7,7 @@ anim.initialise(
         'grey')
 
 confirmElems = document.getElementsByClassName("confirm-click");
-for (var i in confirmElems) {
+for (var i = 0; i < confirmElems.length; i++) {
     confirmElems[i].addEventListener("click", function () {
         return confirm("Are you sure? This action is irreversible!");
     });
