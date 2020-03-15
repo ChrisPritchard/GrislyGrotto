@@ -491,7 +491,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 }
 
 func createPostKey(title string) string {
-	clean := strings.ReplaceAll(strings.ToLower(title), " ", "-")
+	clean := strings.Replace(strings.ToLower(title), " ", "-", -1)
 	regex, _ := regexp.Compile("[^A-Za-z0-9 -]+")
 	return string(regex.ReplaceAll([]byte(clean), []byte("")))
 }

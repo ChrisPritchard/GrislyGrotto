@@ -3,16 +3,13 @@ Description=GrislyGrotto Website
 
 [Service]
 WorkingDirectory=/var/www/grislygrotto
-ExecStart=/var/www/grislygrotto/GrislyGrotto
+ExecStart=/var/www/grislygrotto/grislygrotto.so -db ./grislygrotto.db -url ":5000"
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
 KillSignal=SIGINT
 SyslogIdentifier=dotnet-grislygrotto
 User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Release
-Environment=ASPNETCORE_URLS=http://localhost:5000
-Environment="ConnectionStrings__default=Data Source\x3dgrislygrotto.db"
 
 [Install]
 WantedBy=multi-user.target

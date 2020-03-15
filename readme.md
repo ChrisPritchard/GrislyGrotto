@@ -8,9 +8,9 @@ To date there have been ASP.NET WebForms versions (unfortunately the code for th
 
 ## Release 17
 
-__Release Date:__ TBD
+__Release Date:__ 15/03/2020 (my daughter's 3rd birthday!)
 
-__Release Post:__ TBD
+__Release Post:__ [https://grislygrotto.nz/post/grisly-grotto-17](https://grislygrotto.nz/post/grisly-grotto-17)
 
 __Technology:__ Go
 
@@ -32,14 +32,16 @@ Overall, this build was particularly enjoyable. Go is quite a pleasure to work w
 
 ## Usage notes
 
-The site needs to be colocated with various static resources under the /static folder (just images, css and js, mainly). All templates are loaded in to Go via `go generate`.
+The site needs to be co-located with various static resources under the /static folder (just images, css and js, mainly). All templates are loaded in to Go via `go generate`.
+
+To compile for a raspberry pi the following command can be used on Linux: `env CGO_ENABLED=1 CC=arm-linux-gnueabi-gcc GOOS=linux GOARCH=arm GOARM=5 go build -o grislygrotto.so`
+
+It requires that the `arm-linux-gnueabi-gcc` compiler package be installed, for CGO (which is such a pain in the ass, and all because sqlite3 isn't supported without it).
 
 To run the site, it requires the port and database connection name. These can be specified via the command line (use `-h` to get details). They can also be specified via environment variables, using the same env vars as a standard ASPNET Core site for legacy reasons (and the lulz): `ASPNETCORE_URLS` and `ConnectionStrings__Default`.
 
-Remaining work:
+## Incremental version improvements post go-live
 
-```
-recapcha? custom recapcha?
-csrf tokens
-returnurl for login with open redirect protection
-```
+- recapcha? custom recapcha?
+- csrf tokens
+- returnurl for login with open redirect protection
