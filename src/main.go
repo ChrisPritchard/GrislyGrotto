@@ -59,6 +59,7 @@ func globalHandler(h http.Handler) http.Handler {
 		csp += "connect-src 'self';"
 		csp += "img-src 'self' https://grislygrotto.blob.core.windows.net;"
 		csp += "style-src 'self';"
+		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)
 
 		// read the current user once per request
