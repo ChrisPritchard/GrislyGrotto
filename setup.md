@@ -11,6 +11,10 @@ They involve:
 5. Setting up nginx reverse proxy
 6. Setting up lets encrypt
 
+> **NOTE** If you want to use ssl/tls via lets encrypt, then it is *strongly* recommended you use an OS that is natively supported by certbot. Go [here](https://certbot.eff.org/) and see if its one of the options.
+>
+> Don't be me and get all the way through this with Amazon Linux 2, only to have to nuke it and start again with Ubuntu.
+
 ## Compiling
 
 To compile you need access to the source code and `go` installed somewhere. Its slightly more complicated than normal with gg because it uses cgo. Accordingly, you also need some flavour of `gcc` installed that will work with the architecture you are targeting.
@@ -38,7 +42,7 @@ All this requires is scp'ing the compiled .so file, the sqlite3 .db file, the st
 
     - the grislygrotto.so file
     - the grislygrotto.db file
-    - all files under /static to the static folder on the destination machine (should just be three)
+    - all files under /static to the static folder on the destination machine (should just be four files)
 
 5. ssh back to the machine, and run the grislygrotto.so file. All going well, you should get the following message:
 
@@ -93,9 +97,14 @@ Generally speaking this should just involve setting your domain register's A rec
 Nginx provides a nice configurable front end, and also makes it easier to setup lets encrypt which has nice defaults for nginx.
 
 1. Install nginx. How you do this differs by platform. You can check its working by browsing to port 80 (again, check you are allowing port 80 e.g. via a security group): nginx should have a default landing page.
+
+    > A common way to install nginx is via `sudo apt-get install nginx`
+
 2. Reconfigure nginx to point to the gg server, by editing nginx.conf and replacing the server block with the gg one:
 
     a. find the server { ... } section in nginx.conf
+
+    > if there isn't a section in here, check if `sites-available/default` exists, and use that file instead if so
 
     It should start something like this:
 
@@ -129,3 +138,12 @@ Nginx provides a nice configurable front end, and also makes it easier to setup 
 3. Reload nginx: `sudo nginx -s reload`
 
 All going well, browsing to your domain should show the site. Don't forget to delete any rules that allowed port 3000 or 5000 now! Shouldn't need them.
+
+## Setting up lets encrypt
+
+Follow the instructions here: https://certbot.eff.org/. If you are using a supported OS (listed at the top as a suggest pre-req) this should be trivial:
+
+- Pick nginx and your os, then followed the simple instructions to configure the cert
+- When prompted, opt to force http traffic to https.
+
+Should take less than a minute, and then can test (once/if you have configured incoming 443 traffic through the security group or your firewall) that the site is hosted properly via https://
