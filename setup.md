@@ -7,8 +7,9 @@ They involve:
 1. Compiling the application
 2. Getting it running on a destination machine
 3. Persistence via systemd
-4. A reverse proxy for SSL purposes
-5. Setting up lets encrypt
+4. Sorting custom domains
+5. Setting up nginx reverse proxy
+6. Setting up lets encrypt
 
 ## Compiling
 
@@ -80,3 +81,51 @@ Running the site manually from the command line isn't a good idea. Instead we sh
     `sudo systemctl start grislygrotto.service`
 
 You can check its status (which should show the same message as the previous step, but with port 5000) via the following command `sudo systemctl status grislygrotto.service`
+
+## Sorting custom domains
+
+At this point its a good idea to get the custom domain you might be using, e.g. grislygrotto.nz, to point at your server. The next few steps with nginx and lets encrypt will be easier if this is working.
+
+Generally speaking this should just involve setting your domain register's A records to point at your server's IP Address. If using something like Amazon EC2, you might want to assign an Elastic IP for this.
+
+## Setting up nginx reverse proxy
+
+Nginx provides a nice configurable front end, and also makes it easier to setup lets encrypt which has nice defaults for nginx.
+
+1. Install nginx. How you do this differs by platform. You can check its working by browsing to port 80 (again, check you are allowing port 80 e.g. via a security group): nginx should have a default landing page.
+2. Reconfigure nginx to point to the gg server, by editing nginx.conf and replacing the server block with the gg one:
+
+    a. find the server { ... } section in nginx.conf
+
+    It should start something like this:
+
+    ```
+    server {
+        listen       80 default_server;
+        listen       [::]:80 default_server;
+        server_name  _;
+        root         /usr/share/nginx/html;
+    ```
+
+    b. Replace the whole server block with:
+
+    ```
+    server {
+        listen        80;
+        server_name   server_name grislygrotto.nz *.grislygrotto.nz;
+        location / {
+            proxy_pass         http://localhost:5000;
+            proxy_http_version 1.1;
+            proxy_set_header   Upgrade $http_upgrade;
+            proxy_set_header   Connection keep-alive;
+            proxy_set_header   Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto $scheme;
+        }
+    }
+    ```
+
+3. Reload nginx: `sudo nginx -s reload`
+
+All going well, browsing to your domain should show the site. Don't forget to delete any rules that allowed port 3000 or 5000 now! Shouldn't need them.
