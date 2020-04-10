@@ -47,3 +47,36 @@ listening locally at port :3000
 ```
 
 You can test this by opening another session on the machine and curling the address, or trying to reach the machine externally via :3000 (assuming there is no firewall or security group in the way).
+
+## Persistence via systemd
+
+Running the site manually from the command line isn't a good idea. Instead we should move it somewhere intelligent and then use a systemd job to start it.
+
+1. Create a folder to host it, e.g. `/var/www/grislygrotto/`. If `www` doesnt exist, create it (probably with `sudo mkdir`). Move all the required files from the previous step into this folder.
+2. Create the www-data user (if not present) and give them the www folder. `sudo useradd -r www-data` will create the user, and then `sudo chown -R www-data /var/www` will give them ownership of the www and its contents.
+3. Navigate to `/etc/systemd/system/` and create a new service file with nano, if you have it. E.g. `sudo nano grislygrotto.service`. Place in it the following content:
+
+    ```
+    [Unit]
+    Description=GrislyGrotto Website
+
+    [Service]
+    WorkingDirectory=/var/www/grislygrotto
+    ExecStart=/var/www/grislygrotto/grislygrotto.so -db ./grislygrotto.db -url ":5000"
+    Restart=always
+    RestartSec=10
+    KillSignal=SIGINT
+    SyslogIdentifier=grislygrotto-web
+    User=www-data
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+4. Start the service using the following commands: 
+
+    `sudo systemctl enable grislygrotto.service`
+
+    `sudo systemctl start grislygrotto.service`
+
+You can check its status (which should show the same message as the previous step, but with port 5000) via the following command `sudo systemctl status grislygrotto.service`
