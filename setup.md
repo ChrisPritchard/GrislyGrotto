@@ -13,7 +13,7 @@ They involve:
 
 > **NOTE** If you want to use ssl/tls via lets encrypt, then it is *strongly* recommended you use an OS that is natively supported by certbot. Go [here](https://certbot.eff.org/) and see if its one of the options.
 >
-> Don't be me and get all the way through this with Amazon Linux 2, only to have to nuke it and start again with Ubuntu.
+> Don't be me and get all the way through this with Amazon Linux 2, only to have to nuke it and start again with Ubuntu because certbot doesn't support AL2.
 
 ## Compiling
 
@@ -147,3 +147,7 @@ Follow the instructions here: https://certbot.eff.org/. If you are using a suppo
 - When prompted, opt to force http traffic to https.
 
 Should take less than a minute, and then can test (once/if you have configured incoming 443 traffic through the security group or your firewall) that the site is hosted properly via https://
+
+> Note, if using a domain like grislygrotto.nz, but *also* www.grislygrotto.nz, you might need to modify the nginx default file and ensure that both domains are in there. *.grislygrotto.nz instead of www.grislygrotto.nz, might result in certbot creating just a cert for grislygrott.nz, which will mean that visiting the www. address will result in a cert warning.
+>
+> The solution is to specify the www. domain specifically, then rerun the cert bot tool and select both domains (if it detects both, hopefully). If you have already run it before it might prompt to 'expand' the existing cert, which is an easy option to fix things up.
