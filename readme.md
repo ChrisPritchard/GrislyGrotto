@@ -29,19 +29,3 @@ VS Code was used in three different ways:
 The Go connection to SQlite was the biggest barrier, as it requires CGO, which requires GCC in path. Fine on linux/osx, harder on windows. Ultimately [tdm-gcc](http://tdm-gcc.tdragon.net/) was the easiest way to install this, and I recommend it. WSL2 remote worked great too, except that debugging didn't work (not as bad as it sounds for most of the development work).
 
 Overall, this build was particularly enjoyable. Go is quite a pleasure to work with, something I found surprising coming from much higher-level functional languages. Simplicity has its merits.
-
-## Usage notes
-
-The site needs to be co-located with various static resources under the /static folder (just images, css and js, mainly). All templates are loaded in to Go via `go generate`.
-
-To compile for a raspberry pi the following command can be used on Linux: `env CGO_ENABLED=1 CC=arm-linux-gnueabi-gcc GOOS=linux GOARCH=arm GOARM=5 go build -o grislygrotto.so`
-
-It requires that the `arm-linux-gnueabi-gcc` compiler package be installed, for CGO (which is such a pain in the ass, and all because sqlite3 isn't supported without it).
-
-To run the site, it requires the port and database connection name. These can be specified via the command line (use `-h` to get details). They can also be specified via environment variables, using the same env vars as a standard ASPNET Core site for legacy reasons (and the lulz): `ASPNETCORE_URLS` and `ConnectionStrings__Default`.
-
-## Incremental version improvements post go-live
-
-- recapcha? custom recapcha?
-- csrf tokens
-- returnurl for login with open redirect protection
