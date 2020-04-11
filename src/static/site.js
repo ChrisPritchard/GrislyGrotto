@@ -12,10 +12,3 @@ for (var i = 0; i < confirmElems.length; i++) {
         return confirm("Are you sure? This action is irreversible!");
     });
 }
-
-submitOnceElems = document.getElementsByClassName("submit-once");
-for (var i = 0; i < submitOnceElems.length; i++) {
-    submitOnceElems[i].addEventListener("click", function () {
-        this.disabled = true;
-    });
-}
