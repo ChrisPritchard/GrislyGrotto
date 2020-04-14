@@ -15,6 +15,10 @@ They involve:
 >
 > Don't be me and get all the way through this with Amazon Linux 2, only to have to nuke it and start again with Ubuntu because certbot doesn't support AL2.
 
+> **NOTE 2: Timezones** Unlike prior versions, the site does not enforce a timezone. When I hosted it locally, my local machines were set to my own timezone (nz) and so this wasn't necessary. In the cloud, it becomes a problem again.
+>
+> Fortunately, if using something like EC2 running ubuntu, to change it from the cli is simple: ssh in to the box and run `sudo dpkg-reconfigure tzdata`. This will start a cli interface allowing the timezone for linux to be changed. If you have already deployed the site by this point, you will need to restart it to pick up the change.
+
 ## Compiling
 
 To compile you need access to the source code and `go` installed somewhere. Its slightly more complicated than normal with gg because it uses cgo. Accordingly, you also need some flavour of `gcc` installed that will work with the architecture you are targeting.
