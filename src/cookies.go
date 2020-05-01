@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -17,7 +16,6 @@ func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
 	now := time.Now()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
 	cipher, err := encrypt([]byte(data), secret)
-	log.Println(err)
 	if err != nil {
 		return err
 	}

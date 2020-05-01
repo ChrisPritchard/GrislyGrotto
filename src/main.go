@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,7 +24,7 @@ func main() {
 	server := globalHandler(http.DefaultServeMux)
 
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
-	log.Println(http.ListenAndServe(fmt.Sprintf(listenURL), server))
+	log.Println(http.ListenAndServe(listenURL, server))
 }
 
 func setupRoutes() {
