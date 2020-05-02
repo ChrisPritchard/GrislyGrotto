@@ -338,7 +338,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	path := ""
+	returnURI := r.URL.Query()["returnUrl"]
+	if len(returnURI) > 0 {
+		path = returnURI[0]
+	}
+	http.Redirect(w, r, "/"+path, http.StatusFound)
 }
 
 func editorHandler(w http.ResponseWriter, r *http.Request) {
