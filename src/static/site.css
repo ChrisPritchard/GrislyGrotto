@@ -238,12 +238,11 @@ div.post-submit {
     position: relative;
     float: right;
     font-size: 0.6em;
-    color: grey;
+    opacity: 40%;
     text-align: right;
 }
 
 .control-panel .controls input, .control-panel .controls select {
-    opacity: 40%;
     vertical-align: middle;
     height: 2em;
     font-size: 1em;
@@ -263,10 +262,10 @@ div.post-submit {
         font-size: 0.8em;
         float: none;
         text-align: left;
+        opacity: 100%;
     }
     
     .control-panel .controls input, .control-panel .controls select {
-        opacity: 100%;
         vertical-align: middle;
     }
 }
