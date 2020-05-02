@@ -239,9 +239,34 @@ div.post-submit {
     float: right;
     font-size: 0.6em;
     color: grey;
+    text-align: right;
 }
 
-.control-panel .controls input {
-    opacity: 50%;
+.control-panel .controls input, .control-panel .controls select {
+    opacity: 40%;
     vertical-align: middle;
+    height: 2em;
+    font-size: 1em;
+    padding: 0 5px 0 5px;
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+
+@media only screen and (max-width: 1000px) {
+    .control-panel {
+        position: relative;
+        margin-left: 14px;
+    }
+    
+    .control-panel .controls {
+        color: white;
+        font-size: 0.8em;
+        float: none;
+        text-align: left;
+    }
+    
+    .control-panel .controls input, .control-panel .controls select {
+        opacity: 100%;
+        vertical-align: middle;
+    }
 }

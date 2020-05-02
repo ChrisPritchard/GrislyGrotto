@@ -39,10 +39,24 @@
                 {{ end }}
             </nav>
             <div class="control-panel">
-                <label class="controls">
-                    Show Background Animation&nbsp;
-                    <input type="checkbox" id="vis-enabled" checked=checked />
-                </label>
+                <div class="controls">
+                    <div>
+                        <label>
+                            Show Background Animation&nbsp;
+                            <input type="checkbox" id="vis-enabled" checked=checked />
+                        </label>
+                    </div>
+                    <div>
+                        <form method="POST" action="save-theme">
+                            <select type="checkbox" id="vis-prime-colour">
+                                <option value="green-black">Theme: Haxx0r Green (default)</option>
+                                <option value="red-white">Theme: Blood on White</option>
+                                <option value="gold-black">Theme: Deux Ex HR</option>
+                            </select>
+                            <input type="submit" value="Save" />
+                        </form>
+                    </div>
+                </div>
             </div>
             {{template "content" .}}
             <footer>
