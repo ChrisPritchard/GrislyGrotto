@@ -8,5 +8,12 @@ Next steps, ideas, things to add etc.
 - [x] add a checkbox in the top right that will disable the visualisation
 - [x] move this vis control panel when the screen gets small
 - [ ] extend the control panel - allow the user to set colours and 'apply' by setting a cookie
-- [ ] also allow the user to set direction, e.g. down (default) out, in, up
 
+    - [x] setup the ui controls
+    - [x] change animation colours
+    - [ ] set save / set cookie functionality
+    - [ ] allow this save to return to current page (return url)
+    - [ ] apply changes to main theme, not just background
+
+- [ ] also allow the user to set direction, e.g. down (default) out, in, up
+- [ ] return url for login page?

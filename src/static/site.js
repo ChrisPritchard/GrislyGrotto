@@ -1,10 +1,11 @@
 let anim = new GrislyGrotto.BackgroundAnimation()
 anim.entityCount = 50
+currentTheme = JSON.parse(document.getElementById('current-theme').value)
 anim.initialise(
         document.getElementById('background'), 
-        'black', 
-        '#9acc14', 
-        'grey')
+        currentTheme.background, 
+        currentTheme.primary, 
+        currentTheme.secondary)
 
 // Confirm elements, e.g. deleting a comment
 
@@ -41,4 +42,31 @@ if (title && content) {
 
 document.getElementById('vis-enabled').onchange = function() {
     anim.enabled = this.checked;
+}
+document.getElementById('site-theme').onchange = function() {
+    let theme = this.value;
+    if (theme === 'green-black') {
+        currentTheme.background = "black";
+        currentTheme.primary = "#9acc14";
+        currentTheme.secondary = "gray";
+    } else if (theme === 'red-white') {
+        currentTheme.background = "white";
+        currentTheme.primary = "red";
+        currentTheme.secondary = "maroon";
+    } else if (theme === 'gold-black') {
+        currentTheme.background = "black";
+        currentTheme.primary = "gold";
+        currentTheme.secondary = "whitesmoke";
+    } else if (theme === 'grey-white') {
+        currentTheme.background = "white";
+        currentTheme.primary = "Silver";
+        currentTheme.secondary = "SlateGray";
+    }
+    document.getElementById('current-theme').value = JSON.stringify(currentTheme)
+    anim.entities = []
+    anim.initialise(
+        document.getElementById('background'), 
+        currentTheme.background, 
+        currentTheme.primary, 
+        currentTheme.secondary)
 }

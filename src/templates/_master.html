@@ -48,10 +48,12 @@
                     </div>
                     <div>
                         <form method="POST" action="save-theme">
-                            <select type="checkbox" id="vis-prime-colour">
+                            <input type="hidden" id="current-theme" value="{&quot;background&quot;:&quot;black&quot;,&quot;primary&quot;:&quot;#9acc14&quot;,&quot;secondary&quot;:&quot;grey&quot;}" />
+                            <select type="checkbox" id="site-theme">
                                 <option value="green-black">Theme: Haxx0r Green (default)</option>
                                 <option value="red-white">Theme: Blood on White</option>
                                 <option value="gold-black">Theme: Deux Ex HR</option>
+                                <option value="grey-white">Theme: Shadows &amp; Fog</option>
                             </select>
                             <input type="submit" value="Save" />
                         </form>

@@ -5,21 +5,23 @@ var GrislyGrotto;
             this.fadeAlpha = 0.1;
             this.framerate = 18;
             this.entityCount = 20;
-            this.entitites = [];
+            this.entities = [];
             this.enabled = true;
+            this.interval = 0;
         }
         BackgroundAnimation.prototype.initialise = function (canvas, backgroundColour, primaryColour, secondaryColour) {
             var _this = this;
             this.context = canvas.getContext("2d");
             this.backgroundColour = backgroundColour;
             var interval = 1000 / this.framerate;
-            setInterval(function () { _this.draw(_this.enabled); }, interval);
+            clearInterval(this.interval)
+            this.interval = setInterval(function () { _this.draw(_this.enabled); }, interval);
             this.resizeCanvas();
             var self = this;
             window.onresize = function () { self.resizeCanvas(); };
             this.entityCount = this.entityCount;
             for (var i = 0; i < this.entityCount; i++)
-                this.entitites.push(new WanderingTriangle(this.context.canvas, primaryColour, secondaryColour));
+                this.entities.push(new WanderingTriangle(this.context.canvas, primaryColour, secondaryColour));
         };
         BackgroundAnimation.prototype.resizeCanvas = function () {
             this.context.canvas.width = document.body.clientWidth;
@@ -32,8 +34,8 @@ var GrislyGrotto;
             this.context.fillRect(0, scrollTop, this.context.canvas.width, window.innerHeight);
             this.context.globalAlpha = 1;
             if (updateTriangles) {
-                for (var i = 0; i < this.entitites.length; i++)
-                    this.entitites[i].draw(this.context);
+                for (var i = 0; i < this.entities.length; i++)
+                    this.entities[i].draw(this.context);
             }
         };
         return BackgroundAnimation;
