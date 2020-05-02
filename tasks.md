@@ -11,9 +11,11 @@ Next steps, ideas, things to add etc.
 
     - [x] setup the ui controls
     - [x] change animation colours
-    - [ ] set save / set cookie functionality
-    - [ ] allow this save to return to current page (return url)
+    - [x] set save / set cookie functionality
+    - [x] allow this save to return to current page (return url)
     - [ ] apply changes to main theme, not just background
+
+    idea: change background to source its colours from html elements, then have theme change by reloading and applying a custom css file
 
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
 - [x] return url for login page?
