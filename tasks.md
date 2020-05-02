@@ -16,5 +16,5 @@ Next steps, ideas, things to add etc.
     - [ ] apply changes to main theme, not just background
 
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
-- [ ] return url for login page?
-- [ ] cookies should be set for site, not site + path
+- [x] return url for login page?
+- [x] cookies should be set for site, not site + path

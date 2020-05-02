@@ -48,8 +48,7 @@
                     </div>
                     <div>
                         <form method="POST" action="save-theme">
-                            <input type="hidden" id="current-theme" name="current-theme" 
-                                value="{&quot;background&quot;:&quot;black&quot;,&quot;primary&quot;:&quot;#9acc14&quot;,&quot;secondary&quot;:&quot;grey&quot;}" />
+                            <input type="hidden" id="current-theme" name="current-theme" value="{{ theme }}" />
                             <input type="hidden" id="return-path" name="return-path" value="{{ path }}" />
                             <select type="checkbox" id="site-theme">
                                 <option value="green-black">Theme: Haxx0r Green (default)</option>

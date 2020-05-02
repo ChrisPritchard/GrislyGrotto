@@ -12,6 +12,17 @@ import (
 	"time"
 )
 
+func setCookie(name, data string, expires time.Time, w http.ResponseWriter) {
+	cookie := http.Cookie{
+		Name:     name,
+		Value:    data,
+		HttpOnly: true,
+		Expires:  expires,
+		Path:     "/",
+	}
+	http.SetCookie(w, &cookie)
+}
+
 func setEncryptedCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
 	now := time.Now()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
@@ -21,14 +32,7 @@ func setEncryptedCookie(name, unencodedData string, w http.ResponseWriter) (err 
 	}
 	b64 := base64.StdEncoding.EncodeToString(cipher)
 
-	cookie := http.Cookie{
-		Name:     name,
-		Value:    b64,
-		HttpOnly: true,
-		Expires:  now.Add(cookieAge),
-		Path:     "/",
-	}
-	http.SetCookie(w, &cookie)
+	setCookie(name, b64, now.Add(cookieAge), w)
 	return nil
 }
 

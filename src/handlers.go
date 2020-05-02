@@ -513,15 +513,11 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
-	cookie := http.Cookie{
-		Name:     "theme",
-		Value:    r.Form["current-theme"][0],
-		HttpOnly: true,
-		Expires:  time.Now().Add(themeExpiry),
+	err := r.ParseForm()
+	if err != nil {
+		serverError(w, err)
 	}
-	http.SetCookie(w, &cookie)
-
+	setCookie("theme", r.Form["current-theme"][0], time.Now().Add(themeExpiry), w)
 	http.Redirect(w, r, "/"+r.Form["return-path"][0], http.StatusFound)
 }
 
