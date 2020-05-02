@@ -39,6 +39,7 @@ func createView(contentFileName string) *template.Template {
 		"formatDate": formatDate,
 		"loggedIn":   func() bool { return false }, // overriden on renderView
 		"page":       func() string { return "" },  // overriden on renderView
+		"path":       func() string { return "" },  // overriden on renderView
 	}
 	baseTemplate := template.New("").Funcs(funcMap)
 	result, err := baseTemplate.Parse(templateContent[contentFileName])
@@ -73,7 +74,8 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view 
 
 	view.Funcs(template.FuncMap{
 		"loggedIn": func() bool { return loggedIn },
-		"page":     func() string { return pageName }})
+		"page":     func() string { return pageName },
+		"path":     func() string { return r.URL.Path[1:] }})
 	if err := view.ExecuteTemplate(w, "master", model); err != nil {
 		serverError(w, err)
 	}
