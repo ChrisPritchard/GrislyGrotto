@@ -36,3 +36,9 @@ if (title && content) {
         // by returning nothing here, there is no prompt. note that return false here DOES trigger a prompt
     }
 }
+
+// visualisation control panel
+
+document.getElementById('vis-enabled').onchange = function() {
+    anim.enabled = this.checked;
+}

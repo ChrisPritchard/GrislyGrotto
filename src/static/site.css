@@ -227,3 +227,21 @@ div.post-submit {
 .error {
     color: red;
 }
+
+.control-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.control-panel .controls {
+    position: relative;
+    float: right;
+    font-size: 0.6em;
+    color: grey;
+}
+
+.control-panel .controls input {
+    opacity: 50%;
+    vertical-align: middle;
+}
