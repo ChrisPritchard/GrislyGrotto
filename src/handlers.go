@@ -332,7 +332,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = setCookie("user", user, w)
+	err = setEncryptedCookie("user", user, w)
 	if err != nil {
 		serverError(w, err)
 		return

@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
+func setEncryptedCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
 	now := time.Now()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
 	cipher, err := encrypt([]byte(data), secret)
@@ -26,12 +26,13 @@ func setCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
 		Value:    b64,
 		HttpOnly: true,
 		Expires:  now.Add(cookieAge),
+		Path:     "/",
 	}
 	http.SetCookie(w, &cookie)
 	return nil
 }
 
-func readCookie(name string, r *http.Request) (unencodedData string, err error) {
+func readEncryptedCookie(name string, r *http.Request) (unencodedData string, err error) {
 	cookie, err := r.Cookie(name)
 	if err != nil {
 		return "", err

@@ -63,9 +63,10 @@ func globalHandler(h http.Handler) http.Handler {
 		headers.Set("Content-Security-Policy", csp)
 
 		// read the current user once per request
-		currentUser, _ = readCookie("user", r)
+		currentUser, _ = readEncryptedCookie("user", r)
 		if currentUser != "" {
-			setCookie("user", currentUser, w)
+			// refresh the cookie
+			setEncryptedCookie("user", currentUser, w)
 		}
 
 		h.ServeHTTP(w, r)
