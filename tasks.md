@@ -17,3 +17,4 @@ Next steps, ideas, things to add etc.
 
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
 - [ ] return url for login page?
+- [ ] cookies should be set for site, not site + path

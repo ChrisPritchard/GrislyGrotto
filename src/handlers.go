@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -500,6 +501,23 @@ func calculateWordCount(content string) int {
 	regex, _ := regexp.Compile("<[^>]*>")
 	stripped := string(regex.ReplaceAll([]byte(content), []byte("")))
 	return len(strings.Split(stripped, " "))
+}
+
+func themeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	cookie := http.Cookie{
+		Name:     "theme",
+		Value:    r.Form["current-theme"][0],
+		HttpOnly: true,
+		Expires:  time.Now().Add(themeExpiry),
+	}
+	http.SetCookie(w, &cookie)
+
+	http.Redirect(w, r, "/"+r.Form["return-path"][0], http.StatusFound)
 }
 
 func areDangerous(values ...string) bool {

@@ -1,3 +1,14 @@
+// current path setting
+
+let path = window.location.pathname.substring(1)
+document.getElementById('return-path').value = path;
+let loginLink = document.getElementById('login-link');
+if (loginLink) {
+    loginLink.href = loginLink.href + "?returnUrl=" + path;
+}
+
+// background animation setup
+
 let anim = new GrislyGrotto.BackgroundAnimation()
 anim.entityCount = 50
 currentTheme = JSON.parse(document.getElementById('current-theme').value)

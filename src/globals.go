@@ -19,6 +19,7 @@ const maxCommentCount = 20
 const maxSearchResults = 50
 const searchStripPad = 20
 const cookieAge = time.Hour
+const themeExpiry = time.Hour * 8760 * 10 // ten years
 const minWordCount = 100
 
 const markdownToken = "markdown|"

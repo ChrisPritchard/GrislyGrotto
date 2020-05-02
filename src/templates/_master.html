@@ -21,7 +21,7 @@
                     <a href="/editor">New Post</a>
                     <span>&nbsp;|&nbsp;</span>
                 {{ else if and (not loggedIn) (ne (page) "Login") }}
-                    <a href="/login">Login</a>
+                    <a href="/login" id="login-link">Login</a>
                     <span>&nbsp;|&nbsp;</span>
                 {{ end }}
                 {{ if (ne (page) "Archives") }}
@@ -48,7 +48,9 @@
                     </div>
                     <div>
                         <form method="POST" action="save-theme">
-                            <input type="hidden" id="current-theme" value="{&quot;background&quot;:&quot;black&quot;,&quot;primary&quot;:&quot;#9acc14&quot;,&quot;secondary&quot;:&quot;grey&quot;}" />
+                            <input type="hidden" id="current-theme" name="current-theme" 
+                                value="{&quot;background&quot;:&quot;black&quot;,&quot;primary&quot;:&quot;#9acc14&quot;,&quot;secondary&quot;:&quot;grey&quot;}" />
+                            <input type="hidden" id="return-path" name="return-path" value="/" />
                             <select type="checkbox" id="site-theme">
                                 <option value="green-black">Theme: Haxx0r Green (default)</option>
                                 <option value="red-white">Theme: Blood on White</option>

@@ -42,6 +42,7 @@ func setupRoutes() {
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/editor/", editorHandler)
+	http.HandleFunc("/save-theme", themeHandler)
 }
 
 func globalHandler(h http.Handler) http.Handler {
