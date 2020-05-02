@@ -13,9 +13,14 @@ Next steps, ideas, things to add etc.
     - [x] change animation colours
     - [x] set save / set cookie functionality
     - [x] allow this save to return to current page (return url)
-    - [ ] apply changes to main theme, not just background
 
     idea: change background to source its colours from html elements, then have theme change by reloading and applying a custom css file
+
+    - [ ] surface a theme css file via a handler
+    - [ ] set anim colours from theme handler
+    - [ ] switch cookie nonsense to use theme names, which control the dynamic theme applied
+    
+    - [ ] apply changes to main theme, not just background
 
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
 - [x] return url for login page?

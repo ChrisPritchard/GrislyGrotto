@@ -88,7 +88,7 @@ footer {
     text-align: center;
 }
 
-canvas.background {
+canvas.background-animation {
     position: absolute; 
     top: 0;
     left: 0;
@@ -226,6 +226,10 @@ div.post-submit {
 
 .error {
     color: red;
+}
+
+.vis-colours {
+    display: none;
 }
 
 .control-panel {

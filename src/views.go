@@ -84,7 +84,7 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view 
 }
 
 func getTheme(r *http.Request) string {
-	currentTheme := "{\"background\":\"black\",\"primary\":\"#9acc14\",\"secondary\":\"grey\"}"
+	currentTheme := "green-black"
 	cookie, err := r.Cookie("theme")
 	if err != nil {
 		return currentTheme
