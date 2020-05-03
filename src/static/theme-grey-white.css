@@ -35,6 +35,12 @@ input[type=submit]:hover, input[type=button]:hover {
     color: black;
 }
 
+@media only screen and (max-width: 1000px) {
+    .control-panel .controls {
+        color: black;
+    }
+}
+
 #vis-background-colour {
     background-color: white;
 }
