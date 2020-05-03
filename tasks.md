@@ -7,7 +7,7 @@ Next steps, ideas, things to add etc.
 - ~~[ ] Rewrite wandering triangles to be more intelligent and pure JS?~~
 - [x] add a checkbox in the top right that will disable the visualisation
 - [x] move this vis control panel when the screen gets small
-- [ ] extend the control panel - allow the user to set colours and 'apply' by setting a cookie
+- [x] extend the control panel - allow the user to set colours and 'apply' by setting a cookie
 
     - [x] setup the ui controls
     - [x] change animation colours
@@ -16,11 +16,11 @@ Next steps, ideas, things to add etc.
 
     idea: change background to source its colours from html elements, then have theme change by reloading and applying a custom css file
 
-    - [ ] surface a theme css file via a handler
-    - [ ] set anim colours from theme handler
-    - [ ] switch cookie nonsense to use theme names, which control the dynamic theme applied
+    - [x] surface a theme css file via a handler
+    - [x] set anim colours from theme handler
+    - [x] switch cookie nonsense to use theme names, which control the dynamic theme applied
     
-    - [ ] apply changes to main theme, not just background
+    - [x] apply changes to main theme, not just background
 
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
 - [x] return url for login page?
