@@ -25,3 +25,6 @@ Next steps, ideas, things to add etc.
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
 - [x] return url for login page?
 - [x] cookies should be set for site, not site + path
+
+- [ ] keep alive of some sort on the editor screen
+    - maybe a simple countdown and final copy prompt
