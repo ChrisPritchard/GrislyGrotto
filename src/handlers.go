@@ -16,16 +16,14 @@ func setBlockTime(r *http.Request, username string) {
 func getBlockTime(r *http.Request, username string) int {
 	now := time.Now().Unix()
 	time1, time2 := now-blocked[r.RemoteAddr], now-blocked[username]
-	if time1 > blockTime {
-		time1 = 0
+	mostRecent := time1
+	if time2 < time1 {
+		mostRecent = time2
 	}
-	if time2 > blockTime {
-		time2 = 0
+	if mostRecent > blockTime {
+		return 0
 	}
-	if time1 > time2 {
-		return int(time1)
-	}
-	return int(time2)
+	return blockTime - int(mostRecent)
 }
 
 func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -119,6 +117,13 @@ func createComment(r *http.Request, postKey string) (commentError string, err er
 	if len(author) != 1 || len(author[0]) == 0 || len(content) != 1 || len(content[0]) == 0 || areDangerous(author[0], content[0]) {
 		return "both author and content are required and must be safe values", nil
 	}
+
+	blockTime := getBlockTime(r, author[0])
+	if blockTime > 0 {
+		return "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
+	}
+
+	setBlockTime(r, author[0]) // primitive automated commenting protection
 
 	err = addCommentToBlog(author[0], content[0], postKey)
 	if err != nil {

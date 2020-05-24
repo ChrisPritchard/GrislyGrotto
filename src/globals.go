@@ -45,4 +45,4 @@ var monthIndexes = map[string]string{
 // used for brute force protection
 var blocked = map[string]int64{}
 
-const blockTime = 3 // seconds
+const blockTime = 5 // seconds
