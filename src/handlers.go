@@ -11,7 +11,8 @@ import (
 func getIP(r *http.Request) string {
 	forwarded := r.Header.Get("x-forwarded-for") // case is normalised
 	if forwarded == "" {
-		return strings.Split(r.RemoteAddr, ":")[0]
+		portMarker := strings.LastIndex(r.RemoteAddr, ":")
+		return r.RemoteAddr[:portMarker]
 	}
 	return strings.Split(forwarded, ", ")[0]
 }
