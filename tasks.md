@@ -28,10 +28,10 @@ Next steps, ideas, things to add etc.
 - [x] return url for login page?
 - [x] cookies should be set for site, not site + path
 
-- [ ] keep alive of some sort on the editor screen
-    - maybe a simple countdown and final copy prompt
-- [ ] in memory brute force protection:
-    - [ ] delays based on account, and ip
+- [x] keep alive of some sort on the editor screen
+    - [x] - maybe a simple countdown and final copy prompt
+- [x] in memory brute force protection:
+    - [x] delays based on account, and ip
     - [ ] for comments, ensure that a user is on the page for a certain time before posting, maybe?
-    - [ ] and that for a given ip, they can only make one comment per minute?
+    - [ ] and that for a given ip, they can only make one comment per five seconds?
 - [ ] the ability to make draft posts? visible only to the user?

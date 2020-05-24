@@ -8,6 +8,26 @@ import (
 	"time"
 )
 
+func setBlockTime(r *http.Request, username string) {
+	blocked[r.RemoteAddr] = time.Now().Unix()
+	blocked[username] = time.Now().Unix()
+}
+
+func getBlockTime(r *http.Request, username string) int {
+	now := time.Now().Unix()
+	time1, time2 := now-blocked[r.RemoteAddr], now-blocked[username]
+	if time1 > blockTime {
+		time1 = 0
+	}
+	if time2 > blockTime {
+		time2 = 0
+	}
+	if time1 > time2 {
+		return int(time1)
+	}
+	return int(time2)
+}
+
 func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.NotFound(w, r)
@@ -322,13 +342,20 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	username, password := r.Form["username"], r.Form["password"]
 	if len(username) != 1 || len(password) != 1 {
-		renderView(w, r, loginViewModel{"both username and password are required"}, compiledViews.Login, "login")
+		renderView(w, r, loginViewModel{"Both username and password are required"}, compiledViews.Login, "login")
+		return
+	}
+
+	blockTime := getBlockTime(r, username[0])
+	if blockTime > 0 {
+		renderView(w, r, loginViewModel{"Cannot make another attempt for another " + strconv.Itoa(blockTime) + " seconds"}, compiledViews.Login, "login")
 		return
 	}
 
 	user, err := getUser(username[0], password[0])
 	if err != nil {
-		renderView(w, r, loginViewModel{"invalid credentials"}, compiledViews.Login, "login")
+		setBlockTime(r, username[0])
+		renderView(w, r, loginViewModel{"Invalid credentials"}, compiledViews.Login, "login")
 		return
 	}
 
