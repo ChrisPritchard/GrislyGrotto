@@ -25,7 +25,7 @@ for (var i = 0; i < confirmElems.length; i++) {
 
 let title = document.getElementById('title');
 let content = document.getElementById('content');
-if (title && content) {
+if (title && content) { // both these being present means the user is on the editor page
     let dirty = false
     title.onchange = function () { dirty = true; }
     content.onchange = function () { dirty = true; }
@@ -39,8 +39,51 @@ if (title && content) {
             // I could return 1 here, or true, or even false, and it would trigger a prompt
             return confirm('are you sure you want to leave?')
         }
-        // by returning nothing here, there is no prompt. note that return false here DOES trigger a prompt
+        // by returning nothing here, there is no prompt. note that returning false here WOULD trigger a prompt
     }
+}
+
+// cookie expiry countdown
+
+if (title && content) {
+
+    function updateTimer(timeRemaining) {
+        minutes = Math.floor(timeRemaining / 60);
+        labelClass = "timer";
+        if (minutes < 10) {
+            labelClass += " error";
+        }
+        seconds = Math.floor(timeRemaining % 60);
+
+        let timer = document.getElementById('timer');
+        if (!timer) {
+            timer = document.createElement('span');
+            timer.id = 'timer';
+            document.querySelector('h2').insertAdjacentElement('afterend', timer);
+        }
+        if (minutes > 0) {
+            plural = minutes == 1 ? "" : "s";
+            timer.innerText = minutes+" minute"+plural+" remaining";
+        } else {
+            plural = seconds == 1 ? "" : "s";
+            timer.innerText = seconds+" second"+plural+" remaining";
+        }
+        timer.className = labelClass;
+    }
+
+    start = new Date().getTime ();
+    cookieTime = 60*60*1000;
+    interval = setInterval(function () {
+        timeRemaining = (cookieTime-((new Date().getTime())-start))/1000;
+        if (timeRemaining <= 0) {
+            alert('Your auth cookie has now expired, and you can no longer post this blog.\nPlease copy your content to your clipboard and re-login.');
+            document.getElementById('timer').innerText = 'Cookie has expired';
+            document.getElementById('submit').style.display = 'none';
+            clearInterval(interval);
+        } else {
+            updateTimer(timeRemaining);
+        }
+    }, 1000);
 }
 
 // visualisation control panel

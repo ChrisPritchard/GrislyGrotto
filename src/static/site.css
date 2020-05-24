@@ -224,6 +224,12 @@ div.post-submit {
     margin-bottom: 20px;
 }
 
+span.timer {
+    opacity: 50%;
+    margin-top: -20px;
+    position: absolute;
+}
+
 .error {
     color: red;
 }
