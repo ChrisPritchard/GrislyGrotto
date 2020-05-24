@@ -8,22 +8,29 @@ import (
 	"time"
 )
 
+func getIP(r *http.Request) string {
+	forwarded := r.Header.Get("x-forwarded-for") // case is normalised
+	if forwarded == "" {
+		return strings.Split(r.RemoteAddr, ":")[0]
+	}
+	return strings.Split(forwarded, ", ")[0]
+}
+
 func setBlockTime(r *http.Request, username string) {
-	blocked[r.RemoteAddr] = time.Now().Unix()
+	blocked[getIP(r)] = time.Now().Unix()
 	blocked[username] = time.Now().Unix()
 }
 
 func getBlockTime(r *http.Request, username string) int {
 	now := time.Now().Unix()
-	time1, time2 := now-blocked[r.RemoteAddr], now-blocked[username]
-	mostRecent := time1
-	if time2 < time1 {
-		mostRecent = time2
-	}
-	if mostRecent > blockTime {
+	time1, time2 := now-blocked[getIP(r)], now-blocked[username]
+	if time1 > blockTime && time2 > blockTime {
 		return 0
 	}
-	return blockTime - int(mostRecent)
+	if time2 < time1 {
+		return blockTime - int(time2)
+	}
+	return blockTime - int(time1)
 }
 
 func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
