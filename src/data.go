@@ -24,8 +24,10 @@ func getLatestPosts(page int) ([]blogPost, error) {
 			p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
 			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
 		FROM Posts p
+		WHERE 
+			(p.Title NOT LIKE ? OR p.Author_Username = ?)
 		ORDER BY p.Date DESC 
-		LIMIT ? OFFSET ?`, pageLength, page*pageLength)
+		LIMIT ? OFFSET ?`, "%"+draftPrefix+"%", currentUser, pageLength, page*pageLength)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +59,9 @@ func getSinglePost(key string) (post blogPost, notFound bool, err error) {
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Title, p.Content, p.Date, p.Author_Username , p.IsStory
 		FROM Posts p
-		WHERE Key = ?`, key)
+		WHERE 
+			Key = ?
+			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)`, key, "%"+draftPrefix+"%", currentUser)
 	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date, &post.AuthorUsername, &post.IsStory)
 
 	if err != nil {
@@ -166,9 +170,10 @@ func getSearchResults(searchTerm string) (results []blogPost, err error) {
 			p.Key, p.Title, p.Content, p.Date
 		FROM Posts p
 		WHERE 
-			p.Title LIKE ? OR p.Content LIKE ?
+			(p.Title LIKE ? OR p.Content LIKE ?)
+			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)
 		ORDER BY p.Date DESC 
-		LIMIT ?`, "%"+searchTerm+"%", "%"+searchTerm+"%", maxSearchResults)
+		LIMIT ?`, "%"+searchTerm+"%", "%"+searchTerm+"%", "%"+draftPrefix+"%", currentUser, maxSearchResults)
 	if err != nil {
 		return nil, err
 	}
@@ -219,10 +224,12 @@ func getYearMonthCounts() (years []yearSet, err error) {
 			SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
 		FROM 
 			Posts 
+		WHERE
+			(Title NOT LIKE ? OR Author_Username = ?)
 		GROUP BY 
 			Month 
 		ORDER BY 
-			Date`)
+			Date`, "%"+draftPrefix+"%", currentUser)
 	if err != nil {
 		return nil, err
 	}
@@ -262,8 +269,10 @@ func getStories() ([]blogPost, error) {
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Key, p.Title, p.Date, p.IsStory, p.WordCount
 		FROM Posts p 
-		WHERE p.IsStory = 1
-		ORDER BY p.Date DESC`)
+		WHERE 
+			p.IsStory = 1
+			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)
+		ORDER BY p.Date DESC`, "%"+draftPrefix+"%", currentUser)
 	if err != nil {
 		return nil, err
 	}
@@ -298,8 +307,10 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 			p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
 			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
 		FROM Posts p
-		WHERE SUBSTR(p.Date, 0, 8) = ?
-		ORDER BY p.Date`, monthToken)
+		WHERE 
+			SUBSTR(p.Date, 0, 8) = ?
+			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)
+		ORDER BY p.Date`, monthToken, "%"+draftPrefix+"%", currentUser)
 	if err != nil {
 		return nil, err
 	}

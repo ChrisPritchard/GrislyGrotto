@@ -412,7 +412,7 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 
 func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		model := editorViewModel{true, "", "", true, false, ""}
+		model := editorViewModel{true, "", "", true, false, false, ""}
 		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
@@ -430,17 +430,18 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	isStory := len(r.Form["isStory"]) > 0
+	isDraft := len(r.Form["isDraft"]) > 0
 	title, content, isMarkdown := titleF[0], contentF[0], renderModeF[0] == "Markdown"
 
 	if len(title) == 0 || len(content) == 0 {
-		model := editorViewModel{true, title, content, isMarkdown, isStory, "both title and content are required to be set"}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, isDraft, "both title and content are required to be set"}
 		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
-		model := editorViewModel{true, title, content, isMarkdown, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
 		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
@@ -453,13 +454,17 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !notFound {
-		model := editorViewModel{true, title, content, isMarkdown, isStory, "a post with a similar title already exists"}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, isDraft, "a post with a similar title already exists"}
 		renderView(w, r, model, compiledViews.Editor, "New Post")
 		return
 	}
 
 	if isMarkdown {
 		content = markdownToken + content
+	}
+
+	if isDraft {
+		title = draftPrefix + title
 	}
 
 	err = createNewPost(key, title, content, isStory, wordCount, currentUser)
@@ -494,7 +499,11 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		if postIsMarkdown {
 			content = content[len(markdownToken):]
 		}
-		model := editorViewModel{false, post.Title, content, postIsMarkdown, post.IsStory, ""}
+		postIsDraft := post.isDraft()
+		if postIsDraft {
+			post.Title = post.Title[len(draftPrefix):]
+		}
+		model := editorViewModel{false, post.Title, content, postIsMarkdown, post.IsStory, postIsDraft, ""}
 		renderView(w, r, model, compiledViews.Editor, "Edit Post")
 		return
 	}
@@ -512,23 +521,28 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	}
 
 	isStory := len(r.Form["isStory"]) > 0
+	isDraft := len(r.Form["isDraft"]) > 0
 	title, content, isMarkdown := titleF[0], contentF[0], renderModeF[0] == "Markdown"
 
 	if len(title) == 0 || len(content) == 0 {
-		model := editorViewModel{true, title, content, isMarkdown, isStory, "both title and content are required to be set"}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, isDraft, "both title and content are required to be set"}
 		renderView(w, r, model, compiledViews.Editor, "Edit Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
-		model := editorViewModel{true, title, content, isMarkdown, isStory, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		model := editorViewModel{true, title, content, isMarkdown, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
 		renderView(w, r, model, compiledViews.Editor, "Edit Post")
 		return
 	}
 
 	if isMarkdown {
 		content = markdownToken + content
+	}
+
+	if isDraft {
+		title = draftPrefix + title
 	}
 
 	err = updatePost(key, title, content, isStory, wordCount)

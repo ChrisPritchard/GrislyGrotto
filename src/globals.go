@@ -46,3 +46,5 @@ var monthIndexes = map[string]string{
 var blocked = map[string]int64{}
 
 const blockTime = 5 // seconds
+
+const draftPrefix = "[DRAFT] "

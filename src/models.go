@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 type latestViewModel struct {
 	NotFirstPage bool
 	PrevPage     int
@@ -36,10 +38,10 @@ type loginViewModel struct {
 }
 
 type editorViewModel struct {
-	NewPost             bool
-	Title, Content      string
-	IsMarkdown, IsStory bool
-	PostError           string
+	NewPost                      bool
+	Title, Content               string
+	IsMarkdown, IsStory, IsDraft bool
+	PostError                    string
 }
 
 type blogPost struct {
@@ -49,6 +51,10 @@ type blogPost struct {
 	IsStory                 bool
 	WordCount, CommentCount int
 	Comments                []comment
+}
+
+func (post blogPost) isDraft() bool {
+	return strings.HasPrefix(post.Title, draftPrefix)
 }
 
 type author struct {
