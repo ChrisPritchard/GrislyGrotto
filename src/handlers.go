@@ -8,13 +8,17 @@ import (
 	"time"
 )
 
+func ipOnly(ipAndPort string) string {
+	portMarker := strings.LastIndex(ipAndPort, ":")
+	return ipAndPort[:portMarker]
+}
+
 func getIP(r *http.Request) string {
 	forwarded := r.Header.Get("x-forwarded-for") // case is normalised
 	if forwarded == "" {
-		portMarker := strings.LastIndex(r.RemoteAddr, ":")
-		return r.RemoteAddr[:portMarker]
+		return ipOnly(r.RemoteAddr)
 	}
-	return strings.Split(forwarded, ", ")[0]
+	return ipOnly(strings.Split(forwarded, ", ")[0])
 }
 
 func setBlockTime(r *http.Request, username string) {
