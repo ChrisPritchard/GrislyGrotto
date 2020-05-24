@@ -39,11 +39,13 @@
         <label for="isStory">Is Story</label>
     </div>
 
-    <div class="checkbox">
-        <input type="checkbox" id="isDraft" name="isDraft" {{ if .IsDraft }}checked="checked"{{ end }} />
-        <label for="isDraft">Is Draft</label>
-        <br/>Draft posts can only be seen by you.
-    </div>
+    {{ if or isNewPost .IsDraft }}
+        <div class="checkbox">
+            <input type="checkbox" id="isDraft" name="isDraft" {{ if .IsDraft }}checked="checked"{{ end }} />
+            <label for="isDraft">Is Draft</label>
+            <br/>Draft posts can only be seen by you.
+        </div>
+    {{ end }}
 
     <div class="post-submit">
         <input id="submit" type="submit" value="Submit" />

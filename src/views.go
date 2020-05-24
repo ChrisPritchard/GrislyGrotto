@@ -41,6 +41,7 @@ func createView(contentFileName string) *template.Template {
 		"page":       func() string { return "" },  // overriden on renderView
 		"path":       func() string { return "" },  // overriden on renderView
 		"theme":      func() string { return "" },  // overriden on renderView
+		"isNewPost":  func() bool { return false }, // overriden on renderView
 	}
 	baseTemplate := template.New("").Funcs(funcMap)
 	result, err := baseTemplate.Parse(templateContent[contentFileName])
@@ -74,10 +75,11 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, view 
 	loggedIn := currentUser != ""
 
 	view.Funcs(template.FuncMap{
-		"loggedIn": func() bool { return loggedIn },
-		"page":     func() string { return pageName },
-		"path":     func() string { return r.URL.Path[1:] },
-		"theme":    func() string { return getTheme(r) }})
+		"loggedIn":  func() bool { return loggedIn },
+		"page":      func() string { return pageName },
+		"path":      func() string { return r.URL.Path[1:] },
+		"theme":     func() string { return getTheme(r) },
+		"isNewPost": func() bool { return pageName == "New Post" }})
 	if err := view.ExecuteTemplate(w, "master", model); err != nil {
 		serverError(w, err)
 	}

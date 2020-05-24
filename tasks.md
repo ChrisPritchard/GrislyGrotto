@@ -33,8 +33,11 @@ Next steps, ideas, things to add etc.
 - [x] in memory brute force protection:
     - [x] delays based on account, and ip
     - [-] for comments, ensure that a user is on the page for a certain time before posting, maybe?
+        - would affect regular users ("oh i just remembered to say...")
     - [x] and that for a given ip, they can only make one comment per five seconds?
     - [x] just the ip, and accounting for x-forwarded-for
     - [x] some way of capping this so it doesn't grow infinitely
- - [x] the ability to make draft posts? visible only to the user?
+- [x] the ability to make draft posts? visible only to the user?
     - probably via prefixing [DRAFT] to the title
+- [x] when a draft is published, should its date be updated?
+- [x] non-drafts cannot be made into drafts

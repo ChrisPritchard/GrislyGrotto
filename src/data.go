@@ -381,10 +381,23 @@ func createNewPost(key, title, content string, isStory bool, wordCount int, user
 	return err
 }
 
-func updatePost(key, title, content string, isStory bool, wordCount int) (err error) {
+func updatePost(key, title, content string, isStory bool, wordCount int, updateDate bool) (err error) {
 	database, err := sql.Open("sqlite3", connectionString)
 	defer database.Close()
 	if err != nil {
+		return err
+	}
+
+	if updateDate {
+		date := time.Now().Format("2006-01-02 15:04:05")
+		_, err = database.Exec(`
+			UPDATE
+				Posts 
+			SET 
+				Title = ?, Date = ?, Content = ?, WordCount = ?, IsStory = ? 
+			WHERE
+				Key = ?`,
+			title, date, content, wordCount, isStory, key)
 		return err
 	}
 

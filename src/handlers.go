@@ -531,7 +531,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	}
 
 	isStory := len(r.Form["isStory"]) > 0
-	isDraft := len(r.Form["isDraft"]) > 0
+	isDraft := len(r.Form["isDraft"]) > 0 && post.isDraft() // can only make a post a draft if it was already a draft
 	title, content, isMarkdown := titleF[0], contentF[0], renderModeF[0] == "Markdown"
 
 	if len(title) == 0 || len(content) == 0 {
@@ -555,7 +555,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		title = draftPrefix + title
 	}
 
-	err = updatePost(key, title, content, isStory, wordCount)
+	err = updatePost(key, title, content, isStory, wordCount, post.isDraft() && !isDraft)
 	if err != nil {
 		serverError(w, err)
 		return
