@@ -10,6 +10,9 @@ import (
 
 func ipOnly(ipAndPort string) string {
 	portMarker := strings.LastIndex(ipAndPort, ":")
+	if portMarker == -1 {
+		return ipAndPort
+	}
 	return ipAndPort[:portMarker]
 }
 
