@@ -26,12 +26,22 @@ func setBlockTime(r *http.Request, username string) {
 	blocked[username] = time.Now().Unix()
 }
 
+func cleanBlocked() {
+	now := time.Now().Unix()
+	for k, v := range blocked {
+		if now-v > blockTime {
+			delete(blocked, k)
+		}
+	}
+}
+
 func getBlockTime(r *http.Request, username string) int {
 	now := time.Now().Unix()
 	time1, time2 := now-blocked[getIP(r)], now-blocked[username]
 	if time1 > blockTime && time2 > blockTime {
 		return 0
 	}
+	cleanBlocked() // done on blocking to not affect ligitimate users (except commenters)
 	if time2 < time1 {
 		return blockTime - int(time2)
 	}

@@ -35,6 +35,6 @@ Next steps, ideas, things to add etc.
     - [-] for comments, ensure that a user is on the page for a certain time before posting, maybe?
     - [x] and that for a given ip, they can only make one comment per five seconds?
     - [x] just the ip, and accounting for x-forwarded-for
-    - [?] some way of capping this so it doesn't grow infinitely
- - [ ] the ability to make draft posts? visible only to the user?
+    - [x] some way of capping this so it doesn't grow infinitely
+ - [x] the ability to make draft posts? visible only to the user?
     - probably via prefixing [DRAFT] to the title
