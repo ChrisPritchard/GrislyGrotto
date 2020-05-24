@@ -32,6 +32,6 @@ Next steps, ideas, things to add etc.
     - [x] - maybe a simple countdown and final copy prompt
 - [x] in memory brute force protection:
     - [x] delays based on account, and ip
-    - [ ] for comments, ensure that a user is on the page for a certain time before posting, maybe?
-    - [ ] and that for a given ip, they can only make one comment per five seconds?
+    - [-] for comments, ensure that a user is on the page for a certain time before posting, maybe?
+    - [x] and that for a given ip, they can only make one comment per five seconds?
 - [ ] the ability to make draft posts? visible only to the user?
