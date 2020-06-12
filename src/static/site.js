@@ -1,5 +1,13 @@
 // background animation setup
 
+function resizeCanvas() {
+    let canvas = document.getElementById('background-animation');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+};
+resizeCanvas();
+window.onresize = function () { resizeCanvas(); };
+
 function getColour(elem) {
     return window.getComputedStyle(elem, null).getPropertyValue("background-color");
 }

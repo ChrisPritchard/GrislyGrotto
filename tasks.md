@@ -44,4 +44,5 @@ Next steps, ideas, things to add etc.
 
 - [x] new black/white colour scheme
 - [x] fixed background canvas, with max size
+- [x] change animation so canvas attributes are css (resize not checked)
 - [ ] background preserve state between loads? localstorage mebbe

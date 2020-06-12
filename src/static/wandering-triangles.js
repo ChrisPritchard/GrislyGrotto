@@ -10,27 +10,20 @@ var GrislyGrotto;
             this.interval = 0;
         }
         BackgroundAnimation.prototype.initialise = function (canvas, backgroundColour, primaryColour, secondaryColour) {
-            var _this = this;
             this.context = canvas.getContext("2d");
             this.backgroundColour = backgroundColour;
             var interval = 1000 / this.framerate;
             clearInterval(this.interval)
+            var _this = this;
             this.interval = setInterval(function () { _this.draw(_this.enabled); }, interval);
-            this.resizeCanvas();
-            var self = this;
-            window.onresize = function () { self.resizeCanvas(); };
             this.entityCount = this.entityCount;
             for (var i = 0; i < this.entityCount; i++)
                 this.entities.push(new WanderingTriangle(this.context.canvas, primaryColour, secondaryColour));
         };
-        BackgroundAnimation.prototype.resizeCanvas = function () {
-            this.context.canvas.width = window.innerWidth;
-            this.context.canvas.height = window.innerHeight;
-        };
         BackgroundAnimation.prototype.draw = function (updateTriangles) {
             this.context.fillStyle = this.backgroundColour;
             this.context.globalAlpha = this.fadeAlpha;
-            this.context.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
             this.context.globalAlpha = 1;
             if (updateTriangles) {
                 for (var i = 0; i < this.entities.length; i++)
@@ -59,8 +52,8 @@ var GrislyGrotto;
         }
         WanderingTriangle.prototype.jump = function () {
             this.point = {
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height
             };
             this.type = Math.floor(Math.random() * 4);
             if (Math.random() < this.changeOfSecondaryColour)
