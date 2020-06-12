@@ -41,3 +41,6 @@ Next steps, ideas, things to add etc.
     - probably via prefixing [DRAFT] to the title
 - [x] when a draft is published, should its date be updated?
 - [x] non-drafts cannot be made into drafts
+
+- [ ] new black/white colour scheme
+- [ ] fixed background canvas, with max size
