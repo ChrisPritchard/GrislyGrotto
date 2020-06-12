@@ -42,5 +42,6 @@ Next steps, ideas, things to add etc.
 - [x] when a draft is published, should its date be updated?
 - [x] non-drafts cannot be made into drafts
 
-- [ ] new black/white colour scheme
-- [ ] fixed background canvas, with max size
+- [x] new black/white colour scheme
+- [x] fixed background canvas, with max size
+- [ ] background preserve state between loads? localstorage mebbe
