@@ -24,14 +24,13 @@ var GrislyGrotto;
                 this.entities.push(new WanderingTriangle(this.context.canvas, primaryColour, secondaryColour));
         };
         BackgroundAnimation.prototype.resizeCanvas = function () {
-            this.context.canvas.width = document.body.clientWidth;
-            this.context.canvas.height = document.body.clientHeight;
+            this.context.canvas.width = window.innerWidth;
+            this.context.canvas.height = window.innerHeight;
         };
         BackgroundAnimation.prototype.draw = function (updateTriangles) {
             this.context.fillStyle = this.backgroundColour;
             this.context.globalAlpha = this.fadeAlpha;
-            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            this.context.fillRect(0, scrollTop, this.context.canvas.width, window.innerHeight);
+            this.context.fillRect(0, 0, window.innerWidth, window.innerHeight);
             this.context.globalAlpha = 1;
             if (updateTriangles) {
                 for (var i = 0; i < this.entities.length; i++)
@@ -59,10 +58,9 @@ var GrislyGrotto;
             this.jump();
         }
         WanderingTriangle.prototype.jump = function () {
-            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             this.point = {
-                x: Math.random() * this.canvas.width,
-                y: (Math.random() * window.innerHeight) + scrollTop
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight
             };
             this.type = Math.floor(Math.random() * 4);
             if (Math.random() < this.changeOfSecondaryColour)
