@@ -48,4 +48,5 @@ Next steps, ideas, things to add etc.
 - [-] background preserve state between loads? localstorage mebbe (DOESN'T WORK DUE TO BACKGROUND CANVAS)
     - [x] will require that triangle state is reduced to data rather than objects
 
-- [ ] embedded static content - single file + db website!
+- [x] embedded static content - single file + db website!
+- [ ] empty db for dev purposes?
