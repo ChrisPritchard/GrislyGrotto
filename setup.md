@@ -41,14 +41,12 @@ All this requires is scp'ing the compiled .so file, the sqlite3 .db file, the st
 
 1. ssh to the target machine and make a folder somewhere.
 2. create a .secret file in it 16 characters long, e.g. `echo 1234567890123456 > .secret`
-3. make an empty static folder: `mkdir static`
-4. exit `ssh` and use `scp` to copy over:
+3. exit `ssh` and use `scp` to copy over:
 
     - the grislygrotto.so file
     - the grislygrotto.db file
-    - all files under /static to the static folder on the destination machine (should just be four files)
 
-5. ssh back to the machine, and run the grislygrotto.so file. All going well, you should get the following message:
+4. ssh back to the machine, and run the grislygrotto.so file. All going well, you should get the following message:
 
 ```
 The Grisly Grotto has started!
