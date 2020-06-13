@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
 	"io/ioutil"
 	"log"
@@ -12,7 +13,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-//go:generate go run templates/loadContent.go
+//go:generate go run static/embedStatic.go
+//go:generate go run templates/embedTemplates.go
 
 func main() {
 	log.SetFlags(0)
@@ -20,6 +22,7 @@ func main() {
 	getConfig()    // setup globals from envs, flags, files
 	compileViews() // parse template html files into compiled template vars
 	setupRoutes()  // configure handlers for url fragments
+	loadStatics()  // ensure static content is in place
 
 	server := globalHandler(http.DefaultServeMux)
 
@@ -28,9 +31,7 @@ func main() {
 }
 
 func setupRoutes() {
-	http.Handle("/static/",
-		http.StripPrefix("/static/",
-			setMimeType(http.FileServer(http.Dir("static")))))
+	http.HandleFunc("/static/", embeddedStaticHandler)
 
 	http.HandleFunc("/", latestPostsHandler) // note: this will catch any request not caught by the others
 	http.HandleFunc("/post/", singlePostHandler)
@@ -73,23 +74,37 @@ func globalHandler(h http.Handler) http.Handler {
 	})
 }
 
-func setMimeType(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// this gets populated via the generated static.go
+var embeddedStatics = make(map[string]string)
 
-		headers := w.Header()
-		ext := filepath.Ext(r.URL.Path)
+func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
+	headers := w.Header()
+	file := r.URL.Path[len("/static/"):]
+	ext := filepath.Ext(file)
 
-		switch ext {
-		case ".css":
-			headers.Set("Content-Type", "text/css")
-		case ".js":
-			headers.Set("Content-Type", "application/javascript")
-		default:
-			return
-		}
+	var fileContent string
+	if content, exists := embeddedStatics[file]; exists {
+		fileContent = content
+	} else {
+		http.NotFound(w, r)
+		return
+	}
 
-		h.ServeHTTP(w, r)
-	})
+	switch ext {
+	case ".css":
+		headers.Set("Content-Type", "text/css")
+		w.Write([]byte(fileContent))
+	case ".js":
+		headers.Set("Content-Type", "application/javascript")
+		w.Write([]byte(fileContent))
+	case ".png":
+		headers.Set("Content-Type", "image/png")
+		bytes := make([]byte, base64.StdEncoding.DecodedLen(len(fileContent)))
+		base64.StdEncoding.Decode(bytes, []byte(fileContent))
+		w.Write(bytes)
+	default:
+		w.Write([]byte(fileContent))
+	}
 }
 
 func getConfig() {

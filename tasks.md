@@ -47,3 +47,5 @@ Next steps, ideas, things to add etc.
 - [x] change animation so canvas attributes are css (resize not checked)
 - [-] background preserve state between loads? localstorage mebbe (DOESN'T WORK DUE TO BACKGROUND CANVAS)
     - [x] will require that triangle state is reduced to data rather than objects
+
+- [ ] embedded static content - single file + db website!

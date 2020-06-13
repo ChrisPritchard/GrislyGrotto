@@ -13,7 +13,7 @@ type views struct {
 	Latest, Single, Archives, Month, Search, About, Login, Editor *template.Template
 }
 
-// this gets populated via go generate in main
+// this gets populated via the generated templates.go file
 var templateContent map[string]string
 
 func compileViews() {
