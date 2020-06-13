@@ -1,176 +1,202 @@
-var GrislyGrotto;
-(function (GrislyGrotto) {
-    var BackgroundAnimation = (function () {
-        function BackgroundAnimation() {
-            this.fadeAlpha = 0.1;
-            this.framerate = 18;
-            this.entityCount = 20;
-            this.entities = [];
-            this.enabled = true;
-            this.interval = 0;
+let wanderingTriangles = {}
+wanderingTriangles.settings = {
+    fadeAlpha: 0.1,
+    framerate: 18,
+    entityCount: 20,
+    triangleSize: 15,
+    chanceOfJump: 0.005,
+    chanceOfSecondaryColour: 0.25,
+    chanceOfFill: 0.5
+};
+// save from and load to this to set where and what triangles are
+wanderingTriangles.state = [];
+// toggle this to false to stop drawining triangles (a 'pause', but with fading)
+wanderingTriangles.enabled = true;
+// used to track the internal draw loop
+wanderingTriangles.interval = 0;
+
+wanderingTriangles.init = function(canvas, backgroundColour, primaryColour, secondaryColour) {
+    this.context = canvas.getContext("2d");
+    this.settings.backgroundColour = backgroundColour;
+    this.settings.primaryColour = primaryColour;
+    this.settings.secondaryColour = secondaryColour;
+
+    if (this.state.length === 0) {
+        for (var i = 0; i < this.settings.entityCount; i++) {
+            this.state.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                type: Math.floor(Math.random() * 4),
+                colour: this.settings.primaryColour
+            })
         }
-        BackgroundAnimation.prototype.initialise = function (canvas, backgroundColour, primaryColour, secondaryColour) {
-            this.context = canvas.getContext("2d");
-            this.backgroundColour = backgroundColour;
-            var interval = 1000 / this.framerate;
-            clearInterval(this.interval)
-            var _this = this;
-            this.interval = setInterval(function () { _this.draw(_this.enabled); }, interval);
-            this.entityCount = this.entityCount;
-            for (var i = 0; i < this.entityCount; i++)
-                this.entities.push(new WanderingTriangle(this.context.canvas, primaryColour, secondaryColour));
-        };
-        BackgroundAnimation.prototype.draw = function (updateTriangles) {
-            this.context.fillStyle = this.backgroundColour;
-            this.context.globalAlpha = this.fadeAlpha;
-            this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-            this.context.globalAlpha = 1;
-            if (updateTriangles) {
-                for (var i = 0; i < this.entities.length; i++)
-                    this.entities[i].draw(this.context);
-            }
-        };
-        return BackgroundAnimation;
-    }());
-    GrislyGrotto.BackgroundAnimation = BackgroundAnimation;
-    var TriangleType;
-    (function (TriangleType) {
-        TriangleType[TriangleType["left"] = 0] = "left";
-        TriangleType[TriangleType["right"] = 1] = "right";
-        TriangleType[TriangleType["up"] = 2] = "up";
-        TriangleType[TriangleType["down"] = 3] = "down";
-    })(TriangleType || (TriangleType = {}));
-    var WanderingTriangle = (function () {
-        function WanderingTriangle(canvas, primaryColour, secondaryColour) {
-            this.size = 15;
-            this.chanceOfJump = 0.005;
-            this.changeOfSecondaryColour = 0.25;
-            this.canvas = canvas;
-            this.colour = this.primaryColour = primaryColour;
-            this.secondaryColour = secondaryColour;
-            this.jump();
+    }
+
+    var interval = 1000 / this.settings.framerate;
+    clearInterval(this.interval);
+    var self = this;
+    this.interval = setInterval(function () { 
+        self.draw()
+    }, interval);
+};
+
+wanderingTriangles.draw = function() {
+    // an alpha overdraw 'fades out' the triangles
+    this.context.fillStyle = this.settings.backgroundColour;
+    this.context.globalAlpha = this.settings.fadeAlpha;
+    this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    this.context.globalAlpha = 1;
+
+    // only refresh/draw new triangles if the animation is 'enabled'
+    if (this.enabled) {
+        for (var i = 0; i < this.state.length; i++) {
+            this.state[i] = this.updateTriangle(this.state[i])
+            this.drawTriangle(this.state[i])
         }
-        WanderingTriangle.prototype.jump = function () {
-            this.point = {
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height
-            };
-            this.type = Math.floor(Math.random() * 4);
-            if (Math.random() < this.changeOfSecondaryColour)
-                this.colour = this.secondaryColour;
-            else
-                this.colour = this.primaryColour;
-        };
-        WanderingTriangle.prototype.draw = function (context) {
-            if (Math.random() < this.chanceOfJump)
-                this.jump();
-            context.fillStyle = context.strokeStyle = this.colour;
-            context.beginPath();
-            this.type = this.nextTriangle();
-            this.triangleForType(context);
-            context.closePath();
-            if (Math.random() > 0.5)
-                context.stroke();
-            else
-                context.fill();
-        };
-        WanderingTriangle.prototype.triangleForType = function (context) {
-            if (this.type === TriangleType.up)
-                this.upTriangle(context);
-            else if (this.type === TriangleType.down)
-                this.downTriangle(context);
-            else if (this.type === TriangleType.left)
-                this.leftTriangle(context);
-            else if (this.type === TriangleType.right)
-                this.rightTriangle(context);
-        };
-        WanderingTriangle.prototype.nextTriangle = function () {
-            var random = Math.random();
-            if (this.type === TriangleType.up)
-                if (random < 0.2)
-                    return TriangleType.right;
-                else if (random < 0.4)
-                    return TriangleType.left;
-                else {
-                    this.point.y += this.size * 2;
-                    return TriangleType.down;
-                }
-            if (this.type === TriangleType.down)
-                if (random < 0.2) {
-                    this.point.y -= this.size * 2;
-                    return TriangleType.up;
-                }
-                else if (random < 0.6)
-                    return TriangleType.left;
-                else
-                    return TriangleType.right;
-            if (this.type === TriangleType.left) {
-                if (random < 0.1) {
-                    this.point = { x: this.point.x + this.size, y: this.point.y - this.size };
-                    return TriangleType.right;
-                }
-                else if (random < 0.4) {
-                    this.point = { x: this.point.x + this.size, y: this.point.y + this.size };
-                    return TriangleType.right;
-                }
-                else if (random < 0.7) {
-                    this.point = { x: this.point.x + this.size * 2, y: this.point.y };
-                    return TriangleType.right;
-                }
-                else
-                    return TriangleType.up;
-            }
-            if (random < 0.1) {
-                this.point = { x: this.point.x - this.size, y: this.point.y - this.size };
-                return TriangleType.left;
-            }
-            else if (random < 0.4) {
-                this.point = { x: this.point.x - this.size, y: this.point.y + this.size };
-                return TriangleType.left;
-            }
-            else if (random < 0.7) {
-                this.point = { x: this.point.x - this.size * 2, y: this.point.y };
-                return TriangleType.left;
-            }
-            else
-                return TriangleType.up;
-        };
-        WanderingTriangle.prototype.upTriangle = function (context) {
-            var p = this.point;
-            var s = this.size;
-            context.moveTo(p.x, p.y);
-            context.lineTo(p.x - s, p.y + s);
-            context.lineTo(p.x + s, p.y + s);
-            context.lineTo(p.x, p.y);
-            this.type = TriangleType.up;
-        };
-        WanderingTriangle.prototype.downTriangle = function (context) {
-            var p = this.point;
-            var s = this.size;
-            context.moveTo(p.x, p.y);
-            context.lineTo(p.x - s, p.y - s);
-            context.lineTo(p.x + s, p.y - s);
-            context.lineTo(p.x, p.y);
-            this.type = TriangleType.down;
-        };
-        WanderingTriangle.prototype.leftTriangle = function (context) {
-            var p = this.point;
-            var s = this.size;
-            context.moveTo(p.x, p.y);
-            context.lineTo(p.x + s, p.y - s);
-            context.lineTo(p.x + s, p.y + s);
-            context.lineTo(p.x, p.y);
-            this.type = TriangleType.left;
-        };
-        WanderingTriangle.prototype.rightTriangle = function (context) {
-            var p = this.point;
-            var s = this.size;
-            context.moveTo(p.x, p.y);
-            context.lineTo(p.x - s, p.y - s);
-            context.lineTo(p.x - s, p.y + s);
-            context.lineTo(p.x, p.y);
-            this.type = TriangleType.right;
-        };
-        return WanderingTriangle;
-    }());
-})(GrislyGrotto || (GrislyGrotto = {}));
+    }
+};
+
+wanderingTriangles.updateTriangle = function(triangle) {
+    if (triangle.type === 0)
+        triangle = this.nextTriangleFromUp(triangle);
+    else if (triangle.type === 1)
+        triangle = this.nextTriangleFromDown(triangle);
+    else if (triangle.type === 2)
+        triangle = this.nextTriangleFromLeft(triangle);
+    else
+        triangle = this.nextTriangleFromRight(triangle);
+
+    if (Math.random() > this.settings.chanceOfJump) 
+        return triangle;
+        
+    triangle.x = Math.random() * this.context.canvas.width;
+    triangle.y = Math.random() * this.context.canvas.height;
+    triangle.type = Math.floor(Math.random() * 4);
+
+    if (Math.random() < this.settings.changeOfSecondaryColour)
+        triangle.colour = this.settings.secondaryColour;
+    else
+        triangle.colour = this.settings.primaryColour;
+
+    return triangle;
+};
+
+wanderingTriangles.drawTriangle = function(triangle) {
+    this.context.fillStyle = this.context.strokeStyle = triangle.colour;
+    this.context.beginPath();
+    
+    if (triangle.type === 0)
+        this.upTrianglePath(triangle.x, triangle.y);
+    else if (triangle.type === 1)
+        this.downTrianglePath(triangle.x, triangle.y);
+    else if (triangle.type === 2)
+        this.leftTrianglePath(triangle.x, triangle.y);
+    else
+        this.rightTrianglePath(triangle.x, triangle.y);
+
+    this.context.closePath();
+    if (Math.random() > this.settings.chanceOfFill)
+        this.context.stroke();
+    else
+        this.context.fill();
+};
+
+wanderingTriangles.nextTriangleFromUp = function(triangle) {
+    var random = Math.random();
+    if (random < 0.2)
+        triangle.type = 3; // right
+    else if (random < 0.4)
+        triangle.type = 2; // left
+    else {
+        triangle.y += this.settings.triangleSize * 2;
+        triangle.type = 1; // down
+    }
+    return triangle;
+};
+
+wanderingTriangles.nextTriangleFromDown = function(triangle) {
+    var random = Math.random();
+    if (random < 0.2) {
+        triangle.y -= this.settings.triangleSize * 2;
+        triangle.type = 0; // up
+    }
+    else if (random < 0.6)
+        triangle.type = 2; // left
+    else
+        triangle.type = 3; // right
+    return triangle;
+};
+           
+wanderingTriangles.nextTriangleFromLeft = function(triangle) {
+    var random = Math.random();
+    if (random < 0.1) {
+        triangle.x += this.settings.triangleSize;
+        triangle.y -= this.settings.triangleSize;
+        triangle.type = 3; // right
+    }
+    else if (random < 0.4) {
+        triangle.x += this.settings.triangleSize;
+        triangle.y += this.settings.triangleSize;
+        triangle.type = 3; // right
+    }
+    else if (random < 0.7) {
+        triangle.x += this.settings.triangleSize * 2;
+        triangle.type = 3; // right
+    }
+    else
+        triangle.type = 0; // up
+    return triangle;
+};
+
+wanderingTriangles.nextTriangleFromRight = function(triangle) {
+    var random = Math.random();
+    if (random < 0.1) {
+        triangle.x -= this.settings.triangleSize;
+        triangle.y -= this.settings.triangleSize;
+        triangle.type = 2; // left
+    }
+    else if (random < 0.4) {
+        triangle.x -= this.settings.triangleSize;
+        triangle.y += this.settings.triangleSize;
+        triangle.type = 2; // left
+    }
+    else if (random < 0.7) {
+        triangle.x -= this.settings.triangleSize * 2;
+        triangle.type = 2; // left
+    }
+    else
+        triangle.type = 0; // up
+    return triangle;
+};
+
+wanderingTriangles.upTrianglePath = function (x, y) {
+    var s = this.settings.triangleSize;
+    this.context.moveTo(x, y);
+    this.context.lineTo(x - s, y + s);
+    this.context.lineTo(x + s, y + s);
+    this.context.lineTo(x, y);
+};
+
+wanderingTriangles.downTrianglePath = function (x, y) {
+    var s = this.settings.triangleSize;
+    this.context.moveTo(x, y);
+    this.context.lineTo(x - s, y - s);
+    this.context.lineTo(x + s, y - s);
+    this.context.lineTo(x, y);
+};
+
+wanderingTriangles.leftTrianglePath = function (x, y) {
+    var s = this.settings.triangleSize;
+    this.context.moveTo(x, y);
+    this.context.lineTo(x + s, y - s);
+    this.context.lineTo(x + s, y + s);
+    this.context.lineTo(x, y);
+};
+
+wanderingTriangles.rightTrianglePath = function (x, y) {
+    var s = this.settings.triangleSize;
+    this.context.moveTo(x, y);
+    this.context.lineTo(x - s, y - s);
+    this.context.lineTo(x - s, y + s);
+    this.context.lineTo(x, y);
+};

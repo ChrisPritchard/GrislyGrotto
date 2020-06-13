@@ -46,3 +46,4 @@ Next steps, ideas, things to add etc.
 - [x] fixed background canvas, with max size
 - [x] change animation so canvas attributes are css (resize not checked)
 - [ ] background preserve state between loads? localstorage mebbe
+    - [ ] will require that triangle state is reduced to data rather than objects

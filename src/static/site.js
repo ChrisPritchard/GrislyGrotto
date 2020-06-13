@@ -1,5 +1,7 @@
 // background animation setup
 
+// - ensure that the canvas always fills the window
+
 function resizeCanvas() {
     let canvas = document.getElementById('background-animation');
     canvas.width = window.innerWidth;
@@ -8,17 +10,41 @@ function resizeCanvas() {
 resizeCanvas();
 window.onresize = function () { resizeCanvas(); };
 
+// - trigger the animation
+
 function getColour(elem) {
     return window.getComputedStyle(elem, null).getPropertyValue("background-color");
 }
 
-let anim = new GrislyGrotto.BackgroundAnimation()
-anim.entityCount = 50
-anim.initialise(
+wanderingTriangles.settings.entityCount = 50;
+wanderingTriangles.init(
     document.getElementById('background-animation'), 
     getColour(document.getElementById('vis-background-colour')), 
     getColour(document.getElementById('vis-primary-colour')), 
-    getColour(document.getElementById('vis-secondary-colour')))
+    getColour(document.getElementById('vis-secondary-colour')));
+
+// - if supported, preserve triangle state between screens
+
+if (window.sessionStorage) {
+    let existingTriangles = window.sessionStorage.getItem('triangles');
+    if (existingTriangles) {
+        wanderingTriangles.state = JSON.parse(existingTriangles);
+    }
+    window.onunload = function () {
+        let triangleState = JSON.stringify(wanderingTriangles.state);
+        window.sessionStorage.setItem('triangles', triangleState);
+    }
+}
+
+// visualisation control panel
+
+document.getElementById('vis-enabled').onchange = function() {
+    wanderingTriangles.enabled = this.checked;
+}
+document.getElementById('site-theme').onchange = function() {
+    document.getElementById('current-theme').value = this.value;
+}
+document.getElementById('site-theme').value = document.getElementById('current-theme').value;
 
 // Confirm elements, e.g. deleting a comment
 
@@ -93,13 +119,3 @@ if (title && content) {
         }
     }, 1000);
 }
-
-// visualisation control panel
-
-document.getElementById('vis-enabled').onchange = function() {
-    anim.enabled = this.checked;
-}
-document.getElementById('site-theme').onchange = function() {
-    document.getElementById('current-theme').value = this.value;
-}
-document.getElementById('site-theme').value = document.getElementById('current-theme').value;
