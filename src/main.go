@@ -37,7 +37,7 @@ func setupRoutes() {
 	http.HandleFunc("/delete-comment/", deleteCommentHandler)
 	http.HandleFunc("/delete-post/", deletePostHandler)
 	http.HandleFunc("/archives", archivesHandler)
-	http.HandleFunc("/month/", monthHandler)
+	http.HandleFunc("/archives/", monthHandler)
 	http.HandleFunc("/search/", searchHandler)
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/login", loginHandler)

@@ -266,7 +266,7 @@ func monthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := r.URL.Path[len("/month/"):]
+	token := r.URL.Path[len("/archives/"):]
 	split := strings.Index(token, "/")
 	if len(token) == 0 || split == -1 {
 		http.NotFound(w, r)
