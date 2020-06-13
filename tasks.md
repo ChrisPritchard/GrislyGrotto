@@ -21,7 +21,7 @@ Next steps, ideas, things to add etc.
     
     - [x] apply changes to main theme, not just background
 
-- [ ] Rewrite wandering triangles to be more intelligent and pure JS?
+- [x] Rewrite wandering triangles to be more intelligent and pure JS?
 - [ ] also allow the user to set direction, e.g. down (default) out, in, up
 - [ ] perhaps some alternate vis's, like flames or stars
 
@@ -45,5 +45,5 @@ Next steps, ideas, things to add etc.
 - [x] new black/white colour scheme
 - [x] fixed background canvas, with max size
 - [x] change animation so canvas attributes are css (resize not checked)
-- [ ] background preserve state between loads? localstorage mebbe
-    - [ ] will require that triangle state is reduced to data rather than objects
+- [-] background preserve state between loads? localstorage mebbe (DOESN'T WORK DUE TO BACKGROUND CANVAS)
+    - [x] will require that triangle state is reduced to data rather than objects

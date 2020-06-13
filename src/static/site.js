@@ -16,25 +16,14 @@ function getColour(elem) {
     return window.getComputedStyle(elem, null).getPropertyValue("background-color");
 }
 
+animationCanvas = document.getElementById('background-animation');
+
 wanderingTriangles.settings.entityCount = 50;
 wanderingTriangles.init(
-    document.getElementById('background-animation'), 
+    animationCanvas, 
     getColour(document.getElementById('vis-background-colour')), 
     getColour(document.getElementById('vis-primary-colour')), 
     getColour(document.getElementById('vis-secondary-colour')));
-
-// - if supported, preserve triangle state between screens
-
-if (window.sessionStorage) {
-    let existingTriangles = window.sessionStorage.getItem('triangles');
-    if (existingTriangles) {
-        wanderingTriangles.state = JSON.parse(existingTriangles);
-    }
-    window.onunload = function () {
-        let triangleState = JSON.stringify(wanderingTriangles.state);
-        window.sessionStorage.setItem('triangles', triangleState);
-    }
-}
 
 // visualisation control panel
 
