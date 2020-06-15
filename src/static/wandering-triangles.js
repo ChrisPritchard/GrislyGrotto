@@ -8,9 +8,9 @@ wanderingTriangles.settings = {
     chanceOfSecondaryColour: 0.25,
     chanceOfFill: 0.5
 };
-// save from and load to this to set where and what triangles are
+// contains the current x/y/colour/shape of all triangles (can be serialised/deserialised easily)
 wanderingTriangles.state = [];
-// toggle this to false to stop drawining triangles (a 'pause', but with fading)
+// toggle this to false to stop drawning triangles (a 'pause', but with fading)
 wanderingTriangles.enabled = true;
 // used to track the internal draw loop
 wanderingTriangles.interval = 0;
@@ -47,7 +47,7 @@ wanderingTriangles.draw = function() {
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
     this.context.globalAlpha = 1;
 
-    // only refresh/draw new triangles if the animation is 'enabled'
+    // only refresh/draw-new triangles if the animation is 'enabled'. this is how pausing works
     if (this.enabled) {
         for (var i = 0; i < this.state.length; i++) {
             this.state[i] = this.updateTriangle(this.state[i])
@@ -73,7 +73,7 @@ wanderingTriangles.updateTriangle = function(triangle) {
     triangle.y = Math.random() * this.context.canvas.height;
     triangle.type = Math.floor(Math.random() * 4);
 
-    if (Math.random() < this.settings.changeOfSecondaryColour)
+    if (Math.random() < this.settings.chanceOfSecondaryColour)
         triangle.colour = this.settings.secondaryColour;
     else
         triangle.colour = this.settings.primaryColour;

@@ -39,5 +39,5 @@ input[type=submit]:hover, input[type=button]:hover {
 }
 
 #vis-secondary-colour {
-    background-color: gray;
+    background-color: #666;
 }
