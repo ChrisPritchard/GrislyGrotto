@@ -49,4 +49,9 @@ Next steps, ideas, things to add etc.
     - [x] will require that triangle state is reduced to data rather than objects
 
 - [x] embedded static content - single file + db website!
-- [ ] empty db for dev purposes?
+- [-] empty db for dev purposes?
+    - nice in theory, but weight of data is useful for testing things like archives view
+- [ ] sample empty db for github
+
+- [ ] when in 'develop', direct link to views and statics
+- [ ] experimental new visualisation, gradient fire effect
