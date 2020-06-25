@@ -22,8 +22,10 @@ Next steps, ideas, things to add etc.
     - [x] apply changes to main theme, not just background
 
 - [x] Rewrite wandering triangles to be more intelligent and pure JS?
-- [ ] also allow the user to set direction, e.g. down (default) out, in, up
-- [ ] perhaps some alternate vis's, like flames or stars
+- [-] also allow the user to set direction, e.g. down (default) out, in, up
+    - not going to do this
+- [-] perhaps some alternate vis's, like flames or stars
+    - tracked as their own taks
 
 - [x] return url for login page?
 - [x] cookies should be set for site, not site + path
@@ -56,6 +58,10 @@ Next steps, ideas, things to add etc.
     - replaced with sql script in database instructions
 - [x] instructions for db
 - [x] user password hasher
+    - now in same database instructions
 
 - [ ] when in 'develop', direct link to views and statics
+- [ ] for wandering triangles, when off screen should jump
 - [ ] experimental new visualisation, gradient fire effect
+- [ ] second experiment: rippling triangle lattice
+- [ ] add a forced delay between comments? a few seconds from page load might ensure that spamming doesnt work while (if less than five or even ten seconds) not effecting regular users
