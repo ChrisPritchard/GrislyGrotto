@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -108,22 +107,13 @@ func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig() {
-	// env names come from prior .NET version of the site.
-	// kept the same to make server setup simpler/lulzy
-	connectionString = os.Getenv("ConnectionStrings__default")
-	if connectionString == "" {
-		connectionString = defaultConnectionString
-	}
 
-	listenURL = os.Getenv("ASPNETCORE_URLS")
-	if listenURL == "" {
-		listenURL = defaultListenAddr
-	}
-
-	// args override env vars
+	connectionString = defaultConnectionString
+	listenURL = defaultListenAddr
 
 	connArg := flag.String("db", "", "the sqlite connection string (e.g. ./grislygrotto.db)")
 	urlArg := flag.String("url", "", "the url with port to listen to (e.g. :3000)")
+	envArg := flag.String("env", "", "the current environment (e.g. production (default) or development)")
 	flag.Parse()
 
 	if *connArg != "" {

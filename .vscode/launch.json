@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${workspaceFolder}/src",
             "env": {
-                "ASPNETCORE_URLS": "http://localhost:3000"
+                "environment": "develop"
             },
             "args": ["*.go"]
         }
