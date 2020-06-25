@@ -66,7 +66,12 @@ wanderingTriangles.updateTriangle = function(triangle) {
     else
         triangle = this.nextTriangleFromRight(triangle);
 
-    if (Math.random() > this.settings.chanceOfJump) 
+    let offscreen = 
+        triangle.x < -this.settings.triangleSize ||
+        triangle.y < -this.settings.triangleSize ||
+        triangle.x > this.context.canvas.width + this.settings.triangleSize ||
+        triangle.y > this.context.canvas.height + this.settings.triangleSize
+    if (Math.random() > this.settings.chanceOfJump && !offscreen) 
         return triangle;
         
     triangle.x = Math.random() * this.context.canvas.width;
