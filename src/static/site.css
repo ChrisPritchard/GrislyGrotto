@@ -6,6 +6,14 @@ body {
     margin: 0;
 }
 
+
+canvas.background-animation {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    z-index:-1;
+}
+
 .site-container {
     margin-top: 0;
     margin-left: auto;
@@ -86,13 +94,6 @@ input[type=submit]:hover, input[type=button]:hover {
 footer {
     clear: both;
     text-align: center;
-}
-
-canvas.background-animation {
-    position: fixed; 
-    top: 0;
-    left: 0;
-    z-index:-1;
 }
 
 .site-title {
