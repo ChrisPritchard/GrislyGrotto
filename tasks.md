@@ -66,3 +66,7 @@ Next steps, ideas, things to add etc.
 - [ ] experimental new visualisation, gradient fire effect
 - [ ] second experiment: rippling triangle lattice
 - [ ] add a forced delay between comments? a few seconds from page load might ensure that spamming doesnt work while (if less than five or even ten seconds) not effecting regular users
+
+- [ ] rather than one big background, most of which is covered by the site container, split into two animations
+    - [ ] would require animations be runnable against more than one canvas, i.e. more functional without state
+    - [ ] would also require the amount of triangles be scalable by width
