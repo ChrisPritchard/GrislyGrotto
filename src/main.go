@@ -111,9 +111,9 @@ func getConfig() {
 	connectionString = defaultConnectionString
 	listenURL = defaultListenAddr
 
-	connArg := flag.String("db", "", "the sqlite connection string (e.g. ./grislygrotto.db)")
-	urlArg := flag.String("url", "", "the url with port to listen to (e.g. :3000)")
-	envArg := flag.String("env", "", "the current environment (e.g. production (default) or development)")
+	connArg := flag.String("db", "", "the sqlite connection string\n\tdefaults to "+defaultConnectionString)
+	urlArg := flag.String("url", "", "the url with port to listen to\n\tdefaults to "+defaultListenAddr)
+	envArg := flag.Bool("dev", false, "sets to run in 'dev' mode\n\tif set resources are loaded on request rather than embedded")
 	flag.Parse()
 
 	if *connArg != "" {
@@ -123,6 +123,8 @@ func getConfig() {
 	if *urlArg != "" {
 		listenURL = *urlArg
 	}
+
+	isDevelopment = *envArg
 
 	// handles if url is fully qualified with scheme, which
 	// is invalid for Go's ListenAndServe
