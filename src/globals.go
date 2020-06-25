@@ -6,7 +6,6 @@ import "time"
 // most globals are set early in main
 
 var secret []byte
-var compiledViews views
 var connectionString string
 var listenURL string
 var isDevelopment bool
@@ -14,6 +13,12 @@ var currentUser string
 
 const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
+
+// this gets populated via the generated static.go
+var embeddedStatics = make(map[string]string)
+
+// this gets populated via the generated templates.go file
+var templateContent = make(map[string]string)
 
 const pageLength = 5
 const maxCommentCount = 20

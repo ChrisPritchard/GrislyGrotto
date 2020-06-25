@@ -18,10 +18,14 @@ import (
 func main() {
 	log.SetFlags(0)
 
-	getConfig()    // setup globals from envs, flags, files
-	compileViews() // parse template html files into compiled template vars
-	setupRoutes()  // configure handlers for url fragments
-	loadStatics()  // ensure static content is in place
+	getConfig() // setup globals from cmd line flags and files
+
+	setupRoutes() // configure handlers for url fragments
+
+	if !isDevelopment {
+		loadTemplates() // create the template html map
+		loadStatics()   // ensure static content is in place
+	}
 
 	server := globalHandler(http.DefaultServeMux)
 
@@ -79,9 +83,6 @@ func globalHandler(h http.Handler) http.Handler {
 		h.ServeHTTP(w, r)
 	})
 }
-
-// this gets populated via the generated static.go
-var embeddedStatics = make(map[string]string)
 
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 	file := r.URL.Path[len("/static/"):]
