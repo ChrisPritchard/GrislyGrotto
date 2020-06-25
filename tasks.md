@@ -60,8 +60,8 @@ Next steps, ideas, things to add etc.
 - [x] user password hasher
     - now in same database instructions
 
-- [ ] remove old env-vars, switch to cmd line only
-- [ ] when in 'develop', direct link to views and statics
+- [x] remove old env-vars, switch to cmd line only
+- [x] when in 'develop', direct link to views and statics
 - [ ] for wandering triangles, when off screen should jump
 - [ ] experimental new visualisation, gradient fire effect
 - [ ] second experiment: rippling triangle lattice
