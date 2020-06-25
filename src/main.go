@@ -26,11 +26,18 @@ func main() {
 	server := globalHandler(http.DefaultServeMux)
 
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
+	if isDevelopment {
+		log.Print("Running in DEVELOPMENT mode\n")
+	}
 	log.Println(http.ListenAndServe(listenURL, server))
 }
 
 func setupRoutes() {
-	http.HandleFunc("/static/", embeddedStaticHandler)
+	if isDevelopment {
+		http.Handle("/static/", runtimeStaticHandler())
+	} else {
+		http.HandleFunc("/static/", embeddedStaticHandler)
+	}
 
 	http.HandleFunc("/", latestPostsHandler) // note: this will catch any request not caught by the others
 	http.HandleFunc("/post/", singlePostHandler)
@@ -77,7 +84,6 @@ func globalHandler(h http.Handler) http.Handler {
 var embeddedStatics = make(map[string]string)
 
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
-	headers := w.Header()
 	file := r.URL.Path[len("/static/"):]
 	ext := filepath.Ext(file)
 
@@ -89,20 +95,40 @@ func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	switch ext {
-	case ".css":
-		headers.Set("Content-Type", "text/css")
-		w.Write([]byte(fileContent))
-	case ".js":
-		headers.Set("Content-Type", "application/javascript")
-		w.Write([]byte(fileContent))
-	case ".png":
-		headers.Set("Content-Type", "image/png")
+	setMimeType(w, r)
+
+	if ext == ".png" {
 		bytes := make([]byte, base64.StdEncoding.DecodedLen(len(fileContent)))
 		base64.StdEncoding.Decode(bytes, []byte(fileContent))
 		w.Write(bytes)
-	default:
+	} else {
 		w.Write([]byte(fileContent))
+	}
+}
+
+func runtimeStaticHandler() http.Handler {
+	server := http.FileServer(http.Dir("static"))
+	fileHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		setMimeType(w, r)
+		server.ServeHTTP(w, r)
+	})
+
+	return http.StripPrefix("/static/", fileHandler)
+}
+
+func setMimeType(w http.ResponseWriter, r *http.Request) {
+	headers := w.Header()
+	ext := filepath.Ext(r.URL.Path)
+
+	switch ext {
+	case ".css":
+		headers.Set("Content-Type", "text/css")
+	case ".js":
+		headers.Set("Content-Type", "application/javascript")
+	case ".png":
+		headers.Set("Content-Type", "image/png")
+	default:
+		return
 	}
 }
 
