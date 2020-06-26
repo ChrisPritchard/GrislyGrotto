@@ -63,8 +63,10 @@ Next steps, ideas, things to add etc.
 - [x] remove old env-vars, switch to cmd line only
 - [x] when in 'develop', direct link to views and statics
 - [x] for wandering triangles, when off screen should jump
+
 - [ ] experimental new visualisation, gradient fire effect
 - [ ] second experiment: rippling triangle lattice
+
 - [ ] add a forced delay between comments? a few seconds from page load might ensure that spamming doesnt work while (if less than five or even ten seconds) not effecting regular users
 
 - [ ] rather than one big background, most of which is covered by the site container, split into two animations

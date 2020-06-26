@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/src",
-            "args": ["*.go", "-db", "test"]
+            "args": ["-dev"]
         }
     ]
 }
