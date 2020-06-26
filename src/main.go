@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/base64"
 	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"path/filepath"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -82,55 +80,6 @@ func globalHandler(h http.Handler) http.Handler {
 
 		h.ServeHTTP(w, r)
 	})
-}
-
-func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
-	file := r.URL.Path[len("/static/"):]
-	ext := filepath.Ext(file)
-
-	var fileContent string
-	if content, exists := embeddedStatics[file]; exists {
-		fileContent = content
-	} else {
-		http.NotFound(w, r)
-		return
-	}
-
-	setMimeType(w, r)
-
-	if ext == ".png" {
-		bytes := make([]byte, base64.StdEncoding.DecodedLen(len(fileContent)))
-		base64.StdEncoding.Decode(bytes, []byte(fileContent))
-		w.Write(bytes)
-	} else {
-		w.Write([]byte(fileContent))
-	}
-}
-
-func runtimeStaticHandler() http.Handler {
-	server := http.FileServer(http.Dir("static"))
-	fileHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		setMimeType(w, r)
-		server.ServeHTTP(w, r)
-	})
-
-	return http.StripPrefix("/static/", fileHandler)
-}
-
-func setMimeType(w http.ResponseWriter, r *http.Request) {
-	headers := w.Header()
-	ext := filepath.Ext(r.URL.Path)
-
-	switch ext {
-	case ".css":
-		headers.Set("Content-Type", "text/css")
-	case ".js":
-		headers.Set("Content-Type", "application/javascript")
-	case ".png":
-		headers.Set("Content-Type", "image/png")
-	default:
-		return
-	}
 }
 
 func getConfig() {

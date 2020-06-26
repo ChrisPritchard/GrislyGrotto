@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/base64"
 	"net/http"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -49,6 +51,55 @@ func getBlockTime(r *http.Request, username string) int {
 		return blockTime - int(time2)
 	}
 	return blockTime - int(time1)
+}
+
+func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
+	file := r.URL.Path[len("/static/"):]
+	ext := filepath.Ext(file)
+
+	var fileContent string
+	if content, exists := embeddedStatics[file]; exists {
+		fileContent = content
+	} else {
+		http.NotFound(w, r)
+		return
+	}
+
+	setMimeType(w, r)
+
+	if ext == ".png" {
+		bytes := make([]byte, base64.StdEncoding.DecodedLen(len(fileContent)))
+		base64.StdEncoding.Decode(bytes, []byte(fileContent))
+		w.Write(bytes)
+	} else {
+		w.Write([]byte(fileContent))
+	}
+}
+
+func runtimeStaticHandler() http.Handler {
+	server := http.FileServer(http.Dir("static"))
+	fileHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		setMimeType(w, r)
+		server.ServeHTTP(w, r)
+	})
+
+	return http.StripPrefix("/static/", fileHandler)
+}
+
+func setMimeType(w http.ResponseWriter, r *http.Request) {
+	headers := w.Header()
+	ext := filepath.Ext(r.URL.Path)
+
+	switch ext {
+	case ".css":
+		headers.Set("Content-Type", "text/css")
+	case ".js":
+		headers.Set("Content-Type", "application/javascript")
+	case ".png":
+		headers.Set("Content-Type", "image/png")
+	default:
+		return
+	}
 }
 
 func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
