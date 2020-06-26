@@ -59,6 +59,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		if len(post.Comments) >= maxCommentCount {
 			model.CanComment = false
 		}
+		setBlockTime(r, "") // ensure comments can't be made immediately by spammers
 		renderView(w, r, model, "single.html", post.Title)
 		return
 	}
@@ -110,45 +111,6 @@ func createComment(r *http.Request, postKey string) (commentError string, err er
 		return "", err
 	}
 	return "", nil
-}
-
-func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.NotFound(w, r)
-		return
-	}
-
-	id := r.URL.Path[len("/delete-comment/"):]
-	idN, err := strconv.Atoi(id)
-	if err != nil {
-		badRequest(w, "invalid comment id")
-		return
-	}
-
-	if currentUser == "" {
-		unauthorised(w)
-		return
-	}
-
-	success, err := tryDeleteComment(idN, currentUser) // only deletes if this is on a post the user owns
-	if err != nil {
-		serverError(w, err)
-		return
-	}
-
-	if !success {
-		unauthorised(w)
-		return
-	}
-
-	postKey := r.URL.Query()["postKey"]
-	returnURL := "/"
-
-	if len(postKey) != 0 && len(postKey[0]) > 0 {
-		returnURL = "/post/" + postKey[0] + "#comments"
-	}
-
-	http.Redirect(w, r, returnURL, http.StatusFound)
 }
 
 func archivesHandler(w http.ResponseWriter, r *http.Request) {

@@ -30,7 +30,9 @@ func getIP(r *http.Request) string {
 
 func setBlockTime(r *http.Request, username string) {
 	blocked[getIP(r)] = time.Now().Unix()
-	blocked[username] = time.Now().Unix()
+	if username != "" {
+		blocked[username] = time.Now().Unix()
+	}
 }
 
 func cleanBlocked() {
