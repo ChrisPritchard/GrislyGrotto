@@ -72,3 +72,5 @@ Next steps, ideas, things to add etc.
 - [ ] rather than one big background, most of which is covered by the site container, split into two animations
     - [ ] would require animations be runnable against more than one canvas, i.e. more functional without state
     - [ ] would also require the amount of triangles be scalable by width
+
+- [x] code reorganisation - breakup handlers
