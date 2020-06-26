@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	out, err := os.Create("templates.go")
+	out, err := os.Create("embedded_templates.go")
 	if err != nil {
 		log.Fatal(err)
 	}

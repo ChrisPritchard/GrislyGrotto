@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	out, err := os.Create("static.go")
+	out, err := os.Create("embedded_statics.go")
 	if err != nil {
 		log.Fatal(err)
 	}
