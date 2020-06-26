@@ -1,128 +1,142 @@
 let wanderingTriangles = {}
-wanderingTriangles.settings = {
-    fadeAlpha: 0.1,
-    framerate: 18,
-    entityCount: 20,
-    triangleSize: 15,
-    chanceOfJump: 0.005,
-    chanceOfSecondaryColour: 0.25,
-    chanceOfFill: 0.5
-};
-// contains the current x/y/colour/shape of all triangles (can be serialised/deserialised easily)
-wanderingTriangles.state = [];
-// toggle this to false to stop drawning triangles (a 'pause', but with fading)
-wanderingTriangles.enabled = true;
-// used to track the internal draw loop
-wanderingTriangles.interval = 0;
 
-wanderingTriangles.init = function(canvas, backgroundColour, primaryColour, secondaryColour) {
-    this.context = canvas.getContext("2d");
-    this.settings.backgroundColour = backgroundColour;
-    this.settings.primaryColour = primaryColour;
-    this.settings.secondaryColour = secondaryColour;
+// call this to create a basic, default set of settings to modify
+wanderingTriangles.baseSettings = function() {
+    return {
+        fadeAlpha: 0.1,
+        framerate: 18,
+        entityCount: 20,
+        triangleSize: 15,
+        chanceOfJump: 0.005,
+        chanceOfSecondaryColour: 0.25,
+        chanceOfFill: 0.5,
+        backgroundColour: "black",
+        primaryColour: "white",
+        secondaryColour: "gray",
+    };
+}
 
-    if (this.state.length === 0) {
-        for (var i = 0; i < this.settings.entityCount; i++) {
-            this.state.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                type: Math.floor(Math.random() * 4),
-                colour: this.settings.primaryColour
-            })
-        }
+wanderingTriangles.init = function(canvas, settings) {
+
+    var instance = {
+        context: canvas.getContext("2d"),
+        settings: settings,
+        state: [],
+        enabled: true,      // toggle this to false to stop drawning triangles (a 'pause', but with fading)
+        intervalHandle: 0     // used to track the internal draw loop
+    };
+
+    for (var i = 0; i < settings.entityCount; i++) {
+        instance.state.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            type: Math.floor(Math.random() * 4),
+            colour: settings.primaryColour
+        });
     }
 
-    var interval = 1000 / this.settings.framerate;
-    clearInterval(this.interval);
+    var interval = 1000 / instance.settings.framerate;
+    clearInterval(instance.intervalHandle);
     var self = this;
-    this.interval = setInterval(function () { 
+    instance.intervalHandle = setInterval(function () { 
         self.draw()
     }, interval);
+
+    return instance;
 };
 
-wanderingTriangles.draw = function() {
+wanderingTriangles.draw = function(instance) {
     // an alpha overdraw 'fades out' the triangles
-    this.context.fillStyle = this.settings.backgroundColour;
-    this.context.globalAlpha = this.settings.fadeAlpha;
-    this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-    this.context.globalAlpha = 1;
+    context = instance.context;
+    context.fillStyle = instance.settings.backgroundColour;
+    context.globalAlpha = instance.settings.fadeAlpha;
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    context.globalAlpha = 1;
 
     // only refresh/draw-new triangles if the animation is 'enabled'. this is how pausing works
-    if (this.enabled) {
-        for (var i = 0; i < this.state.length; i++) {
-            this.state[i] = this.updateTriangle(this.state[i])
-            this.drawTriangle(this.state[i])
+    if (instance.enabled) {
+        for (var i = 0; i < instance.state.length; i++) {
+            instance.state[i] = this.updateTriangle(instance, instance.state[i])
+            this.drawTriangle(instance, instance.state[i])
         }
     }
 };
 
-wanderingTriangles.updateTriangle = function(triangle) {
+wanderingTriangles.updateTriangle = function(instance, triangle) {
+
+    settings = instance.settings;
+    canvas = instance.context.canvas;
+
     if (triangle.type === 0)
-        triangle = this.nextTriangleFromUp(triangle);
+        triangle = this.nextTriangleFromUp(triangle, settings.triangleSize);
     else if (triangle.type === 1)
-        triangle = this.nextTriangleFromDown(triangle);
+        triangle = this.nextTriangleFromDown(triangle, settings.triangleSize);
     else if (triangle.type === 2)
-        triangle = this.nextTriangleFromLeft(triangle);
+        triangle = this.nextTriangleFromLeft(triangle, settings.triangleSize);
     else
-        triangle = this.nextTriangleFromRight(triangle);
+        triangle = this.nextTriangleFromRight(triangle, settings.triangleSize);
 
     let offscreen = 
-        triangle.x < -this.settings.triangleSize ||
-        triangle.y < -this.settings.triangleSize ||
-        triangle.x > this.context.canvas.width + this.settings.triangleSize ||
-        triangle.y > this.context.canvas.height + this.settings.triangleSize
-    if (Math.random() > this.settings.chanceOfJump && !offscreen) 
+        triangle.x < -settings.triangleSize ||
+        triangle.y < -settings.triangleSize ||
+        triangle.x > canvas.width + settings.triangleSize ||
+        triangle.y > canvas.height + settings.triangleSize
+    if (Math.random() > settings.chanceOfJump && !offscreen) 
         return triangle;
         
-    triangle.x = Math.random() * this.context.canvas.width;
-    triangle.y = Math.random() * this.context.canvas.height;
+    triangle.x = Math.random() * canvas.width;
+    triangle.y = Math.random() * canvas.height;
     triangle.type = Math.floor(Math.random() * 4);
 
-    if (Math.random() < this.settings.chanceOfSecondaryColour)
-        triangle.colour = this.settings.secondaryColour;
+    if (Math.random() < settings.chanceOfSecondaryColour)
+        triangle.colour = settings.secondaryColour;
     else
-        triangle.colour = this.settings.primaryColour;
+        triangle.colour = settings.primaryColour;
 
     return triangle;
 };
 
-wanderingTriangles.drawTriangle = function(triangle) {
-    this.context.fillStyle = this.context.strokeStyle = triangle.colour;
-    this.context.beginPath();
+wanderingTriangles.drawTriangle = function(instance, triangle) {
+
+    settings = instance.settings;
+    context = instance.context;
+
+    context.fillStyle = context.strokeStyle = triangle.colour;
+    context.beginPath();
     
     if (triangle.type === 0)
-        this.upTrianglePath(triangle.x, triangle.y);
+        this.upTrianglePath(context, triangle.x, triangle.y, settings.triangleSize);
     else if (triangle.type === 1)
-        this.downTrianglePath(triangle.x, triangle.y);
+        this.downTrianglePath(context, triangle.x, triangle.y, settings.triangleSize);
     else if (triangle.type === 2)
-        this.leftTrianglePath(triangle.x, triangle.y);
+        this.leftTrianglePath(context, triangle.x, triangle.y, settings.triangleSize);
     else
-        this.rightTrianglePath(triangle.x, triangle.y);
+        this.rightTrianglePath(context, triangle.x, triangle.y, settings.triangleSize);
 
-    this.context.closePath();
-    if (Math.random() > this.settings.chanceOfFill)
-        this.context.stroke();
+    context.closePath();
+    if (Math.random() > settings.chanceOfFill)
+        context.stroke();
     else
-        this.context.fill();
+        context.fill();
 };
 
-wanderingTriangles.nextTriangleFromUp = function(triangle) {
+wanderingTriangles.nextTriangleFromUp = function(triangle, triangleSize) {
     var random = Math.random();
     if (random < 0.2)
         triangle.type = 3; // right
     else if (random < 0.4)
         triangle.type = 2; // left
     else {
-        triangle.y += this.settings.triangleSize * 2;
+        triangle.y += triangleSize * 2;
         triangle.type = 1; // down
     }
     return triangle;
 };
 
-wanderingTriangles.nextTriangleFromDown = function(triangle) {
+wanderingTriangles.nextTriangleFromDown = function(triangle, triangleSize) {
     var random = Math.random();
     if (random < 0.2) {
-        triangle.y -= this.settings.triangleSize * 2;
+        triangle.y -= triangleSize * 2;
         triangle.type = 0; // up
     }
     else if (random < 0.6)
@@ -132,20 +146,20 @@ wanderingTriangles.nextTriangleFromDown = function(triangle) {
     return triangle;
 };
            
-wanderingTriangles.nextTriangleFromLeft = function(triangle) {
+wanderingTriangles.nextTriangleFromLeft = function(triangle, triangleSize) {
     var random = Math.random();
     if (random < 0.1) {
-        triangle.x += this.settings.triangleSize;
-        triangle.y -= this.settings.triangleSize;
+        triangle.x += triangleSize;
+        triangle.y -= triangleSize;
         triangle.type = 3; // right
     }
     else if (random < 0.4) {
-        triangle.x += this.settings.triangleSize;
-        triangle.y += this.settings.triangleSize;
+        triangle.x += triangleSize;
+        triangle.y += triangleSize;
         triangle.type = 3; // right
     }
     else if (random < 0.7) {
-        triangle.x += this.settings.triangleSize * 2;
+        triangle.x += triangleSize * 2;
         triangle.type = 3; // right
     }
     else
@@ -153,20 +167,20 @@ wanderingTriangles.nextTriangleFromLeft = function(triangle) {
     return triangle;
 };
 
-wanderingTriangles.nextTriangleFromRight = function(triangle) {
+wanderingTriangles.nextTriangleFromRight = function(triangle, triangleSize) {
     var random = Math.random();
     if (random < 0.1) {
-        triangle.x -= this.settings.triangleSize;
-        triangle.y -= this.settings.triangleSize;
+        triangle.x -= triangleSize;
+        triangle.y -= triangleSize;
         triangle.type = 2; // left
     }
     else if (random < 0.4) {
-        triangle.x -= this.settings.triangleSize;
-        triangle.y += this.settings.triangleSize;
+        triangle.x -= triangleSize;
+        triangle.y += triangleSize;
         triangle.type = 2; // left
     }
     else if (random < 0.7) {
-        triangle.x -= this.settings.triangleSize * 2;
+        triangle.x -= triangleSize * 2;
         triangle.type = 2; // left
     }
     else
@@ -174,34 +188,34 @@ wanderingTriangles.nextTriangleFromRight = function(triangle) {
     return triangle;
 };
 
-wanderingTriangles.upTrianglePath = function (x, y) {
-    var s = this.settings.triangleSize;
-    this.context.moveTo(x, y);
-    this.context.lineTo(x - s, y + s);
-    this.context.lineTo(x + s, y + s);
-    this.context.lineTo(x, y);
+wanderingTriangles.upTrianglePath = function (context, x, y, triangleSize) {
+    var s = triangleSize;
+    context.moveTo(x, y);
+    context.lineTo(x - s, y + s);
+    context.lineTo(x + s, y + s);
+    context.lineTo(x, y);
 };
 
-wanderingTriangles.downTrianglePath = function (x, y) {
-    var s = this.settings.triangleSize;
-    this.context.moveTo(x, y);
-    this.context.lineTo(x - s, y - s);
-    this.context.lineTo(x + s, y - s);
-    this.context.lineTo(x, y);
+wanderingTriangles.downTrianglePath = function (context, x, y, triangleSize) {
+    var s = triangleSize;
+    context.moveTo(x, y);
+    context.lineTo(x - s, y - s);
+    context.lineTo(x + s, y - s);
+    context.lineTo(x, y);
 };
 
-wanderingTriangles.leftTrianglePath = function (x, y) {
-    var s = this.settings.triangleSize;
-    this.context.moveTo(x, y);
-    this.context.lineTo(x + s, y - s);
-    this.context.lineTo(x + s, y + s);
-    this.context.lineTo(x, y);
+wanderingTriangles.leftTrianglePath = function (context, x, y, triangleSize) {
+    var s = triangleSize;
+    context.moveTo(x, y);
+    context.lineTo(x + s, y - s);
+    context.lineTo(x + s, y + s);
+    context.lineTo(x, y);
 };
 
-wanderingTriangles.rightTrianglePath = function (x, y) {
-    var s = this.settings.triangleSize;
-    this.context.moveTo(x, y);
-    this.context.lineTo(x - s, y - s);
-    this.context.lineTo(x - s, y + s);
-    this.context.lineTo(x, y);
+wanderingTriangles.rightTrianglePath = function (context, x, y, triangleSize) {
+    var s = triangleSize;
+    context.moveTo(x, y);
+    context.lineTo(x - s, y - s);
+    context.lineTo(x - s, y + s);
+    context.lineTo(x, y);
 };
