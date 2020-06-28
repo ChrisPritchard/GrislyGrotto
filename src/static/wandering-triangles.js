@@ -5,7 +5,6 @@ wanderingTriangles.baseSettings = function() {
     return {
         fadeAlpha: 0.1,
         framerate: 18,
-        entityCount: 20,
         triangleSize: 15,
         chanceOfJump: 0.005,
         chanceOfSecondaryColour: 0.25,
@@ -26,7 +25,8 @@ wanderingTriangles.init = function(canvas, settings) {
         intervalHandle: 0     // used to track the internal draw loop
     };
 
-    for (var i = 0; i < settings.entityCount; i++) {
+    var entityCount = canvas.width / settings.triangleSize / 2;
+    for (var i = 0; i < entityCount; i++) {
         instance.state.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,

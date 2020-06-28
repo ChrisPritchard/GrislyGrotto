@@ -3,8 +3,12 @@
 // - ensure that the canvas always fills the window
 
 function resizeCanvas() {
-    let canvas = document.getElementById('background-animation');
-    canvas.width = window.innerWidth;
+    let canvas = document.getElementById('animation-left');
+    canvas.width = (window.innerWidth-1000)/2;
+    canvas.height = window.innerHeight;
+    canvas = document.getElementById('animation-right');
+    canvas.width = (window.innerWidth-1000)/2;
+    canvas.style.left = (window.innerWidth-1000)/2 + 1000 + "px";
     canvas.height = window.innerHeight;
 };
 resizeCanvas();
@@ -16,19 +20,23 @@ function getColour(elem) {
     return window.getComputedStyle(elem, null).getPropertyValue("background-color");
 }
 
-animationCanvas = document.getElementById('background-animation');
+function initAnimation(canvasId) {
+    var animationCanvas = document.getElementById(canvasId);
+    var animSettings = wanderingTriangles.baseSettings();
+    animSettings.backgroundColour = getColour(document.getElementById('vis-background-colour'));
+    animSettings.primaryColour = getColour(document.getElementById('vis-primary-colour'));
+    animSettings.secondaryColour = getColour(document.getElementById('vis-secondary-colour'));
+    return wanderingTriangles.init(animationCanvas, animSettings);
+}
 
-var animSettings = wanderingTriangles.baseSettings();
-animSettings.entityCount = 50;
-animSettings.backgroundColour = getColour(document.getElementById('vis-background-colour'));
-animSettings.primaryColour = getColour(document.getElementById('vis-primary-colour'));
-animSettings.secondaryColour = getColour(document.getElementById('vis-secondary-colour'));
-var animation = wanderingTriangles.init(animationCanvas, animSettings);
+var animationLeft = initAnimation('animation-left');
+var animationRight = initAnimation('animation-right');
 
 // visualisation control panel
 
 document.getElementById('vis-enabled').onchange = function() {
-    animation.enabled = this.checked;
+    animationLeft.enabled = this.checked;
+    animationRight.enabled = this.checked;
 }
 document.getElementById('site-theme').onchange = function() {
     document.getElementById('current-theme').value = this.value;
