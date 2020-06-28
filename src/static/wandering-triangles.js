@@ -6,6 +6,7 @@ wanderingTriangles.baseSettings = function() {
         fadeAlpha: 0.1,
         framerate: 18,
         triangleSize: 15,
+        triangleDensity: 0.5, // how many triangles per triangleSize columns of the canvas
         chanceOfJump: 0.005,
         chanceOfSecondaryColour: 0.25,
         chanceOfFill: 0.5,
@@ -48,7 +49,7 @@ wanderingTriangles.draw = function(instance) {
 
     // only refresh/draw-new triangles if the animation is 'enabled'. this is how pausing works
     if (instance.enabled) {
-        var entityCount = canvas.width / settings.triangleSize / 2;
+        var entityCount = (canvas.width / settings.triangleSize) * settings.triangleDensity;
         for (var i = 0; i < entityCount; i++) {
             if (instance.state.length <= i) {
                 instance.state.push({
