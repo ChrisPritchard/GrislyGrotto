@@ -25,16 +25,6 @@ wanderingTriangles.init = function(canvas, settings) {
         intervalHandle: 0     // used to track the internal draw loop
     };
 
-    var entityCount = canvas.width / settings.triangleSize / 2;
-    for (var i = 0; i < entityCount; i++) {
-        instance.state.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            type: Math.floor(Math.random() * 4),
-            colour: settings.primaryColour
-        });
-    }
-
     var interval = 1000 / instance.settings.framerate;
     clearInterval(instance.intervalHandle);
     var self = this;
@@ -48,14 +38,26 @@ wanderingTriangles.init = function(canvas, settings) {
 wanderingTriangles.draw = function(instance) {
     // an alpha overdraw 'fades out' the triangles
     context = instance.context;
-    context.fillStyle = instance.settings.backgroundColour;
-    context.globalAlpha = instance.settings.fadeAlpha;
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    canvas = context.canvas;
+    settings = instance.settings;
+
+    context.fillStyle = settings.backgroundColour;
+    context.globalAlpha = settings.fadeAlpha;
+    context.fillRect(0, 0, canvas.width, canvas.height);
     context.globalAlpha = 1;
 
     // only refresh/draw-new triangles if the animation is 'enabled'. this is how pausing works
     if (instance.enabled) {
-        for (var i = 0; i < instance.state.length; i++) {
+        var entityCount = canvas.width / settings.triangleSize / 2;
+        for (var i = 0; i < entityCount; i++) {
+            if (instance.state.length <= i) {
+                instance.state.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    type: Math.floor(Math.random() * 4),
+                    colour: settings.primaryColour
+                });
+            }
             instance.state[i] = this.updateTriangle(instance, instance.state[i])
             this.drawTriangle(instance, instance.state[i])
         }
