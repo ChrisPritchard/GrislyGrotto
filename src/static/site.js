@@ -18,17 +18,17 @@ function getColour(elem) {
 
 animationCanvas = document.getElementById('background-animation');
 
-wanderingTriangles.settings.entityCount = 50;
-wanderingTriangles.init(
-    animationCanvas, 
-    getColour(document.getElementById('vis-background-colour')), 
-    getColour(document.getElementById('vis-primary-colour')), 
-    getColour(document.getElementById('vis-secondary-colour')));
+var animSettings = wanderingTriangles.baseSettings();
+animSettings.entityCount = 50;
+animSettings.backgroundColour = getColour(document.getElementById('vis-background-colour'));
+animSettings.primaryColour = getColour(document.getElementById('vis-primary-colour'));
+animSettings.secondaryColour = getColour(document.getElementById('vis-secondary-colour'));
+var animation = wanderingTriangles.init(animationCanvas, animSettings);
 
 // visualisation control panel
 
 document.getElementById('vis-enabled').onchange = function() {
-    wanderingTriangles.enabled = this.checked;
+    animation.enabled = this.checked;
 }
 document.getElementById('site-theme').onchange = function() {
     document.getElementById('current-theme').value = this.value;

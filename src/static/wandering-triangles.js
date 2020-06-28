@@ -39,7 +39,7 @@ wanderingTriangles.init = function(canvas, settings) {
     clearInterval(instance.intervalHandle);
     var self = this;
     instance.intervalHandle = setInterval(function () { 
-        self.draw()
+        self.draw(instance);
     }, interval);
 
     return instance;
