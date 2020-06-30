@@ -153,3 +153,7 @@ Should take less than a minute, and then can test (once/if you have configured i
 > Note, if using a domain like grislygrotto.nz, but *also* www.grislygrotto.nz, you might need to modify the nginx default file and ensure that both domains are in there. *.grislygrotto.nz instead of www.grislygrotto.nz, might result in certbot creating just a cert for grislygrott.nz, which will mean that visiting the www. address will result in a cert warning.
 >
 > The solution is to specify the www. domain specifically, then rerun the cert bot tool and select both domains (if it detects both, hopefully). If you have already run it before it might prompt to 'expand' the existing cert, which is an easy option to fix things up.
+
+### Renewing this cert
+
+Should just be a matter of, on or near the day of expiry, ssh'ing in and running `sudo certbot renew`
