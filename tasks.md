@@ -74,3 +74,8 @@ Next steps, ideas, things to add etc.
     - [x] would also require the amount of triangles be scalable by width
 
 - [x] code reorganisation - breakup handlers
+
+- [ ] easy way to get images, script even into markdown doc.
+    - [ ] non standard html interpreter?
+    - [ ] someway to use inline scripts - perhaps scripts can be embedded as a 'per blog' resource accessble via the static generator
+        - would this just circumvent the csp? perhaps just disable csp for scripts, and improve blacklisting for comments?
