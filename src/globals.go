@@ -34,8 +34,6 @@ const cookieAge = time.Hour
 const themeExpiry = time.Hour * 8760 * 10 // ten years
 const minWordCount = 100
 
-const markdownToken = "markdown|"
-
 var markdownEngine = goldmark.New(
 	goldmark.WithExtensions(
 		extension.GFM,

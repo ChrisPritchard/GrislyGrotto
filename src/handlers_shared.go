@@ -160,17 +160,13 @@ func raw(s string) template.HTML {
 }
 
 func render(s string) template.HTML {
-	if s[:len(markdownToken)] != markdownToken {
-		return raw(s)
-	}
-
 	var buf bytes.Buffer
-	source := []byte(s[len(markdownToken):])
+	source := []byte(s)
 	if err := markdownEngine.Convert(source, &buf); err != nil {
-		return raw("<b>Error parsing Markdown, falling back to raw</b><br/>" + s)
+		return template.HTML("<b>Error parsing Markdown, falling back to raw</b><br/>" + s)
 	}
 
-	return raw(buf.String())
+	return template.HTML(buf.String())
 }
 
 func formatDate(s string) string {

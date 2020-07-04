@@ -10,29 +10,18 @@
 
 <form method="POST">
 
-    <label for="title">Title</label>
+    <label for="title">Post Title</label>
     <input type="text" id="title" name="title" value="{{ .Title }}" />
+
+    <div class="editor-help">
+        The editor supports markdown syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">in this cheat sheet</a>. 
+        <br />Basically type normally, use <span>*text*</span> for italic, <span>**text**</span> for bold, <span>-</span> to create bullet points etc. Its faily intuitive.
+        <br />Use <span>[title](url)</span> to create a link. A raw url will also be 'linkified'. Tables (see the cheat sheet) also work.
+        <br />Raw HTML (e.g. <span>&lt;img&gt;</span>) will be interpreted as is. Note that the content security policy will prevent script and most external image sources.
+    </div>
 
     <label for="content">Content <span class="error">{{ .PostError }}</span></label>
     <textarea id="content" name="content" cols="100" rows="35">{{ raw .Content }}</textarea>
-
-    <div class="editor-help">
-        The markdown editor supports syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">here</a>. 
-        <br />Basically type normally, use *text* for italic, **text** for bold,
-        <br />- to create bullet points etc. Its faily intuitive.
-        <br />Use [title](url) will create a link.
-    </div>
-
-    <div class="render-mode">
-        <label>
-            <input type="radio" name="render-mode" id="render-mode" value="Markdown" {{ if .IsMarkdown }}checked="checked"{{ end }} />
-            &nbsp;Markdown
-        </label>
-        <label>
-            <input type="radio" name="render-mode" id="render-mode" value="Raw HTML" {{ if not .IsMarkdown }}checked="checked"{{ end }} />
-            &nbsp;Raw HTML
-        </label>
-    </div>
 
     <div class="checkbox">
         <input type="checkbox" id="isStory" name="isStory" {{ if .IsStory }}checked="checked"{{ end }} />

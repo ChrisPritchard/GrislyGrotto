@@ -214,8 +214,16 @@ div.checkbox input, div.checkbox label {
 }
 
 div.editor-help {
-    float: right;
-    width: 80%;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    text-align: justify;
+    font-size: 0.8em;
+}
+
+div.editor-help span {
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid white;
+    background-color: black;
 }
 
 div.post-submit {
