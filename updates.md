@@ -39,3 +39,7 @@ Debugging issues:
 - Full output stack traces can be seen via the following command, if thrown:
 
     `journalctl -u grislygrotto.service`
+
+### Renewing this cert
+
+Should just be a matter of, on or near the day of expiry, ssh'ing in and running `sudo certbot renew`
