@@ -82,8 +82,8 @@ Next steps, ideas, things to add etc.
         - would this just circumvent the csp? perhaps just disable csp for scripts, and improve blacklisting for comments?
         - for now csp is fine, good practice. the need for this bypass is so rare that weakening site security is probably not worth it.
 
-- [ ] switch to using the goldmark with unsafe html evaluation for all posts
-    - [ ] remove toggle control between html and markdown
-    - [ ] update existing posts to remove the 'markdown|' token
+- [x] switch to using the goldmark with unsafe html evaluation for all posts
+    - [x] remove toggle control between html and markdown
+    - [x] update existing posts to remove the 'markdown|' token
         - possibly via an update using sqlite3 command line tool
     
