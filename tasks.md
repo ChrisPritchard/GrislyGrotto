@@ -75,7 +75,15 @@ Next steps, ideas, things to add etc.
 
 - [x] code reorganisation - breakup handlers
 
-- [ ] easy way to get images, script even into markdown doc.
-    - [ ] non standard html interpreter?
-    - [ ] someway to use inline scripts - perhaps scripts can be embedded as a 'per blog' resource accessble via the static generator
+- [x] easy way to get images, script even into markdown doc.
+    - [-] non standard html interpreter?
+        - [x] goldmark supports enabling html unsafe mode, which allows direct html
+    - [-] someway to use inline scripts - perhaps scripts can be embedded as a 'per blog' resource accessble via the static generator
         - would this just circumvent the csp? perhaps just disable csp for scripts, and improve blacklisting for comments?
+        - for now csp is fine, good practice. the need for this bypass is so rare that weakening site security is probably not worth it.
+
+- [ ] switch to using the goldmark with unsafe html evaluation for all posts
+    - [ ] remove toggle control between html and markdown
+    - [ ] update existing posts to remove the 'markdown|' token
+        - possibly via an update using sqlite3 command line tool
+    
