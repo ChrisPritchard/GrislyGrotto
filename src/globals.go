@@ -1,6 +1,12 @@
 package main
 
-import "time"
+import (
+	"time"
+
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
+)
 
 // globals and constants used in multiple places
 // most globals are set early in main
@@ -29,6 +35,15 @@ const themeExpiry = time.Hour * 8760 * 10 // ten years
 const minWordCount = 100
 
 const markdownToken = "markdown|"
+
+var markdownEngine = goldmark.New(
+	goldmark.WithExtensions(
+		extension.GFM,
+	),
+	goldmark.WithRendererOptions(
+		html.WithUnsafe(),
+	),
+)
 
 var months = []string{
 	"", "January", "February", "March", "April", "May", "June",

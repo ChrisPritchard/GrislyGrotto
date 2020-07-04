@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/yuin/goldmark"
 )
 
 func ipOnly(ipAndPort string) string {
@@ -168,7 +166,7 @@ func render(s string) template.HTML {
 
 	var buf bytes.Buffer
 	source := []byte(s[len(markdownToken):])
-	if err := goldmark.Convert(source, &buf); err != nil {
+	if err := markdownEngine.Convert(source, &buf); err != nil {
 		return raw("<b>Error parsing Markdown, falling back to raw</b><br/>" + s)
 	}
 
