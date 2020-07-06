@@ -16,7 +16,3 @@ server {
     listen   80 default_server;
     return   444;
 }
-test-semmle {
-    access-key  AKIAIOSFODNN7EXAMPLE
-    secret-key  wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-}
