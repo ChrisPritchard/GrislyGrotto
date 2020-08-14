@@ -57,10 +57,9 @@ func getBlockTime(r *http.Request, username string) int {
 
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 	file := r.URL.Path[len("/static/"):]
-	ext := filepath.Ext(file)
 
 	var fileContent string
-	if content, exists := embeddedStatics[file]; exists {
+	if content, exists := embeddedAssets["./static/"+file]; exists {
 		fileContent = content
 	} else {
 		http.NotFound(w, r)
@@ -68,14 +67,8 @@ func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	setMimeType(w, r)
-
-	if ext == ".png" {
-		bytes := make([]byte, base64.StdEncoding.DecodedLen(len(fileContent)))
-		base64.StdEncoding.Decode(bytes, []byte(fileContent))
-		w.Write(bytes)
-	} else {
-		w.Write([]byte(fileContent))
-	}
+	bytes, _ := base64.StdEncoding.DecodeString(fileContent)
+	w.Write(bytes)
 }
 
 func runtimeStaticHandler() http.Handler {
@@ -143,10 +136,13 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 		"isNewPost":  func() bool { return pageTitle == "New Post" }})
 
 	if isDevelopment {
-		result, err := tmpl.ParseFiles("templates/_master.html", "templates/"+templateFile)
+		result, err := tmpl.ParseFiles("./templates/_master.html", "./templates/"+templateFile)
 		tmpl = template.Must(result, err)
 	} else {
-		result, err := tmpl.Parse(templateContent[templateFile])
+		templateContent := embeddedAssets["./templates/_master.html"]
+		templateContent += embeddedAssets["./templates/"+templateFile]
+		raw, _ := base64.StdEncoding.DecodeString(templateContent)
+		result, err := tmpl.Parse(string(raw))
 		tmpl = template.Must(result, err)
 	}
 
