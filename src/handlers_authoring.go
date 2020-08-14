@@ -36,7 +36,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := getUser(username[0], password[0])
+	user, err := validateUser(username[0], password[0])
 	if err != nil {
 		setBlockTime(r, username[0])
 		renderView(w, r, loginViewModel{"Invalid credentials"}, "login.html", "login")
@@ -70,12 +70,13 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if currentUser == "" {
+	currentUser := getCurrentUser(r)
+	if currentUser == nil {
 		unauthorised(w)
 		return
 	}
 
-	success, err := tryDeleteComment(idN, currentUser) // only deletes if this is on a post the user owns
+	success, err := tryDeleteComment(idN, *currentUser) // only deletes if this is on a post the user owns
 	if err != nil {
 		serverError(w, err)
 		return
@@ -108,12 +109,13 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if currentUser == "" {
+	currentUser := getCurrentUser(r)
+	if currentUser == nil {
 		unauthorised(w)
 		return
 	}
 
-	post, notFound, err := getSinglePost(key)
+	post, notFound, err := getSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -124,7 +126,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if post.AuthorUsername != currentUser {
+	if post.AuthorUsername != *currentUser {
 		unauthorised(w)
 		return
 	}
@@ -144,7 +146,8 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if currentUser == "" {
+	currentUser := getCurrentUser(r)
+	if currentUser == nil {
 		unauthorised(w)
 		return
 	}
@@ -162,6 +165,12 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		model := editorViewModel{true, "", "", false, false, ""}
 		renderView(w, r, model, "editor.html", "New Post")
+		return
+	}
+
+	currentUser := getCurrentUser(r)
+	if currentUser == nil {
+		unauthorised(w)
 		return
 	}
 
@@ -195,7 +204,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	key := createPostKey(title)
-	_, notFound, err := getSinglePost(key)
+	_, notFound, err := getSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -211,7 +220,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 		title = draftPrefix + title
 	}
 
-	err = createNewPost(key, title, content, isStory, wordCount, currentUser)
+	err = createNewPost(key, title, content, isStory, wordCount, *currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -221,7 +230,13 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
-	post, notFound, err := getSinglePost(key)
+	currentUser := getCurrentUser(r)
+	if currentUser == nil {
+		unauthorised(w)
+		return
+	}
+
+	post, notFound, err := getSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -232,7 +247,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
-	if post.AuthorUsername != currentUser {
+	if post.AuthorUsername != *currentUser {
 		unauthorised(w)
 		return
 	}

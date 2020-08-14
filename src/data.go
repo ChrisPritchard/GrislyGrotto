@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func getLatestPosts(page int) ([]blogPost, error) {
+func getLatestPosts(page int, currentUser *string) ([]blogPost, error) {
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -42,7 +42,7 @@ func getLatestPosts(page int) ([]blogPost, error) {
 	return posts, nil
 }
 
-func getSinglePost(key string) (post blogPost, notFound bool, err error) {
+func getSinglePost(key string, currentUser *string) (post blogPost, notFound bool, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -130,7 +130,7 @@ func deletePost(key string) (err error) {
 	return err
 }
 
-func getSearchResults(searchTerm string) (results []blogPost, err error) {
+func getSearchResults(searchTerm string, currentUser *string) (results []blogPost, err error) {
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -181,7 +181,7 @@ func stripToSearchTerm(content, searchTerm string) (result string) {
 	return "..." + result[start:end] + "..."
 }
 
-func getYearMonthCounts() (years []yearSet, err error) {
+func getYearMonthCounts(currentUser *string) (years []yearSet, err error) {
 	rows, err := database.Query(`
 		SELECT 
 			SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
@@ -221,7 +221,7 @@ func getYearMonthCounts() (years []yearSet, err error) {
 	return years, nil
 }
 
-func getStories() ([]blogPost, error) {
+func getStories(currentUser *string) ([]blogPost, error) {
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -251,7 +251,7 @@ func getStories() ([]blogPost, error) {
 	return posts, nil
 }
 
-func getPostsForMonth(month, year string) ([]blogPost, error) {
+func getPostsForMonth(month, year string, currentUser *string) ([]blogPost, error) {
 	monthToken := year + "-" + monthIndexes[month]
 
 	rows, err := database.Query(`
@@ -284,7 +284,7 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 	return posts, nil
 }
 
-func getUser(username, password string) (user string, err error) {
+func validateUser(username, password string) (user string, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			Password

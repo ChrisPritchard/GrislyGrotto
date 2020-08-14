@@ -130,7 +130,7 @@ func unauthorised(w http.ResponseWriter) {
 }
 
 func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templateFile, pageTitle string) {
-	loggedIn := currentUser != ""
+	loggedIn := getCurrentUser(r) != nil
 
 	tmpl := template.New("").Funcs(template.FuncMap{
 		"raw":        raw,

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/yuin/goldmark"
@@ -15,10 +16,11 @@ var secret []byte
 var connectionString string
 var listenURL string
 var isDevelopment bool
-var currentUser string
 
 const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
+
+var database *sql.DB
 
 // this gets populated via the generated static.go
 var embeddedStatics = make(map[string]string)

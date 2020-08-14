@@ -14,8 +14,6 @@ import (
 //go:generate go run static/embedStatic.go
 //go:generate go run templates/embedTemplates.go
 
-var database *sql.DB
-
 func main() {
 	log.SetFlags(0)
 
@@ -79,14 +77,12 @@ func globalHandler(h http.Handler) http.Handler {
 		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)
 
-		// read the current user once per request
-		currentUser, _ = readEncryptedCookie("user", r)
-		if currentUser != "" {
-			// refresh the cookie
-			setEncryptedCookie("user", currentUser, w)
-		}
-
 		h.ServeHTTP(w, r)
+
+		currentUser := getCurrentUser(r)
+		if currentUser != nil {
+			setEncryptedCookie("user", *currentUser, w)
+		}
 	})
 }
 
@@ -119,9 +115,17 @@ func getConfig() {
 		log.Fatal("invalid url specified - missing a :port")
 	}
 
-	var err error
-	secret, err = ioutil.ReadFile("./.secret")
+	s, err := ioutil.ReadFile("./.secret")
 	if err != nil {
 		log.Fatal(".secret file was not found or is not readable\nplease create a .secret file containing a 16 character secret for cookie encryption")
 	}
+	secret = s
+}
+
+func getCurrentUser(r *http.Request) *string {
+	currentUser, _ := readEncryptedCookie("user", r)
+	if currentUser == "" {
+		return nil
+	}
+	return &currentUser
 }

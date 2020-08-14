@@ -13,7 +13,7 @@ func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page, notFirstPage := getPageFromQuery(r)
-	posts, err := getLatestPosts(page)
+	posts, err := getLatestPosts(page, getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return
@@ -41,7 +41,8 @@ func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
 
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path[len("/post/"):]
-	post, notFound, err := getSinglePost(key)
+	currentUser := getCurrentUser(r)
+	post, notFound, err := getSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -52,7 +53,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ownBlog := currentUser == post.AuthorUsername
+	ownBlog := currentUser != nil && *currentUser == post.AuthorUsername
 
 	if r.Method == "GET" {
 		model := singleViewModel{post, ownBlog, true, ""}
@@ -120,13 +121,15 @@ func archivesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	yearSets, err := getYearMonthCounts()
+	currentUser := getCurrentUser(r)
+
+	yearSets, err := getYearMonthCounts(currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
 	}
 
-	stories, err := getStories()
+	stories, err := getStories(currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -161,7 +164,7 @@ func monthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := getPostsForMonth(month, year)
+	posts, err := getPostsForMonth(month, year, getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return
@@ -210,7 +213,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results, err := getSearchResults(searchParam[0])
+	results, err := getSearchResults(searchParam[0], getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return
