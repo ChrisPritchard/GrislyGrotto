@@ -35,6 +35,12 @@ If targeting ARM however, e.g. if planning on deploying to a pi, you need to run
 
 That compiler in there can be installed by installing `arm-linux-gnueabi-gcc` and its dependencies.
 
+### Ensuring static assets are embedded
+
+When running in non-development mode (dev mode is specified by the arg `-dev`), GG will load static assets like css, images and js, and template content for pages, from embedded base64 strings.
+
+These strings are generated via running the app with the single arg `embed`, which generates the `embedded.go` file containing these strings.
+
 ## Getting the site running
 
 All this requires is scp'ing the compiled .so file, the sqlite3 .db file, the static files under /static, and a .secret file used for encryption.
