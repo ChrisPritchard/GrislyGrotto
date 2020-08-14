@@ -224,6 +224,7 @@ div.editor-help span {
     font-family: 'Courier New', Courier, monospace;
     border: 1px solid white;
     background-color: black;
+    color: white;
 }
 
 div.post-submit {
