@@ -30,6 +30,13 @@ const cookieAge = time.Hour
 const themeExpiry = time.Hour * 8760 * 10 // ten years
 const minWordCount = 100
 
+var passwordConfig = &argon2Config{
+	time:    1,
+	memory:  64 * 1024,
+	threads: 4,
+	keyLen:  32,
+}
+
 var markdownEngine = goldmark.New(
 	goldmark.WithExtensions(
 		extension.GFM,

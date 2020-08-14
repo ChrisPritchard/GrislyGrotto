@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/subtle"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -35,6 +36,9 @@ func generateArgonHash(c *argon2Config, password string) (string, error) {
 
 func compareWithArgonHash(password, hash string) (bool, error) {
 	parts := strings.Split(hash, "$")
+	if len(parts) != 6 {
+		return false, errors.New("invalid argon2 hash")
+	}
 
 	c := &argon2Config{}
 	_, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &c.memory, &c.time, &c.threads)

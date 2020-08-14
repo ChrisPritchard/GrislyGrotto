@@ -297,6 +297,26 @@ func validateUser(username, password string) (valid bool, err error) {
 	return compareWithArgonHash(password, passwordHash)
 }
 
+func insertOrUpdateUser(username, password, displayName string) error {
+	passwordHash, err := generateArgonHash(passwordConfig, password)
+	if err != nil {
+		return err
+	}
+
+	res, err := database.Exec("UPDATE Authors SET Password = ?, DisplayName = ? WHERE Username = ?", passwordHash, displayName, username)
+
+	if err != nil {
+		return err
+	}
+	rows, err := res.RowsAffected()
+	if err != nil || rows == 1 {
+		return err
+	}
+
+	_, err = database.Exec("INSERT INTO Authors (Username, Password, DisplayName) VALUES (?, ?, ?)", username, passwordHash, displayName)
+	return err
+}
+
 func createNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
 	date := time.Now().Format("2006-01-02 15:04:05")
 	_, err = database.Exec(`

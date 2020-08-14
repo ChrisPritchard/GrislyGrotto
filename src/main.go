@@ -20,18 +20,27 @@ func main() {
 
 	if len(os.Args) == 2 && os.Args[1] == "embed" {
 		embedAssets()
+		log.Println("assets embedded successfully")
 		return
 	}
 
-	getConfig()   // setup globals from cmd line flags and files
-	setupRoutes() // configure handlers for url fragments
-
+	getConfig()                                      // setup globals from cmd line flags and files
 	db, err := sql.Open("sqlite3", connectionString) // db is closed by app close
 	if err != nil {
 		log.Fatal(err)
 	}
 	database = db
 
+	if len(os.Args) == 5 && os.Args[1] == "setauthor" {
+		err := insertOrUpdateUser(os.Args[2], os.Args[3], os.Args[4])
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("user created or updated successfully")
+		return
+	}
+
+	setupRoutes() // configure handlers for url fragments
 	server := globalHandler(http.DefaultServeMux)
 
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
