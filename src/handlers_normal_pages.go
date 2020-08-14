@@ -83,6 +83,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	if commentError != "" {
 		model := singleViewModel{post, ownBlog, true, commentError}
 		renderView(w, r, model, "single.html", post.Title)
+		return
 	}
 
 	http.Redirect(w, r, "/post/"+post.Key+"#comments", http.StatusFound)

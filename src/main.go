@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"io/ioutil"
 	"log"
@@ -13,12 +14,19 @@ import (
 //go:generate go run static/embedStatic.go
 //go:generate go run templates/embedTemplates.go
 
+var database *sql.DB
+
 func main() {
 	log.SetFlags(0)
 
-	getConfig() // setup globals from cmd line flags and files
-
+	getConfig()   // setup globals from cmd line flags and files
 	setupRoutes() // configure handlers for url fragments
+
+	db, err := sql.Open("sqlite3", connectionString) // db is closed by app close
+	if err != nil {
+		log.Fatal(err)
+	}
+	database = db
 
 	if !isDevelopment {
 		loadTemplates() // create the template html map

@@ -12,12 +12,6 @@ import (
 )
 
 func getLatestPosts(page int) ([]blogPost, error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -31,6 +25,7 @@ func getLatestPosts(page int) ([]blogPost, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	posts := make([]blogPost, 0)
 	var post blogPost
@@ -48,12 +43,6 @@ func getLatestPosts(page int) ([]blogPost, error) {
 }
 
 func getSinglePost(key string) (post blogPost, notFound bool, err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return post, false, err
-	}
-
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -62,6 +51,7 @@ func getSinglePost(key string) (post blogPost, notFound bool, err error) {
 		WHERE 
 			Key = ?
 			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)`, key, "%"+draftPrefix+"%", currentUser)
+
 	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date, &post.AuthorUsername, &post.IsStory)
 
 	if err != nil {
@@ -72,12 +62,12 @@ func getSinglePost(key string) (post blogPost, notFound bool, err error) {
 	}
 
 	post.Key = key
-	post.Comments, err = getPostComments(database, key)
+	post.Comments, err = getPostComments(key)
 
 	return post, false, err
 }
 
-func getPostComments(database *sql.DB, key string) (comments []comment, err error) {
+func getPostComments(key string) (comments []comment, err error) {
 	comments = make([]comment, 0)
 	rows, err := database.Query(`
 		SELECT 
@@ -86,6 +76,7 @@ func getPostComments(database *sql.DB, key string) (comments []comment, err erro
 		WHERE Post_Key = ?
 		ORDER BY Date`, key)
 
+	defer rows.Close()
 	if err != nil {
 		return comments, nil
 	}
@@ -104,12 +95,6 @@ func getPostComments(database *sql.DB, key string) (comments []comment, err erro
 }
 
 func addCommentToBlog(author, content, postKey string) (err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return err
-	}
-
 	date := time.Now().Format("2006-01-02 15:04:05")
 	_, err = database.Exec(`
 		INSERT INTO 
@@ -120,12 +105,6 @@ func addCommentToBlog(author, content, postKey string) (err error) {
 }
 
 func tryDeleteComment(id int, currentUser string) (success bool, err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return false, err
-	}
-
 	result, err := database.Exec(`
 		DELETE FROM Comments
 		WHERE Id = ? 
@@ -143,12 +122,6 @@ func tryDeleteComment(id int, currentUser string) (success bool, err error) {
 }
 
 func deletePost(key string) (err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return err
-	}
-
 	_, err = database.Exec(`
 		DELETE FROM Posts
 		WHERE Key = ?`,
@@ -158,12 +131,6 @@ func deletePost(key string) (err error) {
 }
 
 func getSearchResults(searchTerm string) (results []blogPost, err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -174,6 +141,8 @@ func getSearchResults(searchTerm string) (results []blogPost, err error) {
 			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)
 		ORDER BY p.Date DESC 
 		LIMIT ?`, "%"+searchTerm+"%", "%"+searchTerm+"%", "%"+draftPrefix+"%", currentUser, maxSearchResults)
+
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -213,12 +182,6 @@ func stripToSearchTerm(content, searchTerm string) (result string) {
 }
 
 func getYearMonthCounts() (years []yearSet, err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	rows, err := database.Query(`
 		SELECT 
 			SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
@@ -230,6 +193,7 @@ func getYearMonthCounts() (years []yearSet, err error) {
 			Month 
 		ORDER BY 
 			Date`, "%"+draftPrefix+"%", currentUser)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -258,12 +222,6 @@ func getYearMonthCounts() (years []yearSet, err error) {
 }
 
 func getStories() ([]blogPost, error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -273,6 +231,7 @@ func getStories() ([]blogPost, error) {
 			p.IsStory = 1
 			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)
 		ORDER BY p.Date DESC`, "%"+draftPrefix+"%", currentUser)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -293,12 +252,6 @@ func getStories() ([]blogPost, error) {
 }
 
 func getPostsForMonth(month, year string) ([]blogPost, error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	monthToken := year + "-" + monthIndexes[month]
 
 	rows, err := database.Query(`
@@ -311,6 +264,7 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 			SUBSTR(p.Date, 0, 8) = ?
 			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)
 		ORDER BY p.Date`, monthToken, "%"+draftPrefix+"%", currentUser)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -331,17 +285,12 @@ func getPostsForMonth(month, year string) ([]blogPost, error) {
 }
 
 func getUser(username, password string) (user string, err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return "", err
-	}
-
 	row := database.QueryRow(`
 		SELECT 
 			Password
 		FROM Authors
 		WHERE Username = ?`, username)
+
 	var hashAndSalt string
 	err = row.Scan(&hashAndSalt)
 	if err != nil {
@@ -366,12 +315,6 @@ func getUser(username, password string) (user string, err error) {
 }
 
 func createNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return err
-	}
-
 	date := time.Now().Format("2006-01-02 15:04:05")
 	_, err = database.Exec(`
 		INSERT INTO 
@@ -382,12 +325,6 @@ func createNewPost(key, title, content string, isStory bool, wordCount int, user
 }
 
 func updatePost(key, title, content string, isStory bool, wordCount int, updateDate bool) (err error) {
-	database, err := sql.Open("sqlite3", connectionString)
-	defer database.Close()
-	if err != nil {
-		return err
-	}
-
 	if updateDate {
 		date := time.Now().Format("2006-01-02 15:04:05")
 		_, err = database.Exec(`
