@@ -20,7 +20,11 @@ __Release Post:__ [https://grislygrotto.nz/post/grisly-grotto-17](https://grisly
 
 __Technology:__ Go
 
-Also uses the following Go packages (outside of built-in go packages): [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3) and [yuin/goldmark](https://github.com/yuin/goldmark) for markdown.
+Also uses the following Go packages (outside of built-in go packages): 
+
+- [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3).
+- [yuin/goldmark](https://github.com/yuin/goldmark) for markdown.
+- [x/crypto/argon2](https://golang.org/x/crypto/argon2) for user password hashing.
 
 __Data Store:__ SQLite
 

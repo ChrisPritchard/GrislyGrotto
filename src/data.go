@@ -1,10 +1,7 @@
 package main
 
 import (
-	"crypto/sha512"
 	"database/sql"
-	"encoding/base64"
-	"errors"
 	"regexp"
 	"strconv"
 	"strings"
@@ -284,34 +281,20 @@ func getPostsForMonth(month, year string, currentUser *string) ([]blogPost, erro
 	return posts, nil
 }
 
-func validateUser(username, password string) (user string, err error) {
+func validateUser(username, password string) (valid bool, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			Password
 		FROM Authors
 		WHERE Username = ?`, username)
 
-	var hashAndSalt string
-	err = row.Scan(&hashAndSalt)
+	var passwordHash string
+	err = row.Scan(&passwordHash)
 	if err != nil {
-		return "", err
+		return false, err
 	}
 
-	split := strings.Index(hashAndSalt, ",")
-	if split == -1 {
-		return "", errors.New("invalid user password field")
-	}
-
-	toCheck := []byte(hashAndSalt[split+1:] + password)
-	hasher := sha512.New384()
-	hasher.Write(toCheck)
-	result := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
-
-	if result != hashAndSalt[:split] {
-		return "", errors.New("no match found")
-	}
-
-	return username, nil
+	return compareWithArgonHash(password, passwordHash)
 }
 
 func createNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {

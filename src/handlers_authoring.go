@@ -24,26 +24,26 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, password := r.Form["username"], r.Form["password"]
-	if len(username) != 1 || len(password) != 1 {
+	username, password := r.FormValue("username"), r.FormValue("password")
+	if username == "" || password == "" {
 		renderView(w, r, loginViewModel{"Both username and password are required"}, "login.html", "Login")
 		return
 	}
 
-	blockTime := getBlockTime(r, username[0])
+	blockTime := getBlockTime(r, username)
 	if blockTime > 0 {
 		renderView(w, r, loginViewModel{"Cannot make another attempt for another " + strconv.Itoa(blockTime) + " seconds"}, "login.html", "Login")
 		return
 	}
 
-	user, err := validateUser(username[0], password[0])
-	if err != nil {
-		setBlockTime(r, username[0])
+	valid, err := validateUser(username, password)
+	if err != nil || !valid {
+		setBlockTime(r, username)
 		renderView(w, r, loginViewModel{"Invalid credentials"}, "login.html", "login")
 		return
 	}
 
-	err = setEncryptedCookie("user", user, w)
+	err = setEncryptedCookie("user", username, w)
 	if err != nil {
 		serverError(w, err)
 		return
