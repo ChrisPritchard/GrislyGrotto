@@ -20,6 +20,8 @@ To perform an update:
 
     `sudo mv ~/grislygrotto.so /var/www/grislygrotto/`
 
+    **NOTE**: if also updating the database for whatever reason (change in schema, or content updates via sql etc), then after sudoing it into place, you should also run `sudo chown www-data grislygrotto.db`, otherwise the site will not be able to update it.
+
 7. Restart the service stopped in step 5 via:
 
     `sudo systemctl start grislygrotto.service`
