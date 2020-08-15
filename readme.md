@@ -1,8 +1,8 @@
 ## Release 9.0
 
-<b>Release Date:</b> Possibly 23rd February, 2011
+<b>Release Date:</b> 6th September, 2011
 
-<b>Release Post:</b> <a href="http://grislygrotto.azurewebsites.net/p/introducing-grisly-grotto-90">Introducing Grisly Grotto 9.0!</a>
+<b>Release Post:</b> <a href="https://www.grislygrotto.nz/post/introducing-grisly-grotto-90">Introducing Grisly Grotto 9.0!</a>
 
 <b>Frontend:</b> Site Handler acting as a REST service (sort of), HTML5 frontend
 
