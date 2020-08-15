@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
 	"flag"
@@ -126,8 +127,10 @@ func getConfig() {
 	}
 
 	s, err := ioutil.ReadFile("./.secret")
-	if err != nil {
-		log.Fatal(".secret file was not found or is not readable\nplease create a .secret file containing a 16 character secret for cookie encryption")
+	if err != nil || len(s) != 16 {
+		bytes := make([]byte, 16)
+		rand.Read(bytes)
+		s = bytes
 	}
 	secret = s
 }

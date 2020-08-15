@@ -47,6 +47,7 @@ All this requires is scp'ing the compiled .so file, the sqlite3 .db file, the st
 
 1. ssh to the target machine and make a folder somewhere.
 2. create a .secret file in it 16 characters long, e.g. `echo 1234567890123456 > .secret`
+    - if you do not do this, a random secret is generated
 3. exit `ssh` and use `scp` to copy over:
 
     - the grislygrotto.so file

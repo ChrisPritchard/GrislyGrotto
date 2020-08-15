@@ -135,10 +135,13 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 		result, err := tmpl.ParseFiles("./templates/_master.html", "./templates/"+templateFile)
 		tmpl = template.Must(result, err)
 	} else {
-		templateContent := embeddedAssets["./templates/_master.html"]
-		templateContent += embeddedAssets["./templates/"+templateFile]
-		raw, _ := base64.StdEncoding.DecodeString(templateContent)
-		result, err := tmpl.Parse(string(raw))
+		b64 := embeddedAssets["./templates/_master.html"]
+		masterContent, _ := base64.StdEncoding.DecodeString(b64)
+
+		b64 = embeddedAssets["./templates/"+templateFile]
+		templateContent, _ := base64.StdEncoding.DecodeString(b64)
+
+		result, err := tmpl.Parse(string(masterContent) + string(templateContent))
 		tmpl = template.Must(result, err)
 	}
 
