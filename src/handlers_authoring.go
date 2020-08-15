@@ -18,12 +18,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
-		serverError(w, err)
-		return
-	}
-
 	username, password := r.FormValue("username"), r.FormValue("password")
 	if username == "" || password == "" {
 		renderView(w, r, loginViewModel{"Both username and password are required"}, "login.html", "Login")
@@ -174,23 +168,12 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
-		badRequest(w, "unable to parse form")
-		return
-	}
+	isStory := r.FormValue("isStory") != ""
+	isDraft := r.FormValue("isDraft") != ""
+	title := r.FormValue("title")
+	content := r.FormValue("content")
 
-	titleF, contentF := r.Form["title"], r.Form["content"]
-	if len(titleF) != 1 || len(contentF) != 1 {
-		badRequest(w, "invalid form")
-		return
-	}
-
-	isStory := len(r.Form["isStory"]) > 0
-	isDraft := len(r.Form["isDraft"]) > 0
-	title, content := titleF[0], contentF[0]
-
-	if len(title) == 0 || len(content) == 0 {
+	if title == "" || content == "" {
 		model := editorViewModel{true, title, content, isStory, isDraft, "both title and content are required to be set"}
 		renderView(w, r, model, "editor.html", "New Post")
 		return
@@ -262,31 +245,20 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
-	err = r.ParseForm()
-	if err != nil {
-		badRequest(w, "unable to parse form")
-		return
-	}
+	isStory := r.FormValue("isStory") != ""
+	isDraft := r.FormValue("isDraft") != ""
+	title := r.FormValue("title")
+	content := r.FormValue("content")
 
-	titleF, contentF := r.Form["title"], r.Form["content"]
-	if len(titleF) != 1 || len(contentF) != 1 {
-		badRequest(w, "invalid form")
-		return
-	}
-
-	isStory := len(r.Form["isStory"]) > 0
-	isDraft := len(r.Form["isDraft"]) > 0 && post.isDraft() // can only make a post a draft if it was already a draft
-	title, content := titleF[0], contentF[0]
-
-	if len(title) == 0 || len(content) == 0 {
-		model := editorViewModel{true, title, content, isStory, isDraft, "both title and content are required to be set"}
+	if title == "" || content == "" {
+		model := editorViewModel{false, title, content, isStory, isDraft, "both title and content are required to be set"}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
-		model := editorViewModel{true, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+		model := editorViewModel{false, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}

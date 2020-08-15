@@ -102,12 +102,8 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	err := r.ParseForm()
-	if err != nil {
-		serverError(w, err)
-	}
-	setCookie("theme", r.Form["current-theme"][0], time.Now().Add(themeExpiry), w)
-	http.Redirect(w, r, "/"+r.Form["return-path"][0], http.StatusFound)
+	setCookie("theme", r.FormValue("current-theme"), time.Now().Add(themeExpiry), w)
+	http.Redirect(w, r, "/"+r.FormValue("return-path"), http.StatusFound)
 }
 
 func serverError(w http.ResponseWriter, err error) {

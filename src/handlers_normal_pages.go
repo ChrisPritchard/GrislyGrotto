@@ -24,11 +24,11 @@ func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getPageFromQuery(r *http.Request) (page int, notFirstPage bool) {
-	pageParam, hasPage := r.URL.Query()["page"]
+	pageParam := r.URL.Query().Get("page")
 	page = 0
 	notFirstPage = false
-	if hasPage && len(pageParam[0]) > 0 {
-		page, _ = strconv.Atoi(pageParam[0])
+	if pageParam != "" {
+		page, _ = strconv.Atoi(pageParam)
 		if page < 0 {
 			page = 0
 		}
@@ -91,24 +91,19 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createComment(r *http.Request, postKey string) (commentError string, err error) {
-	err = r.ParseForm()
-	if err != nil {
-		return "", err
-	}
-
-	author, content := r.Form["author"], r.Form["content"]
-	if len(author) != 1 || len(author[0]) == 0 || len(content) != 1 || len(content[0]) == 0 || areDangerous(author[0], content[0]) {
+	author, content := r.FormValue("author"), r.FormValue("content")
+	if author == "" || content == "" || areDangerous(author, content) {
 		return "both author and content are required and must be safe values", nil
 	}
 
-	blockTime := getBlockTime(r, author[0])
+	blockTime := getBlockTime(r, author)
 	if blockTime > 0 {
 		return "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
 	}
 
-	setBlockTime(r, author[0]) // primitive automated commenting protection
+	setBlockTime(r, author) // primitive automated commenting protection
 
-	err = addCommentToBlog(author[0], content[0], postKey)
+	err = addCommentToBlog(author, content, postKey)
 	if err != nil {
 		return "", err
 	}
@@ -207,20 +202,20 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	searchParam, hasSearch := r.URL.Query()["searchTerm"]
-	if !hasSearch || len(searchParam[0]) == 0 {
+	searchParam := r.URL.Query().Get("searchTerm")
+	if searchParam == "" {
 		renderView(w, r, nil, "search.html", "Search")
 		return
 	}
 
-	results, err := getSearchResults(searchParam[0], getCurrentUser(r))
+	results, err := getSearchResults(searchParam, getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return
 	}
 
 	zeroResults := len(results) == 0
-	renderView(w, r, searchViewModel{searchParam[0], zeroResults, results}, "search.html", "Search")
+	renderView(w, r, searchViewModel{searchParam, zeroResults, results}, "search.html", "Search")
 }
 
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
