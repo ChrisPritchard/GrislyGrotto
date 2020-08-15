@@ -38,45 +38,12 @@ COMMIT;
 
 ## Password column value generation
 
-The most complicated part is creating the password for authors, which follows the following algorithm:
+Passwords are stored in the database using the [argon2](https://en.wikipedia.org/wiki/Argon2) hashing algorithm, which is (with appropriate configuration) one of the strongest modern hashing algorithms
 
-1. A random salt is generated (typically I use a GUID).
-2. This is combined with the users password, e.g. if the password is `mypassword` and the salt is `arandomsalt` then the combined value is `arandomsaltmypassword`.
-3. Using SHA384, hash the combined value then encode the result as base64. The previous example would be: `W7168U1nHuIYSHPQdeuCIHJlrXi0RASehZZonLqdaILi/bNHBDLPYLQTHgLA3EYA`
-4. Append the salt to the final value with a quote, and store that. So the final value stored for the above example would be: `W7168U1nHuIYSHPQdeuCIHJlrXi0RASehZZonLqdaILi/bNHBDLPYLQTHgLA3EYA,arandomsalt`
+To generate a new author, or to update an existing author, run the site executable with the following args (assuming the site has been compiled as `grislygrotto`).
 
-The above can be done using the following go code:
+`./grislygrotto setauthor [username] [password] [displayname]`
 
-```go
-package main
+This will take the password, run it through the argon2 algorithm, and set the result into the Author table.
 
-import (
-	"crypto/sha512"
-	"encoding/base64"
-	"fmt"
-)
-
-func main() {
-	salt := "arandomsalt"
-	password := "mypassword"
-
-	toCheck := []byte(salt + password)
-	hasher := sha512.New384()
-	hasher.Write(toCheck)
-	result := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
-
-	fmt.Println(result)
-}
-```
-
-Notably, you can check the way passwords are checked via the `getUser` function within [data.go](./src/data.go).
-
-## Is this secure?
-
-Not really. 
-
-If the database is captured, then SHA384 isn't tough to calculate with something like hashcat. The use of a random salt means a user can't use a rainbow table, and would have to brute force each password individually, but that only becomes a problem if you have thousands or hundreds of thousands of users to force. 
-
-For this site, where there is only one or two users, having the salt at hand would mean the password could probably be bruteforced in seconds using something like rockyou, if the user is using a weak password. The site itself uses a simple brute force protection on its login form, plus https, that will defeat most web based password attacks, however best not to leak the database. 
-
-The measures used here with salting and hashing are more of a proof of concept: this level of password storage obfuscation is 'reasonable' for regular, professional work, though at the time of writing you would likely use an algorithm that is expensive computationally like argon2 (which I am not doing, as it requires additional dependencies).
+Configuration params for the argon2 algorithm are stored in [globals.go](./src/globals.go).
