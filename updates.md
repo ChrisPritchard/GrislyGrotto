@@ -4,7 +4,7 @@ To perform an update:
 
 1. Perform a backup of the site. At the very least, copy the existing grislygrotto.db file somewhere safe.
 
-2. Ensure the code has re-embedded all static assets and views, via the arg `embed`.
+2. Ensure the code has re-embedded all static assets and views, via the arg `-embed`.
 
 3. In the `/src` folder, compile `grislygrotto.so`. For linux (x64) this would be:
 

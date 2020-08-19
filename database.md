@@ -42,8 +42,8 @@ Passwords are stored in the database using the [argon2](https://en.wikipedia.org
 
 To generate a new author, or to update an existing author, run the site executable with the following args (assuming the site has been compiled as `grislygrotto`).
 
-`./grislygrotto setauthor [username] [password] [displayname]`
+`./grislygrotto -setauthor [username] [password] [displayname]`
 
-This will take the password, run it through the argon2 algorithm, and set the result into the Author table.
+This will take the password, run it through the argon2 algorithm, and set the result into the Author table. You should also be able to use `-db` to target a specific database - if not set `./grislygrotto.db` will be used.
 
 Configuration params for the argon2 algorithm are stored in [globals.go](./src/globals.go).

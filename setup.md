@@ -39,7 +39,7 @@ That compiler in there can be installed by installing `arm-linux-gnueabi-gcc` an
 
 When running in non-development mode (dev mode is specified by the arg `-dev`), GG will load static assets like css, images and js, and template content for pages, from embedded base64 strings.
 
-These strings are generated via running the app with the single arg `embed`, which generates the `embedded.go` file containing these strings.
+These strings are generated via running the app with the single arg `-embed`, which generates the `embedded.go` file containing these strings.
 
 ## Getting the site running
 
