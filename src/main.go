@@ -19,30 +19,15 @@ import (
 
 func main() {
 	log.SetFlags(0)
+	log.SetOutput(os.Stdout)
 
-	if len(os.Args) == 2 && os.Args[1] == "embed" {
-		embedAssets()
-		log.Println("assets embedded successfully")
+	proceed := getConfig() // setup globals from cmd line flags and files
+	if !proceed {
 		return
 	}
 
-	getConfig()                                      // setup globals from cmd line flags and files
-	db, err := sql.Open("sqlite3", connectionString) // db is closed by app close
-	if err != nil {
-		log.Fatal(err)
-	}
-	database = db
+	setupRoutes()
 
-	if len(os.Args) == 5 && os.Args[1] == "setauthor" {
-		err := insertOrUpdateUser(os.Args[2], os.Args[3], os.Args[4])
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("user created or updated successfully")
-		return
-	}
-
-	setupRoutes() // configure handlers for url fragments
 	server := globalHandler(http.DefaultServeMux)
 
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
@@ -104,24 +89,50 @@ func globalHandler(h http.Handler) http.Handler {
 	})
 }
 
-func getConfig() {
+func getConfig() bool {
 	connectionString = defaultConnectionString
 	listenURL = defaultListenAddr
 
 	connArg := flag.String("db", "", "the sqlite connection string\n\tdefaults to "+defaultConnectionString)
 	urlArg := flag.String("url", "", "the url with port to listen to\n\tdefaults to "+defaultListenAddr)
 	envArg := flag.Bool("dev", false, "sets to run in 'dev' mode\n\tif set resources are loaded on request rather than embedded")
+	embedArg := flag.Bool("embed", false, "base64 encodes all static resources into a embedded.go file, then exits")
+	setAuthorArg := flag.Bool("setauthor", false, "creates or updates a login account, then exits\nshould be followed by [username] [password] [displayname]")
 	flag.Parse()
+
+	if *embedArg {
+		embedAssets()
+		log.Println("assets embedded successfully")
+		return false
+	}
 
 	if *connArg != "" {
 		connectionString = *connArg
 	}
 
+	db, err := sql.Open("sqlite3", connectionString) // db is closed by app close
+	if err != nil {
+		log.Fatal(err)
+	}
+	database = db
+
+	if *setAuthorArg {
+		parts := flag.Args()
+		if len(parts) != 3 {
+			flag.PrintDefaults()
+			return false
+		}
+		err := insertOrUpdateUser(parts[0], parts[1], parts[2])
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("user created or updated successfully")
+		return false
+	}
+
 	if *urlArg != "" {
 		listenURL = *urlArg
 	}
-
-	isDevelopment = *envArg
 
 	// handles if url is fully qualified with scheme, which
 	// is invalid for Go's ListenAndServe
@@ -139,6 +150,9 @@ func getConfig() {
 		s = bytes
 	}
 	secret = s
+
+	isDevelopment = *envArg
+	return true
 }
 
 func embedAssets() {
