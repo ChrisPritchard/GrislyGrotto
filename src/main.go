@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
@@ -88,17 +89,22 @@ func globalHandler(h http.Handler) http.Handler {
 		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)
 
-		h.ServeHTTP(w, r)
+		user, _ := readEncryptedCookie("user", r)
+		var userVal *string
+		if user != "" {
+			userVal = &user
+		}
 
-		currentUser := getCurrentUser(r)
-		if currentUser != nil {
-			setEncryptedCookie("user", *currentUser, w)
+		userCtx := context.WithValue(r.Context(), authenticatedUser, userVal)
+		h.ServeHTTP(w, r.WithContext(userCtx))
+
+		if user != "" {
+			setEncryptedCookie("user", user, w)
 		}
 	})
 }
 
 func getConfig() {
-
 	connectionString = defaultConnectionString
 	listenURL = defaultListenAddr
 
@@ -133,14 +139,6 @@ func getConfig() {
 		s = bytes
 	}
 	secret = s
-}
-
-func getCurrentUser(r *http.Request) *string {
-	currentUser, _ := readEncryptedCookie("user", r)
-	if currentUser == "" {
-		return nil
-	}
-	return &currentUser
 }
 
 func embedAssets() {

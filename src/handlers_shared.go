@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+func getCurrentUser(r *http.Request) *string {
+	return r.Context().Value(authenticatedUser).(*string)
+}
+
 func ipOnly(ipAndPort string) string {
 	portMarker := strings.LastIndex(ipAndPort, ":")
 	if portMarker == -1 {

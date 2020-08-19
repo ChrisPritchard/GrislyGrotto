@@ -21,6 +21,7 @@ const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
 
 var database *sql.DB
+var authenticatedUser = struct{}{}
 
 const pageLength = 5
 const maxCommentCount = 20
