@@ -160,7 +160,7 @@ func embedAssets() {
 package main
 var embeddedAssets = map[string]string {
 `, time.Now().Format(time.RFC3339))
-	out.Write([]byte(header))
+	fmt.Fprint(out, header)
 
 	for _, path := range paths {
 		files, err := ioutil.ReadDir(path)
@@ -176,5 +176,5 @@ var embeddedAssets = map[string]string {
 		}
 	}
 
-	out.Write([]byte("\n}\n"))
+	fmt.Fprint(out, "\n}\n")
 }
