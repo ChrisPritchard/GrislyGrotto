@@ -276,6 +276,20 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	http.Redirect(w, r, "/post/"+key, http.StatusFound)
 }
 
+func contentHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		tryGetContentFromStorage(w, r)
+		return
+	} else if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	} else if getCurrentUser(r) == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	tryUploadContentToStorage(w, r)
+}
+
 func createPostKey(title string) string {
 	clean := strings.Replace(strings.ToLower(title), " ", "-", -1)
 	regex, _ := regexp.Compile("[^A-Za-z0-9 -]+")

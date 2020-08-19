@@ -55,6 +55,7 @@ func setupRoutes() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/editor/", editorHandler)
 	http.HandleFunc("/save-theme", themeHandler)
+	http.HandleFunc("/content/", contentHandler)
 }
 
 func globalHandler(h http.Handler) http.Handler {
@@ -92,9 +93,11 @@ func globalHandler(h http.Handler) http.Handler {
 func getConfig() bool {
 	connectionString = defaultConnectionString
 	listenURL = defaultListenAddr
+	contentStorageName = defaultStorageName
 
 	connArg := flag.String("db", "", "the sqlite connection string\n\tdefaults to "+defaultConnectionString)
 	urlArg := flag.String("url", "", "the url with port to listen to\n\tdefaults to "+defaultListenAddr)
+	storageArg := flag.String("storage", "", "the target storage bucket/container for user content\n\tdefaults to "+defaultStorageName)
 	envArg := flag.Bool("dev", false, "sets to run in 'dev' mode\n\tif set resources are loaded on request rather than embedded")
 	embedArg := flag.Bool("embed", false, "base64 encodes all static resources into a embedded.go file, then exits")
 	setAuthorArg := flag.Bool("setauthor", false, "creates or updates a login account, then exits\nshould be followed by [username] [password] [displayname]")
@@ -150,6 +153,10 @@ func getConfig() bool {
 		s = bytes
 	}
 	secret = s
+
+	if *storageArg != "" {
+		contentStorageName = *storageArg
+	}
 
 	isDevelopment = *envArg
 	return true

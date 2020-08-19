@@ -16,9 +16,11 @@ var secret []byte
 var connectionString string
 var listenURL string
 var isDevelopment bool
+var contentStorageName string
 
 const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
+const defaultStorageName = "grislygrotto-content"
 
 var database *sql.DB
 var authenticatedUser = struct{}{}
