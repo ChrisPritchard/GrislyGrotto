@@ -60,7 +60,6 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		if len(post.Comments) >= maxCommentCount {
 			model.CanComment = false
 		}
-		setBlockTime(r, "") // ensure comments can't be made immediately by spammers
 		renderView(w, r, model, "single.html", post.Title)
 		return
 	}
