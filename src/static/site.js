@@ -126,6 +126,13 @@ if  (upload) {
         if(files.length != 1) {
             return false;
         }
+        var size = Math.round((files[0].size/1024/1024)*100)/100;
+        if (size > 1) {
+            document.querySelector("#content-upload-result").innerText = "file size is too large ("+size+" MB)";
+            document.querySelector("#copy-content-html").classList.add("hide");
+            return false;
+        }
+
         var filename = (new Date()).getTime() + "-" + files[0].name;
 
         var form = new FormData();
@@ -133,14 +140,19 @@ if  (upload) {
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/content/"+filename);
-        xhr.addEventListener("load", function() {
-            document.querySelector("#content-upload-result").innerText = "<img src=\"/content/"+filename+"\" />";
-            document.querySelector("#copy-content-html").classList.remove("hide");
-        });
-        xhr.addEventListener("error", function() {
-            document.querySelector("#content-upload-result").innerText = "an error occurred uploading :(";
-            document.querySelector("#copy-content-html").classList.add("hide");
-        });
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4)
+                return;
+                
+            if (xhr.status == 202) {
+                document.querySelector("#content-upload-result").innerText = "<img src=\"/content/"+filename+"\" />";
+                document.querySelector("#copy-content-html").classList.remove("hide");
+            } else {
+                document.querySelector("#content-upload-result").innerText = "an error occurred uploading :(";
+                document.querySelector("#copy-content-html").classList.add("hide");
+            }
+        };
+
         xhr.send(form);
 
         return false;
