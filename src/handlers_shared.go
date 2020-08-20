@@ -96,6 +96,16 @@ func setMimeType(w http.ResponseWriter, r *http.Request) {
 		headers.Set("Content-Type", "application/javascript")
 	case ".png":
 		headers.Set("Content-Type", "image/png")
+		headers.Set("X-Content-Type", "image/png")
+	case ".gif":
+		headers.Set("Content-Type", "image/gif")
+		headers.Set("X-Content-Type", "image/gif")
+	case ".jpg":
+		headers.Set("Content-Type", "image/jpeg")
+		headers.Set("X-Content-Type", "image/jpeg")
+	case ".jpeg":
+		headers.Set("Content-Type", "image/jpeg")
+		headers.Set("X-Content-Type", "image/jpeg")
 	default:
 		return
 	}

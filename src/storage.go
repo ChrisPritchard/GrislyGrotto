@@ -16,7 +16,9 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := session.NewSession()
+	session, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
 	if err != nil {
 		serverError(w, err)
 	}
@@ -37,15 +39,21 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 }
 
 func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
-	file, fileHeader, err := r.FormFile("file")
+	filename := r.URL.Path[len("/content/"):]
+	if len(filename) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	file, _, err := r.FormFile("file")
 	if err != nil {
 		serverError(w, err)
 	}
 	defer file.Close()
 
-	filename := fileHeader.Filename
-
-	session, err := session.NewSession()
+	session, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
 	if err != nil {
 		serverError(w, err)
 	}

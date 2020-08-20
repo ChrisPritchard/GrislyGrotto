@@ -116,3 +116,39 @@ if (title && content) {
         }
     }, 1000);
 }
+
+// content uploader
+
+var upload = document.querySelector('#content-upload-button');
+if  (upload) {
+    upload.addEventListener('click', function() {
+        var files = document.querySelector('#content-selector').files;
+        if(files.length != 1) {
+            return false;
+        }
+        var filename = (new Date()).getTime() + files[0].name;
+
+        var form = new FormData();
+        form.append("file", files[0])
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/content/"+filename);
+        xhr.addEventListener("load", function() {
+            document.querySelector("#content-upload-result").innerText = "<img src=\"/content/"+filename+"\" />";
+            document.querySelector("#copy-content-html").classList.remove("hide");
+        });
+        xhr.send(form);
+
+        return false;
+    });
+
+    document.querySelector("#copy-content-html").addEventListener('click', function () {
+        var textToCopy = document.querySelector("#content-upload-result").innerText;
+        const temp = document.createElement('textarea');
+        temp.value = textToCopy;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+    });
+}

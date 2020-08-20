@@ -270,6 +270,27 @@ span.timer {
     margin-top: 0;
 }
 
+#content-upload-container {
+    border: 1px solid white;
+    padding: 10px;
+    width: 300px;
+    margin-bottom: 1em;
+}
+
+#content-upload-container h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#content-upload-button {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.hide {
+    display: none;
+}
+
 @media only screen and (max-width: 1000px) {
     .control-panel {
         position: relative;
