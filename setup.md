@@ -87,6 +87,16 @@ Running the site manually from the command line isn't a good idea. Instead we sh
     WantedBy=multi-user.target
     ```
 
+    NOTE: A recent update to GG includes the ability to upload images to a s3 bucket in the editor. In this case, under the `User=www-data` above, add three more lines into the service section:
+
+    ```
+    Environment="AWS_REGION=<your region, e.g. ap-southeast-2>"
+    Environment="AWS_ACCESS_KEY_ID=<the access key for the iam user to use>"
+    Environment="AWS_SECRET_ACCESS_KEY=<the secret access key for the iam user to use>"
+    ```
+
+    For this, I recommend creating an IAM user with a policy or inline permissions granting **only** s3:getObject and s3:putObject on the specific s3 bucket. The default name for said bucket is `grislygrotto-content`. 
+
 4. Start the service using the following commands: 
 
     `sudo systemctl enable grislygrotto.service`
