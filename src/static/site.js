@@ -137,6 +137,10 @@ if  (upload) {
             document.querySelector("#content-upload-result").innerText = "<img src=\"/content/"+filename+"\" />";
             document.querySelector("#copy-content-html").classList.remove("hide");
         });
+        xhr.addEventListener("error", function() {
+            document.querySelector("#content-upload-result").innerText = "an error occurred uploading :(";
+            document.querySelector("#copy-content-html").classList.add("hide");
+        });
         xhr.send(form);
 
         return false;
