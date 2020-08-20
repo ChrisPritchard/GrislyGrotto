@@ -21,6 +21,7 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		serverError(w, err)
+		return
 	}
 
 	downloader := s3manager.NewDownloader(session)
@@ -31,7 +32,8 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		serverError(w, err)
+		http.NotFound(w, r)
+		return
 	}
 
 	setMimeType(w, r)
@@ -48,6 +50,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 	file, _, err := r.FormFile("file")
 	if err != nil {
 		serverError(w, err)
+		return
 	}
 	defer file.Close()
 
@@ -56,6 +59,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		serverError(w, err)
+		return
 	}
 
 	uploader := s3manager.NewUploader(session)
@@ -67,6 +71,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		serverError(w, err)
+		return
 	}
 
 	w.WriteHeader(http.StatusAccepted)

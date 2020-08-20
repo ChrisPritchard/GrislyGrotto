@@ -126,7 +126,7 @@ if  (upload) {
         if(files.length != 1) {
             return false;
         }
-        var filename = (new Date()).getTime() + files[0].name;
+        var filename = (new Date()).getTime() + "-" + files[0].name;
 
         var form = new FormData();
         form.append("file", files[0])

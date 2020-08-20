@@ -70,7 +70,7 @@ func globalHandler(h http.Handler) http.Handler {
 		csp := "default-src 'none';"
 		csp += "script-src 'self';"
 		csp += "connect-src 'self';"
-		csp += "img-src 'self' https://grislygrotto.blob.core.windows.net;"
+		csp += "img-src 'self';"
 		csp += "style-src 'self' 'unsafe-inline';"
 		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)
