@@ -91,8 +91,8 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 
 func createComment(r *http.Request, postKey string) (commentError string, err error) {
 	author, content := r.FormValue("author"), r.FormValue("content")
-	if author == "" || content == "" || areDangerous(author, content) {
-		return "both author and content are required and must be safe values", nil
+	if author == "" || content == "" {
+		return "both author and content are required", nil
 	}
 
 	blockTime := getBlockTime(r, author)

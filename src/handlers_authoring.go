@@ -301,12 +301,3 @@ func calculateWordCount(content string) int {
 	stripped := string(regex.ReplaceAll([]byte(content), []byte("")))
 	return len(strings.Split(stripped, " "))
 }
-
-func areDangerous(values ...string) bool {
-	for _, v := range values {
-		if strings.ContainsAny(v, "<>") {
-			return true
-		}
-	}
-	return false
-}
