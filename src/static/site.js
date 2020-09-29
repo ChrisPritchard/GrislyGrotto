@@ -145,7 +145,7 @@ if  (upload) {
                 return;
                 
             if (xhr.status == 202) {
-                document.querySelector("#content-upload-result").innerText = "<img src=\"/content/"+filename+"\" />";
+                document.querySelector("#content-upload-result").innerText = "<div align=\"center\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></div>";
                 document.querySelector("#copy-content-html").classList.remove("hide");
             } else {
                 document.querySelector("#content-upload-result").innerText = "an error occurred uploading :(";
