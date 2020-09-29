@@ -66,6 +66,8 @@ func globalHandler(h http.Handler) http.Handler {
 		headers.Set("X-Frame-Options", "SAMEORIGIN")
 		headers.Set("X-XSS-Protection", "1; mode=block")
 		headers.Set("X-Content-Type-Options", "nosniff")
+		headers.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		headers.Set("Referrer-Policy", "same-origin")
 
 		csp := "default-src 'none';"
 		csp += "script-src 'self';"
