@@ -13,8 +13,17 @@ wanderingTriangles.baseSettings = function() {
         backgroundColour: "black",
         primaryColour: "white",
         secondaryColour: "gray",
+        directionBias: 1
     };
 }
+
+wanderingTriangles.constants = {
+    UP: 0, DOWN: 1, LEFT: 2, RIGHT: 3
+};
+
+// triangles are drawn from their 'point'. so a right triangle, pointing right, will actually
+// extend further left than the current x,y. This is important to understand when looking into 
+// directions and chances later.
 
 wanderingTriangles.init = function(canvas, settings) {
 
@@ -65,19 +74,33 @@ wanderingTriangles.draw = function(instance) {
     }
 };
 
+wanderingTriangles.pick = function(odds) {
+    var total = 0.0;
+    for (var i = 0; i < odds.length; i++)
+        total += odds[i];
+    var result = Math.random() * total;
+    total = 0.0;
+    for (var i = 0; i < odds.length; i++) {
+        total += odds[i];
+        if (result < total)
+            return i;
+    }
+    throw "error"; // should not be reached
+}
+
 wanderingTriangles.updateTriangle = function(instance, triangle) {
 
     settings = instance.settings;
     canvas = instance.context.canvas;
 
-    if (triangle.type === 0)
-        triangle = this.nextTriangleFromUp(triangle, settings.triangleSize);
-    else if (triangle.type === 1)
-        triangle = this.nextTriangleFromDown(triangle, settings.triangleSize);
-    else if (triangle.type === 2)
-        triangle = this.nextTriangleFromLeft(triangle, settings.triangleSize);
+    if (triangle.type === this.constants.UP)
+        triangle = this.nextTriangleFromUp(triangle, settings.triangleSize, settings.directionBias);
+    else if (triangle.type === this.constants.DOWN)
+        triangle = this.nextTriangleFromDown(triangle, settings.triangleSize, settings.directionBias);
+    else if (triangle.type === this.constants.LEFT)
+        triangle = this.nextTriangleFromLeft(triangle, settings.triangleSize, settings.directionBias);
     else
-        triangle = this.nextTriangleFromRight(triangle, settings.triangleSize);
+        triangle = this.nextTriangleFromRight(triangle, settings.triangleSize, settings.directionBias);
 
     let offscreen = 
         triangle.x < -settings.triangleSize ||
@@ -96,6 +119,112 @@ wanderingTriangles.updateTriangle = function(instance, triangle) {
     else
         triangle.colour = settings.primaryColour;
 
+    return triangle;
+};
+
+wanderingTriangles.nextTriangleFromUp = function(triangle, triangleSize, directionBias) {
+    var odds = [0.33, 0.33, 0.33];
+    if (directionBias == this.constants.LEFT) {
+        odds = [0.6, 0.2, 0.2];
+    } else if (directionBias == this.constants.RIGHT) {
+        odds = [0.2, 0.6, 0.2];
+    } else if (directionBias == this.constants.DOWN) {
+        odds = [0.2, 0.2, 0.6];
+    }
+
+    var choice = this.pick(odds);
+    if (choice == 0)
+        triangle.type = this.constants.RIGHT; // triangle is further left overall
+    else if (choice == 1)
+        triangle.type = this.constants.LEFT; // triangle is further right over all
+    else {
+        triangle.y += triangleSize * 2;
+        triangle.type = this.constants.DOWN; // triangle is lower
+    }
+    return triangle;
+};
+
+wanderingTriangles.nextTriangleFromDown = function(triangle, triangleSize, directionBias) {
+    var odds = [0.33, 0.33, 0.33];
+    if (directionBias == this.constants.LEFT) {
+        odds = [0.6, 0.2, 0.2];
+    } else if (directionBias == this.constants.RIGHT) {
+        odds = [0.2, 0.6, 0.2];
+    } else if (directionBias == this.constants.UP) {
+        odds = [0.2, 0.2, 0.6];
+    }
+
+    var choice = this.pick(odds);
+    if (choice == 0)
+        triangle.type = this.constants.RIGHT; // triangle is further left overall
+    else if (choice == 1)
+        triangle.type = this.constants.LEFT; // triangle is further right over all
+    else {
+        triangle.y -= triangleSize * 2;
+        triangle.type = this.constants.UP; // triangle is higher
+    }
+    return triangle;
+};
+           
+wanderingTriangles.nextTriangleFromLeft = function(triangle, triangleSize, directionBias) {
+    var odds = [0.33, 0.33, 0.33, 0.33, 0.33];
+    if (directionBias == this.constants.RIGHT) {
+        odds = [0.2, 0.2, 0.5, 0.2, 0.2];
+    } else if (directionBias == this.constants.UP) {
+        odds = [0.4, 0.2, 0.2, 0.4, 0.2];
+    } else if (directionBias == this.constants.DOWN) {
+        odds = [0.2, 0.4, 0.2, 0.2, 0.4];
+    }
+
+    var choice = this.pick(odds);
+    if (choice == 0) {
+        triangle.x += triangleSize;
+        triangle.y -= triangleSize;
+        triangle.type = this.constants.RIGHT; // right up (triangle is higher)
+    } else if (choice == 1) {
+        triangle.x += triangleSize;
+        triangle.y += triangleSize;
+        triangle.type = this.constants.RIGHT; // right down (triangle is lower)
+    } else if (choice == 2) {
+        triangle.x += triangleSize * 2;
+        triangle.type = this.constants.RIGHT; // right level (triangle is back to back with current)
+    } else if (choice == 3) {
+        triangle.type = this.constants.DOWN; // point down (triangle is higher)
+    } else {
+        triangle.type = this.constants.UP; // point up (triangle is lower)
+    }
+    
+    return triangle;
+};
+
+wanderingTriangles.nextTriangleFromRight = function(triangle, triangleSize, directionBias) {
+    var odds = [0.33, 0.33, 0.33, 0.33, 0.33];
+    if (directionBias == this.constants.LEFT) {
+        odds = [0.2, 0.2, 0.5, 0.2, 0.2];
+    } else if (directionBias == this.constants.UP) {
+        odds = [0.4, 0.2, 0.2, 0.4, 0.2];
+    } else if (directionBias == this.constants.DOWN) {
+        odds = [0.2, 0.4, 0.2, 0.2, 0.4];
+    }
+
+    var choice = this.pick(odds);
+    if (choice == 0) {
+        triangle.x -= triangleSize;
+        triangle.y -= triangleSize;
+        triangle.type = this.constants.LEFT; // left up (triangle is higher)
+    } else if (choice == 1) {
+        triangle.x -= triangleSize;
+        triangle.y += triangleSize;
+        triangle.type = this.constants.LEFT; // left down (triangle is lower)
+    } else if (choice == 2) {
+        triangle.x -= triangleSize * 2;
+        triangle.type = this.constants.LEFT; // left level (triangle is back to back with current)
+    } else if (choice == 3) {
+        triangle.type = this.constants.DOWN; // point down (triangle is higher)
+    } else {
+        triangle.type = this.constants.UP; // point up (triangle is lower)
+    }
+    
     return triangle;
 };
 
@@ -121,74 +250,6 @@ wanderingTriangles.drawTriangle = function(instance, triangle) {
         context.stroke();
     else
         context.fill();
-};
-
-wanderingTriangles.nextTriangleFromUp = function(triangle, triangleSize) {
-    var random = Math.random();
-    if (random < 0.2)
-        triangle.type = 3; // right
-    else if (random < 0.4)
-        triangle.type = 2; // left
-    else {
-        triangle.y += triangleSize * 2;
-        triangle.type = 1; // down
-    }
-    return triangle;
-};
-
-wanderingTriangles.nextTriangleFromDown = function(triangle, triangleSize) {
-    var random = Math.random();
-    if (random < 0.2) {
-        triangle.y -= triangleSize * 2;
-        triangle.type = 0; // up
-    }
-    else if (random < 0.6)
-        triangle.type = 2; // left
-    else
-        triangle.type = 3; // right
-    return triangle;
-};
-           
-wanderingTriangles.nextTriangleFromLeft = function(triangle, triangleSize) {
-    var random = Math.random();
-    if (random < 0.1) {
-        triangle.x += triangleSize;
-        triangle.y -= triangleSize;
-        triangle.type = 3; // right
-    }
-    else if (random < 0.4) {
-        triangle.x += triangleSize;
-        triangle.y += triangleSize;
-        triangle.type = 3; // right
-    }
-    else if (random < 0.7) {
-        triangle.x += triangleSize * 2;
-        triangle.type = 3; // right
-    }
-    else
-        triangle.type = 0; // up
-    return triangle;
-};
-
-wanderingTriangles.nextTriangleFromRight = function(triangle, triangleSize) {
-    var random = Math.random();
-    if (random < 0.1) {
-        triangle.x -= triangleSize;
-        triangle.y -= triangleSize;
-        triangle.type = 2; // left
-    }
-    else if (random < 0.4) {
-        triangle.x -= triangleSize;
-        triangle.y += triangleSize;
-        triangle.type = 2; // left
-    }
-    else if (random < 0.7) {
-        triangle.x -= triangleSize * 2;
-        triangle.type = 2; // left
-    }
-    else
-        triangle.type = 0; // up
-    return triangle;
 };
 
 wanderingTriangles.upTrianglePath = function (context, x, y, triangleSize) {
