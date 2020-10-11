@@ -42,6 +42,23 @@ Debugging issues:
 
     `journalctl -u grislygrotto.service`
 
-### Renewing this cert
+### Renewing the cert
 
 Should just be a matter of, on or near the day of expiry, ssh'ing in and running `sudo certbot renew`
+
+### Mass text updates
+
+If some text in the database becomes out of date, e.g. if the image path changes and all posts need to be updated to reflect this, you could do:
+
+1. backup the database
+2. make a copy to edit
+3. open with the sqlite3 command line tool
+4. run a query like: `UPDATE POSTS SET Content = REPLACE(Content,'old','new');`
+5. exit with ctrl-d after checking updates have been made via a select
+6. copy the new db back to the server into a temp location
+7. turn off gg
+8. copy the db in place, overwriting the old db
+9. chown the db back to www-data
+10. start gg
+
+easy
