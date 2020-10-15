@@ -23,6 +23,10 @@ They involve:
 
 To compile you need access to the source code and `go` installed somewhere. Its slightly more complicated than normal with gg because it uses cgo. Accordingly, you also need some flavour of `gcc` installed that will work with the architecture you are targeting.
 
+The following go packages are also required, retrievable with go get (command included):
+
+- `go get github.com/aws/aws-sdk-go`
+
 For regular x64 linux machines, the following should be all you need to run (if you don't have gcc, its easy enough to get running):
 
 `env CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o grislygrotto.so`
