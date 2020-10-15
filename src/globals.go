@@ -32,6 +32,7 @@ const searchStripPad = 20
 const cookieAge = time.Hour
 const themeExpiry = time.Hour * 8760 * 10 // ten years
 const minWordCount = 100
+const maxFileSize = 1024 * 1000
 
 var passwordConfig = &argon2Config{
 	time:    1,

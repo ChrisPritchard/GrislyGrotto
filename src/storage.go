@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -47,12 +48,29 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, _, err := r.FormFile("file")
+	file, fileHeader, err := r.FormFile("file")
 	if err != nil {
 		serverError(w, err)
 		return
 	}
 	defer file.Close()
+
+	if fileHeader.Size > maxFileSize {
+		badRequest(w, "file size exceeds maximum")
+		return
+	}
+
+	buffer := make([]byte, 512)
+	if _, err = file.Read(buffer); err != nil {
+		serverError(w, err)
+		return
+	}
+
+	mimeType := http.DetectContentType(buffer)
+	if strings.Index(mimeType, "image/") != 0 {
+		badRequest(w, "file is not a valid image")
+		return
+	}
 
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
