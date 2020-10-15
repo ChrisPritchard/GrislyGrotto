@@ -34,6 +34,8 @@ const themeExpiry = time.Hour * 8760 * 10 // ten years
 const minWordCount = 100
 const maxFileSize = 1024 * 1000
 
+var validUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif"}
+
 var passwordConfig = &argon2Config{
 	time:    1,
 	memory:  64 * 1024,

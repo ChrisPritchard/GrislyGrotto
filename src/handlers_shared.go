@@ -107,7 +107,7 @@ func setMimeType(w http.ResponseWriter, r *http.Request) {
 		headers.Set("Content-Type", "image/jpeg")
 		headers.Set("X-Content-Type", "image/jpeg")
 	default:
-		return
+		headers.Set("Content-Type", "text/plain")
 	}
 }
 

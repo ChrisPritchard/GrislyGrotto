@@ -47,6 +47,18 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+	filename = strings.ToLower(filename)
+
+	validExtension := false
+	for _, ext := range validUploadExtensions {
+		if strings.HasSuffix(filename, ext) {
+			validExtension = true
+		}
+	}
+	if !validExtension {
+		badRequest(w, "bad file extension")
+		return
+	}
 
 	file, fileHeader, err := r.FormFile("file")
 	if err != nil {
@@ -67,7 +79,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mimeType := http.DetectContentType(buffer)
-	if strings.Index(mimeType, "image/") != 0 {
+	if !strings.HasPrefix(mimeType, "image/") {
 		badRequest(w, "file is not a valid image")
 		return
 	}
