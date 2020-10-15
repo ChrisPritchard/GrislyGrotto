@@ -119,19 +119,27 @@ if (title && content) {
 
 // content uploader
 
-var upload = document.querySelector('#content-upload-button');
-if  (upload) {
-    upload.addEventListener('click', function() {
-        var files = document.querySelector('#content-selector').files;
+var contentSelector = document.querySelector('#content-selector');
+if  (contentSelector) {
+    contentSelector.addEventListener('change', function() {
+        var files = contentSelector.files;
         if(files.length != 1) {
-            return false;
+            return;
         }
         var size = Math.round((files[0].size/1024/1024)*100)/100;
         if (size > 1) {
             document.querySelector("#content-upload-result").innerText = "file size is too large ("+size+" MB)";
             document.querySelector("#copy-content-html").classList.add("hide");
-            return false;
+            return;
         }
+        document.querySelector("#content-upload-result").innerText = "";
+        upload.classList.remove('hide');
+    });
+
+    var upload = document.querySelector('#content-upload-button');
+    upload.addEventListener('click', function() {
+        upload.classList.add('hide');
+        var files = contentSelector.files;
 
         var filename = (new Date()).getTime() + "-" + files[0].name;
 
@@ -154,7 +162,6 @@ if  (upload) {
         };
 
         xhr.send(form);
-
         return false;
     });
 
