@@ -189,7 +189,7 @@ func getYearMonthCounts(currentUser *string) (years []yearSet, err error) {
 		GROUP BY 
 			Month 
 		ORDER BY 
-			Date`, "%"+draftPrefix+"%", currentUser)
+			Date DESC`, "%"+draftPrefix+"%", currentUser)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
