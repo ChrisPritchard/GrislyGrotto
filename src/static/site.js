@@ -43,12 +43,88 @@ document.getElementById('site-theme').onchange = function() {
 }
 document.getElementById('site-theme').value = document.getElementById('current-theme').value;
 
-// Confirm elements, e.g. deleting a comment
+// Confirm elements, e.g. deleting a post
 
 confirmElems = document.getElementsByClassName("confirm-click");
 for (var i = 0; i < confirmElems.length; i++) {
     confirmElems[i].addEventListener("click", function () {
         return confirm("Are you sure? This action is irreversible!");
+    });
+}
+
+// Comment editing
+
+function selectCommentLink(id, name) {
+    return document.querySelector("."+name+"[data-comment = '"+id+"']");
+}
+
+editCommentElems = document.getElementsByClassName("comment-link edit");
+for (var i = 0; i < editCommentElems.length; i++) {
+    editCommentElems[i].addEventListener("click", function (e) {
+        var id = this.getAttribute("data-comment");
+        this.classList.add("hide");
+        selectCommentLink(id, "cancel").classList.remove("hide");
+        selectCommentLink(id, "save").classList.remove("hide");
+        
+        var editor = document.createElement("textarea");
+        editor.setAttribute("rows", 3);
+        editor.setAttribute("cols", "50");
+        editor.setAttribute("data-comment", id);
+        editor.classList.add("inline-comment-editor");
+        var existing = selectCommentLink(id, "comment-content");
+        editor.innerText = existing.innerText;
+        existing.insertAdjacentElement("afterend", editor);
+        existing.classList.add("hide");
+        e.preventDefault();
+    });
+}
+
+cancelCommentElems = document.getElementsByClassName("comment-link cancel");
+for (var i = 0; i < cancelCommentElems.length; i++) {
+    cancelCommentElems[i].addEventListener("click", function (e) {
+        var id = this.getAttribute("data-comment");
+        this.classList.add("hide");
+        selectCommentLink(id, "edit").classList.remove("hide");
+        selectCommentLink(id, "save").classList.add("hide");
+        
+        selectCommentLink(id, "inline-comment-editor").remove();
+        selectCommentLink(id, "comment-content").classList.remove("hide");
+        e.preventDefault();
+    });
+}
+
+saveCommentElems = document.getElementsByClassName("comment-link save");
+for (var i = 0; i < saveCommentElems.length; i++) {
+    saveCommentElems[i].addEventListener("click", function (e) {
+        var id = this.getAttribute("data-comment");
+
+        // todo make api call and do below on success
+
+        this.classList.add("hide");
+        selectCommentLink(id, "edit").classList.remove("hide");
+        selectCommentLink(id, "cancel").classList.add("hide");
+        
+        var editor = selectCommentLink(id, "inline-comment-editor");
+        var existing = selectCommentLink(id, "comment-content");
+        existing.innerText = editor.value;
+        editor.remove();
+        existing.classList.remove("hide");
+
+        e.preventDefault();
+    });
+}
+
+deleteCommentElems = document.getElementsByClassName("comment-link delete");
+for (var i = 0; i < deleteCommentElems.length; i++) {
+    deleteCommentElems[i].addEventListener("click", function (e) {
+        var id = this.getAttribute("data-comment");
+
+        if (confirm("are you sure? this is permanant")) {
+            // todo make api call and do below on success
+            document.querySelector("div[data-comment = '"+id+"']").remove();
+        }
+
+        e.preventDefault();
     });
 }
 

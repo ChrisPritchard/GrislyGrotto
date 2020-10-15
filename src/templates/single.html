@@ -16,16 +16,17 @@
 </div>
 <h2 id="comments">Comments</h2>
 {{ range .Post.Comments }}
-<div>
+<div data-comment="{{ .ID }}">
     <div class="comment-summary">Commented by {{ .Author }} at {{ formatDate .Date }}:</div>
-    <div class="comment-content">
+    <div data-comment="{{ .ID }}" class="comment-content">
         {{ .Content }}
     </div>
-    {{ if $.OwnBlog }}
-        <form class="comment-delete" method="POST" action="/delete-comment/{{ .ID }}?postKey={{ $.Post.Key }}">
-            <input type="submit" value="Delete" class="confirm-click" />
-        </form>
-    {{ end }}
+    <div>
+        <a href="#" data-comment="{{ .ID }}" class="comment-link edit">edit</a>
+        <a href="#" data-comment="{{ .ID }}" class="comment-link save hide">save</a>
+        <a href="#" data-comment="{{ .ID }}" class="comment-link cancel hide">cancel</a>
+        <a href="#" data-comment="{{ .ID }}" class="comment-link delete">delete</a>
+    </div>
 </div>
 {{ end }}
 {{ if .CanComment }}
