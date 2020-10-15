@@ -81,14 +81,11 @@ func globalHandler(h http.Handler) http.Handler {
 		var userVal *string
 		if user != "" {
 			userVal = &user
+			setEncryptedCookie("user", user, w)
 		}
 
 		userCtx := context.WithValue(r.Context(), authenticatedUser, userVal)
 		h.ServeHTTP(w, r.WithContext(userCtx))
-
-		if user != "" {
-			setEncryptedCookie("user", user, w)
-		}
 	})
 }
 
