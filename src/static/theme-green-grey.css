@@ -16,15 +16,15 @@ a, a:visited {
 }
 
 input[type=text], input[type=password], textarea {
-    border: 1px solid black;
+    border: 1px solid #B5CEA8;
     background-color: #1D262F;
     color: #B5CEA8;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
 
 input[type=text]:focus, input[type=password]:focus, textarea:focus {
-    border-color:#66afe9;
-    box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+    border-color:#B5CEA8;
+    box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px #B5CEA8
 }
 
 input[type=submit], input[type=button] {
@@ -37,6 +37,10 @@ input[type=submit]:hover, input[type=button]:hover {
 
 .control-panel {
     color: B5CEA8;
+}
+
+select {
+    background-color: #1D262F;
 }
 
 @media only screen and (max-width: 1000px) {

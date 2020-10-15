@@ -12,19 +12,19 @@ a, a:visited {
 }
 
 input[type=text], input[type=password], textarea {
-    border: 1px solid black;
-    background-color: blue;
-    color: white;
+    border: 1px solid blue;
+    background-color: whitesmoke;
+    color: black;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
 
 input[type=text]:focus, input[type=password]:focus, textarea:focus {
-    border-color:#66afe9;
-    box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+    border-color: blue;
+    box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px blue
 }
 
 input[type=submit], input[type=button] {
-    border: 1px solid blue;
+    border: 1px solid rgb(198, 198, 199);
 }
 
 input[type=submit]:hover, input[type=button]:hover {
