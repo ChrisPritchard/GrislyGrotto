@@ -17,6 +17,18 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	lowerName := strings.ToLower(filename)
+	validExtension := false
+	for _, ext := range validUploadExtensions {
+		if strings.HasSuffix(lowerName, ext) {
+			validExtension = true
+		}
+	}
+	if !validExtension {
+		badRequest(w, "bad file extension")
+		return
+	}
+
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	})

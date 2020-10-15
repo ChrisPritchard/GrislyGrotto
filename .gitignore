@@ -10,3 +10,4 @@ grislygrotto.db
 src/.main.go.swp
 .DS_Store
 .secret
+.env
