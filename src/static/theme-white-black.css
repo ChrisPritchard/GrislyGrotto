@@ -30,6 +30,10 @@ input[type=submit]:hover, input[type=button]:hover {
     background-color: rgba(154,204,20,.1);
 }
 
+select {
+    background-color: black;
+}
+
 #vis-background-colour {
     background-color: black;
 }
