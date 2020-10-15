@@ -51,46 +51,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/"+path, http.StatusFound)
 }
 
-func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.NotFound(w, r)
-		return
-	}
-
-	id := r.URL.Path[len("/delete-comment/"):]
-	idN, err := strconv.Atoi(id)
-	if err != nil {
-		badRequest(w, "invalid comment id")
-		return
-	}
-
-	currentUser := getCurrentUser(r)
-	if currentUser == nil {
-		unauthorised(w)
-		return
-	}
-
-	success, err := tryDeleteComment(idN, *currentUser) // only deletes if this is on a post the user owns
-	if err != nil {
-		serverError(w, err)
-		return
-	}
-
-	if !success {
-		unauthorised(w)
-		return
-	}
-
-	postKey := r.URL.Query()["postKey"]
-	returnURL := "/"
-
-	if len(postKey) != 0 && len(postKey[0]) > 0 {
-		returnURL = "/post/" + postKey[0] + "#comments"
-	}
-
-	http.Redirect(w, r, returnURL, http.StatusFound)
-}
-
 func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.NotFound(w, r)
