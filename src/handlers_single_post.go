@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +41,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentError, err := createComment(r, post.Key)
+	commentError, err := createComment(w, r, post.Key)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -55,7 +56,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/post/"+post.Key+"#comments", http.StatusFound)
 }
 
-func createComment(r *http.Request, postKey string) (commentError string, err error) {
+func createComment(w http.ResponseWriter, r *http.Request, postKey string) (commentError string, err error) {
 	author, content := r.FormValue("author"), r.FormValue("content")
 	if author == "" || content == "" {
 		return "both author and content are required", nil
@@ -68,11 +69,29 @@ func createComment(r *http.Request, postKey string) (commentError string, err er
 
 	setBlockTime(r, author) // primitive automated commenting protection
 
-	err = addCommentToBlog(author, content, postKey)
+	id, err := addCommentToBlog(author, content, postKey)
 	if err != nil {
 		return "", err
 	}
+
+	newCommentIDs := strconv.FormatInt(id, 10)
+	commentIDs, err := readEncryptedCookie("comments", r)
+	if err == nil {
+		newCommentIDs += "," + commentIDs
+	}
+	setEncryptedCookie("comments", newCommentIDs, w)
+
 	return "", nil
+}
+
+func hasCommentAuthority(commentID string, commentIDs string) bool {
+	split := strings.Split(commentIDs, ",")
+	for _, v := range split {
+		if v == commentID {
+			return true
+		}
+	}
+	return false
 }
 
 func editCommentHandler(w http.ResponseWriter, r *http.Request) {
@@ -81,29 +100,28 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := r.URL.Path[len("/delete-comment/"):]
+	id := r.URL.Path[len("/edit-comment/"):]
 	idN, err := strconv.Atoi(id)
 	if err != nil {
 		badRequest(w, "invalid comment id")
 		return
 	}
 
-	// todo check comment cookie or belongs to current user post
-
-	currentUser := getCurrentUser(r)
-	if currentUser == nil {
+	commentIDs, err := readEncryptedCookie("comments", r)
+	if err != nil || !hasCommentAuthority(id, commentIDs) {
 		unauthorised(w)
 		return
 	}
 
-	success, err := tryDeleteComment(idN, *currentUser) // only deletes if this is on a post the user owns
+	newContent := r.FormValue("content")
+	if newContent == "" {
+		badRequest(w, "content required")
+		return
+	}
+
+	err = updateComment(idN, newContent)
 	if err != nil {
 		serverError(w, err)
-		return
-	}
-
-	if !success {
-		unauthorised(w)
 		return
 	}
 
@@ -123,22 +141,15 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// todo check comment cookie or belongs to current user post
-
-	currentUser := getCurrentUser(r)
-	if currentUser == nil {
+	commentIDs, err := readEncryptedCookie("comments", r)
+	if err != nil || !hasCommentAuthority(id, commentIDs) {
 		unauthorised(w)
 		return
 	}
 
-	success, err := tryDeleteComment(idN, *currentUser) // only deletes if this is on a post the user owns
+	err = deleteComment(idN)
 	if err != nil {
 		serverError(w, err)
-		return
-	}
-
-	if !success {
-		unauthorised(w)
 		return
 	}
 

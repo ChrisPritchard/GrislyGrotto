@@ -91,31 +91,28 @@ func getPostComments(key string) (comments []comment, err error) {
 	return comments, err
 }
 
-func addCommentToBlog(author, content, postKey string) (err error) {
+func addCommentToBlog(author, content, postKey string) (newID int64, err error) {
 	date := time.Now().Format("2006-01-02 15:04:05")
-	_, err = database.Exec(`
+	res, err := database.Exec(`
 		INSERT INTO 
 			Comments (Author, Date, Content, Post_Key) 
 		VALUES (?, ?, ?, ?)`,
 		author, date, content, postKey)
+	if err != nil {
+		return 0, err
+	}
+	newID, err = res.LastInsertId()
+	return
+}
+
+func updateComment(id int, content string) error {
+	_, err := database.Exec(`UPDATE Comments SET Content = ? WHERE Id = ?`, content, id)
 	return err
 }
 
-func tryDeleteComment(id int, currentUser string) (success bool, err error) {
-	result, err := database.Exec(`
-		DELETE FROM Comments
-		WHERE Id = ? 
-		AND (SELECT p.Author_Username FROM Posts p where p.Key = Post_Key) = ?`,
-		id, currentUser)
-	if err != nil {
-		return false, err
-	}
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return false, err
-	}
-
-	return rowsAffected > 0, err
+func deleteComment(id int) error {
+	_, err := database.Exec(`DELETE FROM Comments WHERE Id = ?`, id)
+	return err
 }
 
 func deletePost(key string) (err error) {
