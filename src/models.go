@@ -67,11 +67,6 @@ type author struct {
 	Username, Password, DisplayName, ImageURL string
 }
 
-type comment struct {
-	ID                    int
-	Author, Content, Date string
-}
-
 type yearSet struct {
 	Year   string
 	Months []monthCount
