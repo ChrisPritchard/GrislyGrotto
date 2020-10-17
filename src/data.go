@@ -39,7 +39,7 @@ func getLatestPosts(page int, currentUser *string) ([]blogPost, error) {
 	return posts, nil
 }
 
-func getSinglePost(key string, currentUser *string) (post blogPost, notFound bool, err error) {
+func getSinglePost(key string, currentUser *string, ownedCommentIDs string) (post blogPost, notFound bool, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -59,13 +59,13 @@ func getSinglePost(key string, currentUser *string) (post blogPost, notFound boo
 	}
 
 	post.Key = key
-	post.Comments, err = getPostComments(key)
+	post.Comments, err = getPostComments(key, ownedCommentIDs)
 
 	return post, false, err
 }
 
-func getPostComments(key string) (comments []comment, err error) {
-	comments = make([]comment, 0)
+func getPostComments(key string, ownedCommentIDs string) (comments []blogComment, err error) {
+	comments = make([]blogComment, 0)
 	rows, err := database.Query(`
 		SELECT 
 			Id, Author, Date, Content
@@ -78,13 +78,14 @@ func getPostComments(key string) (comments []comment, err error) {
 		return comments, nil
 	}
 
-	var comment comment
+	var comment blogComment
 	for rows.Next() {
 		err = rows.Scan(
 			&comment.ID, &comment.Author, &comment.Date, &comment.Content)
 		if err != nil {
 			return comments, err
 		}
+		comment.Owned = hasCommentAuthority(strconv.Itoa(comment.ID), ownedCommentIDs)
 		comments = append(comments, comment)
 	}
 

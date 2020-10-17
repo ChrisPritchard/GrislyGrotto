@@ -9,7 +9,12 @@ import (
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path[len("/post/"):]
 	currentUser := getCurrentUser(r)
-	post, notFound, err := getSinglePost(key, currentUser)
+	commentIDs, err := readEncryptedCookie("comments", r)
+	if err != nil {
+		commentIDs = ""
+	}
+
+	post, notFound, err := getSinglePost(key, currentUser, commentIDs)
 	if err != nil {
 		serverError(w, err)
 		return

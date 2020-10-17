@@ -50,7 +50,13 @@ type blogPost struct {
 	Date                    string
 	IsStory                 bool
 	WordCount, CommentCount int
-	Comments                []comment
+	Comments                []blogComment
+}
+
+type blogComment struct {
+	ID                    int
+	Author, Content, Date string
+	Owned                 bool
 }
 
 func (post blogPost) isDraft() bool {

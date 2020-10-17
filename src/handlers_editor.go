@@ -25,7 +25,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, notFound, err := getSinglePost(key, currentUser)
+	post, notFound, err := getSinglePost(key, currentUser, "")
 	if err != nil {
 		serverError(w, err)
 		return
@@ -103,7 +103,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	key := createPostKey(title)
-	_, notFound, err := getSinglePost(key, currentUser)
+	_, notFound, err := getSinglePost(key, currentUser, "")
 	if err != nil {
 		serverError(w, err)
 		return
@@ -135,7 +135,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
-	post, notFound, err := getSinglePost(key, currentUser)
+	post, notFound, err := getSinglePost(key, currentUser, "")
 	if err != nil {
 		serverError(w, err)
 		return

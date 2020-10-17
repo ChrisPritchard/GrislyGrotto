@@ -21,12 +21,14 @@
     <div data-comment="{{ .ID }}" class="comment-content">
         {{ .Content }}
     </div>
+    {{ if .Owned }}
     <div>
         <a href="#" data-comment="{{ .ID }}" class="comment-link edit">edit</a>
         <a href="#" data-comment="{{ .ID }}" class="comment-link save hide">save</a>
         <a href="#" data-comment="{{ .ID }}" class="comment-link cancel hide">cancel</a>
         <a href="#" data-comment="{{ .ID }}" class="comment-link delete">delete</a>
     </div>
+    {{ end }}
 </div>
 {{ end }}
 {{ if .CanComment }}

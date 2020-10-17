@@ -291,6 +291,10 @@ span.timer {
     display: none;
 }
 
+.comment-link {
+    font-size: 0.8em;
+}
+
 @media only screen and (max-width: 1000px) {
     .control-panel {
         position: relative;
