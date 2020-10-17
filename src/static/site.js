@@ -97,18 +97,31 @@ saveCommentElems = document.getElementsByClassName("comment-link save");
 for (var i = 0; i < saveCommentElems.length; i++) {
     saveCommentElems[i].addEventListener("click", function (e) {
         var id = this.getAttribute("data-comment");
-
-        // todo make api call and do below on success
-
-        this.classList.add("hide");
-        selectCommentLink(id, "edit").classList.remove("hide");
-        selectCommentLink(id, "cancel").classList.add("hide");
-        
         var editor = selectCommentLink(id, "inline-comment-editor");
-        var existing = selectCommentLink(id, "comment-content");
-        existing.innerText = editor.value;
-        editor.remove();
-        existing.classList.remove("hide");
+        // todo check for no content
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/edit-comment/"+id);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4)
+                return;
+            if (xhr.status != 202) {
+                // TODO: some sort of error handler?
+                return
+            }
+
+            selectCommentLink(id, "save").classList.add("hide");
+            selectCommentLink(id, "edit").classList.remove("hide");
+            selectCommentLink(id, "cancel").classList.add("hide");
+            
+            var existing = selectCommentLink(id, "comment-content");
+            existing.innerText = editor.value;
+            editor.remove();
+            existing.classList.remove("hide");
+        };
+        var form = new FormData();
+        form.append("content", editor.value)
+        xhr.send(form);
 
         e.preventDefault();
     });
@@ -120,8 +133,17 @@ for (var i = 0; i < deleteCommentElems.length; i++) {
         var id = this.getAttribute("data-comment");
 
         if (confirm("are you sure? this is permanant")) {
-            // todo make api call and do below on success
-            document.querySelector("div[data-comment = '"+id+"']").remove();
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/delete-comment/"+id);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4)
+                    return;
+                if (xhr.status == 202) {
+                    document.querySelector("div[data-comment = '"+id+"']").remove();
+                }
+                // TODO: some sort of error handler?
+            };
+            xhr.send();
         }
 
         e.preventDefault();
