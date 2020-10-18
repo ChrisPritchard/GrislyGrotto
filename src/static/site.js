@@ -68,8 +68,11 @@ for (let i = 0; i < ownComments.length; i++) {
     let cancelLink = selectCommentElem(id, "cancel");
     let deleteLink = selectCommentElem(id, "delete");
     let existingComment = selectCommentElem(id, "comment-content");
+    let errorMessage = selectCommentElem(id, "error");
 
     editLink.addEventListener("click", function (e) {
+        e.preventDefault();
+
         editLink.classList.add("hide");
         cancelLink.classList.remove("hide");
         saveLink.classList.remove("hide");
@@ -83,11 +86,11 @@ for (let i = 0; i < ownComments.length; i++) {
 
         existingComment.insertAdjacentElement("afterend", editor);
         existingComment.classList.add("hide");
-
-        e.preventDefault();
     });
 
     cancelLink.addEventListener("click", function (e) {
+        e.preventDefault();
+
         cancelLink.classList.add("hide");
         editLink.classList.remove("hide");
         saveLink.classList.add("hide");
@@ -95,12 +98,17 @@ for (let i = 0; i < ownComments.length; i++) {
         selectCommentElem(id, "inline-comment-editor").remove();
         existingComment.classList.remove("hide");
 
-        e.preventDefault();
+        errorMessage.innerText = "";
     });
 
     saveLink.addEventListener("click", function (e) {
+        e.preventDefault();
+
         let editor = selectCommentElem(id, "inline-comment-editor");
-        // todo check for no content
+        if (editor.value.trim() === "") {
+            errorMessage.innerText = "comments must have some content";
+            return;
+        }
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/edit-comment/"+id);
@@ -108,7 +116,7 @@ for (let i = 0; i < ownComments.length; i++) {
             if (xhr.readyState != 4)
                 return;
             if (xhr.status != 202) {
-                // TODO: some sort of error handler?
+                errorMessage.innerText = "there was an error saving: " + xhr.response;
                 return
             }
 
@@ -119,16 +127,17 @@ for (let i = 0; i < ownComments.length; i++) {
             existingComment.innerText = editor.value;
             existingComment.classList.remove("hide");
             editor.remove();
+            errorMessage.innerText = "";
         };
 
         let form = new FormData();
         form.append("content", editor.value)
         xhr.send(form);
-
-        e.preventDefault();
     });
 
     deleteLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        
         if (confirm("are you sure? this is permanant")) {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/delete-comment/"+id);
@@ -138,12 +147,10 @@ for (let i = 0; i < ownComments.length; i++) {
                 if (xhr.status == 202) {
                     comment.remove();
                 }
-                // TODO: some sort of error handler?
+                errorMessage.innerText = "there was an error deleting: " + xhr.response;
             };
             xhr.send();
         }
-
-        e.preventDefault();
     });
 }
 
