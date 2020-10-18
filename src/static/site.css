@@ -292,7 +292,8 @@ span.timer {
 }
 
 .comment-link {
-    font-size: 0.8em;
+    font-size: 0.6em;
+    font-weight: normal;
 }
 
 @media only screen and (max-width: 1000px) {

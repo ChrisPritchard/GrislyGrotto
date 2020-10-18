@@ -54,50 +54,52 @@ for (var i = 0; i < confirmElems.length; i++) {
 
 // Comment editing
 
-function selectCommentLink(id, name) {
+function selectCommentElem(id, name) {
     return document.querySelector("."+name+"[data-comment = '"+id+"']");
 }
 
-editCommentElems = document.getElementsByClassName("comment-link edit");
-for (var i = 0; i < editCommentElems.length; i++) {
-    editCommentElems[i].addEventListener("click", function (e) {
-        var id = this.getAttribute("data-comment");
-        this.classList.add("hide");
-        selectCommentLink(id, "cancel").classList.remove("hide");
-        selectCommentLink(id, "save").classList.remove("hide");
+var ownComments = document.querySelectorAll(".comment-container[data-comment]");
+for (var i = 0; i < ownComments.length; i++) {
+    var id = ownComments[i].getAttribute("data-comment");
+
+    var comment = ownComments[i];
+    var editLink = selectCommentElem(id, "edit");
+    var saveLink = selectCommentElem(id, "save");
+    var cancelLink = selectCommentElem(id, "cancel");
+    var deleteLink = selectCommentElem(id, "delete");
+    var existingComment = selectCommentElem(id, "comment-content");
+
+    editLink.addEventListener("click", function (e) {
+        editLink.classList.add("hide");
+        cancelLink.classList.remove("hide");
+        saveLink.classList.remove("hide");
         
         var editor = document.createElement("textarea");
         editor.setAttribute("rows", 3);
         editor.setAttribute("cols", "50");
         editor.setAttribute("data-comment", id);
         editor.classList.add("inline-comment-editor");
-        var existing = selectCommentLink(id, "comment-content");
-        editor.innerText = existing.innerText;
-        existing.insertAdjacentElement("afterend", editor);
-        existing.classList.add("hide");
+        editor.innerText = existingComment.innerText;
+
+        existingComment.insertAdjacentElement("afterend", editor);
+        existingComment.classList.add("hide");
+
         e.preventDefault();
     });
-}
 
-cancelCommentElems = document.getElementsByClassName("comment-link cancel");
-for (var i = 0; i < cancelCommentElems.length; i++) {
-    cancelCommentElems[i].addEventListener("click", function (e) {
-        var id = this.getAttribute("data-comment");
-        this.classList.add("hide");
-        selectCommentLink(id, "edit").classList.remove("hide");
-        selectCommentLink(id, "save").classList.add("hide");
+    cancelLink.addEventListener("click", function (e) {
+        cancelLink.classList.add("hide");
+        editLink.classList.remove("hide");
+        saveLink.classList.add("hide");
         
-        selectCommentLink(id, "inline-comment-editor").remove();
-        selectCommentLink(id, "comment-content").classList.remove("hide");
+        selectCommentElem(id, "inline-comment-editor").remove();
+        existingComment.classList.remove("hide");
+
         e.preventDefault();
     });
-}
 
-saveCommentElems = document.getElementsByClassName("comment-link save");
-for (var i = 0; i < saveCommentElems.length; i++) {
-    saveCommentElems[i].addEventListener("click", function (e) {
-        var id = this.getAttribute("data-comment");
-        var editor = selectCommentLink(id, "inline-comment-editor");
+    saveLink.addEventListener("click", function (e) {
+        var editor = selectCommentElem(id, "inline-comment-editor");
         // todo check for no content
 
         const xhr = new XMLHttpRequest();
@@ -110,28 +112,23 @@ for (var i = 0; i < saveCommentElems.length; i++) {
                 return
             }
 
-            selectCommentLink(id, "save").classList.add("hide");
-            selectCommentLink(id, "edit").classList.remove("hide");
-            selectCommentLink(id, "cancel").classList.add("hide");
+            saveLink.classList.add("hide");
+            editLink.classList.remove("hide");
+            cancelLink.classList.add("hide");
             
-            var existing = selectCommentLink(id, "comment-content");
-            existing.innerText = editor.value;
+            existingComment.innerText = editor.value;
+            existingComment.classList.remove("hide");
             editor.remove();
-            existing.classList.remove("hide");
         };
+
         var form = new FormData();
         form.append("content", editor.value)
         xhr.send(form);
 
         e.preventDefault();
     });
-}
 
-deleteCommentElems = document.getElementsByClassName("comment-link delete");
-for (var i = 0; i < deleteCommentElems.length; i++) {
-    deleteCommentElems[i].addEventListener("click", function (e) {
-        var id = this.getAttribute("data-comment");
-
+    deleteLink.addEventListener("click", function (e) {
         if (confirm("are you sure? this is permanant")) {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/delete-comment/"+id);
@@ -139,7 +136,7 @@ for (var i = 0; i < deleteCommentElems.length; i++) {
                 if (xhr.readyState != 4)
                     return;
                 if (xhr.status == 202) {
-                    document.querySelector("div[data-comment = '"+id+"']").remove();
+                    comment.remove();
                 }
                 // TODO: some sort of error handler?
             };
