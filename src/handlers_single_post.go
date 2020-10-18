@@ -2,19 +2,52 @@ package main
 
 import (
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 )
 
+func getCommentAuthority(r *http.Request) map[int]interface{} {
+	result := make(map[int]interface{})
+
+	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
+	if err != nil {
+		return result
+	}
+
+	split := strings.Split(commentIDs, ",")
+	for _, v := range split {
+		id, _ := strconv.Atoi(v)
+		result[id] = nil
+	}
+
+	return result
+}
+
+func setCommentAuthority(existing map[int]interface{}, newID int, w http.ResponseWriter) {
+	ids := []int{newID}
+	for id := range existing {
+		ids = append(ids, id)
+	}
+	sort.Ints(ids)
+	if len(ids) > maxOwnedComments {
+		skip := len(ids) - maxOwnedComments
+		ids = ids[:skip]
+	}
+	toStore := strconv.Itoa(ids[0])
+	for i := 1; i < len(ids); i++ {
+		toStore += "," + strconv.Itoa(ids[i])
+	}
+
+	setEncryptedCookie("comments", toStore, commentAuthorityExpiry, w)
+}
+
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path[len("/post/"):]
 	currentUser := getCurrentUser(r)
-	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
-	if err != nil {
-		commentIDs = ""
-	}
+	ownedComments := getCommentAuthority(r)
 
-	post, notFound, err := getSinglePost(key, currentUser, commentIDs)
+	post, notFound, err := getPostWithComments(key, currentUser, ownedComments)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -46,7 +79,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentError, err := createComment(w, r, post.Key)
+	newID, commentError, err := createComment(r, post.Key)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -58,45 +91,30 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	setCommentAuthority(ownedComments, newID, w)
+
 	http.Redirect(w, r, "/post/"+post.Key+"#comments", http.StatusFound)
 }
 
-func createComment(w http.ResponseWriter, r *http.Request, postKey string) (commentError string, err error) {
+func createComment(r *http.Request, postKey string) (newID int, commentError string, err error) {
 	author, content := r.FormValue("author"), r.FormValue("content")
 	if author == "" || content == "" {
-		return "both author and content are required", nil
+		return 0, "both author and content are required", nil
 	}
 
 	blockTime := getBlockTime(r, author)
 	if blockTime > 0 {
-		return "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
+		return 0, "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
 	}
 
 	setBlockTime(r, author) // primitive automated commenting protection
 
 	id, err := addCommentToBlog(author, content, postKey)
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
-	newCommentIDs := strconv.FormatInt(id, 10)
-	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
-	if err == nil {
-		newCommentIDs += "," + commentIDs
-	}
-	setEncryptedCookie("comments", newCommentIDs, commentAuthorityExpiry, w)
-
-	return "", nil
-}
-
-func hasCommentAuthority(commentID string, commentIDs string) bool {
-	split := strings.Split(commentIDs, ",")
-	for _, v := range split {
-		if v == commentID {
-			return true
-		}
-	}
-	return false
+	return int(id), "", nil
 }
 
 func editCommentHandler(w http.ResponseWriter, r *http.Request) {
@@ -112,8 +130,8 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
-	if err != nil || !hasCommentAuthority(id, commentIDs) {
+	ownedComments := getCommentAuthority(r)
+	if _, exists := ownedComments[idN]; !exists {
 		unauthorised(w)
 		return
 	}
@@ -146,8 +164,8 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
-	if err != nil || !hasCommentAuthority(id, commentIDs) {
+	ownedComments := getCommentAuthority(r)
+	if _, exists := ownedComments[idN]; !exists {
 		unauthorised(w)
 		return
 	}

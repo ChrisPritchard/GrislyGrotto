@@ -36,6 +36,7 @@ const maxFileSize = 1024 * 1000
 const authSessionExpiry = time.Hour
 const themeExpiry = time.Hour * 8760 * 10         // ten years
 const commentAuthorityExpiry = time.Hour * 24 * 5 // five days
+const maxOwnedComments = 20
 
 var validUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif"}
 

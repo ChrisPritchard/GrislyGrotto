@@ -39,7 +39,7 @@ func getLatestPosts(page int, currentUser *string) ([]blogPost, error) {
 	return posts, nil
 }
 
-func getSinglePost(key string, currentUser *string, ownedCommentIDs string) (post blogPost, notFound bool, err error) {
+func getSinglePost(key string, currentUser *string) (post blogPost, notFound bool, err error) {
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -59,13 +59,16 @@ func getSinglePost(key string, currentUser *string, ownedCommentIDs string) (pos
 	}
 
 	post.Key = key
-	post.Comments, err = getPostComments(key, ownedCommentIDs)
-
 	return post, false, err
 }
 
-func getPostComments(key string, ownedCommentIDs string) (comments []blogComment, err error) {
-	comments = make([]blogComment, 0)
+func getPostWithComments(key string, currentUser *string, ownedComments map[int]interface{}) (post blogPost, notFound bool, err error) {
+	post, notFound, err = getSinglePost(key, currentUser)
+	if notFound || err != nil {
+		return post, notFound, err
+	}
+
+	post.Comments = make([]blogComment, 0)
 	rows, err := database.Query(`
 		SELECT 
 			Id, Author, Date, Content
@@ -75,7 +78,7 @@ func getPostComments(key string, ownedCommentIDs string) (comments []blogComment
 
 	defer rows.Close()
 	if err != nil {
-		return comments, nil
+		return post, notFound, err
 	}
 
 	var comment blogComment
@@ -83,13 +86,15 @@ func getPostComments(key string, ownedCommentIDs string) (comments []blogComment
 		err = rows.Scan(
 			&comment.ID, &comment.Author, &comment.Date, &comment.Content)
 		if err != nil {
-			return comments, err
+			return post, notFound, err
 		}
-		comment.Owned = hasCommentAuthority(strconv.Itoa(comment.ID), ownedCommentIDs)
-		comments = append(comments, comment)
+		_, exists := ownedComments[comment.ID]
+		comment.Owned = exists
+
+		post.Comments = append(post.Comments, comment)
 	}
 
-	return comments, err
+	return post, false, nil
 }
 
 func addCommentToBlog(author, content, postKey string) (newID int64, err error) {
