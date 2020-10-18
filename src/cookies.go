@@ -23,7 +23,7 @@ func setCookie(name, data string, expires time.Time, w http.ResponseWriter) {
 	http.SetCookie(w, &cookie)
 }
 
-func setEncryptedCookie(name, unencodedData string, w http.ResponseWriter) (err error) {
+func setEncryptedCookie(name, unencodedData string, lifeTime time.Duration, w http.ResponseWriter) (err error) {
 	now := time.Now()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
 	cipher, err := encrypt([]byte(data), secret)
@@ -32,11 +32,11 @@ func setEncryptedCookie(name, unencodedData string, w http.ResponseWriter) (err 
 	}
 	b64 := base64.StdEncoding.EncodeToString(cipher)
 
-	setCookie(name, b64, now.Add(cookieAge), w)
+	setCookie(name, b64, now.Add(lifeTime), w)
 	return nil
 }
 
-func readEncryptedCookie(name string, r *http.Request) (unencodedData string, err error) {
+func readEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Request) (unencodedData string, err error) {
 	cookie, err := r.Cookie(name)
 	if err != nil {
 		return "", err
@@ -65,7 +65,7 @@ func readEncryptedCookie(name string, r *http.Request) (unencodedData string, er
 		return "", errors.New("invalid cookie")
 	}
 
-	if time.Now().Sub(issued) > cookieAge {
+	if time.Now().Sub(issued) > allowedLifeTime {
 		return "", errors.New("expired cookie")
 	}
 

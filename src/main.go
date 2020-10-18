@@ -78,11 +78,11 @@ func globalHandler(h http.Handler) http.Handler {
 		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)
 
-		user, _ := readEncryptedCookie("user", r)
+		user, _ := readEncryptedCookie("user", authSessionExpiry, r)
 		var userVal *string
 		if user != "" {
 			userVal = &user
-			setEncryptedCookie("user", user, w)
+			setEncryptedCookie("user", user, authSessionExpiry, w)
 		}
 
 		userCtx := context.WithValue(r.Context(), authenticatedUser, userVal)

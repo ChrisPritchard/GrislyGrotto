@@ -29,10 +29,13 @@ const pageLength = 5
 const maxCommentCount = 20
 const maxSearchResults = 50
 const searchStripPad = 20
-const cookieAge = time.Hour
-const themeExpiry = time.Hour * 8760 * 10 // ten years
+
 const minWordCount = 100
 const maxFileSize = 1024 * 1000
+
+const authSessionExpiry = time.Hour
+const themeExpiry = time.Hour * 8760 * 10         // ten years
+const commentAuthorityExpiry = time.Hour * 24 * 5 // five days
 
 var validUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif"}
 

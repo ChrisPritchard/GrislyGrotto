@@ -9,7 +9,7 @@ import (
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path[len("/post/"):]
 	currentUser := getCurrentUser(r)
-	commentIDs, err := readEncryptedCookie("comments", r)
+	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
 	if err != nil {
 		commentIDs = ""
 	}
@@ -80,11 +80,11 @@ func createComment(w http.ResponseWriter, r *http.Request, postKey string) (comm
 	}
 
 	newCommentIDs := strconv.FormatInt(id, 10)
-	commentIDs, err := readEncryptedCookie("comments", r)
+	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
 	if err == nil {
 		newCommentIDs += "," + commentIDs
 	}
-	setEncryptedCookie("comments", newCommentIDs, w)
+	setEncryptedCookie("comments", newCommentIDs, commentAuthorityExpiry, w)
 
 	return "", nil
 }
@@ -112,7 +112,7 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentIDs, err := readEncryptedCookie("comments", r)
+	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
 	if err != nil || !hasCommentAuthority(id, commentIDs) {
 		unauthorised(w)
 		return
@@ -146,7 +146,7 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentIDs, err := readEncryptedCookie("comments", r)
+	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
 	if err != nil || !hasCommentAuthority(id, commentIDs) {
 		unauthorised(w)
 		return

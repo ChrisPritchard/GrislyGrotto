@@ -35,7 +35,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = setEncryptedCookie("user", username, w)
+	err = setEncryptedCookie("user", username, authSessionExpiry, w)
 	if err != nil {
 		serverError(w, err)
 		return
