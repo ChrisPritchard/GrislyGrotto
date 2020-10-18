@@ -21,16 +21,16 @@ function getColour(elem) {
 }
 
 function initAnimation(canvasId) {
-    var animationCanvas = document.getElementById(canvasId);
-    var animSettings = wanderingTriangles.baseSettings();
+    let animationCanvas = document.getElementById(canvasId);
+    let animSettings = wanderingTriangles.baseSettings();
     animSettings.backgroundColour = getColour(document.getElementById('vis-background-colour'));
     animSettings.primaryColour = getColour(document.getElementById('vis-primary-colour'));
     animSettings.secondaryColour = getColour(document.getElementById('vis-secondary-colour'));
     return wanderingTriangles.init(animationCanvas, animSettings);
 }
 
-var animationLeft = initAnimation('animation-left');
-var animationRight = initAnimation('animation-right');
+let animationLeft = initAnimation('animation-left');
+let animationRight = initAnimation('animation-right');
 
 // visualisation control panel
 
@@ -46,7 +46,7 @@ document.getElementById('site-theme').value = document.getElementById('current-t
 // Confirm elements, e.g. deleting a post
 
 confirmElems = document.getElementsByClassName("confirm-click");
-for (var i = 0; i < confirmElems.length; i++) {
+for (let i = 0; i < confirmElems.length; i++) {
     confirmElems[i].addEventListener("click", function () {
         return confirm("Are you sure? This action is irreversible!");
     });
@@ -58,23 +58,23 @@ function selectCommentElem(id, name) {
     return document.querySelector("."+name+"[data-comment = '"+id+"']");
 }
 
-var ownComments = document.querySelectorAll(".comment-container[data-comment]");
-for (var i = 0; i < ownComments.length; i++) {
-    var id = ownComments[i].getAttribute("data-comment");
+let ownComments = document.querySelectorAll(".comment-container[data-comment]");
+for (let i = 0; i < ownComments.length; i++) {
+    let id = ownComments[i].getAttribute("data-comment");
 
-    var comment = ownComments[i];
-    var editLink = selectCommentElem(id, "edit");
-    var saveLink = selectCommentElem(id, "save");
-    var cancelLink = selectCommentElem(id, "cancel");
-    var deleteLink = selectCommentElem(id, "delete");
-    var existingComment = selectCommentElem(id, "comment-content");
+    let comment = ownComments[i];
+    let editLink = selectCommentElem(id, "edit");
+    let saveLink = selectCommentElem(id, "save");
+    let cancelLink = selectCommentElem(id, "cancel");
+    let deleteLink = selectCommentElem(id, "delete");
+    let existingComment = selectCommentElem(id, "comment-content");
 
     editLink.addEventListener("click", function (e) {
         editLink.classList.add("hide");
         cancelLink.classList.remove("hide");
         saveLink.classList.remove("hide");
         
-        var editor = document.createElement("textarea");
+        let editor = document.createElement("textarea");
         editor.setAttribute("rows", 3);
         editor.setAttribute("cols", "50");
         editor.setAttribute("data-comment", id);
@@ -99,7 +99,7 @@ for (var i = 0; i < ownComments.length; i++) {
     });
 
     saveLink.addEventListener("click", function (e) {
-        var editor = selectCommentElem(id, "inline-comment-editor");
+        let editor = selectCommentElem(id, "inline-comment-editor");
         // todo check for no content
 
         const xhr = new XMLHttpRequest();
@@ -121,7 +121,7 @@ for (var i = 0; i < ownComments.length; i++) {
             editor.remove();
         };
 
-        var form = new FormData();
+        let form = new FormData();
         form.append("content", editor.value)
         xhr.send(form);
 
@@ -214,14 +214,14 @@ if (title && content) {
 
 // content uploader
 
-var contentSelector = document.querySelector('#content-selector');
+let contentSelector = document.querySelector('#content-selector');
 if  (contentSelector) {
     contentSelector.addEventListener('change', function() {
-        var files = contentSelector.files;
+        let files = contentSelector.files;
         if(files.length != 1) {
             return;
         }
-        var size = Math.round((files[0].size/1024/1024)*100)/100;
+        let size = Math.round((files[0].size/1024/1024)*100)/100;
         if (size > 1) {
             document.querySelector("#content-upload-result").innerText = "file size is too large ("+size+" MB)";
             document.querySelector("#copy-content-html").classList.add("hide");
@@ -231,14 +231,14 @@ if  (contentSelector) {
         upload.classList.remove('hide');
     });
 
-    var upload = document.querySelector('#content-upload-button');
+    let upload = document.querySelector('#content-upload-button');
     upload.addEventListener('click', function() {
         upload.classList.add('hide');
-        var files = contentSelector.files;
+        let files = contentSelector.files;
 
-        var filename = (new Date()).getTime() + "-" + files[0].name;
+        let filename = (new Date()).getTime() + "-" + files[0].name;
 
-        var form = new FormData();
+        let form = new FormData();
         form.append("file", files[0])
 
         const xhr = new XMLHttpRequest();
@@ -261,7 +261,7 @@ if  (contentSelector) {
     });
 
     document.querySelector("#copy-content-html").addEventListener('click', function () {
-        var textToCopy = document.querySelector("#content-upload-result").innerText;
+        let textToCopy = document.querySelector("#content-upload-result").innerText;
         const temp = document.createElement('textarea');
         temp.value = textToCopy;
         document.body.appendChild(temp);
