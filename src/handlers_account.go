@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 	"strings"
@@ -118,25 +119,19 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 		if displayName != "" {
 			model.DisplayName = displayName
-			if len(displayName) > 50 {
-				model.DisplayNameError = "Display name must be shorter than 50 characters"
+			errorMessage := tryUpdateDisplayName(username, displayName)
+			if errorMessage != "" {
+				model.DisplayNameError = errorMessage
 			} else {
-				updateDisplayName(username, displayName)
 				model.DisplayNameSuccess = true
 			}
 		}
 
 		if oldPassword != "" && newPassword != "" && newPasswordConfirm != "" {
-			if newPassword == oldPassword {
-				model.PasswordError = "New password cannot be the same as the old password"
-			} else if newPassword != newPasswordConfirm {
-				model.PasswordError = "New password does not match confirm new password"
-			} else if len(newPassword) < 14 {
-				model.PasswordError = "New password must be at least 14 characters long (lol)"
-			} else if valid, err := validateUser(username, oldPassword); !valid || err != nil {
-				model.PasswordError = "Old password is invalid"
+			errorMessage := tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm)
+			if errorMessage != "" {
+				model.PasswordError = errorMessage
 			} else {
-				updatePassword(username, newPassword)
 				model.PasswordSuccess = true
 			}
 		}
@@ -144,11 +139,75 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		file, fileHeader, err := r.FormFile("profileImage")
 		if err == nil {
 			defer file.Close()
-
-			// validate file
-			// upload and mark success
+			errorMessage := tryUpdateProfileImage(username, file, fileHeader)
+			if errorMessage != "" {
+				model.ImageError = errorMessage
+			} else {
+				model.ImageSuccess = true
+			}
 		}
 	}
 
 	renderView(w, r, model, "accountDetails.html", "Account Details")
+}
+
+func tryUpdateDisplayName(username string, displayName string) string {
+	if len(displayName) > 50 {
+		return "Display name must be shorter than 50 characters"
+	}
+
+	err := insertOrUpdateUser(username, "", displayName)
+	if err != nil {
+		return "Failed to update username"
+	}
+
+	return ""
+}
+
+func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm string) string {
+	if newPassword == oldPassword {
+		return "New password cannot be the same as the old password"
+	}
+
+	if newPassword != newPasswordConfirm {
+		return "New password does not match confirm new password"
+	}
+
+	if len(newPassword) < 14 {
+		return "New password must be at least 14 characters long (lol)"
+	}
+
+	if valid, err := validateUser(username, oldPassword); !valid || err != nil {
+		return "Old password is invalid"
+	}
+
+	err := insertOrUpdateUser(username, newPassword, "")
+	if err != nil {
+		return "Failed to update password"
+	}
+
+	return ""
+}
+
+func tryUpdateProfileImage(username string, file multipart.File, fileHeader *multipart.FileHeader) string {
+	if fileHeader.Size > maxFileSize {
+		return "file size exceeds maximum"
+	}
+
+	buffer := make([]byte, 512)
+	if _, err := file.Read(buffer); err != nil {
+		return "unable to read file"
+	}
+
+	mimeType := http.DetectContentType(buffer)
+	if !strings.HasPrefix(mimeType, "image/") {
+		return "file is not a valid image"
+	}
+
+	error := uploadStorageFile(username, file)
+	if error != nil {
+		return "there was an error uploading the file"
+	}
+
+	return ""
 }

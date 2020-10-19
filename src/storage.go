@@ -1,6 +1,7 @@
 package main
 
 import (
+	"mime/multipart"
 	"net/http"
 	"strings"
 
@@ -67,6 +68,24 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
+func uploadStorageFile(filename string, file multipart.File) error {
+	session, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
+	if err != nil {
+		return err
+	}
+
+	uploader := s3manager.NewUploader(session)
+	_, err = uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(contentStorageName),
+		Key:    aws.String(filename),
+		Body:   file,
+	})
+
+	return err
+}
+
 func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 	filename := r.URL.Path[len("/content/"):]
 	if len(filename) == 0 {
@@ -110,21 +129,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	})
-	if err != nil {
-		serverError(w, err)
-		return
-	}
-
-	uploader := s3manager.NewUploader(session)
-	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(contentStorageName),
-		Key:    aws.String(filename),
-		Body:   file,
-	})
-
+	err = uploadStorageFile(filename, file)
 	if err != nil {
 		serverError(w, err)
 		return

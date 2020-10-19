@@ -9,9 +9,10 @@
         <div>
             <input type="submit" value="Update" />
             <span class="error">{{ .DisplayNameError }}</span>
+            {{ if .DisplayNameSuccess }}<span>Successfully Updated</span>{{ end }}
         </div>
     </form>
-    <form method="POST" class="account-details-container">
+    <form method="POST" class="account-details-container" enctype="multipart/form-data">
         <div>
             <label for="profileImage">Profile Image</label>
             <img src="/profile-image/{{ .Username }}" class="profile-image" />
@@ -20,6 +21,7 @@
         <div>
             <input type="submit" value="Update" />
             <span class="error">{{ .ImageError }}</span>
+            {{ if .ImageSuccess }}<span>Successfully Updated</span>{{ end }}
         </div>
     </form>
     <form method="POST" class="account-details-container">
@@ -38,6 +40,7 @@
         <div>
             <input type="submit" value="Update" />
             <span class="error">{{ .PasswordError }}</span>
+            {{ if .PasswordSuccess }}<span>Successfully Updated</span>{{ end }}
         </div>
     </form>
 </div>

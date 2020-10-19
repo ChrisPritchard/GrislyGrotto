@@ -306,12 +306,24 @@ func validateUser(username, password string) (valid bool, err error) {
 }
 
 func insertOrUpdateUser(username, password, displayName string) error {
-	passwordHash, err := generateArgonHash(passwordConfig, password)
-	if err != nil {
-		return err
+	var res sql.Result
+	var err error
+	var passwordHash string
+
+	if password != "" {
+		passwordHash, err = generateArgonHash(passwordConfig, password)
+		if err != nil {
+			return err
+		}
 	}
 
-	res, err := database.Exec("UPDATE Authors SET Password = ?, DisplayName = ? WHERE Username = ?", passwordHash, displayName, username)
+	if password == "" {
+		res, err = database.Exec("UPDATE Authors SET DisplayName = ? WHERE Username = ?", displayName, username)
+	} else if displayName != "" {
+		res, err = database.Exec("UPDATE Authors SET Password = ?, DisplayName = ? WHERE Username = ?", passwordHash, displayName, username)
+	} else {
+		res, err = database.Exec("UPDATE Authors SET Password = ? WHERE Username = ?", passwordHash, username)
+	}
 
 	if err != nil {
 		return err
