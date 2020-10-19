@@ -1,0 +1,44 @@
+{{ define "content" }}
+<div class="page-form">
+    <h2>Account Details</h2>
+    <form method="POST" class="account-details-container">
+        <div>
+            <label for="displayName">Display Name</label>
+            <input id="displayName" name="displayName" type="text" value="{{ .DisplayName }}" />
+        </div>
+        <div>
+            <input type="submit" value="Update" />
+        </div>
+    </form>
+    <form method="POST" class="account-details-container">
+        <div>
+            <label for="profileImage">Profile Image</label>
+            <img src="/profile-image/{{ .Username }}" class="profile-image" />
+            <input id="profileImage" name="profileImage" type="file" accept=".jpg, .jpeg, .png, .gif" />
+        </div>
+        <div>
+            <input type="submit" value="Update" />
+        </div>
+    </form>
+    <form method="POST" class="account-details-container">
+        <div>
+            <label for="oldPassword">Old Password</label>
+            <input id="oldPassword" name="oldPassword" type="password" />
+        </div>
+        <div>
+            <label for="newPassword">New Password</label>
+            <input id="newPassword" name="newPassword" type="password" />
+        </div>
+        <div>
+            <label for="newPasswordConfirm">Confirm New Password</label>
+            <input id="newPasswordConfirm" name="newPasswordConfirm" type="password" />
+        </div>
+        <div>
+            <input type="submit" value="Update" />
+        </div>
+    </form>
+    <div>
+        <span class="error">{{ .Error }}</span>
+    </div>
+</div>
+{{ end }}

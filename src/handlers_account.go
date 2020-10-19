@@ -66,3 +66,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/"+path, http.StatusFound)
 }
+
+func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
+	renderView(w, r, nil, "accountDetails.html", "Account Details")
+}
