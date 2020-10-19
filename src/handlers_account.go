@@ -102,15 +102,53 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username := *currentUser
+	model := accountDetailsViewModel{username, "", "", false, "", false, "", false}
 
-	// TODO: if post, check three forms and run checks
-
-	displayName, err := getDisplayName(username)
-
+	var err error
+	model.DisplayName, err = getDisplayName(username)
 	if err != nil {
 		serverError(w, err)
 		return
 	}
 
-	renderView(w, r, accountDetailsViewModel{username, displayName, "", "", ""}, "accountDetails.html", "Account Details")
+	if r.Method == "POST" {
+		displayName, oldPassword, newPassword, newPasswordConfirm :=
+			r.FormValue("displayName"), r.FormValue("oldPassword"),
+			r.FormValue("newPassword"), r.FormValue("newPasswordConfirm")
+
+		if displayName != "" {
+			model.DisplayName = displayName
+			if len(displayName) > 50 {
+				model.DisplayNameError = "Display name must be shorter than 50 characters"
+			} else {
+				updateDisplayName(username, displayName)
+				model.DisplayNameSuccess = true
+			}
+		}
+
+		if oldPassword != "" && newPassword != "" && newPasswordConfirm != "" {
+			if newPassword == oldPassword {
+				model.PasswordError = "New password cannot be the same as the old password"
+			} else if newPassword != newPasswordConfirm {
+				model.PasswordError = "New password does not match confirm new password"
+			} else if len(newPassword) < 14 {
+				model.PasswordError = "New password must be at least 14 characters long (lol)"
+			} else if valid, err := validateUser(username, oldPassword); !valid || err != nil {
+				model.PasswordError = "Old password is invalid"
+			} else {
+				updatePassword(username, newPassword)
+				model.PasswordSuccess = true
+			}
+		}
+
+		file, fileHeader, err := r.FormFile("profileImage")
+		if err == nil {
+			defer file.Close()
+
+			// validate file
+			// upload and mark success
+		}
+	}
+
+	renderView(w, r, model, "accountDetails.html", "Account Details")
 }

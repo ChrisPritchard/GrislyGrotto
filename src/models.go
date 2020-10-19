@@ -40,7 +40,11 @@ type loginViewModel struct {
 type accountDetailsViewModel struct {
 	Username                      string
 	DisplayName, DisplayNameError string
-	ImageError, PasswordError     string
+	DisplayNameSuccess            bool
+	ImageError                    string
+	ImageSuccess                  bool
+	PasswordError                 string
+	PasswordSuccess               bool
 }
 
 type editorViewModel struct {
