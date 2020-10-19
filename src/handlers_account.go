@@ -90,5 +90,27 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
-	renderView(w, r, nil, "accountDetails.html", "Account Details")
+	if r.Method != "GET" && r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
+	currentUser := getCurrentUser(r)
+	if currentUser == nil {
+		unauthorised(w)
+		return
+	}
+
+	username := *currentUser
+
+	// TODO: if post, check three forms and run checks
+
+	displayName, err := getDisplayName(username)
+
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	renderView(w, r, accountDetailsViewModel{username, displayName, "", "", ""}, "accountDetails.html", "Account Details")
 }

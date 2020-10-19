@@ -37,6 +37,12 @@ type loginViewModel struct {
 	Error string
 }
 
+type accountDetailsViewModel struct {
+	Username                      string
+	DisplayName, DisplayNameError string
+	ImageError, PasswordError     string
+}
+
 type editorViewModel struct {
 	NewPost          bool
 	Title, Content   string

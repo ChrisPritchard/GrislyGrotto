@@ -325,6 +325,22 @@ func insertOrUpdateUser(username, password, displayName string) error {
 	return err
 }
 
+func getDisplayName(username string) (string, error) {
+	row := database.QueryRow(`
+		SELECT 
+			DisplayName
+		FROM Authors
+		WHERE Username = ?`, username)
+
+	var displayName string
+	err := row.Scan(&displayName)
+	if err != nil {
+		return "", err
+	}
+
+	return displayName, nil
+}
+
 func createNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
 	date := time.Now().Format("2006-01-02 15:04:05")
 	_, err = database.Exec(`

@@ -8,6 +8,7 @@
         </div>
         <div>
             <input type="submit" value="Update" />
+            <span class="error">{{ .DisplayNameError }}</span>
         </div>
     </form>
     <form method="POST" class="account-details-container">
@@ -18,6 +19,7 @@
         </div>
         <div>
             <input type="submit" value="Update" />
+            <span class="error">{{ .ImageError }}</span>
         </div>
     </form>
     <form method="POST" class="account-details-container">
@@ -35,10 +37,8 @@
         </div>
         <div>
             <input type="submit" value="Update" />
+            <span class="error">{{ .PasswordError }}</span>
         </div>
     </form>
-    <div>
-        <span class="error">{{ .Error }}</span>
-    </div>
 </div>
 {{ end }}
