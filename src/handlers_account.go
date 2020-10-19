@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 )
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +46,22 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	path := ""
 	returnURI := r.URL.Query()["returnUrl"]
 	if len(returnURI) > 0 {
+		path = returnURI[0]
+	}
+	http.Redirect(w, r, "/"+path, http.StatusFound)
+}
+
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
+	setCookie("user", "", time.Unix(0, 0), w)
+
+	path := ""
+	returnURI := r.URL.Query()["returnUrl"]
+	if len(returnURI) > 0 && !strings.HasPrefix(returnURI[0], "editor") {
 		path = returnURI[0]
 	}
 	http.Redirect(w, r, "/"+path, http.StatusFound)
