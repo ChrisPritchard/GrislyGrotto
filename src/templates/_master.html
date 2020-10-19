@@ -19,14 +19,16 @@
                 <a href="/"><h1 class="site-title">The Grisly Grotto</h1></a>
             </header>
             <nav>
-                {{ if and (loggedIn) (ne (page) "New Post") }}
-                    <a href="/editor">New Post</a>
-                    <span>&nbsp;|&nbsp;</span>
-                {{ else if loggedIn }}
+                {{ if loggedIn }}
                     <a href="/logout?returnUrl={{ path }}">Logout</a>
                     <span>&nbsp;|&nbsp;</span>
-                {{ else if and (not loggedIn) (ne (page) "Login") }}
+                {{ end }}
+                {{ if and (not loggedIn) (ne (page) "Login") }}
                     <a href="/login?returnUrl={{ path }}">Login</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if and (loggedIn) (ne (page) "New Post") }}
+                    <a href="/editor">New Post</a>
                     <span>&nbsp;|&nbsp;</span>
                 {{ end }}
                 {{ if (ne (page) "Archives") }}
