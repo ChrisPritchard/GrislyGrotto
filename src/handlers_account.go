@@ -84,7 +84,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := ""
 	returnURI := r.URL.Query()["returnUrl"]
-	if len(returnURI) > 0 && !strings.HasPrefix(returnURI[0], "editor") {
+	if len(returnURI) > 0 && !strings.HasPrefix(returnURI[0], "editor") && !strings.HasPrefix(returnURI[0], "account-details") {
 		path = returnURI[0]
 	}
 	http.Redirect(w, r, "/"+path, http.StatusFound)
