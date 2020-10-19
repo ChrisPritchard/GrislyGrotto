@@ -1,11 +1,33 @@
 package main
 
 import (
+	"encoding/base64"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 )
+
+func profileImageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
+	profile := r.URL.Path[len("/profile-image/"):]
+	if len(profile) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	bytes, exists, err := retrieveStorageFile(profile)
+	if err != nil || !exists {
+		bytes, _ = base64.StdEncoding.DecodeString("R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=") // 26 byte gif
+	}
+
+	setMimeType(w, r)
+	w.Write(bytes)
+}
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {

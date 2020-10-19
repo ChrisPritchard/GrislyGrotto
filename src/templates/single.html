@@ -1,18 +1,21 @@
 {{ define "content" }}
-<h2 class="post-title">{{ .Post.Title }}</h2>
-<span class="post-summary">Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
-<div class="post-content">
-    {{ render .Post.Content }}
-</div>
-<div class="post-controls">
-    {{ if .OwnBlog }}
-        <form method="GET" action="/editor/{{ .Post.Key }}">
-            <input type="submit" value="Edit" />
-        </form>
-        <form method="POST" action="/delete-post/{{ .Post.Key }}">
-            <input type="submit" value="Delete" class="confirm-click" />
-        </form>
-    {{ end }}
+<div>
+    <img src="/profile-image/{{ .Post.AuthorUsername }}" class="profile-image post-author-image" />
+    <h2 class="post-title">{{ .Post.Title }}</h2>
+    <span class="post-summary">Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
+    <div class="post-content">
+        {{ render .Post.Content }}
+    </div>
+    <div class="post-controls">
+        {{ if .OwnBlog }}
+            <form method="GET" action="/editor/{{ .Post.Key }}">
+                <input type="submit" value="Edit" />
+            </form>
+            <form method="POST" action="/delete-post/{{ .Post.Key }}">
+                <input type="submit" value="Delete" class="confirm-click" />
+            </form>
+        {{ end }}
+    </div>
 </div>
 <h2 id="comments">Comments</h2>
 {{ range .Post.Comments }}

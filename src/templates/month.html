@@ -2,6 +2,7 @@
 <h2>{{ .Month }}, {{ .Year }}</h2>
 {{ range .Posts }}
     <div>
+        <img src="/profile-image/{{ .AuthorUsername }}" class="profile-image post-author-image" />
         <a href="/post/{{ .Key }}"><h3 class="post-title">{{.Title}}</h3></a>
         <div class="post-summary">Posted by {{ .Author }} at {{ formatDate .Date }}. <a href="/post/{{ .Key }}#comments">Comments ({{ .CommentCount }})</a></div>
         <div class="post-content">

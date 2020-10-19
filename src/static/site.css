@@ -291,6 +291,10 @@ span.timer {
     margin: 5px;
 }
 
+.post-author-image {
+    float: left;
+}
+
 .account-details-container div {
     margin-bottom: 1em;
 }

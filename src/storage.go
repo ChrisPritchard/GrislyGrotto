@@ -10,6 +10,28 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
+func retrieveStorageFile(filename string) (bytes []byte, exists bool, err error) {
+	session, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
+	if err != nil {
+		return nil, false, err
+	}
+
+	downloader := s3manager.NewDownloader(session)
+	buf := aws.NewWriteAtBuffer([]byte{})
+	_, err = downloader.Download(buf, &s3.GetObjectInput{
+		Bucket: aws.String(contentStorageName),
+		Key:    aws.String(filename),
+	})
+
+	if err != nil {
+		return nil, false, err
+	}
+
+	return buf.Bytes(), true, nil
+}
+
 func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 	filename := r.URL.Path[len("/content/"):]
 	if len(filename) == 0 {
@@ -29,28 +51,20 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	})
+	bytes, exists, err := retrieveStorageFile(filename)
 	if err != nil {
 		serverError(w, err)
 		return
 	}
-
-	downloader := s3manager.NewDownloader(session)
-	buf := aws.NewWriteAtBuffer([]byte{})
-	_, err = downloader.Download(buf, &s3.GetObjectInput{
-		Bucket: aws.String(contentStorageName),
-		Key:    aws.String(filename),
-	})
-
-	if err != nil {
+	if !exists {
 		http.NotFound(w, r)
 		return
 	}
 
-	setMimeType(w, r)
-	w.Write(buf.Bytes())
+	headers := w.Header()
+	headers.Set("Content-Type", "image/gif")
+	headers.Set("X-Content-Type", "image/gif")
+	w.Write(bytes)
 }
 
 func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {

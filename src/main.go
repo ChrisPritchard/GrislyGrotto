@@ -55,6 +55,7 @@ func setupRoutes() {
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/profile-image/", profileImageHandler)
 	http.HandleFunc("/account-details", accountDetailsHandler)
 	http.HandleFunc("/editor/", editorHandler)
 	http.HandleFunc("/save-theme", themeHandler)

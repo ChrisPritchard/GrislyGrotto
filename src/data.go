@@ -12,7 +12,8 @@ func getLatestPosts(page int, currentUser *string) ([]blogPost, error) {
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
-			p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
+			p.Author_Username as AuthorUsername,
+			p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount,
 			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
 		FROM Posts p
 		WHERE 
@@ -28,7 +29,7 @@ func getLatestPosts(page int, currentUser *string) ([]blogPost, error) {
 	var post blogPost
 	for rows.Next() {
 		err = rows.Scan(
-			&post.Author, &post.Key, &post.Title, &post.Content,
+			&post.Author, &post.AuthorUsername, &post.Key, &post.Title, &post.Content,
 			&post.Date, &post.IsStory, &post.WordCount, &post.CommentCount)
 		if err != nil {
 			return nil, err
@@ -43,13 +44,16 @@ func getSinglePost(key string, currentUser *string) (post blogPost, notFound boo
 	row := database.QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
-			p.Title, p.Content, p.Date, p.Author_Username , p.IsStory
+			p.Author_Username, p.Title, p.Content, p.Date, p.IsStory
 		FROM Posts p
 		WHERE 
 			Key = ?
 			AND (p.Title NOT LIKE ? OR p.Author_Username = ?)`, key, "%"+draftPrefix+"%", currentUser)
 
-	err = row.Scan(&post.Author, &post.Title, &post.Content, &post.Date, &post.AuthorUsername, &post.IsStory)
+	err = row.Scan(
+		&post.Author, &post.AuthorUsername,
+		&post.Title, &post.Content,
+		&post.Date, &post.IsStory)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -257,6 +261,7 @@ func getPostsForMonth(month, year string, currentUser *string) ([]blogPost, erro
 	rows, err := database.Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+			p.Author_Username as AuthorUsername,
 			p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
 			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
 		FROM Posts p
@@ -273,7 +278,7 @@ func getPostsForMonth(month, year string, currentUser *string) ([]blogPost, erro
 	var post blogPost
 	for rows.Next() {
 		err = rows.Scan(
-			&post.Author, &post.Key, &post.Title, &post.Content,
+			&post.Author, &post.AuthorUsername, &post.Key, &post.Title, &post.Content,
 			&post.Date, &post.IsStory, &post.WordCount, &post.CommentCount)
 		if err != nil {
 			return nil, err
