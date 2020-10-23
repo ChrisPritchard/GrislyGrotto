@@ -11,7 +11,7 @@
 <form method="POST">
 
     <label for="title">Post Title</label>
-    <input type="text" id="title" name="title" value="{{ .Title }}" />
+    <input type="text" id="title" name="title" value="{{ .Title }}" maxlength="100" />
 
     <div class="editor-help">
         The editor supports markdown syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">in this cheat sheet</a>. 
