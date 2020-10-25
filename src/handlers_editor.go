@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"io"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -210,6 +212,93 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tryUploadContentToStorage(w, r)
+}
+
+func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
+	filename := r.URL.Path[len("/content/"):]
+	if len(filename) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	lowerName := strings.ToLower(filename)
+	validExtension := false
+	for _, ext := range validUploadExtensions {
+		if strings.HasSuffix(lowerName, ext) {
+			validExtension = true
+		}
+	}
+	if !validExtension {
+		badRequest(w, "bad file extension")
+		return
+	}
+
+	bytes, exists, err := retrieveStorageFile(filename)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+	if !exists {
+		http.NotFound(w, r)
+		return
+	}
+
+	headers := w.Header()
+	headers.Set("Content-Type", "image/gif")
+	headers.Set("X-Content-Type", "image/gif")
+	w.Write(bytes)
+}
+
+func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
+	filename := r.URL.Path[len("/content/"):]
+	if len(filename) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+	filename = strings.ToLower(filename)
+
+	validExtension := false
+	for _, ext := range validUploadExtensions {
+		if strings.HasSuffix(filename, ext) {
+			validExtension = true
+		}
+	}
+	if !validExtension {
+		badRequest(w, "bad file extension")
+		return
+	}
+
+	file, fileHeader, err := r.FormFile("file")
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+	defer file.Close()
+
+	if fileHeader.Size > maxFileSize {
+		badRequest(w, "file size exceeds maximum")
+		return
+	}
+
+	buffer := bytes.NewBuffer(nil)
+	if _, err := io.Copy(buffer, file); err != nil {
+		badRequest(w, "Unable to read file")
+		return
+	}
+
+	mimeType := http.DetectContentType(buffer.Bytes())
+	if !strings.HasPrefix(mimeType, "image/") {
+		badRequest(w, "File is not a valid image")
+		return
+	}
+
+	err = uploadStorageFile(filename, buffer)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
 }
 
 func createPostKey(title string) string {

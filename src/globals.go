@@ -38,6 +38,7 @@ const themeExpiry = time.Hour * 8760 * 10         // ten years
 const commentAuthorityExpiry = time.Hour * 24 * 5 // five days
 const maxOwnedComments = 20
 
+const maxDisplayNameLength = 30
 const maxPasswordLength = 100
 const maxSearchTermLength = 100
 const maxCommentLength = 1000

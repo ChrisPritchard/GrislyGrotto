@@ -177,9 +177,9 @@ displayNameChange.addEventListener("click", function(e) {
             return;
         }
 
-        if (displayName.value.length > 50) {
+        if (displayName.value.length > 30) {
             e.preventDefault();
-            displayNameError.innerText = "Display names must be 50 characters or less";
+            displayNameError.innerText = "Display names must be 30 characters or less";
             return;
         }
     });

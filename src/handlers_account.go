@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -21,12 +23,19 @@ func profileImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	headers := w.Header()
+
 	bytes, exists, err := retrieveStorageFile(profile)
 	if err != nil || !exists {
 		bytes, _ = base64.StdEncoding.DecodeString("R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=") // 26 byte gif
+		headers.Set("Content-Type", "image/gif")
+		headers.Set("X-Content-Type", "image/gif")
+	} else {
+		mimeType := http.DetectContentType(bytes)
+		headers.Set("Content-Type", mimeType)
+		headers.Set("X-Content-Type", mimeType)
 	}
 
-	setMimeType(w, r)
 	w.Write(bytes)
 }
 
@@ -157,8 +166,8 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func tryUpdateDisplayName(username string, displayName string) string {
-	if len(displayName) > 50 {
-		return "Display name must be shorter than 50 characters"
+	if len(displayName) > maxDisplayNameLength {
+		return "Display name must be shorter than " + strconv.Itoa(maxDisplayNameLength) + " characters"
 	}
 
 	err := insertOrUpdateUser(username, "", displayName)
@@ -203,17 +212,17 @@ func tryUpdateProfileImage(username string, file multipart.File, fileHeader *mul
 		return "File size exceeds maximum"
 	}
 
-	buffer := make([]byte, 512)
-	if _, err := file.Read(buffer); err != nil {
+	buffer := bytes.NewBuffer(nil)
+	if _, err := io.Copy(buffer, file); err != nil {
 		return "Unable to read file"
 	}
 
-	mimeType := http.DetectContentType(buffer)
+	mimeType := http.DetectContentType(buffer.Bytes())
 	if !strings.HasPrefix(mimeType, "image/") {
 		return "File is not a valid image"
 	}
 
-	error := uploadStorageFile(username, file)
+	error := uploadStorageFile(username, buffer)
 	if error != nil {
 		return "There was an error uploading the file"
 	}
