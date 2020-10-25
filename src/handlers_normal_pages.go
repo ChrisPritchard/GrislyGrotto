@@ -132,7 +132,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	searchParam := r.URL.Query().Get("searchTerm")
-	if searchParam == "" {
+	if searchParam == "" || len(searchParam) > maxSearchTermLength {
 		renderView(w, r, nil, "search.html", "Search")
 		return
 	}

@@ -172,6 +172,12 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
+	if len(title) > maxTitleLength {
+		model := editorViewModel{false, title, content, isStory, isDraft, "title exceeds max title length of " + strconv.Itoa(maxTitleLength)}
+		renderView(w, r, model, "editor.html", "Edit Post")
+		return
+	}
+
 	wordCount := calculateWordCount(content)
 	if wordCount < minWordCount {
 		model := editorViewModel{false, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}

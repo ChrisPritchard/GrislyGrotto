@@ -102,6 +102,10 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 		return 0, "both author and content are required", nil
 	}
 
+	if len(content) > maxCommentLength {
+		return 0, "comment content exceeds max length of " + strconv.Itoa(maxCommentLength), nil
+	}
+
 	blockTime := getBlockTime(r, author)
 	if blockTime > 0 {
 		return 0, "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
@@ -139,6 +143,11 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 	newContent := r.FormValue("content")
 	if newContent == "" {
 		badRequest(w, "content required")
+		return
+	}
+
+	if len(newContent) > maxCommentLength {
+		badRequest(w, "comment content exceeds max length of "+strconv.Itoa(maxCommentLength))
 		return
 	}
 

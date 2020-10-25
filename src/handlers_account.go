@@ -47,6 +47,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(username) > 20 || len(password) > 100 {
+		renderView(w, r, loginViewModel{"Excessively sized values submitted"}, "login.html", "Login")
+		return
+	}
+
 	blockTime := getBlockTime(r, username)
 	if blockTime > 0 {
 		renderView(w, r, loginViewModel{"Cannot make another attempt for another " + strconv.Itoa(blockTime) + " seconds"}, "login.html", "Login")
@@ -165,6 +170,10 @@ func tryUpdateDisplayName(username string, displayName string) string {
 }
 
 func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm string) string {
+	if len(newPassword) > maxPasswordLength || len(newPasswordConfirm) > maxPasswordLength || len(oldPassword) > maxCommentLength {
+		return "A value was provided longer than the max password length of " + strconv.Itoa(maxPasswordLength)
+	}
+
 	if newPassword == oldPassword {
 		return "New password cannot be the same as the old password"
 	}

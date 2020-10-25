@@ -38,6 +38,11 @@ const themeExpiry = time.Hour * 8760 * 10         // ten years
 const commentAuthorityExpiry = time.Hour * 24 * 5 // five days
 const maxOwnedComments = 20
 
+const maxPasswordLength = 100
+const maxSearchTermLength = 100
+const maxCommentLength = 1000
+const maxTitleLength = 100
+
 var validUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif"}
 
 var passwordConfig = &argon2Config{

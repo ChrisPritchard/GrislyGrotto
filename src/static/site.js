@@ -80,6 +80,7 @@ for (let i = 0; i < ownComments.length; i++) {
         let editor = document.createElement("textarea");
         editor.setAttribute("rows", 3);
         editor.setAttribute("cols", "50");
+        editor.setAttribute("maxlength", "1000");
         editor.setAttribute("data-comment", id);
         editor.classList.add("inline-comment-editor");
         editor.innerText = existingComment.innerText;
