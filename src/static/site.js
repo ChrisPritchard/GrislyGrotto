@@ -155,6 +155,35 @@ for (let i = 0; i < ownComments.length; i++) {
     });
 }
 
+// Account details client validations
+
+let passwordChange = document.getElementById('password-update');
+if (passwordChange) 
+    passwordChange.addEventListener("click", function(e) {
+        let oldPassword = document.querySelector("#oldPassword");
+        let newPassword = document.querySelector("#newPassword");
+        let newPasswordConfirm = document.querySelector("#newPasswordConfirm");
+        let passwordError = document.querySelector("#password-error");
+
+        if (!oldPassword.value || !newPassword.value || !newPasswordConfirm.value) {
+            e.preventDefault();
+            passwordError.innerText = "All values must be provided";
+            return;
+        }
+
+        if (newPassword.value != newPasswordConfirm.value) {
+            e.preventDefault();
+            passwordError.innerText = "New password does not match confirm field";
+            return;
+        }
+
+        if (newPassword.value.length < 14) {
+            e.preventDefault();
+            passwordError.innerText = "New password must be at least 14 characters long";
+            return;
+        }
+    });
+
 // Dirty flag and confirm leave on editor page, to stop 'accidents'
 
 let title = document.getElementById('title');

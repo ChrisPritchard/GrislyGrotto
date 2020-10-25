@@ -38,8 +38,8 @@
             <input id="newPasswordConfirm" name="newPasswordConfirm" type="password" maxlength="100" />
         </div>
         <div>
-            <input type="submit" value="Update" />
-            <span class="error">{{ .PasswordError }}</span>
+            <input type="submit" value="Update" id="password-update" />
+            <span class="error" id="password-error">{{ .PasswordError }}</span>
             {{ if .PasswordSuccess }}<span>Successfully Updated</span>{{ end }}
         </div>
     </form>

@@ -183,7 +183,7 @@ func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm st
 	}
 
 	if len(newPassword) < 14 {
-		return "New password must be at least 14 characters long (lol)"
+		return "New password must be at least 14 characters long"
 	}
 
 	if valid, err := validateUser(username, oldPassword); !valid || err != nil {
