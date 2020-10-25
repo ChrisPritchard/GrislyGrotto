@@ -157,9 +157,37 @@ for (let i = 0; i < ownComments.length; i++) {
 
 // Account details client validations
 
+function removeSuccessMessages() {
+    let elems = document.querySelectorAll(".success-message");
+    for(let i = 0; i < elems.length; i++) {
+        elems[i].remove();
+    }
+}
+
+let displayNameChange = document.getElementById('displayName-update');
+if (displayNameChange) 
+displayNameChange.addEventListener("click", function(e) {
+        removeSuccessMessages();
+        let displayName = document.querySelector("#displayName");
+        let displayNameError = document.querySelector("#displayName-error");
+
+        if (!displayName.value) {
+            e.preventDefault();
+            displayNameError.innerText = "A blank display name is invalid";
+            return;
+        }
+
+        if (displayName.value.length > 50) {
+            e.preventDefault();
+            displayNameError.innerText = "Display names must be 50 characters or less";
+            return;
+        }
+    });
+
 let passwordChange = document.getElementById('password-update');
 if (passwordChange) 
     passwordChange.addEventListener("click", function(e) {
+        removeSuccessMessages();
         let oldPassword = document.querySelector("#oldPassword");
         let newPassword = document.querySelector("#newPassword");
         let newPasswordConfirm = document.querySelector("#newPasswordConfirm");

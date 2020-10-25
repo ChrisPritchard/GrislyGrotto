@@ -7,9 +7,9 @@
             <input id="displayName" name="displayName" type="text" value="{{ .DisplayName }}" maxlength="50" />
         </div>
         <div>
-            <input type="submit" value="Update" />
-            <span class="error">{{ .DisplayNameError }}</span>
-            {{ if .DisplayNameSuccess }}<span>Successfully Updated</span>{{ end }}
+            <input type="submit" value="Update" id="displayName-update" />
+            <span class="error" id="displayName-error">{{ .DisplayNameError }}</span>
+            {{ if .DisplayNameSuccess }}<span class="success-message">Successfully Updated</span>{{ end }}
         </div>
     </form>
     <form method="POST" class="account-details-container" enctype="multipart/form-data">
@@ -21,7 +21,7 @@
         <div>
             <input type="submit" value="Update" />
             <span class="error">{{ .ImageError }}</span>
-            {{ if .ImageSuccess }}<span>Successfully Updated</span>{{ end }}
+            {{ if .ImageSuccess }}<span class="success-message">Successfully Updated</span>{{ end }}
         </div>
     </form>
     <form method="POST" class="account-details-container">
@@ -40,7 +40,7 @@
         <div>
             <input type="submit" value="Update" id="password-update" />
             <span class="error" id="password-error">{{ .PasswordError }}</span>
-            {{ if .PasswordSuccess }}<span>Successfully Updated</span>{{ end }}
+            {{ if .PasswordSuccess }}<span class="success-message">Successfully Updated</span>{{ end }}
         </div>
     </form>
 </div>
