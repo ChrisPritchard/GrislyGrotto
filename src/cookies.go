@@ -19,6 +19,7 @@ func setCookie(name, data string, expires time.Time, w http.ResponseWriter) {
 		HttpOnly: true,
 		Expires:  expires,
 		Path:     "/",
+		Secure:   true,
 	}
 	http.SetCookie(w, &cookie)
 }
