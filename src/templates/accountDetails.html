@@ -5,6 +5,7 @@
         <div>
             <label for="displayName">Display Name</label>
             <input id="displayName" name="displayName" type="text" value="{{ .DisplayName }}" maxlength="50" />
+            <span class="help">Can't be blank</span>
         </div>
         <div>
             <input type="submit" value="Update" id="displayName-update" />
@@ -17,21 +18,24 @@
             <label for="profileImage">Profile Image</label>
             <img src="/profile-image/{{ .Username }}" class="profile-image" />
             <input id="profileImage" name="profileImage" type="file" accept=".jpg, .jpeg, .png, .gif" />
+            <br />
+            <span class="help">Maximum size: 1MB</span>
         </div>
         <div>
-            <input type="submit" value="Update" />
-            <span class="error">{{ .ImageError }}</span>
+            <input type="submit" value="Update" id="profileImage-update" />
+            <span class="error" id="profileImage-error">{{ .ImageError }}</span>
             {{ if .ImageSuccess }}<span class="success-message">Successfully Updated</span>{{ end }}
         </div>
     </form>
     <form method="POST" class="account-details-container">
         <div>
-            <label for="oldPassword">Old Password</label>
+            <label for="oldPassword">Current Password</label>
             <input id="oldPassword" name="oldPassword" type="password" maxlength="100" />
         </div>
         <div>
             <label for="newPassword">New Password</label>
             <input id="newPassword" name="newPassword" type="password" maxlength="100" />
+            <span class="help">Min-length: 14 characters</span>
         </div>
         <div>
             <label for="newPasswordConfirm">Confirm New Password</label>

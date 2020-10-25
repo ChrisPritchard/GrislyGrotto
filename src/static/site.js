@@ -107,7 +107,7 @@ for (let i = 0; i < ownComments.length; i++) {
 
         let editor = selectCommentElem(id, "inline-comment-editor");
         if (editor.value.trim() === "") {
-            errorMessage.innerText = "comments must have some content";
+            errorMessage.innerText = "Comments must have some content";
             return;
         }
 
@@ -117,7 +117,7 @@ for (let i = 0; i < ownComments.length; i++) {
             if (xhr.readyState != 4)
                 return;
             if (xhr.status != 202) {
-                errorMessage.innerText = "there was an error saving: " + xhr.response;
+                errorMessage.innerText = "There was an error saving: " + xhr.response;
                 return
             }
 
@@ -148,7 +148,7 @@ for (let i = 0; i < ownComments.length; i++) {
                 if (xhr.status == 202) {
                     comment.remove();
                 }
-                errorMessage.innerText = "there was an error deleting: " + xhr.response;
+                errorMessage.innerText = "There was an error deleting: " + xhr.response;
             };
             xhr.send();
         }
@@ -183,6 +183,28 @@ displayNameChange.addEventListener("click", function(e) {
             return;
         }
     });
+
+let profileImageChange = document.getElementById('profileImage-update');
+if (profileImageChange) 
+    profileImageChange.addEventListener("click", function(e) {
+        removeSuccessMessages();
+        let profileImage = document.querySelector("#profileImage");
+        let profileImageError = document.querySelector("#profileImage-error");
+
+        if (profileImage.files.length == 0) {
+            e.preventDefault();
+            profileImageError.innerText = "Please select a image to upload";
+            return;
+        }
+
+        let size = Math.round((profileImage.files[0].size/1024/1024)*100)/100;
+        if (size > 1) {
+            e.preventDefault();
+            profileImageError.innerText = "File size is too large ("+size+" MB)";
+            return;
+        }
+    });
+    
 
 let passwordChange = document.getElementById('password-update');
 if (passwordChange) 
@@ -228,7 +250,7 @@ if (title && content) { // both these being present means the user is on the edi
             // note: most browsers ignore this and just detect that I return anything at all
             // if I do (e.g. the below 'confirm' object), then they present their own version of the below
             // I could return 1 here, or true, or even false, and it would trigger a prompt
-            return confirm('are you sure you want to leave?')
+            return confirm('Are you sure you want to leave?')
         }
         // by returning nothing here, there is no prompt. note that returning false here WOULD trigger a prompt
     }
@@ -316,7 +338,7 @@ if  (contentSelector) {
                 document.querySelector("#content-upload-result").innerText = "<div align=\"center\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></div>";
                 document.querySelector("#copy-content-html").classList.remove("hide");
             } else {
-                document.querySelector("#content-upload-result").innerText = "an error occurred uploading :(";
+                document.querySelector("#content-upload-result").innerText = "An error occurred uploading :(";
                 document.querySelector("#copy-content-html").classList.add("hide");
             }
         };

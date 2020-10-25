@@ -187,7 +187,7 @@ func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm st
 	}
 
 	if valid, err := validateUser(username, oldPassword); !valid || err != nil {
-		return "Old password is invalid"
+		return "Current password is invalid"
 	}
 
 	err := insertOrUpdateUser(username, newPassword, "")
@@ -200,22 +200,22 @@ func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm st
 
 func tryUpdateProfileImage(username string, file multipart.File, fileHeader *multipart.FileHeader) string {
 	if fileHeader.Size > maxFileSize {
-		return "file size exceeds maximum"
+		return "File size exceeds maximum"
 	}
 
 	buffer := make([]byte, 512)
 	if _, err := file.Read(buffer); err != nil {
-		return "unable to read file"
+		return "Unable to read file"
 	}
 
 	mimeType := http.DetectContentType(buffer)
 	if !strings.HasPrefix(mimeType, "image/") {
-		return "file is not a valid image"
+		return "File is not a valid image"
 	}
 
 	error := uploadStorageFile(username, file)
 	if error != nil {
-		return "there was an error uploading the file"
+		return "There was an error uploading the file"
 	}
 
 	return ""

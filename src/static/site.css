@@ -243,6 +243,10 @@ span.timer {
     color: red;
 }
 
+.help {
+    font-size: 0.8em;
+}
+
 .vis-colours {
     display: none;
 }
