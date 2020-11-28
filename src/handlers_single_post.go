@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"sort"
 	"strconv"
@@ -121,6 +122,34 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 	return int(id), "", nil
 }
 
+func rawCommentHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
+	id := r.URL.Path[len("/raw-comment/"):]
+	idN, err := strconv.Atoi(id)
+	if err != nil {
+		badRequest(w, "invalid comment id")
+		return
+	}
+
+	ownedComments := getCommentAuthority(r)
+	if _, exists := ownedComments[idN]; !exists {
+		unauthorised(w)
+		return
+	}
+
+	commentSource, err := getCommentRaw(idN)
+	if err != nil {
+		serverError(w, errors.New("failed to retrieve comment with id "+id))
+		return
+	}
+
+	w.Write([]byte(commentSource))
+}
+
 func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.NotFound(w, r)
@@ -158,6 +187,9 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+
+	html := []byte(renderComment(newContent))
+	w.Write(html)
 }
 
 func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {

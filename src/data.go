@@ -115,6 +115,18 @@ func addCommentToBlog(author, content, postKey string) (newID int64, err error) 
 	return
 }
 
+func getCommentRaw(id int) (string, error) {
+	row := database.QueryRow(`SELECT Content FROM Comments WHERE Id = ?`, id)
+
+	var content string
+	err := row.Scan(&content)
+	if err != nil {
+		return "", err
+	}
+
+	return content, nil
+}
+
 func updateComment(id int, content string) error {
 	_, err := database.Exec(`UPDATE Comments SET Content = ? WHERE Id = ?`, content, id)
 	return err

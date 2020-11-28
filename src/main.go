@@ -46,6 +46,7 @@ func setupRoutes() {
 
 	http.HandleFunc("/", latestPostsHandler) // note: this will catch any request not caught by the others
 	http.HandleFunc("/post/", singlePostHandler)
+	http.HandleFunc("/raw-comment/", rawCommentHandler)
 	http.HandleFunc("/edit-comment/", editCommentHandler)
 	http.HandleFunc("/delete-comment/", deleteCommentHandler)
 	http.HandleFunc("/delete-post/", deletePostHandler)

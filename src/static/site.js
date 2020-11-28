@@ -73,20 +73,33 @@ for (let i = 0; i < ownComments.length; i++) {
     editLink.addEventListener("click", function (e) {
         e.preventDefault();
 
-        editLink.classList.add("hide");
-        cancelLink.classList.remove("hide");
-        saveLink.classList.remove("hide");
-        
-        let editor = document.createElement("textarea");
-        editor.setAttribute("rows", 3);
-        editor.setAttribute("cols", "50");
-        editor.setAttribute("maxlength", "1000");
-        editor.setAttribute("data-comment", id);
-        editor.classList.add("inline-comment-editor");
-        editor.innerText = existingComment.innerText;
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "/raw-comment/"+id);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4)
+                return;
+            if (xhr.status != 200) {
+                errorMessage.innerText = "There was an error getting the comment source: " + xhr.response;
+                return
+            }
 
-        existingComment.insertAdjacentElement("afterend", editor);
-        existingComment.classList.add("hide");
+            editLink.classList.add("hide");
+            cancelLink.classList.remove("hide");
+            saveLink.classList.remove("hide");
+            
+            let editor = document.createElement("textarea");
+            editor.setAttribute("rows", 3);
+            editor.setAttribute("cols", "50");
+            editor.setAttribute("maxlength", "1000");
+            editor.setAttribute("data-comment", id);
+            editor.classList.add("inline-comment-editor");
+            editor.innerHTML = xhr.responseText;
+
+            existingComment.insertAdjacentElement("afterend", editor);
+            existingComment.classList.add("hide");
+        };
+
+        xhr.send()
     });
 
     cancelLink.addEventListener("click", function (e) {
@@ -125,7 +138,7 @@ for (let i = 0; i < ownComments.length; i++) {
             editLink.classList.remove("hide");
             cancelLink.classList.add("hide");
             
-            existingComment.innerText = editor.value;
+            existingComment.innerHTML = xhr.responseText;
             existingComment.classList.remove("hide");
             editor.remove();
             errorMessage.innerText = "";
