@@ -31,7 +31,7 @@ const maxSearchResults = 50
 const searchStripPad = 20
 
 const minWordCount = 100
-const maxFileSize = 1024 * 1000
+const maxFileSize = 1024 * 1500 // slightly higher than the JS will allow, to deal with chaos monkey
 
 const authSessionExpiry = time.Hour
 const themeExpiry = time.Hour * 8760 * 10         // ten years

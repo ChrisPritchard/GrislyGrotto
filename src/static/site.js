@@ -323,7 +323,7 @@ if  (contentSelector) {
         }
         let size = Math.round((files[0].size/1024/1024)*100)/100;
         if (size > 1) {
-            document.querySelector("#content-upload-result").innerText = "file size is too large ("+size+" MB)";
+            document.querySelector("#content-upload-result").innerText = "file size is too large ("+size+" MB, max size is 1 MB)";
             document.querySelector("#copy-content-html").classList.add("hide");
             return;
         }
@@ -337,6 +337,7 @@ if  (contentSelector) {
         let files = contentSelector.files;
 
         let filename = (new Date()).getTime() + "-" + files[0].name;
+        filename = filename.toLowerCase().replace(/ /g, '-');
 
         let form = new FormData();
         form.append("file", files[0])
@@ -351,7 +352,7 @@ if  (contentSelector) {
                 document.querySelector("#content-upload-result").innerText = "<div align=\"center\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></div>";
                 document.querySelector("#copy-content-html").classList.remove("hide");
             } else {
-                document.querySelector("#content-upload-result").innerText = "An error occurred uploading :(";
+                document.querySelector("#content-upload-result").innerText = "An error occurred uploading :( " + xhr.responseText;
                 document.querySelector("#copy-content-html").classList.add("hide");
             }
         };
