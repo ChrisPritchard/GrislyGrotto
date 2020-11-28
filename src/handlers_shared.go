@@ -116,7 +116,7 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	setCookie("theme", r.FormValue("current-theme"), mainDomain(r), time.Now().Add(themeExpiry), w)
+	setCookie("theme", r.FormValue("current-theme"), time.Now().Add(themeExpiry), w)
 	http.Redirect(w, r, "/"+r.FormValue("return-path"), http.StatusFound)
 }
 
@@ -201,16 +201,4 @@ func getTheme(r *http.Request) string {
 		return currentTheme
 	}
 	return cookie.Value
-}
-
-func mainDomain(r *http.Request) string {
-	point := strings.LastIndex(r.Host, ".")
-	if point == -1 {
-		return r.Host
-	}
-	point = strings.LastIndex(r.Host[:point], ".")
-	if point == -1 {
-		return r.Host
-	}
-	return r.Host[point+1:]
 }

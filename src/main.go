@@ -86,7 +86,7 @@ func globalHandler(h http.Handler) http.Handler {
 		var userVal *string
 		if user != "" {
 			userVal = &user
-			setEncryptedCookie("user", user, mainDomain(r), authSessionExpiry, w)
+			setEncryptedCookie("user", user, authSessionExpiry, w)
 		}
 
 		userCtx := context.WithValue(r.Context(), authenticatedUser, userVal)
