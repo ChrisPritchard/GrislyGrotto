@@ -340,3 +340,17 @@ span.timer {
         vertical-align: middle;
     }
 }
+
+blockquote {
+    font-style: italic;
+}
+
+code {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+}
+
+.comment-content h1, .comment-content h2, .comment-content h3, .comment-content h4, .comment-content h5, .comment-content h6, .comment-content p {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1em;
+}

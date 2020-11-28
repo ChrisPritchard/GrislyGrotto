@@ -4,7 +4,7 @@
     <h2 class="post-title">{{ .Post.Title }}</h2>
     <span class="post-summary">Posted by {{ .Post.Author }} at {{ formatDate .Post.Date }}.</span>
     <div class="post-content">
-        {{ render .Post.Content }}
+        {{ renderPost .Post.Content }}
     </div>
     <div class="post-controls">
         {{ if .OwnBlog }}
@@ -22,7 +22,7 @@
 <div class="comment-container" {{if .Owned }}data-comment="{{ .ID }}"{{end}}>
     <div class="comment-summary">Commented by {{ .Author }} at {{ formatDate .Date }}:</div>
     <div {{if .Owned }}data-comment="{{ .ID }}"{{end}} class="comment-content">
-        {{ .Content }}
+        {{ renderComment .Content }}
     </div>
     {{ if .Owned }}
     <div>

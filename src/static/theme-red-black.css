@@ -48,10 +48,8 @@ select {
 
 blockquote {
     color: pink;
-    font-style: italic;
 }
 
 code {
     color: pink;
-    font-family: Consolas, 'Courier New', Courier, monospace;
 }

@@ -55,10 +55,8 @@ input[type=submit]:hover, input[type=button]:hover {
 
 blockquote {
     color: blue;
-    font-style: italic;
 }
 
 code {
     color: blue;
-    font-family: Consolas, 'Courier New', Courier, monospace;
 }

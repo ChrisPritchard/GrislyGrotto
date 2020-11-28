@@ -9,7 +9,7 @@
             {{ if .IsStory }}
                 <p><a href="/post/{{ .Key }}">Click through to read ({{ .WordCount }} words)...</a></p>
             {{ else }}
-                {{ render .Content }}
+                {{ renderPost .Content }}
             {{ end }}
         </div>
     </div>

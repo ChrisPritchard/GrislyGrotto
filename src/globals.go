@@ -53,12 +53,19 @@ var passwordConfig = &argon2Config{
 	keyLen:  32,
 }
 
-var markdownEngine = goldmark.New(
+var markdownFull = goldmark.New(
 	goldmark.WithExtensions(
 		extension.GFM,
 	),
 	goldmark.WithRendererOptions(
 		html.WithUnsafe(),
+	),
+)
+
+var markdownRestricted = goldmark.New(
+	goldmark.WithExtensions(
+		extension.Linkify,
+		extension.Strikethrough,
 	),
 )
 

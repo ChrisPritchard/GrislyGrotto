@@ -136,14 +136,15 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 	loggedIn := getCurrentUser(r) != nil
 
 	tmpl := template.New("").Funcs(template.FuncMap{
-		"raw":        raw,
-		"render":     render,
-		"formatDate": formatDate,
-		"loggedIn":   func() bool { return loggedIn },
-		"page":       func() string { return pageTitle },
-		"path":       func() string { return r.URL.Path[1:] },
-		"theme":      func() string { return getTheme(r) },
-		"isNewPost":  func() bool { return pageTitle == "New Post" }})
+		"raw":           raw,
+		"renderPost":    renderPost,
+		"renderComment": renderComment,
+		"formatDate":    formatDate,
+		"loggedIn":      func() bool { return loggedIn },
+		"page":          func() string { return pageTitle },
+		"path":          func() string { return r.URL.Path[1:] },
+		"theme":         func() string { return getTheme(r) },
+		"isNewPost":     func() bool { return pageTitle == "New Post" }})
 
 	if isDevelopment {
 		result, err := tmpl.ParseFiles("./templates/_master.html", "./templates/"+templateFile)
@@ -168,11 +169,21 @@ func raw(s string) template.HTML {
 	return template.HTML(s)
 }
 
-func render(s string) template.HTML {
+func renderPost(s string) template.HTML {
 	var buf bytes.Buffer
 	source := []byte(s)
-	if err := markdownEngine.Convert(source, &buf); err != nil {
+	if err := markdownFull.Convert(source, &buf); err != nil {
 		return template.HTML("<b>Error parsing Markdown, falling back to raw</b><br/>" + s)
+	}
+
+	return template.HTML(buf.String())
+}
+
+func renderComment(s string) template.HTML {
+	var buf bytes.Buffer
+	source := []byte(s)
+	if err := markdownRestricted.Convert(source, &buf); err != nil {
+		return template.HTML("<span class='error'>Failed to render comment</span>")
 	}
 
 	return template.HTML(buf.String())

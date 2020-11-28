@@ -63,10 +63,8 @@ select {
 
 blockquote {
     color: white;
-    font-style: italic;
 }
 
 code {
     color: white;
-    font-family: Consolas, 'Courier New', Courier, monospace;
 }
