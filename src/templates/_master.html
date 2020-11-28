@@ -19,10 +19,6 @@
                 <a href="/"><h1 class="site-title">The Grisly Grotto</h1></a>
             </header>
             <nav>
-                {{ if loggedIn }}
-                    <a href="/logout?returnUrl={{ path }}">Logout</a>
-                    <span>&nbsp;|&nbsp;</span>
-                {{ end }}
                 {{ if and (not loggedIn) (ne (page) "Login") }}
                     <a href="/login?returnUrl={{ path }}">Login</a>
                     <span>&nbsp;|&nbsp;</span>
@@ -33,6 +29,10 @@
                 {{ end }}
                 {{ if and (loggedIn) (ne (page) "Account Details") }}
                     <a href="/account-details">Account Details</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if loggedIn }}
+                    <a href="/logout?returnUrl={{ path }}">Logout</a>
                     <span>&nbsp;|&nbsp;</span>
                 {{ end }}
                 {{ if (ne (page) "Archives") }}
