@@ -45,3 +45,13 @@ select {
 #vis-secondary-colour {
     background-color: #666;
 }
+
+blockquote {
+    color: #66afe9;
+    font-style: italic;
+}
+
+code {
+    color: #66afe9;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+}

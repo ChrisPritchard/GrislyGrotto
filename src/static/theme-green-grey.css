@@ -60,3 +60,13 @@ select {
 #vis-secondary-colour {
     background-color: #B5CEA8;
 }
+
+blockquote {
+    color: white;
+    font-style: italic;
+}
+
+code {
+    color: white;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+}

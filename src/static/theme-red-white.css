@@ -52,3 +52,13 @@ input[type=submit]:hover, input[type=button]:hover {
 #vis-secondary-colour {
     background-color: maroon;
 }
+
+blockquote {
+    color: maroon;
+    font-style: italic;
+}
+
+code {
+    color: maroon;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+}
