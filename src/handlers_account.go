@@ -74,7 +74,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = setEncryptedCookie("user", username, authSessionExpiry, w)
+	err = setEncryptedCookie("user", username, mainDomain(r), authSessionExpiry, w)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -94,7 +94,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setCookie("user", "", time.Unix(0, 0), w)
+	setCookie("user", "", mainDomain(r), time.Unix(0, 0), w)
 
 	path := ""
 	returnURI := r.URL.Query()["returnUrl"]

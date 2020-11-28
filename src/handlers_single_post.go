@@ -25,7 +25,7 @@ func getCommentAuthority(r *http.Request) map[int]interface{} {
 	return result
 }
 
-func setCommentAuthority(existing map[int]interface{}, newID int, w http.ResponseWriter) {
+func setCommentAuthority(existing map[int]interface{}, newID int, r *http.Request, w http.ResponseWriter) {
 	ids := []int{newID}
 	for id := range existing {
 		ids = append(ids, id)
@@ -40,7 +40,7 @@ func setCommentAuthority(existing map[int]interface{}, newID int, w http.Respons
 		toStore += "," + strconv.Itoa(ids[i])
 	}
 
-	setEncryptedCookie("comments", toStore, commentAuthorityExpiry, w)
+	setEncryptedCookie("comments", toStore, mainDomain(r), commentAuthorityExpiry, w)
 }
 
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -92,7 +92,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setCommentAuthority(ownedComments, newID, w)
+	setCommentAuthority(ownedComments, newID, r, w)
 
 	http.Redirect(w, r, "/post/"+post.Key+"#comments", http.StatusFound)
 }
