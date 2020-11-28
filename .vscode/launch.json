@@ -11,6 +11,7 @@
             "mode": "auto",
             "program": "${workspaceFolder}/src",
             "args": ["-dev"],
+            // "args": ["-embed"],
             //"args": ["-setauthor", "aquinas", "machiavelli", "Christopher"],
             //"envFile": "${workspaceFolder}/.env"
         }
