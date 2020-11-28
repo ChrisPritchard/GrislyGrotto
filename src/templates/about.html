@@ -1,24 +1,28 @@
 {{ define "content" }}
 <h2>About Me</h2>
 <p>
-My name is Christopher Pritchard, and I work as a security consultant at <a href="https://www.aurainfosec.com/">Aura Information Security</a>. Prior to infosec, most of my career has been in Software Development and Solution Architecture.
+My name is Christopher Pritchard, and I work as a security consultant at <a href="https://www.aurainfosec.com/">Aura Information Security</a>. Prior to infosec, most of my career has been in information technology, mainly .NET Software Development and in Solution Architecture roles. Going on fifteen years now, phew.
 </p>
 <p>
-Enough about work though! Outside of my life as a wage slave, my hobbies are writing (I do <a href="https://nanowrimo.org">NaNoWriMo</a> every year, lots of fun), gaming (on PC), coding for fun (woo, <a href="adventofcode.com/">Advent of Code</a>) and hacking (CTFs - nothing <i>illegal</i>). I also do a lot of personal projects, such as the one you are looking at now.
+Enough about work though! Outside of my life as a wage slave, my hobbies are writing (I do <a href="https://nanowrimo.org">NaNoWriMo</a> every year, lots of fun), gaming (on PC, obviously), coding for fun (woo, <a href="adventofcode.com/">Advent of Code</a>) and hacking (CTFs like on <a href="https://www.vulnhub.com/">Vulnhub</a> - nothing <i>illegal</i>). I also do a lot of personal projects, such as the one you are looking at now - more can be found on my GitHub profile linked below.
 </p>
 <p>
-Oh, I am also happily married man with a young daughter, and a small dog who won't shut up whenever a door slams.
+Oh, I am also happily(*) married man with a young daughter, and a small dog who for some fucking reason won't shut up whenever a door slams.
 </p>
 <h2>Contact</h2>
 <p>
-I can be reached most easily by my personal email address: <a href="mailto:chris@grislygrotto.nz">chris@grislygrotto.nz</a>.<br/>
-My LinkedIn profile is <a href="https://nz.linkedin.com/pub/christopher-pritchard/a/9b6/a66">here</a>.<br/>
-My Github profile is <a href="https://github.com/ChrisPritchard">here</a>.
+I can be reached most easily by my personal email address: <a href="mailto:chris@grislygrotto.nz">chris@grislygrotto.nz</a>. No spam please (and I'll mark you as spam if it smells like spam, be warned).<br/><br/>
+Also:
+<ul>
+<li><a href="https://nz.linkedin.com/pub/christopher-pritchard/a/9b6/a66">LinkedIn</a>: I'm happy to take connect requests or work offers, but know presently I am (contentedly?) full-time employed.</li>
+<li><a href="https://github.com/ChrisPritchard">Github</a>: I am pretty active on my own projects, some of which have done well (particularly the F# ones).</li>
+<li><a href="https://twitter.com/aquinas_nz">Twitter</a>: Its mostly retweets and the odd pointless observation rather than anything follow-worthy, imo.</li>
+</ul>
 </p>
 <h2>About Peter Coleman</h2>
 <p>Yes, he also posts here.</p>
 <h2>About the Grisly Grotto</h2>
-<p>The Grisly Grotto is the personal blogging site of myself and Pete. The name comes from a computer game, <a href="https://en.wikipedia.org/wiki/Quake_(video_game)">Quake</a> (from 1996!) which was a formative game in my childhood. Specifically the fourth level of the first 'episode' in Quake, <a href="https://quake.fandom.com/wiki/E1M4:_the_Grisly_Grotto">E1M4: 'The Grisly Grotto'</a>. I don't know; I liked the name, and so its stuck for the past fourteen years. I can't actually remember why I initially chose it.</p>
+<p>The Grisly Grotto is the personal blogging site of myself and Pete. The name comes from a computer game, <a href="https://en.wikipedia.org/wiki/Quake_(video_game)">Quake</a> (from 1996!) which was a formative game in my childhood. Specifically the fourth level of the first 'episode' in Quake, <a href="https://quake.fandom.com/wiki/E1M4:_the_Grisly_Grotto">E1M4: 'The Grisly Grotto'</a>. I don't know; I liked the name, and so its stuck for the past fourteen years. I can't actually remember why I initially chose it 🤔.</p>
 <p>
 The first version of GG went live back in 2006. I had always wanted to have a blog, and thought having one was part of what made someone a developer.
 More importantly though, while I had learned a few web development skills (in ASP.NET Webforms back then), my day job did not afford me the opportunity to 'do it all': design, development, hosting, bug fixing etc. 
@@ -37,13 +41,16 @@ I expect there to be many more iterations as I seek to learn new things going fo
 v17 is the first version to be built in the language Go, and a reasonably anaemic use of the language too: aside from a couple of libraries for Sqlite and markdown, I am using nothing but the packages shipped with the core install (mainly http, database/sql and template/html). The previous two versions of the website were in F# (though in truth largely the same codebase), a language that is one of my favourites for its simplicity and functional style. However, I have really enjoyed building this version in Go.
 </p>
 <p>
-Why use Go? I use it at work, in my infosec job. Its simplicity and the fact it builds to a nice small, fast executable is very useful for the point work I use it for. I decided to see how easy it would be to use it for web sites, and when I discovered <it>how</it> easy it would be, I thought I would have a go at building my standing 'kata' project: this site. I am glad I did.
+Why use Go? I use it at work, in my infosec job. Its simplicity and the fact it builds to a nice small, fast executable is very useful for the point work I use it for. I decided to see how easy it would be to use it for web sites, and when I discovered <i>how</i> easy it would be, I thought I would have a go at building my standing 'kata' project: this site. I am glad I did.
 </p>
 <p>
 Hosting wise, the site <i>was</i> running on a small <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/">Raspberry PI 3 B+</a>, with no issues, however eventually some port forwarding problems started to crop up with my home network and the cost of my static IP grew annoying. So, subsequently, it was moved to a micro EC2 instance in AWS running Ubuntu 18. GG is started via a system service, sits behind a reverse proxy (nginx), and enforces HTTPS via a <a href="https://letsencrypt.org/">LetsEncrypt</a> certificate. Very nice.
 </p>
-<p>The source code for the site is <a href="https://github.com/ChrisPritchard/GrislyGrotto">here</a>.</p>
+<p>The source code for the site is <a href="https://github.com/ChrisPritchard/GrislyGrotto">here</a>, do with as you will.</p>
 <p>
 Cheers.
+</p>
+<p>
+(*) My definition of happiness has become very fluidic - almost as fluidic as my household has become with an non-potty trained toddler.
 </p>
 {{ end }}
