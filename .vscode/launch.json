@@ -9,8 +9,8 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/src",
-            "args": ["-dev"],
+            "program": "${workspaceFolder}/cmd",
+            "args": ["-db", "../grislygrotto.db"],
             // "args": ["-embed"],
             //"args": ["-setauthor", "aquinas", "machiavelli", "Christopher"],
             //"envFile": "${workspaceFolder}/.env"

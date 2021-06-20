@@ -61,9 +61,10 @@ func getBlockTime(r *http.Request, username string) int {
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 	file := r.URL.Path[len("/static/"):]
 
-	if content, err := embeddedStatic.ReadFile(file); err == nil {
+	if content, err := embeddedStatic.ReadFile("static/" + file); err == nil {
 		setMimeType(w, r)
 		w.Write(content)
+		return
 	}
 
 	http.NotFound(w, r)
@@ -144,8 +145,8 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 		result, err := tmpl.ParseFiles("./templates/master.html", "./templates/"+templateFile)
 		tmpl = template.Must(result, err)
 	} else {
-		masterContent, _ := embeddedTemplates.ReadFile("master.html")
-		templateContent, _ := embeddedTemplates.ReadFile(templateFile)
+		masterContent, _ := embeddedTemplates.ReadFile("templates/master.html")
+		templateContent, _ := embeddedTemplates.ReadFile("templates/" + templateFile)
 		result, err := tmpl.Parse(string(masterContent) + string(templateContent))
 		tmpl = template.Must(result, err)
 	}
