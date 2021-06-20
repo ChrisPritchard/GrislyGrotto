@@ -1,8 +1,7 @@
-package main
+package internal
 
 import (
 	"bytes"
-	"encoding/base64"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -62,17 +61,12 @@ func getBlockTime(r *http.Request, username string) int {
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 	file := r.URL.Path[len("/static/"):]
 
-	var fileContent string
-	if content, exists := embeddedAssets["./static/"+file]; exists {
-		fileContent = content
-	} else {
-		http.NotFound(w, r)
-		return
+	if content, err := embeddedStatic.ReadFile(file); err == nil {
+		setMimeType(w, r)
+		w.Write(content)
 	}
 
-	setMimeType(w, r)
-	bytes, _ := base64.StdEncoding.DecodeString(fileContent)
-	w.Write(bytes)
+	http.NotFound(w, r)
 }
 
 func runtimeStaticHandler() http.Handler {
@@ -147,15 +141,11 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 		"isNewPost":     func() bool { return pageTitle == "New Post" }})
 
 	if isDevelopment {
-		result, err := tmpl.ParseFiles("./templates/_master.html", "./templates/"+templateFile)
+		result, err := tmpl.ParseFiles("./templates/master.html", "./templates/"+templateFile)
 		tmpl = template.Must(result, err)
 	} else {
-		b64 := embeddedAssets["./templates/_master.html"]
-		masterContent, _ := base64.StdEncoding.DecodeString(b64)
-
-		b64 = embeddedAssets["./templates/"+templateFile]
-		templateContent, _ := base64.StdEncoding.DecodeString(b64)
-
+		masterContent, _ := embeddedTemplates.ReadFile("master.html")
+		templateContent, _ := embeddedTemplates.ReadFile(templateFile)
 		result, err := tmpl.Parse(string(masterContent) + string(templateContent))
 		tmpl = template.Must(result, err)
 	}

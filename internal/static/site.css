@@ -1,0 +1,356 @@
+body {
+    font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    line-height: 1.3;
+    background-color: black;
+    padding: 0;
+    margin: 0;
+}
+
+canvas.background-animation {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    z-index:-1;
+}
+
+.site-container {
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1000px;
+    padding: 20px;
+
+    background-color: #1e2125;
+    color: #fff;
+}
+
+@media only screen and (max-width: 1000px) {
+    body {
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+}
+
+nav {
+    margin-left: 5px;
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+a, a:visited {
+    color: #9acc14;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    background-color: inherit;
+    color: inherit;
+    padding: 6px 12px;
+}
+
+input[type=text], input[type=password], textarea {
+    display: block;
+    border: 1px solid #9acc14;
+    border-radius: 4px;
+    background-color: #292e33;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-bottom: 8px;
+}
+
+input[type=text]:focus, input[type=password]:focus, textarea:focus {
+    border-color:#66afe9;
+    outline:0;
+    box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}
+
+input[type=submit], input[type=button] {
+    transition: all .3s ease;
+    font-weight: 400;
+    text-align: center;
+    cursor: pointer;
+    background-color: inherit;
+    border: 1px solid #9acc14;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.6em;
+    user-select: none;
+}
+
+input[type=submit]:hover, input[type=button]:hover {
+    background-color: rgba(154,204,20,.1);
+}
+
+footer {
+    clear: both;
+    text-align: center;
+}
+
+.site-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 2.5em;
+    text-transform: uppercase;
+}
+
+.post-title {
+    margin-bottom: 0;
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+.post-summary {
+    font-weight: 700;
+    margin-bottom: 0.5em;
+}
+
+.post-content {
+    text-align: justify;
+}
+
+.prev-link {
+    margin-top: 1em;
+    float: left;
+}
+
+.next-link {
+    margin-top: 1em;
+    float: right;
+}
+
+ul.years {
+    list-style: none;
+    padding: 0;
+}
+
+ul.years > li {
+    float: left;
+    margin-bottom: 2em;
+}
+
+ul.years > li > h3 {
+    margin-bottom: 0;
+}
+
+ul.months {
+    list-style: none;
+    padding: 0;
+}
+
+ul.months li {
+    margin-right: 2em;
+}
+
+div.stories-container {
+    float: right;
+    max-width: 500px;
+}
+
+ul.stories {
+    list-style: none;
+    padding: 0;
+}
+
+ul.stories h3 {
+    margin-bottom: 0;
+}
+
+div.page-form {
+    min-height: 1000px;
+}
+
+div.search-result h4 {
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+
+div.post-controls {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div.post-controls form {
+    display: inline;
+    margin-right: 10px;
+}
+
+.comment-summary {
+    font-size: 0.8em;
+    margin-top: 15px;
+    margin-bottom: 4px;
+}
+
+.comment-delete input {
+    padding: 2px;
+    font-size: 0.8em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.create-comment-container {
+    margin-top: 20px;
+}
+
+div.post-controls form input {
+    width: 65px;
+}
+
+div.checkbox {
+    margin-bottom: 6px;
+}
+
+div.checkbox input, div.checkbox label {
+    display: inline;
+    vertical-align: center;
+}
+
+div.editor-help {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    text-align: justify;
+    font-size: 0.8em;
+}
+
+div.editor-help span {
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid white;
+    background-color: black;
+    color: white;
+}
+
+div.post-submit {
+    clear: both;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+span.timer {
+    opacity: 50%;
+    margin-top: -20px;
+    position: absolute;
+}
+
+.error {
+    color: red;
+}
+
+.help {
+    font-size: 0.8em;
+}
+
+.vis-colours {
+    display: none;
+}
+
+.control-panel {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.control-panel .controls {
+    position: relative;
+    float: right;
+    font-size: 0.6em;
+    opacity: 40%;
+    text-align: right;
+}
+
+.control-panel .controls input, .control-panel .controls select {
+    vertical-align: middle;
+    height: 2em;
+    font-size: 1em;
+    padding: 0 5px 0 5px;
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+
+#content-upload-container {
+    border: 1px solid white;
+    padding: 10px;
+    width: 300px;
+    margin-bottom: 1em;
+}
+
+.account-details-container {
+    border: 1px solid white;
+    padding: 10px;
+    width: 300px;
+    margin-bottom: 1em;
+}
+
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border: 1px solid white;
+    margin: 2px 8px 5px 5px;
+}
+
+.post-author-image {
+    float: left;
+}
+
+.account-details-container div {
+    margin-bottom: 1em;
+}
+
+#content-upload-container h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#content-upload-button {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.hide {
+    display: none;
+}
+
+.comment-link {
+    font-size: 0.6em;
+    font-weight: normal;
+}
+
+@media only screen and (max-width: 1000px) {
+    .control-panel {
+        position: relative;
+        margin-left: 14px;
+    }
+    
+    .control-panel .controls {
+        color: white;
+        font-size: 0.8em;
+        float: none;
+        text-align: left;
+        opacity: 100%;
+    }
+    
+    .control-panel .controls input, .control-panel .controls select {
+        vertical-align: middle;
+    }
+}
+
+blockquote {
+    font-style: italic;
+}
+
+code {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+}
+
+.comment-content h1, .comment-content h2, .comment-content h3, .comment-content h4, .comment-content h5, .comment-content h6, .comment-content p {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1em;
+}

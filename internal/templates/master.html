@@ -1,0 +1,93 @@
+{{define "master"}}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>The Grisly Grotto - {{ page }}</title>
+        <link href="/static/site.css" rel="stylesheet" />
+        <link id="theme-css" href="/static/theme-{{ theme }}.css" rel="stylesheet" />
+        <meta charset="utf-8" />
+        <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="application-name" content="The Grisly Grotto" />
+        <link rel="icon" type="image/png" href="/static/favicon.png" />
+    </head>
+    <body>
+        <canvas class="background-animation" id="animation-left"></canvas>
+        <canvas class="background-animation" id="animation-right"></canvas>
+        <div class="site-container">
+            <header>
+                <a href="/"><h1 class="site-title">The Grisly Grotto</h1></a>
+            </header>
+            <nav>
+                {{ if and (not loggedIn) (ne (page) "Login") }}
+                    <a href="/login?returnUrl={{ path }}">Login</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if and (loggedIn) (ne (page) "New Post") }}
+                    <a href="/editor">New Post</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if and (loggedIn) (ne (page) "Account Details") }}
+                    <a href="/account-details">Account Details</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if loggedIn }}
+                    <a href="/logout?returnUrl={{ path }}">Logout</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if (ne (page) "Archives") }}
+                    <a href="/archives">Archives</a>
+                    <span>&nbsp;|&nbsp;</span>
+                {{ end }}
+                {{ if (ne (page) "Search") }}
+                    <a href="/search">Search</a>
+                    {{ if (ne (page) "About") }}
+                        <span>&nbsp;|&nbsp;</span>
+                    {{ end }}
+                {{ end }}
+                {{ if (ne (page) "About") }}
+                    <a href="/about">About</a>
+                {{ end }}
+            </nav>
+            <div class="control-panel">
+                <div class="controls">
+                    <div>
+                        <label>
+                            Show Background Animation&nbsp;
+                            <input type="checkbox" id="vis-enabled" checked=checked />
+                        </label>
+                    </div>
+                    <div>
+                        <form method="POST" action="/save-theme">
+                            <input type="hidden" id="current-theme" name="current-theme" value="{{ theme }}" />
+                            <input type="hidden" id="return-path" name="return-path" value="{{ path }}" />
+                            <select type="checkbox" id="site-theme">
+                                <option value="green-black">Theme: Haxx0r Green (default)</option>
+                                <option value="red-white">Theme: Blood on White</option>
+                                <option value="gold-black">Theme: Deux Ex HR</option>
+                                <option value="grey-white">Theme: Shadows &amp; Fog</option>
+                                <option value="red-black">Theme: Vampirism</option>
+                                <option value="white-black">Theme: Night Mist</option>
+                                <option value="blue-white">Theme: Blue Lagoon</option>
+                                <option value="green-grey">Theme: Dark Sea</option>
+                            </select>
+                            <input type="submit" value="Apply" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{template "content" .}}
+            <footer>
+                Grisly Grotto v17.0. Site designed and coded by  <a href="mailto:chris@grislygrotto.nz">Christopher Pritchard</a>, 2020
+            </footer>
+        </div>
+        <div class="vis-colours">
+            <div id="vis-background-colour"></div>
+            <div id="vis-primary-colour"></div>
+            <div id="vis-secondary-colour"></div>
+        </div>
+        <script src="/static/wandering-triangles.js"></script>
+        <script src="/static/site.js"></script>
+    </body>
+</html>
+{{end}}
