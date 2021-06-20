@@ -15,7 +15,7 @@ Further details can be found in:
 
 __Release Date:__ 20/06/2021
 
-__Release Post:__ [https://grislygrotto.nz/post/grisly-grotto-17](https://grislygrotto.nz/post/grisly-grotto-17)
+__Release Post:__ [https://www.grislygrotto.nz/post/seventeen-point-five](https://www.grislygrotto.nz/post/seventeen-point-five)
 
 __Technology:__ Go
 
