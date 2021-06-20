@@ -8,9 +8,9 @@ To date there have been ASP.NET WebForms versions (unfortunately the code for th
 
 Further details can be found in:
 
-- [database.md](./database.md) which details how the database is setup.
-- [setup.md](./setup.md) which details how the site code should be built and deployed
-- [tasks.md](./tasks.md) which is basically a checklist of ongoing work on the code base
+- [database.md](./docs/database.md) which details how the database is setup.
+- [setup.md](./docs/setup.md) which details how the site code should be built and deployed
+- [tasks.md](./docs/tasks.md) which is basically a checklist of ongoing work on the code base
 
 ## Release 17
 
@@ -20,11 +20,14 @@ __Release Post:__ [https://grislygrotto.nz/post/grisly-grotto-17](https://grisly
 
 __Technology:__ Go
 
-Also uses the following Go packages (outside of built-in go packages): 
+Also uses the following Go packages (outside of built-in go packages):
 
-- [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3).
+- [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3) for the database.
 - [yuin/goldmark](https://github.com/yuin/goldmark) for markdown.
 - [x/crypto/argon2](https://golang.org/x/crypto/argon2) for user password hashing.
+- [aws/aws-sdk-go](https://github.com/aws/aws-sdk-go) for image storage.
+
+Install these via `go mod download`.
 
 __Data Store:__ SQLite
 
