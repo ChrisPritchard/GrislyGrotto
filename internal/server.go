@@ -22,9 +22,6 @@ func StartServer() {
 	server := globalHandler(http.DefaultServeMux)
 
 	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", listenURL)
-	if isDevelopment {
-		log.Print("Running in DEVELOPMENT mode\n")
-	}
 	log.Println(http.ListenAndServe(listenURL, server))
 }
 
@@ -36,7 +33,6 @@ func getConfig() bool {
 	connArg := flag.String("db", "", "the sqlite connection string\n\tdefaults to "+defaultConnectionString)
 	urlArg := flag.String("url", "", "the url with port to listen to\n\tdefaults to "+defaultListenAddr)
 	storageArg := flag.String("storage", "", "the target storage bucket/container for user content\n\tdefaults to "+defaultStorageName)
-	envArg := flag.Bool("dev", false, "sets to run in 'dev' mode\n\tif set resources are loaded on request rather than embedded")
 	setAuthorArg := flag.Bool("setauthor", false, "creates or updates a login account, then exits\nshould be followed by [username] [password] [displayname]")
 	flag.Parse()
 
@@ -89,16 +85,11 @@ func getConfig() bool {
 		contentStorageName = *storageArg
 	}
 
-	isDevelopment = *envArg
 	return true
 }
 
 func setupRoutes() {
-	if isDevelopment {
-		http.Handle("/static/", runtimeStaticHandler())
-	} else {
-		http.HandleFunc("/static/", embeddedStaticHandler)
-	}
+	http.HandleFunc("/static/", embeddedStaticHandler)
 
 	http.HandleFunc("/", latestPostsHandler) // note: this will catch any request not caught by the others
 	http.HandleFunc("/post/", singlePostHandler)

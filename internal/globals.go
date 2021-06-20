@@ -15,7 +15,6 @@ import (
 var secret []byte
 var connectionString string
 var listenURL string
-var isDevelopment bool
 var contentStorageName string
 
 const defaultConnectionString = "./grislygrotto.db"

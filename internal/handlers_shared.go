@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/embedded"
 )
 
 func getCurrentUser(r *http.Request) *string {
@@ -61,23 +63,13 @@ func getBlockTime(r *http.Request, username string) int {
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
 	file := r.URL.Path[len("/static/"):]
 
-	if content, err := embeddedStatic.ReadFile("static/" + file); err == nil {
+	if content, err := embedded.Resources.ReadFile("static/" + file); err == nil {
 		setMimeType(w, r)
 		w.Write(content)
 		return
 	}
 
 	http.NotFound(w, r)
-}
-
-func runtimeStaticHandler() http.Handler {
-	server := http.FileServer(http.Dir("static"))
-	fileHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		setMimeType(w, r)
-		server.ServeHTTP(w, r)
-	})
-
-	return http.StripPrefix("/static/", fileHandler)
 }
 
 func setMimeType(w http.ResponseWriter, r *http.Request) {
@@ -141,15 +133,10 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 		"theme":         func() string { return getTheme(r) },
 		"isNewPost":     func() bool { return pageTitle == "New Post" }})
 
-	if isDevelopment {
-		result, err := tmpl.ParseFiles("./templates/master.html", "./templates/"+templateFile)
-		tmpl = template.Must(result, err)
-	} else {
-		masterContent, _ := embeddedTemplates.ReadFile("templates/master.html")
-		templateContent, _ := embeddedTemplates.ReadFile("templates/" + templateFile)
-		result, err := tmpl.Parse(string(masterContent) + string(templateContent))
-		tmpl = template.Must(result, err)
-	}
+	masterContent, _ := embedded.Resources.ReadFile("templates/master.html")
+	templateContent, _ := embedded.Resources.ReadFile("templates/" + templateFile)
+	result, err := tmpl.Parse(string(masterContent) + string(templateContent))
+	tmpl = template.Must(result, err)
 
 	if err := tmpl.ExecuteTemplate(w, "master", model); err != nil {
 		serverError(w, err)
