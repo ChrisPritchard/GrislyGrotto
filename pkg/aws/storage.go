@@ -1,4 +1,4 @@
-package internal
+package aws
 
 import (
 	"io"
@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func retrieveStorageFile(filename string) (bytes []byte, exists bool, err error) {
+func RetrieveStorageFile(bucket, filename string) (bytes []byte, exists bool, err error) {
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	})
@@ -20,7 +20,7 @@ func retrieveStorageFile(filename string) (bytes []byte, exists bool, err error)
 	downloader := s3manager.NewDownloader(session)
 	buf := aws.NewWriteAtBuffer([]byte{})
 	_, err = downloader.Download(buf, &s3.GetObjectInput{
-		Bucket: aws.String(contentStorageName),
+		Bucket: aws.String(bucket),
 		Key:    aws.String(filename),
 	})
 
@@ -31,7 +31,7 @@ func retrieveStorageFile(filename string) (bytes []byte, exists bool, err error)
 	return buf.Bytes(), true, nil
 }
 
-func uploadStorageFile(filename string, file io.Reader) error {
+func UploadStorageFile(bucket, filename string, file io.Reader) error {
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	})
@@ -41,7 +41,7 @@ func uploadStorageFile(filename string, file io.Reader) error {
 
 	uploader := s3manager.NewUploader(session)
 	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(contentStorageName),
+		Bucket: aws.String(bucket),
 		Key:    aws.String(filename),
 		Body:   file,
 	})

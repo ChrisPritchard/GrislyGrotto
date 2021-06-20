@@ -1,36 +1,38 @@
-package internal
+package handlers
 
-import "strings"
+import (
+	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
+)
 
 type latestViewModel struct {
 	NotFirstPage bool
 	PrevPage     int
 	NextPage     int
-	Posts        []blogPost
+	Posts        []data.BlogPost
 }
 
 type singleViewModel struct {
-	Post                blogPost
+	Post                data.BlogPost
 	OwnBlog, CanComment bool
 	CommentError        string
 }
 
 type archivesViewModel struct {
-	Years   []yearSet
-	Stories []blogPost
+	Years   []data.YearSet
+	Stories []data.BlogPost
 }
 
 type monthViewModel struct {
 	Month, Year         string
 	PrevMonth, PrevYear string
 	NextMonth, NextYear string
-	Posts               []blogPost
+	Posts               []data.BlogPost
 }
 
 type searchViewModel struct {
 	SearchTerm  string
 	ZeroResults bool
-	Results     []blogPost
+	Results     []data.BlogPost
 }
 
 type loginViewModel struct {
@@ -52,37 +54,4 @@ type editorViewModel struct {
 	Title, Content   string
 	IsStory, IsDraft bool
 	PostError        string
-}
-
-type blogPost struct {
-	Author, AuthorUsername  string
-	Key, Title, Content     string
-	Date                    string
-	IsStory                 bool
-	WordCount, CommentCount int
-	Comments                []blogComment
-}
-
-type blogComment struct {
-	ID                    int
-	Author, Content, Date string
-	Owned                 bool
-}
-
-func (post blogPost) isDraft() bool {
-	return strings.HasPrefix(post.Title, draftPrefix)
-}
-
-type author struct {
-	Username, Password, DisplayName, ImageURL string
-}
-
-type yearSet struct {
-	Year   string
-	Months []monthCount
-}
-
-type monthCount struct {
-	Month, Year string
-	Count       int
 }

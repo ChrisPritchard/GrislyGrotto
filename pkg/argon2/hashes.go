@@ -1,4 +1,4 @@
-package internal
+package argon2
 
 import (
 	"crypto/rand"
@@ -11,37 +11,37 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-type argon2Config struct {
-	time    uint32
-	memory  uint32
-	threads uint8
-	keyLen  uint32
+type Argon2Config struct {
+	Time    uint32
+	Memory  uint32
+	Threads uint8
+	KeyLen  uint32
 }
 
-func generateArgonHash(c *argon2Config, password string) (string, error) {
+func GenerateArgonHash(c *Argon2Config, password string) (string, error) {
 	salt := make([]byte, 16)
 	if _, err := rand.Read(salt); err != nil {
 		return "", err
 	}
 
-	hash := argon2.IDKey([]byte(password), salt, c.time, c.memory, c.threads, c.keyLen)
+	hash := argon2.IDKey([]byte(password), salt, c.Time, c.Memory, c.Threads, c.KeyLen)
 
 	b64Salt := base64.RawStdEncoding.EncodeToString(salt)
 	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
 
 	format := "$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s"
-	full := fmt.Sprintf(format, argon2.Version, c.memory, c.time, c.threads, b64Salt, b64Hash)
+	full := fmt.Sprintf(format, argon2.Version, c.Memory, c.Time, c.Threads, b64Salt, b64Hash)
 	return full, nil
 }
 
-func compareWithArgonHash(password, hash string) (bool, error) {
+func CompareWithArgonHash(password, hash string) (bool, error) {
 	parts := strings.Split(hash, "$")
 	if len(parts) != 6 {
 		return false, errors.New("invalid argon2 hash")
 	}
 
-	c := &argon2Config{}
-	_, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &c.memory, &c.time, &c.threads)
+	c := &Argon2Config{}
+	_, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &c.Memory, &c.Time, &c.Threads)
 	if err != nil {
 		return false, err
 	}
@@ -55,9 +55,9 @@ func compareWithArgonHash(password, hash string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	c.keyLen = uint32(len(decodedHash))
+	c.KeyLen = uint32(len(decodedHash))
 
-	comparisonHash := argon2.IDKey([]byte(password), salt, c.time, c.memory, c.threads, c.keyLen)
+	comparisonHash := argon2.IDKey([]byte(password), salt, c.Time, c.Memory, c.Threads, c.KeyLen)
 
 	return (subtle.ConstantTimeCompare(decodedHash, comparisonHash) == 1), nil
 }

@@ -1,4 +1,4 @@
-package internal
+package handlers
 
 import (
 	"errors"
@@ -6,12 +6,16 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
 )
 
 func getCommentAuthority(r *http.Request) map[int]interface{} {
 	result := make(map[int]interface{})
 
-	commentIDs, err := readEncryptedCookie("comments", commentAuthorityExpiry, r)
+	commentIDs, err := cookies.ReadEncryptedCookie("comments", config.CommentAuthorityExpiry, r)
 	if err != nil {
 		return result
 	}
@@ -31,8 +35,8 @@ func setCommentAuthority(existing map[int]interface{}, newID int, w http.Respons
 		ids = append(ids, id)
 	}
 	sort.Ints(ids)
-	if len(ids) > maxOwnedComments {
-		skip := len(ids) - maxOwnedComments
+	if len(ids) > config.MaxOwnedComments {
+		skip := len(ids) - config.MaxOwnedComments
 		ids = ids[:skip]
 	}
 	toStore := strconv.Itoa(ids[0])
@@ -40,7 +44,7 @@ func setCommentAuthority(existing map[int]interface{}, newID int, w http.Respons
 		toStore += "," + strconv.Itoa(ids[i])
 	}
 
-	setEncryptedCookie("comments", toStore, commentAuthorityExpiry, w)
+	cookies.SetEncryptedCookie("comments", toStore, config.CommentAuthorityExpiry, w)
 }
 
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +52,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := getCurrentUser(r)
 	ownedComments := getCommentAuthority(r)
 
-	post, notFound, err := getPostWithComments(key, currentUser, ownedComments)
+	post, notFound, err := data.GetPostWithComments(key, currentUser, ownedComments)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -63,7 +67,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		model := singleViewModel{post, ownBlog, true, ""}
-		if len(post.Comments) >= maxCommentCount {
+		if len(post.Comments) >= config.MaxCommentCount {
 			model.CanComment = false
 		}
 		renderView(w, r, model, "single.html", post.Title)
@@ -75,7 +79,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(post.Comments) >= maxCommentCount {
+	if len(post.Comments) >= config.MaxCommentCount {
 		badRequest(w, "max comments reached")
 		return
 	}
@@ -103,8 +107,8 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 		return 0, "both author and content are required", nil
 	}
 
-	if len(content) > maxCommentLength {
-		return 0, "comment content exceeds max length of " + strconv.Itoa(maxCommentLength), nil
+	if len(content) > config.MaxCommentLength {
+		return 0, "comment content exceeds max length of " + strconv.Itoa(config.MaxCommentLength), nil
 	}
 
 	blockTime := getBlockTime(r, author)
@@ -114,7 +118,7 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 
 	setBlockTime(r, author) // primitive automated commenting protection
 
-	id, err := addCommentToBlog(author, content, postKey)
+	id, err := data.AddCommentToBlog(author, content, postKey)
 	if err != nil {
 		return 0, "", err
 	}
@@ -141,7 +145,7 @@ func rawCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentSource, err := getCommentRaw(idN)
+	commentSource, err := data.GetCommentRaw(idN)
 	if err != nil {
 		serverError(w, errors.New("failed to retrieve comment with id "+id))
 		return
@@ -175,12 +179,12 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(newContent) > maxCommentLength {
-		badRequest(w, "comment content exceeds max length of "+strconv.Itoa(maxCommentLength))
+	if len(newContent) > config.MaxCommentLength {
+		badRequest(w, "comment content exceeds max length of "+strconv.Itoa(config.MaxCommentLength))
 		return
 	}
 
-	err = updateComment(idN, newContent)
+	err = data.UpdateComment(idN, newContent)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -211,7 +215,7 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = deleteComment(idN)
+	err = data.DeleteComment(idN)
 	if err != nil {
 		serverError(w, err)
 		return

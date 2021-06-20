@@ -1,9 +1,12 @@
-package internal
+package handlers
 
 import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
 )
 
 func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +16,7 @@ func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page, notFirstPage := getPageFromQuery(r)
-	posts, err := getLatestPosts(page, getCurrentUser(r))
+	posts, err := data.GetLatestPosts(page, getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return
@@ -47,13 +50,13 @@ func archivesHandler(w http.ResponseWriter, r *http.Request) {
 
 	currentUser := getCurrentUser(r)
 
-	yearSets, err := getYearMonthCounts(currentUser)
+	yearSets, err := data.GetYearMonthCounts(currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
 	}
 
-	stories, err := getStories(currentUser)
+	stories, err := data.GetStories(currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -88,7 +91,7 @@ func monthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := getPostsForMonth(month, year, getCurrentUser(r))
+	posts, err := data.GetPostsForMonth(month, year, getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return
@@ -105,7 +108,7 @@ func getPrevMonth(month string, year int) (string, string) {
 		return "December", strconv.Itoa(year - 1)
 	}
 	index := monthIndex(month)
-	return months[index-1], strconv.Itoa(year)
+	return config.Months[index-1], strconv.Itoa(year)
 }
 
 func getNextMonth(month string, year int) (string, string) {
@@ -113,12 +116,12 @@ func getNextMonth(month string, year int) (string, string) {
 		return "January", strconv.Itoa(year + 1)
 	}
 	index := monthIndex(month)
-	return months[index+1], strconv.Itoa(year)
+	return config.Months[index+1], strconv.Itoa(year)
 }
 
 func monthIndex(month string) int {
-	for i, m := range months {
-		if strings.ToLower(m) == strings.ToLower(month) {
+	for i, m := range config.Months {
+		if strings.EqualFold(m, month) {
 			return i
 		}
 	}
@@ -132,12 +135,12 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	searchParam := r.URL.Query().Get("searchTerm")
-	if searchParam == "" || len(searchParam) > maxSearchTermLength {
+	if searchParam == "" || len(searchParam) > config.MaxSearchTermLength {
 		renderView(w, r, nil, "search.html", "Search")
 		return
 	}
 
-	results, err := getSearchResults(searchParam, getCurrentUser(r))
+	results, err := data.GetSearchResults(searchParam, getCurrentUser(r))
 	if err != nil {
 		serverError(w, err)
 		return

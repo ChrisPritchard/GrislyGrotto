@@ -1,4 +1,4 @@
-package internal
+package handlers
 
 import (
 	"bytes"
@@ -7,6 +7,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/aws"
 )
 
 func deletePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +31,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, notFound, err := getSinglePost(key, currentUser)
+	post, notFound, err := data.GetSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -43,7 +47,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = deletePost(key)
+	err = data.DeletePost(key)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -98,14 +102,14 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	wordCount := calculateWordCount(content)
-	if wordCount < minWordCount {
-		model := editorViewModel{true, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+	if wordCount < config.MinWordCount {
+		model := editorViewModel{true, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(config.MinWordCount)}
 		renderView(w, r, model, "editor.html", "New Post")
 		return
 	}
 
 	key := createPostKey(title)
-	_, notFound, err := getSinglePost(key, currentUser)
+	_, notFound, err := data.GetSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -118,10 +122,10 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isDraft {
-		title = draftPrefix + title
+		title = config.DraftPrefix + title
 	}
 
-	err = createNewPost(key, title, content, isStory, wordCount, *currentUser)
+	err = data.CreateNewPost(key, title, content, isStory, wordCount, *currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -137,7 +141,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
-	post, notFound, err := getSinglePost(key, currentUser)
+	post, notFound, err := data.GetSinglePost(key, currentUser)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -154,9 +158,9 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	}
 
 	if r.Method == "GET" {
-		postIsDraft := post.isDraft()
+		postIsDraft := post.IsDraft()
 		if postIsDraft {
-			post.Title = post.Title[len(draftPrefix):]
+			post.Title = post.Title[len(config.DraftPrefix):]
 		}
 		model := editorViewModel{false, post.Title, post.Content, post.IsStory, postIsDraft, ""}
 		renderView(w, r, model, "editor.html", "Edit Post")
@@ -174,24 +178,24 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		return
 	}
 
-	if len(title) > maxTitleLength {
-		model := editorViewModel{false, title, content, isStory, isDraft, "title exceeds max title length of " + strconv.Itoa(maxTitleLength)}
+	if len(title) > config.MaxTitleLength {
+		model := editorViewModel{false, title, content, isStory, isDraft, "title exceeds max title length of " + strconv.Itoa(config.MaxTitleLength)}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
-	if wordCount < minWordCount {
-		model := editorViewModel{false, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(minWordCount)}
+	if wordCount < config.MinWordCount {
+		model := editorViewModel{false, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(config.MinWordCount)}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}
 
 	if isDraft {
-		title = draftPrefix + title
+		title = config.DraftPrefix + title
 	}
 
-	err = updatePost(key, title, content, isStory, wordCount, post.isDraft() && !isDraft)
+	err = data.UpdatePost(key, title, content, isStory, wordCount, post.IsDraft() && !isDraft)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -223,9 +227,10 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 
 	lowerName := strings.ToLower(filename)
 	validExtension := false
-	for _, ext := range validUploadExtensions {
+	for _, ext := range config.ValidUploadExtensions {
 		if strings.HasSuffix(lowerName, ext) {
 			validExtension = true
+			break
 		}
 	}
 	if !validExtension {
@@ -233,7 +238,7 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bytes, exists, err := retrieveStorageFile(filename)
+	bytes, exists, err := aws.RetrieveStorageFile(config.ContentStorageName, filename)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -258,7 +263,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 	filename = strings.ToLower(filename)
 
 	validExtension := false
-	for _, ext := range validUploadExtensions {
+	for _, ext := range config.ValidUploadExtensions {
 		if strings.HasSuffix(filename, ext) {
 			validExtension = true
 		}
@@ -275,7 +280,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	if fileHeader.Size > maxFileSize {
+	if fileHeader.Size > config.MaxFileSize {
 		badRequest(w, "file size exceeds maximum")
 		return
 	}
@@ -292,7 +297,7 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = uploadStorageFile(filename, buffer)
+	err = aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
 	if err != nil {
 		serverError(w, err)
 		return

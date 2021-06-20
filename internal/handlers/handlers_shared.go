@@ -1,4 +1,4 @@
-package internal
+package handlers
 
 import (
 	"bytes"
@@ -8,11 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/embedded"
 )
 
 func getCurrentUser(r *http.Request) *string {
-	return r.Context().Value(authenticatedUser).(*string)
+	return r.Context().Value(config.AuthenticatedUser).(*string)
 }
 
 func ipOnly(ipAndPort string) string {
@@ -32,32 +34,32 @@ func getIP(r *http.Request) string {
 }
 
 func setBlockTime(r *http.Request, username string) {
-	blocked[getIP(r)] = time.Now().Unix()
+	config.Blocked[getIP(r)] = time.Now().Unix()
 	if username != "" {
-		blocked[username] = time.Now().Unix()
+		config.Blocked[username] = time.Now().Unix()
 	}
 }
 
 func cleanBlocked() {
 	now := time.Now().Unix()
-	for k, v := range blocked {
-		if now-v > blockTime {
-			delete(blocked, k)
+	for k, v := range config.Blocked {
+		if now-v > config.BlockTime {
+			delete(config.Blocked, k)
 		}
 	}
 }
 
 func getBlockTime(r *http.Request, username string) int {
 	now := time.Now().Unix()
-	time1, time2 := now-blocked[getIP(r)], now-blocked[username]
-	if time1 > blockTime && time2 > blockTime {
+	time1, time2 := now-config.Blocked[getIP(r)], now-config.Blocked[username]
+	if time1 > config.BlockTime && time2 > config.BlockTime {
 		return 0
 	}
 	cleanBlocked() // done on blocking to not affect ligitimate users (except commenters)
 	if time2 < time1 {
-		return blockTime - int(time2)
+		return config.BlockTime - int(time2)
 	}
-	return blockTime - int(time1)
+	return config.BlockTime - int(time1)
 }
 
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
@@ -103,7 +105,7 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	setCookie("theme", r.FormValue("current-theme"), time.Now().Add(themeExpiry), w)
+	cookies.SetCookie("theme", r.FormValue("current-theme"), time.Now().Add(config.ThemeExpiry), w)
 	http.Redirect(w, r, "/"+r.FormValue("return-path"), http.StatusFound)
 }
 
@@ -150,7 +152,7 @@ func raw(s string) template.HTML {
 func renderPost(s string) template.HTML {
 	var buf bytes.Buffer
 	source := []byte(s)
-	if err := markdownFull.Convert(source, &buf); err != nil {
+	if err := config.MarkdownFull.Convert(source, &buf); err != nil {
 		return template.HTML("<b>Error parsing Markdown, falling back to raw</b><br/>" + s)
 	}
 
@@ -160,7 +162,7 @@ func renderPost(s string) template.HTML {
 func renderComment(s string) template.HTML {
 	var buf bytes.Buffer
 	source := []byte(s)
-	if err := markdownRestricted.Convert(source, &buf); err != nil {
+	if err := config.MarkdownRestricted.Convert(source, &buf); err != nil {
 		return template.HTML("<span class='error'>Failed to render comment</span>")
 	}
 

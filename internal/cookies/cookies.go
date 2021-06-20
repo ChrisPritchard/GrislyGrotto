@@ -1,4 +1,4 @@
-package internal
+package cookies
 
 import (
 	"crypto/aes"
@@ -10,9 +10,11 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 )
 
-func setCookie(name, data string, expires time.Time, w http.ResponseWriter) {
+func SetCookie(name, data string, expires time.Time, w http.ResponseWriter) {
 	cookie := http.Cookie{
 		Name:     name,
 		Value:    data,
@@ -24,20 +26,20 @@ func setCookie(name, data string, expires time.Time, w http.ResponseWriter) {
 	http.SetCookie(w, &cookie)
 }
 
-func setEncryptedCookie(name, unencodedData string, lifeTime time.Duration, w http.ResponseWriter) (err error) {
+func SetEncryptedCookie(name, unencodedData string, lifeTime time.Duration, w http.ResponseWriter) (err error) {
 	now := time.Now()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
-	cipher, err := encrypt([]byte(data), secret)
+	cipher, err := encrypt([]byte(data), config.Secret)
 	if err != nil {
 		return err
 	}
 	b64 := base64.StdEncoding.EncodeToString(cipher)
 
-	setCookie(name, b64, now.Add(lifeTime), w)
+	SetCookie(name, b64, now.Add(lifeTime), w)
 	return nil
 }
 
-func readEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Request) (unencodedData string, err error) {
+func ReadEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Request) (unencodedData string, err error) {
 	cookie, err := r.Cookie(name)
 	if err != nil {
 		return "", err
@@ -50,7 +52,7 @@ func readEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Req
 		return "", err
 	}
 
-	dataB, err := decrypt(cipher, secret)
+	dataB, err := decrypt(cipher, config.Secret)
 	if err != nil {
 		return "", err
 	}
@@ -66,7 +68,7 @@ func readEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Req
 		return "", errors.New("invalid cookie")
 	}
 
-	if time.Now().Sub(issued) > allowedLifeTime {
+	if time.Since(issued) > allowedLifeTime {
 		return "", errors.New("expired cookie")
 	}
 

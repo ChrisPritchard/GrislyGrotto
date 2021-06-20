@@ -1,4 +1,4 @@
-package internal
+package handlers
 
 import (
 	"bytes"
@@ -9,6 +9,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
+	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/aws"
 )
 
 func profileImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +30,7 @@ func profileImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	headers := w.Header()
 
-	bytes, exists, err := retrieveStorageFile(profile)
+	bytes, exists, err := aws.RetrieveStorageFile(config.ContentStorageName, profile)
 	if err != nil || !exists {
 		bytes, _ = base64.StdEncoding.DecodeString("R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=") // 26 byte gif
 		headers.Set("Content-Type", "image/gif")
@@ -67,14 +72,14 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valid, err := validateUser(username, password)
+	valid, err := data.ValidateUser(username, password)
 	if err != nil || !valid {
 		setBlockTime(r, username)
 		renderView(w, r, loginViewModel{"Invalid credentials"}, "login.html", "login")
 		return
 	}
 
-	err = setEncryptedCookie("user", username, authSessionExpiry, w)
+	err = cookies.SetEncryptedCookie("user", username, config.AuthSessionExpiry, w)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -94,7 +99,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setCookie("user", "", time.Unix(0, 0), w)
+	cookies.SetCookie("user", "", time.Unix(0, 0), w)
 
 	path := ""
 	returnURI := r.URL.Query()["returnUrl"]
@@ -120,7 +125,7 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	model := accountDetailsViewModel{username, "", "", false, "", false, "", false}
 
 	var err error
-	model.DisplayName, err = getDisplayName(username)
+	model.DisplayName, err = data.GetDisplayName(username)
 	if err != nil {
 		serverError(w, err)
 		return
@@ -166,11 +171,11 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func tryUpdateDisplayName(username string, displayName string) string {
-	if len(displayName) > maxDisplayNameLength {
-		return "Display name must be shorter than " + strconv.Itoa(maxDisplayNameLength) + " characters"
+	if len(displayName) > config.MaxDisplayNameLength {
+		return "Display name must be shorter than " + strconv.Itoa(config.MaxDisplayNameLength) + " characters"
 	}
 
-	err := insertOrUpdateUser(username, "", displayName)
+	err := data.InsertOrUpdateUser(username, "", displayName)
 	if err != nil {
 		return "Failed to update username"
 	}
@@ -179,8 +184,8 @@ func tryUpdateDisplayName(username string, displayName string) string {
 }
 
 func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm string) string {
-	if len(newPassword) > maxPasswordLength || len(newPasswordConfirm) > maxPasswordLength || len(oldPassword) > maxCommentLength {
-		return "A value was provided longer than the max password length of " + strconv.Itoa(maxPasswordLength)
+	if len(newPassword) > config.MaxPasswordLength || len(newPasswordConfirm) > config.MaxPasswordLength || len(oldPassword) > config.MaxPasswordLength {
+		return "A value was provided longer than the max password length of " + strconv.Itoa(config.MaxPasswordLength)
 	}
 
 	if newPassword == oldPassword {
@@ -195,11 +200,11 @@ func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm st
 		return "New password must be at least 14 characters long"
 	}
 
-	if valid, err := validateUser(username, oldPassword); !valid || err != nil {
+	if valid, err := data.ValidateUser(username, oldPassword); !valid || err != nil {
 		return "Current password is invalid"
 	}
 
-	err := insertOrUpdateUser(username, newPassword, "")
+	err := data.InsertOrUpdateUser(username, newPassword, "")
 	if err != nil {
 		return "Failed to update password"
 	}
@@ -208,7 +213,7 @@ func tryUpdatePassword(username, oldPassword, newPassword, newPasswordConfirm st
 }
 
 func tryUpdateProfileImage(username string, file multipart.File, fileHeader *multipart.FileHeader) string {
-	if fileHeader.Size > maxFileSize {
+	if fileHeader.Size > config.MaxFileSize {
 		return "File size exceeds maximum"
 	}
 
@@ -222,7 +227,7 @@ func tryUpdateProfileImage(username string, file multipart.File, fileHeader *mul
 		return "File is not a valid image"
 	}
 
-	error := uploadStorageFile(username, buffer)
+	error := aws.UploadStorageFile(config.ContentStorageName, username, buffer)
 	if error != nil {
 		return "There was an error uploading the file"
 	}
