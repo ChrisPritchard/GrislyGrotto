@@ -2,6 +2,8 @@
 <div class="page-form">
     <h2>Login</h2>
     <form method="POST">
+        <input type="hidden" name="CSRFToken" value="{{ .CSRFToken }}" />
+        
         <div>
             <label for="username">Username</label>
             <input id="username" name="username" type="text" maxlength="20" />

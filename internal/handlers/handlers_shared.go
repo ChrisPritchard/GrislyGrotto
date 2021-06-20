@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/hex"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -15,6 +17,8 @@ import (
 
 // used for brute force protection
 var blocked = map[string]int64{}
+
+var csrfTokens = map[string]string{}
 
 func getCurrentUser(r *http.Request) *string {
 	return r.Context().Value(config.AuthenticatedUser).(*string)
@@ -63,6 +67,21 @@ func getBlockTime(r *http.Request, username string) int {
 		return config.BlockTime - int(time2)
 	}
 	return config.BlockTime - int(time1)
+}
+
+func getCSRFToken(r *http.Request) string {
+	bytes := make([]byte, 16)
+	rand.Read(bytes)
+	val := hex.EncodeToString(bytes)
+	csrfTokens[getIP(r)] = val
+	return val
+}
+
+func checkCSRFToken(r *http.Request, submitted string) bool {
+	ip := getIP(r)
+	stored := csrfTokens[ip]
+	delete(csrfTokens, ip)
+	return stored != "" && stored == submitted
 }
 
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {

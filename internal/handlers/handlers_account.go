@@ -46,7 +46,7 @@ func profileImageHandler(w http.ResponseWriter, r *http.Request) {
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		renderView(w, r, loginViewModel{""}, "login.html", "Login")
+		renderView(w, r, loginViewModel{getCSRFToken(r), ""}, "login.html", "Login")
 		return
 	}
 
@@ -57,25 +57,30 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	username, password := r.FormValue("username"), r.FormValue("password")
 	if username == "" || password == "" {
-		renderView(w, r, loginViewModel{"Both username and password are required"}, "login.html", "Login")
+		renderView(w, r, loginViewModel{getCSRFToken(r), "Both username and password are required"}, "login.html", "Login")
+		return
+	}
+
+	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
+		badRequest(w, "missing or invalid csrf token")
 		return
 	}
 
 	if len(username) > 20 || len(password) > 100 {
-		renderView(w, r, loginViewModel{"Excessively sized values submitted"}, "login.html", "Login")
+		renderView(w, r, loginViewModel{getCSRFToken(r), "Excessively sized values submitted"}, "login.html", "Login")
 		return
 	}
 
 	blockTime := getBlockTime(r, username)
 	if blockTime > 0 {
-		renderView(w, r, loginViewModel{"Cannot make another attempt for another " + strconv.Itoa(blockTime) + " seconds"}, "login.html", "Login")
+		renderView(w, r, loginViewModel{getCSRFToken(r), "Cannot make another attempt for another " + strconv.Itoa(blockTime) + " seconds"}, "login.html", "Login")
 		return
 	}
 
 	valid, err := data.ValidateUser(username, password)
 	if err != nil || !valid {
 		setBlockTime(r, username)
-		renderView(w, r, loginViewModel{"Invalid credentials"}, "login.html", "login")
+		renderView(w, r, loginViewModel{getCSRFToken(r), "Invalid credentials"}, "login.html", "login")
 		return
 	}
 
@@ -122,7 +127,7 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username := *currentUser
-	model := accountDetailsViewModel{username, "", "", false, "", false, "", false}
+	model := accountDetailsViewModel{username, "", "", false, "", false, "", false, "toset"}
 
 	var err error
 	model.DisplayName, err = data.GetDisplayName(username)
@@ -132,6 +137,11 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
+		if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
+			badRequest(w, "missing or invalid csrf token")
+			return
+		}
+
 		displayName, oldPassword, newPassword, newPasswordConfirm :=
 			r.FormValue("displayName"), r.FormValue("oldPassword"),
 			r.FormValue("newPassword"), r.FormValue("newPasswordConfirm")
@@ -167,6 +177,7 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	model.CSRFToken = getCSRFToken(r)
 	renderView(w, r, model, "accountDetails.html", "Account Details")
 }
 

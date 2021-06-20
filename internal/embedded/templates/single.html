@@ -12,6 +12,7 @@
                 <input type="submit" value="Edit" />
             </form>
             <form method="POST" action="/delete-post/{{ .Post.Key }}">
+                <input type="hidden" name="CSRFToken" value="{{ .CSRFToken }}" />
                 <input type="submit" value="Delete" class="confirm-click" />
             </form>
         {{ end }}
@@ -37,6 +38,8 @@
 {{ end }}
 {{ if .CanComment }}
 <form method="POST" class="create-comment-container">
+    <input type="hidden" id="CSRFToken" name="CSRFToken" value="{{ .CSRFToken }}" />
+
     <label for="author">Author</label>
     <input type="text" id="author" name="author" maxlength="30" />
     <label for="content">Content</label>

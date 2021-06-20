@@ -12,9 +12,9 @@ type latestViewModel struct {
 }
 
 type singleViewModel struct {
-	Post                data.BlogPost
-	OwnBlog, CanComment bool
-	CommentError        string
+	Post                    data.BlogPost
+	OwnBlog, CanComment     bool
+	CSRFToken, CommentError string
 }
 
 type archivesViewModel struct {
@@ -36,7 +36,7 @@ type searchViewModel struct {
 }
 
 type loginViewModel struct {
-	Error string
+	CSRFToken, Error string
 }
 
 type accountDetailsViewModel struct {
@@ -47,11 +47,12 @@ type accountDetailsViewModel struct {
 	ImageSuccess                  bool
 	PasswordError                 string
 	PasswordSuccess               bool
+	CSRFToken                     string
 }
 
 type editorViewModel struct {
-	NewPost          bool
-	Title, Content   string
-	IsStory, IsDraft bool
-	PostError        string
+	NewPost              bool
+	Title, Content       string
+	IsStory, IsDraft     bool
+	CSRFToken, PostError string
 }

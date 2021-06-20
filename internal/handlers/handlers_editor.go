@@ -47,6 +47,11 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
+		badRequest(w, "missing or invalid csrf token")
+		return
+	}
+
 	err = data.DeletePost(key)
 	if err != nil {
 		serverError(w, err)
@@ -79,7 +84,7 @@ func editorHandler(w http.ResponseWriter, r *http.Request) {
 
 func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		model := editorViewModel{true, "", "", false, false, ""}
+		model := editorViewModel{true, "", "", false, false, getCSRFToken(r), ""}
 		renderView(w, r, model, "editor.html", "New Post")
 		return
 	}
@@ -90,20 +95,25 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
+		badRequest(w, "missing or invalid csrf token")
+		return
+	}
+
 	isStory := r.FormValue("isStory") != ""
 	isDraft := r.FormValue("isDraft") != ""
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 
 	if title == "" || content == "" {
-		model := editorViewModel{true, title, content, isStory, isDraft, "both title and content are required to be set"}
+		model := editorViewModel{true, title, content, isStory, isDraft, getCSRFToken(r), "both title and content are required to be set"}
 		renderView(w, r, model, "editor.html", "New Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < config.MinWordCount {
-		model := editorViewModel{true, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(config.MinWordCount)}
+		model := editorViewModel{true, title, content, isStory, isDraft, getCSRFToken(r), "the minimum word count for a post is " + strconv.Itoa(config.MinWordCount)}
 		renderView(w, r, model, "editor.html", "New Post")
 		return
 	}
@@ -116,7 +126,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !notFound {
-		model := editorViewModel{true, title, content, isStory, isDraft, "a post with a similar title already exists"}
+		model := editorViewModel{true, title, content, isStory, isDraft, getCSRFToken(r), "a post with a similar title already exists"}
 		renderView(w, r, model, "editor.html", "New Post")
 		return
 	}
@@ -162,8 +172,13 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 		if postIsDraft {
 			post.Title = post.Title[len(config.DraftPrefix):]
 		}
-		model := editorViewModel{false, post.Title, post.Content, post.IsStory, postIsDraft, ""}
+		model := editorViewModel{false, post.Title, post.Content, post.IsStory, postIsDraft, getCSRFToken(r), ""}
 		renderView(w, r, model, "editor.html", "Edit Post")
+		return
+	}
+
+	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
+		badRequest(w, "missing or invalid csrf token")
 		return
 	}
 
@@ -173,20 +188,20 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	content := r.FormValue("content")
 
 	if title == "" || content == "" {
-		model := editorViewModel{false, title, content, isStory, isDraft, "both title and content are required to be set"}
+		model := editorViewModel{false, title, content, isStory, isDraft, getCSRFToken(r), "both title and content are required to be set"}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}
 
 	if len(title) > config.MaxTitleLength {
-		model := editorViewModel{false, title, content, isStory, isDraft, "title exceeds max title length of " + strconv.Itoa(config.MaxTitleLength)}
+		model := editorViewModel{false, title, content, isStory, isDraft, getCSRFToken(r), "title exceeds max title length of " + strconv.Itoa(config.MaxTitleLength)}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}
 
 	wordCount := calculateWordCount(content)
 	if wordCount < config.MinWordCount {
-		model := editorViewModel{false, title, content, isStory, isDraft, "the minimum word count for a post is " + strconv.Itoa(config.MinWordCount)}
+		model := editorViewModel{false, title, content, isStory, isDraft, getCSRFToken(r), "the minimum word count for a post is " + strconv.Itoa(config.MinWordCount)}
 		renderView(w, r, model, "editor.html", "Edit Post")
 		return
 	}
