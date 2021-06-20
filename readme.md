@@ -8,13 +8,12 @@ To date there have been ASP.NET WebForms versions (unfortunately the code for th
 
 Further details can be found in:
 
-- [database.md](./docs/database.md) which details how the database is setup.
-- [setup.md](./docs/setup.md) which details how the site code should be built and deployed
-- [tasks.md](./docs/tasks.md) which is basically a checklist of ongoing work on the code base
+- [setup.md](./docs/setup.md) which details how the site should be built and deployed
+- [updates.md](./docs/updates.md) which specifies how the site might be updated once deployed
 
-## Release 17
+## Release 17.5
 
-__Release Date:__ 15/03/2020 (my daughter's 3rd birthday!)
+__Release Date:__ 20/06/2021
 
 __Release Post:__ [https://grislygrotto.nz/post/grisly-grotto-17](https://grislygrotto.nz/post/grisly-grotto-17)
 
@@ -33,19 +32,12 @@ __Data Store:__ SQLite
 
 __Dev Tool(s):__ VS Code
 
-VS Code was used in three different ways:
-
-- via Remote WSL (Windows 10 onto Ubuntu 18.04 WSL)
-- on OSX
-- on Windows 10 directly with mingw-x64 for cGo
-
-The Go connection to SQlite was the biggest barrier, as it requires CGO, which requires GCC in path. Fine on linux/osx, harder on windows. Ultimately [tdm-gcc](http://tdm-gcc.tdragon.net/) was the easiest way to install this, and I recommend it. WSL2 remote worked great too, except that debugging didn't work (not as bad as it sounds for most of the development work).
-
-Overall, this build was particularly enjoyable. Go is quite a pleasure to work with, something I found surprising coming from much higher-level functional languages. Simplicity has its merits.
+The 17.5 update over 17 involved bumping the Go version to latest, and switching to the Go standard project structure which was quite extensive. The new Go Embed functionality was used to.
 
 ## All Releases of the Grisly Grotto
 
-- [17.0 (Current) written in **Go**, 15th March 2020](https://github.com/ChrisPritchard/GrislyGrotto)
+- [17.5 (Current) written in **Go**, 20th June 2021](https://github.com/ChrisPritchard/GrislyGrotto)
+- [17.0 (Current) written in **Go**, 15th March 2020 (my daughter's 3rd birthday!)](https://github.com/ChrisPritchard/tree/release-17.0)
 - [16.0, written in **F#** on .Net Core 2.2, 20th June 2019](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-16.0)
 - [15.0, written in **F#** on .NET Core 2.1, 20th June 2018](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-15.0)
 - [14.3, written in **C#** 6 on .NET Core 2.0, 5th December 2017](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-14.3)

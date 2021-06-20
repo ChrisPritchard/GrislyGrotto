@@ -39,25 +39,21 @@ If targeting ARM however, e.g. if planning on deploying to a pi, you need to run
 
 That compiler in there can be installed by installing `arm-linux-gnueabi-gcc` and its dependencies.
 
-### Ensuring static assets are embedded
+## Database creation
 
-When running in non-development mode (dev mode is specified by the arg `-dev`), GG will load static assets like css, images and js, and template content for pages, from embedded base64 strings.
-
-These strings are generated via running the app with the single arg `-embed`, which generates the `embedded.go` file containing these strings.
+The database for the Grisly Grotto is simple: its a sqlite3 database with three tables. The separate `/cmd/authors` tool will create it when run, with an initial user.
 
 ## Getting the site running
 
-All this requires is scp'ing the compiled .so file, the sqlite3 .db file, the static files under /static, and a .secret file used for encryption.
+All this requires is scp'ing the compiled .so file and the sqlite3 .db file.
 
 1. ssh to the target machine and make a folder somewhere.
-2. create a .secret file in it 16 characters long, e.g. `echo 1234567890123456 > .secret`
-    - if you do not do this, a random secret is generated
-3. exit `ssh` and use `scp` to copy over:
+2. exit `ssh` and use `scp` to copy over:
 
-    - the grislygrotto.so file
-    - the grislygrotto.db file
+    - the grislygrotto.so binary file (or whatever you compiled it as)
+    - the grislygrotto.db file, which should be co-located with the binary
 
-4. ssh back to the machine, and run the grislygrotto.so file. All going well, you should get the following message:
+3. ssh back to the machine, and run the grislygrotto.so file. All going well, you should get the following message:
 
 ```
 The Grisly Grotto has started!
