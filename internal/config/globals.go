@@ -47,6 +47,7 @@ const MaxTitleLength = 100
 
 var ValidUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif"}
 
+// any changes should be replicated in the create author cmd tool
 var PasswordConfig = &argon2.Argon2Config{
 	Time:    1,
 	Memory:  64 * 1024,
