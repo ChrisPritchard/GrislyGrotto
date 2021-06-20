@@ -8,14 +8,14 @@ import (
 	"strings"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
-	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/cookies"
 )
 
 func getCommentAuthority(r *http.Request) map[int]interface{} {
 	result := make(map[int]interface{})
 
-	commentIDs, err := cookies.ReadEncryptedCookie("comments", config.CommentAuthorityExpiry, r)
+	commentIDs, err := cookies.ReadEncryptedCookie("comments", config.Secret, config.CommentAuthorityExpiry, r)
 	if err != nil {
 		return result
 	}
@@ -44,7 +44,7 @@ func setCommentAuthority(existing map[int]interface{}, newID int, w http.Respons
 		toStore += "," + strconv.Itoa(ids[i])
 	}
 
-	cookies.SetEncryptedCookie("comments", toStore, config.CommentAuthorityExpiry, w)
+	cookies.SetEncryptedCookie("comments", toStore, config.Secret, config.CommentAuthorityExpiry, w)
 }
 
 func singlePostHandler(w http.ResponseWriter, r *http.Request) {

@@ -14,7 +14,7 @@ import (
 // globals and constants used in multiple places
 // most globals are set early in main
 
-var Secret []byte
+var Secret [16]byte
 var ConnectionString string
 var ListenURL string
 var ContentStorageName string
@@ -87,9 +87,6 @@ var MonthIndexes = map[string]string{
 	"November":  "11",
 	"December":  "12",
 }
-
-// used for brute force protection
-var Blocked = map[string]int64{}
 
 const BlockTime = 5 // seconds
 

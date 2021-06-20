@@ -9,9 +9,12 @@ import (
 	"time"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
-	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/embedded"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/cookies"
 )
+
+// used for brute force protection
+var blocked = map[string]int64{}
 
 func getCurrentUser(r *http.Request) *string {
 	return r.Context().Value(config.AuthenticatedUser).(*string)
@@ -34,24 +37,24 @@ func getIP(r *http.Request) string {
 }
 
 func setBlockTime(r *http.Request, username string) {
-	config.Blocked[getIP(r)] = time.Now().Unix()
+	blocked[getIP(r)] = time.Now().Unix()
 	if username != "" {
-		config.Blocked[username] = time.Now().Unix()
+		blocked[username] = time.Now().Unix()
 	}
 }
 
 func cleanBlocked() {
 	now := time.Now().Unix()
-	for k, v := range config.Blocked {
+	for k, v := range blocked {
 		if now-v > config.BlockTime {
-			delete(config.Blocked, k)
+			delete(blocked, k)
 		}
 	}
 }
 
 func getBlockTime(r *http.Request, username string) int {
 	now := time.Now().Unix()
-	time1, time2 := now-config.Blocked[getIP(r)], now-config.Blocked[username]
+	time1, time2 := now-blocked[getIP(r)], now-blocked[username]
 	if time1 > config.BlockTime && time2 > config.BlockTime {
 		return 0
 	}

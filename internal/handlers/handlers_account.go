@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
-	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/aws"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/cookies"
 )
 
 func profileImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cookies.SetEncryptedCookie("user", username, config.AuthSessionExpiry, w)
+	err = cookies.SetEncryptedCookie("user", username, config.Secret, config.AuthSessionExpiry, w)
 	if err != nil {
 		serverError(w, err)
 		return

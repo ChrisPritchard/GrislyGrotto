@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 )
 
 func SetCookie(name, data string, expires time.Time, w http.ResponseWriter) {
@@ -26,10 +24,10 @@ func SetCookie(name, data string, expires time.Time, w http.ResponseWriter) {
 	http.SetCookie(w, &cookie)
 }
 
-func SetEncryptedCookie(name, unencodedData string, lifeTime time.Duration, w http.ResponseWriter) (err error) {
+func SetEncryptedCookie(name, unencodedData string, secret [16]byte, lifeTime time.Duration, w http.ResponseWriter) (err error) {
 	now := time.Now()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
-	cipher, err := encrypt([]byte(data), config.Secret)
+	cipher, err := encrypt([]byte(data), secret[:])
 	if err != nil {
 		return err
 	}
@@ -39,7 +37,7 @@ func SetEncryptedCookie(name, unencodedData string, lifeTime time.Duration, w ht
 	return nil
 }
 
-func ReadEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Request) (unencodedData string, err error) {
+func ReadEncryptedCookie(name string, secret [16]byte, allowedLifeTime time.Duration, r *http.Request) (unencodedData string, err error) {
 	cookie, err := r.Cookie(name)
 	if err != nil {
 		return "", err
@@ -52,7 +50,7 @@ func ReadEncryptedCookie(name string, allowedLifeTime time.Duration, r *http.Req
 		return "", err
 	}
 
-	dataB, err := decrypt(cipher, config.Secret)
+	dataB, err := decrypt(cipher, secret[:])
 	if err != nil {
 		return "", err
 	}

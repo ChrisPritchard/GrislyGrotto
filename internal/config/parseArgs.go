@@ -41,8 +41,9 @@ func ParseArgs() bool {
 		log.Fatal("invalid url specified - missing a :port")
 	}
 
-	Secret = make([]byte, 16)
-	rand.Read(Secret)
+	secret := make([]byte, 16)
+	rand.Read(secret)
+	copy(Secret[:], secret)
 
 	if *storageArg != "" {
 		ContentStorageName = *storageArg

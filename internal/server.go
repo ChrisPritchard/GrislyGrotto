@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
-	"github.com/ChrisPritchard/GrislyGrotto/internal/cookies"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/handlers"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/cookies"
 )
 
 func StartServer() {
@@ -43,11 +43,11 @@ func globalHandler(h http.Handler) http.Handler {
 		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)
 
-		user, _ := cookies.ReadEncryptedCookie("user", config.AuthSessionExpiry, r)
+		user, _ := cookies.ReadEncryptedCookie("user", config.Secret, config.AuthSessionExpiry, r)
 		var userVal *string
 		if user != "" {
 			userVal = &user
-			cookies.SetEncryptedCookie("user", user, config.AuthSessionExpiry, w)
+			cookies.SetEncryptedCookie("user", user, config.Secret, config.AuthSessionExpiry, w)
 		}
 
 		userCtx := context.WithValue(r.Context(), config.AuthenticatedUser, userVal)
