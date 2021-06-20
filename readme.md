@@ -37,7 +37,7 @@ The 17.5 update over 17 involved bumping the Go version to latest, and switching
 ## All Releases of the Grisly Grotto
 
 - [17.5 (Current) written in **Go**, 20th June 2021](https://github.com/ChrisPritchard/GrislyGrotto)
-- [17.0 (Current) written in **Go**, 15th March 2020 (my daughter's 3rd birthday!)](https://github.com/ChrisPritchard/tree/release-17.0)
+- [17.0, written in **Go**, 15th March 2020 (my daughter's 3rd birthday!)](https://github.com/ChrisPritchard/tree/release-17.0)
 - [16.0, written in **F#** on .Net Core 2.2, 20th June 2019](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-16.0)
 - [15.0, written in **F#** on .NET Core 2.1, 20th June 2018](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-15.0)
 - [14.3, written in **C#** 6 on .NET Core 2.0, 5th December 2017](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-14.3)
