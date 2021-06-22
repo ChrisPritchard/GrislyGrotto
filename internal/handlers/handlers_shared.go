@@ -73,14 +73,14 @@ func getCSRFToken(r *http.Request) string {
 	bytes := make([]byte, 16)
 	rand.Read(bytes)
 	val := hex.EncodeToString(bytes)
-	csrfTokens[getIP(r)] = val
+	csrfTokens[getIP(r)+"|"+r.RequestURI] = val
 	return val
 }
 
 func checkCSRFToken(r *http.Request, submitted string) bool {
-	ip := getIP(r)
-	stored := csrfTokens[ip]
-	delete(csrfTokens, ip)
+	key := getIP(r) + "|" + r.RequestURI
+	stored := csrfTokens[key]
+	delete(csrfTokens, key)
 	return stored != "" && stored == submitted
 }
 
