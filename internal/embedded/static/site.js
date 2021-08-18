@@ -302,7 +302,7 @@ if (title && content) {
         timer.className = labelClass;
     }
 
-    start = new Date().getTime ();
+    start = new Date().getTime();
     cookieTime = 60*60*1000;
     interval = setInterval(function () {
         timeRemaining = (cookieTime-((new Date().getTime())-start))/1000;
