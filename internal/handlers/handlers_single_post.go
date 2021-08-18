@@ -66,7 +66,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	ownBlog := currentUser != nil && *currentUser == post.AuthorUsername
 
 	if r.Method == "GET" {
-		model := singleViewModel{post, ownBlog, true, getCSRFToken(r), ""}
+		model := singleViewModel{post, ownBlog, true, ""}
 		if len(post.Comments) >= config.MaxCommentCount {
 			model.CanComment = false
 		}
@@ -84,11 +84,6 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
-		badRequest(w, "missing or invalid csrf token")
-		return
-	}
-
 	newID, commentError, err := createComment(r, post.Key)
 	if err != nil {
 		serverError(w, err)
@@ -96,7 +91,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if commentError != "" {
-		model := singleViewModel{post, ownBlog, true, getCSRFToken(r), commentError}
+		model := singleViewModel{post, ownBlog, true, commentError}
 		renderView(w, r, model, "single.html", post.Title)
 		return
 	}
@@ -178,11 +173,6 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
-		badRequest(w, "missing or invalid csrf token")
-		return
-	}
-
 	newContent := r.FormValue("content")
 	if newContent == "" {
 		badRequest(w, "content required")
@@ -222,11 +212,6 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 	ownedComments := getCommentAuthority(r)
 	if _, exists := ownedComments[idN]; !exists {
 		unauthorised(w)
-		return
-	}
-
-	if !checkCSRFToken(r, r.FormValue("CSRFToken")) {
-		badRequest(w, "missing or invalid csrf token")
 		return
 	}
 

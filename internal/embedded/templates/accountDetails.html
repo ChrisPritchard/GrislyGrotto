@@ -2,7 +2,6 @@
 <div class="page-form">
     <h2>Account Details</h2>
     <form method="POST" class="account-details-container">
-        <input type="hidden" name="CSRFToken" value="{{ .CSRFToken }}" />
         <div>
             <label for="displayName">Display Name</label>
             <input id="displayName" name="displayName" type="text" value="{{ .DisplayName }}" maxlength="30" />
@@ -15,7 +14,6 @@
         </div>
     </form>
     <form method="POST" class="account-details-container" enctype="multipart/form-data">
-        <input type="hidden" name="CSRFToken" value="{{ .CSRFToken }}" />
         <div>
             <label for="profileImage">Profile Image</label>
             <img src="/profile-image/{{ .Username }}" class="profile-image" />
@@ -30,7 +28,6 @@
         </div>
     </form>
     <form method="POST" class="account-details-container">
-        <input type="hidden" name="CSRFToken" value="{{ .CSRFToken }}" />
         <div>
             <label for="oldPassword">Current Password</label>
             <input id="oldPassword" name="oldPassword" type="password" maxlength="100" />

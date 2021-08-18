@@ -9,8 +9,6 @@
 </h2>
 
 <form method="POST">
-    <input type="hidden" name="CSRFToken" value="{{ .CSRFToken }}" />
-
     <label for="title">Post Title</label>
     <input type="text" id="title" name="title" value="{{ .Title }}" maxlength="100" />
 

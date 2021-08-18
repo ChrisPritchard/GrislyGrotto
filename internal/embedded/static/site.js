@@ -118,7 +118,6 @@ for (let i = 0; i < ownComments.length; i++) {
     saveLink.addEventListener("click", function (e) {
         e.preventDefault();
         
-        let csrf = document.querySelector("#CSRFToken").value
         let editor = selectCommentElem(id, "inline-comment-editor");
         if (editor.value.trim() === "") {
             errorMessage.innerText = "Comments must have some content";
@@ -147,14 +146,12 @@ for (let i = 0; i < ownComments.length; i++) {
 
         let form = new FormData();
         form.append("content", editor.value)
-        form.append("CSRFToken", csrf)
         xhr.send(form);
     });
 
     deleteLink.addEventListener("click", function (e) {
         e.preventDefault();
 
-        let csrf = document.querySelector("#CSRFToken").value
         if (confirm("are you sure? this is permanant")) {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/delete-comment/"+id);
@@ -167,7 +164,6 @@ for (let i = 0; i < ownComments.length; i++) {
                 errorMessage.innerText = "There was an error deleting: " + xhr.response;
             };
             let form = new FormData();
-            form.append("CSRFToken", csrf)
             xhr.send(form);
         }
     });
