@@ -372,7 +372,8 @@ if  (contentSelector) {
         temp.value = textToCopy;
         document.body.appendChild(temp);
         temp.select();
-        document.execCommand('copy');
+        temp.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(temp.value);
         document.body.removeChild(temp);
     });
 }
