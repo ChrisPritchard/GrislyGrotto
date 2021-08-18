@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"errors"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -111,6 +113,10 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 		return 0, "comment content exceeds max length of " + strconv.Itoa(config.MaxCommentLength), nil
 	}
 
+	if notNZIP(r) {
+		return 0, "comments may only be submitted from New Zealand / Aotearoa", nil
+	}
+
 	blockTime := getBlockTime(r, author)
 	if blockTime > 0 {
 		return 0, "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
@@ -124,6 +130,31 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 	}
 
 	return int(id), "", nil
+}
+
+func notNZIP(r *http.Request) bool {
+	ipAddress := getIP(r)
+	if ipAddress == "127.0.0.1" || ipAddress == "[::]1" {
+		return false // testing from dev
+	}
+
+	client := &http.Client{}
+	url := "http://ifconfig.co/country?ip=" + ipAddress
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("Warning: unable to reach ifconfig.co, error: %s", err.Error())
+		return false // just in case this goes down
+	}
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	country := strings.Trim(string(body), "\n")
+	if country == "New Zealand" {
+		return false
+	}
+
+	log.Printf("Warning: someone tried to comment from %s with IP %s", country, ipAddress)
+	return true // block comment
 }
 
 func rawCommentHandler(w http.ResponseWriter, r *http.Request) {
