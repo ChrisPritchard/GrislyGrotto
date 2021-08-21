@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"sort"
 	"strconv"
@@ -138,6 +139,11 @@ func notNZIP(r *http.Request) bool {
 		return false // testing from dev
 	}
 
+	if ip := net.ParseIP(ipAddress); ip == nil {
+		log.Printf("Warning: someone tried to comment with the following invalid request IP: %s", ipAddress)
+		return true // block comment
+	}
+
 	client := &http.Client{}
 	url := "http://ifconfig.co/country?ip=" + ipAddress
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
@@ -153,6 +159,9 @@ func notNZIP(r *http.Request) bool {
 		return false
 	}
 
+	if len(country) == 0 {
+		country = "Unknown"
+	}
 	log.Printf("Warning: someone tried to comment from %s with IP %s", country, ipAddress)
 	return true // block comment
 }
