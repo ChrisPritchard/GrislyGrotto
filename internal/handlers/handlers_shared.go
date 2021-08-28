@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"html/template"
+	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -112,11 +113,13 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/"+r.FormValue("return-path"), http.StatusFound)
 }
 
-func serverError(w http.ResponseWriter, err error) {
+func serverError(w http.ResponseWriter, r *http.Request, err error) {
+	log.Printf("500 thrown during request for path '%s': %s\n", r.URL, err.Error())
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
-func badRequest(w http.ResponseWriter, message string) {
+func badRequest(w http.ResponseWriter, r *http.Request, message string) {
+	log.Printf("400 thrown during request for path '%s': %s\n", r.URL, message)
 	http.Error(w, message, http.StatusBadRequest)
 }
 
@@ -144,7 +147,7 @@ func renderView(w http.ResponseWriter, r *http.Request, model interface{}, templ
 	tmpl = template.Must(result, err)
 
 	if err := tmpl.ExecuteTemplate(w, "master", model); err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 	}
 }
 

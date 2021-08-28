@@ -57,7 +57,7 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	post, notFound, err := data.GetPostWithComments(key, currentUser, ownedComments)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -83,13 +83,13 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(post.Comments) >= config.MaxCommentCount {
-		badRequest(w, "max comments reached")
+		badRequest(w, r, "max comments reached")
 		return
 	}
 
 	newID, commentError, err := createComment(r, post.Key)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -175,7 +175,7 @@ func rawCommentHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Path[len("/raw-comment/"):]
 	idN, err := strconv.Atoi(id)
 	if err != nil {
-		badRequest(w, "invalid comment id")
+		badRequest(w, r, "invalid comment id")
 		return
 	}
 
@@ -187,7 +187,7 @@ func rawCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	commentSource, err := data.GetCommentRaw(idN)
 	if err != nil {
-		serverError(w, errors.New("failed to retrieve comment with id "+id))
+		serverError(w, r, errors.New("failed to retrieve comment with id "+id))
 		return
 	}
 
@@ -203,7 +203,7 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Path[len("/edit-comment/"):]
 	idN, err := strconv.Atoi(id)
 	if err != nil {
-		badRequest(w, "invalid comment id")
+		badRequest(w, r, "invalid comment id")
 		return
 	}
 
@@ -215,18 +215,18 @@ func editCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	newContent := r.FormValue("content")
 	if newContent == "" {
-		badRequest(w, "content required")
+		badRequest(w, r, "content required")
 		return
 	}
 
 	if len(newContent) > config.MaxCommentLength {
-		badRequest(w, "comment content exceeds max length of "+strconv.Itoa(config.MaxCommentLength))
+		badRequest(w, r, "comment content exceeds max length of "+strconv.Itoa(config.MaxCommentLength))
 		return
 	}
 
 	err = data.UpdateComment(idN, newContent)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -245,7 +245,7 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Path[len("/delete-comment/"):]
 	idN, err := strconv.Atoi(id)
 	if err != nil {
-		badRequest(w, "invalid comment id")
+		badRequest(w, r, "invalid comment id")
 		return
 	}
 
@@ -257,7 +257,7 @@ func deleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = data.DeleteComment(idN)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 

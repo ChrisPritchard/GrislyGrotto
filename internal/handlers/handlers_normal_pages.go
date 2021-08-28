@@ -18,7 +18,7 @@ func latestPostsHandler(w http.ResponseWriter, r *http.Request) {
 	page, notFirstPage := getPageFromQuery(r)
 	posts, err := data.GetLatestPosts(page, getCurrentUser(r))
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -52,13 +52,13 @@ func archivesHandler(w http.ResponseWriter, r *http.Request) {
 
 	yearSets, err := data.GetYearMonthCounts(currentUser)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
 	stories, err := data.GetStories(currentUser)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -93,7 +93,7 @@ func monthHandler(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := data.GetPostsForMonth(month, year, getCurrentUser(r))
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -142,7 +142,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	results, err := data.GetSearchResults(searchParam, getCurrentUser(r))
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 

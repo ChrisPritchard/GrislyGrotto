@@ -81,7 +81,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = cookies.SetEncryptedCookie("user", username, config.Secret, config.AuthSessionExpiry, w)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -127,7 +127,7 @@ func accountDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	model.DisplayName, err = data.GetDisplayName(username)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
