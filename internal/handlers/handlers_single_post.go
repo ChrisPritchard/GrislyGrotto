@@ -134,18 +134,21 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 }
 
 func notNZIP(r *http.Request) bool {
+	// this wont stop people who spoof their x-forwarded-for header, obvs, but is sufficient for now
+
 	ipAddress := getIP(r)
-	if ipAddress == "127.0.0.1" || ipAddress == "[::]1" {
+	if ipAddress == "127.0.0.1" {
 		return false // testing from dev
 	}
 
-	if ip := net.ParseIP(ipAddress); ip == nil {
+	ip := net.ParseIP(ipAddress)
+	if ip == nil {
 		log.Printf("Warning: someone tried to comment with the following invalid request IP: %s", ipAddress)
 		return true // block comment
 	}
 
 	client := &http.Client{}
-	url := "http://ifconfig.co/country?ip=" + ipAddress
+	url := "http://ifconfig.co/country?ip=" + ip.String()
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	resp, err := client.Do(req)
 	if err != nil {
