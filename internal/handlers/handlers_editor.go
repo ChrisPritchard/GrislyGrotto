@@ -33,7 +33,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	post, notFound, err := data.GetSinglePost(key, currentUser)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -49,7 +49,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = data.DeletePost(key)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -111,7 +111,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 	key := createPostKey(title)
 	_, notFound, err := data.GetSinglePost(key, currentUser)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -127,7 +127,7 @@ func newPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = data.CreateNewPost(key, title, content, isStory, wordCount, *currentUser)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -143,7 +143,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 
 	post, notFound, err := data.GetSinglePost(key, currentUser)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -197,7 +197,7 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 
 	err = data.UpdatePost(key, title, content, isStory, wordCount, post.IsDraft() && !isDraft)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
@@ -234,13 +234,13 @@ func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if !validExtension {
-		badRequest(w, "bad file extension")
+		badRequest(w, r, "bad file extension")
 		return
 	}
 
 	bytes, exists, err := aws.RetrieveStorageFile(config.ContentStorageName, filename)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 	if !exists {
@@ -269,37 +269,37 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if !validExtension {
-		badRequest(w, "bad file extension")
+		badRequest(w, r, "bad file extension")
 		return
 	}
 
 	file, fileHeader, err := r.FormFile("file")
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 	defer file.Close()
 
 	if fileHeader.Size > config.MaxFileSize {
-		badRequest(w, "file size exceeds maximum")
+		badRequest(w, r, "file size exceeds maximum")
 		return
 	}
 
 	buffer := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buffer, file); err != nil {
-		badRequest(w, "Unable to read file")
+		badRequest(w, r, "Unable to read file")
 		return
 	}
 
 	mimeType := http.DetectContentType(buffer.Bytes())
 	if !strings.HasPrefix(mimeType, "image/") {
-		badRequest(w, "File is not a valid image")
+		badRequest(w, r, "File is not a valid image")
 		return
 	}
 
 	err = aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, r, err)
 		return
 	}
 
