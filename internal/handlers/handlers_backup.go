@@ -16,6 +16,19 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	username, password, ok := r.BasicAuth()
+	if !ok {
+		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
+		unauthorised(w)
+		return
+	}
+	valid, errorMessage := validateCredentials(r, username, password)
+	if !valid {
+		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
+		http.Error(w, errorMessage, http.StatusUnauthorized)
+		return
+	}
+
 	posts := make(chan data.StreamedBlogPost)
 	go data.GetAllPostsAsync(posts)
 
