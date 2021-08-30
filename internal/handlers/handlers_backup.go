@@ -16,9 +16,8 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts := make(chan data.BlogPost)
-	//errors := make(chan error)
-	go data.GetAllPostsAsync(posts) //, errors)
+	posts := make(chan data.StreamedBlogPost)
+	go data.GetAllPostsAsync(posts)
 
 	headers := w.Header()
 	headers.Set("Content-Disposition", fmt.Sprintf("attachment; filename=posts-%s.zip", time.Now().Format("2006-01-02")))
@@ -27,7 +26,13 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 
 	zipWriter := zip.NewWriter(w)
 
-	for p := range posts {
+	for message := range posts {
+		if message.Error != nil {
+			serverError(w, r, message.Error)
+			return
+		}
+		p := message.Post
+
 		date, _ := time.Parse("2006-01-02 15:04:05", p.Date)
 		header := zip.FileHeader{Name: fmt.Sprintf("%s-%s.json", date.Format("2006-01-02-15-04-05-PM"), p.Key), Method: zip.Deflate}
 		writer, err := zipWriter.CreateHeader(&header)

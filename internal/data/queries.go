@@ -11,13 +11,17 @@ import (
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
 )
 
-func GetAllPostsAsync(out chan<- BlogPost) {
+type StreamedBlogPost struct {
+	Post  BlogPost
+	Error error
+}
+
+func GetAllPostsAsync(out chan<- StreamedBlogPost) {
 	defer close(out)
-	//defer close(errors)
 
 	rows, err := config.Database.Query("SELECT p.Author_Username as AuthorUsername, p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount FROM Posts p")
 	if err != nil {
-		//errors <- err
+		out <- StreamedBlogPost{Error: err}
 		return
 	}
 	defer rows.Close()
@@ -27,18 +31,18 @@ func GetAllPostsAsync(out chan<- BlogPost) {
 		err = rows.Scan(
 			&post.AuthorUsername, &post.Key, &post.Title, &post.Content, &post.Date, &post.IsStory, &post.WordCount)
 		if err != nil {
-			//errors <- err
+			out <- StreamedBlogPost{Error: err}
 			return
 		}
 
 		comments, err := commentsForPost(post.Key)
 		if err != nil {
-			//errors <- err
+			out <- StreamedBlogPost{Error: err}
 			return
 		}
 		post.Comments = comments
 
-		out <- post
+		out <- StreamedBlogPost{Post: post}
 	}
 }
 
