@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
+// AllFiles requires the ListBucket permission
 func AllFiles(bucket string) (filenames []string, err error) {
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
@@ -29,6 +30,7 @@ func AllFiles(bucket string) (filenames []string, err error) {
 	return
 }
 
+// RetrieveStorageFile requires the GetObject permission
 func RetrieveStorageFile(bucket, filename string) (bytes []byte, exists bool, err error) {
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
@@ -51,6 +53,7 @@ func RetrieveStorageFile(bucket, filename string) (bytes []byte, exists bool, er
 	return buf.Bytes(), true, nil
 }
 
+// UploadStorageFile requires the PutObject permission
 func UploadStorageFile(bucket, filename string, file io.Reader) error {
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
