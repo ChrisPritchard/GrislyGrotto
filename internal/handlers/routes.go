@@ -22,4 +22,5 @@ func SetupRoutes() {
 	http.HandleFunc("/editor/", editorHandler)
 	http.HandleFunc("/save-theme", themeHandler)
 	http.HandleFunc("/content/", contentHandler)
+	http.HandleFunc("/backup/posts", postsBackupHandler)
 }
