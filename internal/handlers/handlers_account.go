@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -56,30 +57,13 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username, password := r.FormValue("username"), r.FormValue("password")
-	if username == "" || password == "" {
-		renderView(w, r, loginViewModel{"Both username and password are required"}, "login.html", "Login")
+	valid, errorMessage := validateCredentials(r, username, password)
+	if !valid {
+		renderView(w, r, loginViewModel{errorMessage}, "login.html", "Login")
 		return
 	}
 
-	if len(username) > 20 || len(password) > 100 {
-		renderView(w, r, loginViewModel{"Excessively sized values submitted"}, "login.html", "Login")
-		return
-	}
-
-	blockTime := getBlockTime(r, username)
-	if blockTime > 0 {
-		renderView(w, r, loginViewModel{"Cannot make another attempt for another " + strconv.Itoa(blockTime) + " seconds"}, "login.html", "Login")
-		return
-	}
-
-	valid, err := data.ValidateUser(username, password)
-	if err != nil || !valid {
-		setBlockTime(r, username)
-		renderView(w, r, loginViewModel{"Invalid credentials"}, "login.html", "login")
-		return
-	}
-
-	err = cookies.SetEncryptedCookie("user", username, config.Secret, config.AuthSessionExpiry, w)
+	err := cookies.SetEncryptedCookie("user", username, config.Secret, config.AuthSessionExpiry, w)
 	if err != nil {
 		serverError(w, r, err)
 		return
@@ -91,6 +75,29 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		path = returnURI[0]
 	}
 	http.Redirect(w, r, "/"+path, http.StatusFound)
+}
+
+func validateCredentials(r *http.Request, username, password string) (bool, string) {
+	if username == "" || password == "" {
+		return false, "Both username and password are required"
+	}
+
+	if len(username) > 20 || len(password) > 100 {
+		return false, "Excessively sized values submitted"
+	}
+
+	blockTime := getBlockTime(r, username)
+	if blockTime > 0 {
+		return false, fmt.Sprintf("Cannot make another attempt for another %d seconds", blockTime)
+	}
+
+	valid, err := data.ValidateUser(username, password)
+	if err != nil || !valid {
+		setBlockTime(r, username)
+		return false, "Invalid credentials"
+	}
+
+	return true, ""
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
