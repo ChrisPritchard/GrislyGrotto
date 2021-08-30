@@ -7,8 +7,26 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
+	"github.com/ChrisPritchard/GrislyGrotto/pkg/aws"
 )
+
+func validateBasicAuth(w http.ResponseWriter, r *http.Request) bool {
+	username, password, ok := r.BasicAuth()
+	if !ok {
+		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
+		unauthorised(w)
+		return false
+	}
+	valid, errorMessage := validateCredentials(r, username, password)
+	if !valid {
+		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
+		http.Error(w, errorMessage, http.StatusUnauthorized)
+		return false
+	}
+	return true
+}
 
 func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -16,16 +34,7 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, password, ok := r.BasicAuth()
-	if !ok {
-		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
-		unauthorised(w)
-		return
-	}
-	valid, errorMessage := validateCredentials(r, username, password)
-	if !valid {
-		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
-		http.Error(w, errorMessage, http.StatusUnauthorized)
+	if !validateBasicAuth(w, r) {
 		return
 	}
 
@@ -60,6 +69,49 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 			serverError(w, r, err)
 			return
 		}
+	}
+
+	defer zipWriter.Close()
+}
+
+func contentBackupHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
+	if !validateBasicAuth(w, r) {
+		return
+	}
+
+	files, err := aws.AllFiles(config.ContentStorageName)
+	if err != nil {
+		serverError(w, r, err)
+		return
+	}
+
+	headers := w.Header()
+	headers.Set("Content-Disposition", fmt.Sprintf("attachment; filename=content-%s.zip", time.Now().Format("2006-01-02")))
+	headers.Set("Content-Type", "application/zip")
+	headers.Set("X-Content-Type", "application/zip")
+
+	zipWriter := zip.NewWriter(w)
+
+	for _, fileName := range files {
+		data, _, err := aws.RetrieveStorageFile(config.ContentStorageName, fileName)
+		if err != nil {
+			serverError(w, r, err)
+			return
+		}
+
+		header := zip.FileHeader{Name: fileName, Method: zip.Deflate}
+		writer, err := zipWriter.CreateHeader(&header)
+		if err != nil {
+			serverError(w, r, err)
+			return
+		}
+
+		writer.Write(data)
 	}
 
 	defer zipWriter.Close()

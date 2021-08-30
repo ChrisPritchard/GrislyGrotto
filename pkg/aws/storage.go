@@ -9,6 +9,26 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
+func AllFiles(bucket string) (filenames []string, err error) {
+	session, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	serviceClient := s3.New(session)
+	response, err := serviceClient.ListObjects(&s3.ListObjectsInput{Bucket: aws.String(bucket)})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, file := range response.Contents {
+		filenames = append(filenames, *file.Key)
+	}
+	return
+}
+
 func RetrieveStorageFile(bucket, filename string) (bytes []byte, exists bool, err error) {
 	session, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,

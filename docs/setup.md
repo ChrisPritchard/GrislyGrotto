@@ -95,7 +95,7 @@ Running the site manually from the command line isn't a good idea. Instead we sh
     Environment="AWS_SECRET_ACCESS_KEY=<the secret access key for the iam user to use>"
     ```
 
-    For this, I recommend creating an IAM user with a policy or inline permissions granting **only** s3:getObject and s3:putObject on the specific s3 bucket. The default name for said bucket is `grislygrotto-content`. 
+    For this, I recommend creating an IAM user with a policy or inline permissions granting **only** 's3:GetObject', 's3:PutObject' and 's3:listBucket' on the specific s3 bucket. The default name for said bucket is `grislygrotto-content`. 
 
 4. Start the service using the following commands: 
 
