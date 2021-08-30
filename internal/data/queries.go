@@ -11,6 +11,37 @@ import (
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
 )
 
+func GetAllPostsAsync(out chan<- BlogPost, errors chan<- error) {
+	defer close(out)
+	defer close(errors)
+
+	rows, err := config.Database.Query("SELECT p.Author_Username, p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount FROM Posts p")
+	if err != nil {
+		errors <- err
+		return
+	}
+	defer rows.Close()
+
+	var post BlogPost
+	for rows.Next() {
+		err = rows.Scan(
+			&post.Author, &post.AuthorUsername, &post.Key, &post.Title, &post.Content, &post.Date, &post.IsStory, &post.WordCount)
+		if err != nil {
+			errors <- err
+			return
+		}
+
+		comments, err := commentsForPost(post.Key)
+		if err != nil {
+			errors <- err
+			return
+		}
+		post.Comments = comments
+
+		out <- post
+	}
+}
+
 func GetLatestPosts(page int, currentUser *string) ([]BlogPost, error) {
 	rows, err := config.Database.Query(`
 		SELECT 
@@ -75,7 +106,22 @@ func GetPostWithComments(key string, currentUser *string, ownedComments map[int]
 		return post, notFound, err
 	}
 
-	post.Comments = make([]BlogComment, 0)
+	comments, err := commentsForPost(key)
+	if err != nil {
+		return post, notFound, err
+	}
+
+	post.Comments = comments
+	for i := range post.Comments {
+		_, exists := ownedComments[post.Comments[i].ID]
+		post.Comments[i].Owned = exists
+	}
+
+	return post, false, nil
+}
+
+func commentsForPost(key string) ([]BlogComment, error) {
+	comments := make([]BlogComment, 0)
 	rows, err := config.Database.Query(`
 		SELECT 
 			Id, Author, Date, Content
@@ -83,7 +129,7 @@ func GetPostWithComments(key string, currentUser *string, ownedComments map[int]
 		WHERE Post_Key = ?
 		ORDER BY Date`, key)
 	if err != nil {
-		return post, notFound, err
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -93,15 +139,13 @@ func GetPostWithComments(key string, currentUser *string, ownedComments map[int]
 		err = rows.Scan(
 			&comment.ID, &comment.Author, &comment.Date, &comment.Content)
 		if err != nil {
-			return post, notFound, err
+			return nil, err
 		}
-		_, exists := ownedComments[comment.ID]
-		comment.Owned = exists
 
-		post.Comments = append(post.Comments, comment)
+		comments = append(comments, comment)
 	}
 
-	return post, false, nil
+	return comments, nil
 }
 
 func AddCommentToBlog(author, content, postKey string) (newID int64, err error) {
