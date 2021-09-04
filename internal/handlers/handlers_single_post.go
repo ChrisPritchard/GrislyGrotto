@@ -153,7 +153,7 @@ func notNZIP(r *http.Request) bool {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("Warning: unable to reach ifconfig.co, error: %s", err.Error())
-		return false // just in case this goes down
+		return true
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
