@@ -177,7 +177,7 @@ func renderComment(s string) template.HTML {
 
 func formatDate(s string) string {
 	asTime, _ := time.Parse("2006-01-02 15:04:05", s)
-	return asTime.Format("15:04 PM, on Monday, 02 January 2006")
+	return asTime.Format("3:04 PM, on Monday, 2 January 2006")
 }
 
 func getTheme(r *http.Request) string {
