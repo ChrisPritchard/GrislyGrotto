@@ -134,13 +134,21 @@ func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
 
 func checkMimeError(fileName, mimeType string) string {
 	for _, ext := range config.VideoExtensions {
-		if strings.HasSuffix(fileName, ext) && !strings.HasPrefix(mimeType, "video/") {
-			return "File is not a valid video"
+		if strings.HasSuffix(fileName, ext) {
+			if !strings.HasPrefix(mimeType, "video/") {
+				return "File is not a valid video"
+			}
+			return ""
+		}
+	}
+	for _, ext := range config.DownloadExtensions {
+		if strings.HasSuffix(fileName, ext) {
+			// note we dont check download extensions, as they could be anything (initially zip)
+			return ""
 		}
 	}
 	if !strings.HasPrefix(mimeType, "image/") {
 		return "File is not a valid image"
 	}
-	// note we dont check download extensions, as they could be anything (initially zip)
 	return ""
 }
