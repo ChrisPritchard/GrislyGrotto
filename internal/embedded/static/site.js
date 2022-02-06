@@ -350,7 +350,13 @@ if  (contentSelector) {
                 return;
                 
             if (xhr.status == 202) {
-                document.querySelector("#content-upload-result").innerText = "<div align=\"center\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></div>";
+                if (filename.endsWith(".zip")) {
+                    document.querySelector("#content-upload-result").innerText = "<a href=\"/content/"+filename+"\">"+filename+"</a>";
+                } else if (filename.endsWith(".mp4")) {
+                    document.querySelector("#content-upload-result").innerText = "<div align=\"center\"><video width=\"800\" src=\"/content/"+filename+"\" controls/></div>";
+                } else {
+                    document.querySelector("#content-upload-result").innerText = "<div align=\"center\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></div>";
+                }
                 document.querySelector("#copy-content-html").classList.remove("hide");
             } else {
                 document.querySelector("#content-upload-result").innerText = "An error occurred uploading :( " + xhr.responseText;
