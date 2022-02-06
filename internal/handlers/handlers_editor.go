@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"bytes"
-	"io"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -10,7 +8,6 @@ import (
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/data"
-	"github.com/ChrisPritchard/GrislyGrotto/pkg/aws"
 )
 
 func deletePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -202,108 +199,6 @@ func editPostHandler(w http.ResponseWriter, r *http.Request, key string) {
 	}
 
 	http.Redirect(w, r, "/post/"+key, http.StatusFound)
-}
-
-func contentHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		tryGetContentFromStorage(w, r)
-		return
-	} else if r.Method != "POST" {
-		http.NotFound(w, r)
-		return
-	} else if getCurrentUser(r) == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	tryUploadContentToStorage(w, r)
-}
-
-func tryGetContentFromStorage(w http.ResponseWriter, r *http.Request) {
-	filename := r.URL.Path[len("/content/"):]
-	if len(filename) == 0 {
-		http.NotFound(w, r)
-		return
-	}
-
-	lowerName := strings.ToLower(filename)
-	validExtension := false
-	for _, ext := range config.ValidUploadExtensions {
-		if strings.HasSuffix(lowerName, ext) {
-			validExtension = true
-			break
-		}
-	}
-	if !validExtension {
-		badRequest(w, r, "bad file extension")
-		return
-	}
-
-	bytes, exists, err := aws.RetrieveStorageFile(config.ContentStorageName, filename)
-	if err != nil {
-		serverError(w, r, err)
-		return
-	}
-	if !exists {
-		http.NotFound(w, r)
-		return
-	}
-
-	headers := w.Header()
-	headers.Set("Content-Type", "image/gif")
-	headers.Set("X-Content-Type", "image/gif")
-	w.Write(bytes)
-}
-
-func tryUploadContentToStorage(w http.ResponseWriter, r *http.Request) {
-	filename := r.URL.Path[len("/content/"):]
-	if len(filename) == 0 {
-		http.NotFound(w, r)
-		return
-	}
-	filename = strings.ToLower(filename)
-
-	validExtension := false
-	for _, ext := range config.ValidUploadExtensions {
-		if strings.HasSuffix(filename, ext) {
-			validExtension = true
-		}
-	}
-	if !validExtension {
-		badRequest(w, r, "bad file extension")
-		return
-	}
-
-	file, fileHeader, err := r.FormFile("file")
-	if err != nil {
-		serverError(w, r, err)
-		return
-	}
-	defer file.Close()
-
-	if fileHeader.Size > config.MaxFileSize {
-		badRequest(w, r, "file size exceeds maximum")
-		return
-	}
-
-	buffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(buffer, file); err != nil {
-		badRequest(w, r, "Unable to read file")
-		return
-	}
-
-	mimeType := http.DetectContentType(buffer.Bytes())
-	if !strings.HasPrefix(mimeType, "image/") {
-		badRequest(w, r, "File is not a valid image")
-		return
-	}
-
-	err = aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
-	if err != nil {
-		serverError(w, r, err)
-		return
-	}
-
-	w.WriteHeader(http.StatusAccepted)
 }
 
 func createPostKey(title string) string {

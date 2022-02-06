@@ -35,10 +35,7 @@ func globalHandler(h http.Handler) http.Handler {
 		headers.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		headers.Set("Referrer-Policy", "same-origin")
 
-		csp := "default-src 'none';"
-		csp += "script-src 'self';"
-		csp += "connect-src 'self';"
-		csp += "img-src 'self';"
+		csp := "default-src 'self';"
 		csp += "style-src 'self' 'unsafe-inline';"
 		csp += "frame-src 'self' *.youtube.com;"
 		headers.Set("Content-Security-Policy", csp)

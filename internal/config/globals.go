@@ -45,7 +45,9 @@ const MaxSearchTermLength = 100
 const MaxCommentLength = 1000
 const MaxTitleLength = 100
 
-var ValidUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif"}
+var ValidUploadExtensions = []string{".png", ".bmp", ".jpg", ".jpeg", ".gif", ".mp4", ".zip"}
+var VideoExtensions = []string{".mp4"}
+var DownloadExtensions = []string{".zip"}
 
 // any changes should be replicated in the create author cmd tool
 var PasswordConfig = &argon2.Argon2Config{
