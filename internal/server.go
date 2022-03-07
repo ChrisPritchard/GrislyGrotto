@@ -37,7 +37,7 @@ func globalHandler(h http.Handler) http.Handler {
 
 		csp := "default-src 'self';"
 		csp += "style-src 'self' 'unsafe-inline';"
-		csp += "frame-src 'self' *.youtube.com;"
+		csp += "frame-src 'self' *.youtube.com chrispritchard.github.io;"
 		headers.Set("Content-Security-Policy", csp)
 
 		user, _ := cookies.ReadEncryptedCookie("user", config.Secret, config.AuthSessionExpiry, r)
