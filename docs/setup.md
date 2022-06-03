@@ -21,7 +21,7 @@ They involve:
 
 ## Compiling
 
-To compile you need access to the source code and `go` installed somewhere. Its slightly more complicated than normal with gg because it uses cgo. Accordingly, you also need some flavour of `gcc` installed that will work with the architecture you are targeting.
+To compile you need access to the source code and `go` installed somewhere. Its slightly more complicated than normal with gg because it uses cgo. Accordingly, you also need some flavour of `gcc` installed that will work with the architecture you are targeting. For windows I recommend the TDM package (https://jmeubank.github.io/tdm-gcc/).
 
 The following go packages are also required, retrievable with go get (command included):
 
