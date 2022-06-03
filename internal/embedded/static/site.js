@@ -379,3 +379,5 @@ if  (contentSelector) {
         document.body.removeChild(temp);
     });
 }
+
+hljs.highlightAll();

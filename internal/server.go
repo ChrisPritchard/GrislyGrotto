@@ -36,7 +36,8 @@ func globalHandler(h http.Handler) http.Handler {
 		headers.Set("Referrer-Policy", "same-origin")
 
 		csp := "default-src 'self';"
-		csp += "style-src 'self' 'unsafe-inline';"
+		csp += "style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;"
+		csp += "script-src 'self' cdnjs.cloudflare.com;"
 		csp += "frame-src 'self' *.youtube.com chrispritchard.github.io;"
 		headers.Set("Content-Security-Policy", csp)
 
