@@ -3,6 +3,7 @@ module github.com/ChrisPritchard/GrislyGrotto
 go 1.16
 
 require (
+	github.com/aws/aws-lambda-go v1.34.1
 	github.com/aws/aws-sdk-go v1.38.64
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/yuin/goldmark v1.3.8

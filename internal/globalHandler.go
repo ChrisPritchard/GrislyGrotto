@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
@@ -10,21 +9,9 @@ import (
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/cookies"
 )
 
-func StartServer() {
-	proceed := config.ParseArgs() // setup globals from cmd line flags and files
-	if !proceed {
-		return
-	}
-
+func CreateGlobalHandler() http.Handler {
 	handlers.SetupRoutes()
-
-	server := globalHandler(http.DefaultServeMux)
-
-	log.Printf("The Grisly Grotto has started!\nlistening locally at port %s\n", config.ListenURL)
-	log.Println(http.ListenAndServe(config.ListenURL, server))
-}
-
-func globalHandler(h http.Handler) http.Handler {
+	baseHandler := http.DefaultServeMux
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		// set security headers
@@ -49,6 +36,6 @@ func globalHandler(h http.Handler) http.Handler {
 		}
 
 		userCtx := context.WithValue(r.Context(), config.AuthenticatedUser, userVal)
-		h.ServeHTTP(w, r.WithContext(userCtx))
+		baseHandler.ServeHTTP(w, r.WithContext(userCtx))
 	})
 }
