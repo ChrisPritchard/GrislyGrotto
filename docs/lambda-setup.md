@@ -13,5 +13,9 @@ Next steps:
 - a means to upload and download data to the efs store (second lambda maybe? or swap in code)
 - rights to access s3
 - gg modified to not use creds for s3, and just to access using its iam permissions
+  - this is not a gg thing in theory as the s3 session object is instantiated without config
+  - it currently reads from env vars, but in the target env might 'just work'.
 - current flags replaced with or augmented with env vars
+  - done
 - export all aws config as cloudformation scripts
+  - or terraform
