@@ -23,6 +23,10 @@ const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
 const defaultStorageName = "grislygrotto-content"
 
+const envDatabaseKey = "GRISLYGROTTO_DB"
+const envUrlKey = "GRISLYGROTTO_URL"
+const envStorageKey = "GRISLYGROTTO_STORAGE"
+
 var Database *sql.DB
 var AuthenticatedUser = struct{}{}
 

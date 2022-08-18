@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -13,6 +14,18 @@ func ParseArgs() bool {
 	ListenURL = defaultListenAddr
 	ContentStorageName = defaultStorageName
 
+	// read from environment variables
+	if envConn := os.Getenv(envDatabaseKey); envConn != "" {
+		ConnectionString = envConn
+	}
+	if envUrl := os.Getenv(envUrlKey); envUrl != "" {
+		ListenURL = envUrl
+	}
+	if envStorage := os.Getenv(envStorageKey); envStorage != "" {
+		ContentStorageName = envStorage
+	}
+
+	// flags override env vars
 	connArg := flag.String("db", "", "the sqlite connection string\n\tdefaults to "+defaultConnectionString)
 	urlArg := flag.String("url", "", "the url with port to listen to\n\tdefaults to "+defaultListenAddr)
 	storageArg := flag.String("storage", "", "the target storage bucket/container for user content\n\tdefaults to "+defaultStorageName)
