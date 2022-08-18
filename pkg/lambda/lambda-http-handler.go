@@ -37,7 +37,7 @@ func HttpAdapter(server http.Handler) func(events.LambdaFunctionURLRequest) (eve
 		}
 
 		// create http request and response objects
-		r := httptest.NewRequest(event.RequestContext.HTTP.Method, event.RequestContext.HTTP.Path, br)
+		r := httptest.NewRequest(event.RequestContext.HTTP.Method, event.RawPath+"?"+event.RawQueryString, br)
 		r.Header = requestHeaders
 		w := httptest.NewRecorder()
 		server.ServeHTTP(w, r)

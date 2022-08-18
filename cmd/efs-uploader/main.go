@@ -16,7 +16,7 @@ import (
 const (
 	authAccessKey  = "ACCESSKEY"
 	defaultPathEnv = "UPLOADPATH"
-	uploadHTML     = "<html><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /></form></html>"
+	uploadHTML     = "<html><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /></form></html>"
 )
 
 func main() {
