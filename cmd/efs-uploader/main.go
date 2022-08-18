@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,10 +14,9 @@ import (
 )
 
 const (
-	authUserEnv = "USERNAME"
-	authPassEnv = "PASSWORD"
-	defaultPath = "UPLOADPATH"
-	uploadHTML  = "<html><form method='POST'><input type='file' name='file' /></form></html>"
+	authAccessKey  = "ACCESSKEY"
+	defaultPathEnv = "UPLOADPATH"
+	uploadHTML     = "<html><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /></form></html>"
 )
 
 func main() {
@@ -26,27 +26,27 @@ func main() {
 	lambda.Start(http.HandlerFunc(contentHandler))
 }
 
-func validateBasicAuth(w http.ResponseWriter, r *http.Request) bool {
-	username, password, ok := r.BasicAuth()
-	if !ok {
-		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
-		http.Error(w, "missing credentials", http.StatusUnauthorized)
-		return false
-	}
-	if username != os.Getenv(authUserEnv) || password != os.Getenv(authPassEnv) {
-		w.Header().Set("WWW-Authenticate", "Basic realm=\"grislygrotto.nz\"")
-		http.Error(w, "invalid credentials", http.StatusUnauthorized)
-		return false
-	}
-	return true
-}
-
 func contentHandler(w http.ResponseWriter, r *http.Request) {
-	validateBasicAuth(w, r)
+	if r.URL.Query().Get(authAccessKey) != os.Getenv(authAccessKey) {
+		http.Error(w, "missing or invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	folder := os.Getenv(defaultPathEnv)
+	if !strings.HasSuffix(folder, "/") {
+		folder += "/"
+	}
 
 	if r.Method == "GET" {
-		w.Header().Add("Content-Type", "text/html")
-		w.Write([]byte(uploadHTML))
+		files, _ := ioutil.ReadDir(folder)
+		fileText := "<ul>"
+		for _, v := range files {
+			fileText += fmt.Sprintf("<li>%s</li>", v.Name())
+		}
+		fileText += "</ul>"
+
+		w.Header().Set("Content-Type", "text/html")
+		w.Write([]byte(strings.Replace(uploadHTML, "[FILES]", fileText, 1)))
 		return
 	}
 
@@ -68,11 +68,6 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 		w.WriteHeader(400)
 		return
-	}
-
-	folder := os.Getenv(defaultPath)
-	if !strings.HasSuffix(folder, "/") {
-		folder += "/"
 	}
 	ioutil.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644)
 
