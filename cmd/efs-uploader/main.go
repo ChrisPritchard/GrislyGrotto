@@ -16,7 +16,7 @@ import (
 const (
 	authAccessKey  = "ACCESSKEY"
 	defaultPathEnv = "UPLOADPATH"
-	uploadHTML     = "<html><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /></form></html>"
+	uploadHTML     = "<!doctype html><html><head><meta charset='utf-8'></head></body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /></form></body></html>"
 )
 
 func main() {
@@ -38,8 +38,18 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "GET" {
-		files, _ := ioutil.ReadDir(folder)
+		files, err := ioutil.ReadDir(folder)
+		if err != nil {
+			log.Println(err.Error())
+			http.Error(w, "read directory on efs with: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		fileText := "<ul>"
+		if r.URL.Query().Get("success") == "true" {
+			fileText = "<div>file uploaded successfully</div>" + fileText
+		}
+
 		for _, v := range files {
 			fileText += fmt.Sprintf("<li>%s</li>", v.Name())
 		}
@@ -58,7 +68,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	file, fileInfo, err := r.FormFile("file")
 	if err != nil {
 		log.Println(err.Error())
-		w.WriteHeader(500)
+		http.Error(w, "couldn't read file from form with error: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 	defer file.Close()
@@ -66,10 +76,15 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	buffer := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buffer, file); err != nil {
 		log.Println(err.Error())
-		w.WriteHeader(400)
+		http.Error(w, "failed to copy file to buffer with error:"+err.Error(), http.StatusBadRequest)
 		return
 	}
-	ioutil.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644)
 
-	w.WriteHeader(http.StatusAccepted)
+	if err := ioutil.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644); err != nil {
+		log.Println(err.Error())
+		http.Error(w, "failed to write file to EFS with error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	http.Redirect(w, r, "/?ACCESSKEY="+os.Getenv(authAccessKey)+"&success=true", http.StatusFound)
 }
