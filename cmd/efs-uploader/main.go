@@ -53,7 +53,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, v := range files {
-			fileText += fmt.Sprintf("<li>%s<form method='post' style='display: inline'><input type='hidden' name='ACCESSKEY' value='%s' /><input type='hidden' name='todelete' value='%s' /><input type='submit' value='Delete' /></form></li>", v.Name(), os.Getenv(authAccessKey), v.Name())
+			fileText += fmt.Sprintf("<li>%s<form method='post' style='display: inline'><input type='hidden' name='ACCESSKEY' value='%s' /><input type='hidden' name='todelete' value='%s' /><input type='submit' value='Delete' /></form></li>", folder+v.Name(), os.Getenv(authAccessKey), v.Name())
 		}
 		fileText += "</ul>"
 
