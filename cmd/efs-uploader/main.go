@@ -39,27 +39,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "GET" {
-		files, err := ioutil.ReadDir(folder)
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w, "failed to read directory on efs with error: "+err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		fileText := "<ul>"
-		if r.URL.Query().Get("success") == "true" {
-			fileText = "<div>file uploaded successfully</div>" + fileText
-		} else if r.URL.Query().Get("delete") == "true" {
-			fileText = "<div>file deleted successfully</div>" + fileText
-		}
-
-		for _, v := range files {
-			fileText += fmt.Sprintf(listFileHTML, folder+v.Name(), v.Size(), os.Getenv(authAccessKey), v.Name())
-		}
-		fileText += "</ul>"
-
-		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte(strings.Replace(uploadHTML, "[FILES]", fileText, 1)))
+		showFormWithList(w, r, folder)
 		return
 	}
 
@@ -70,13 +50,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 
 	toDelete := r.FormValue("todelete")
 	if toDelete != "" {
-		err := os.Remove(folder + toDelete)
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w, "failed to delete file with error: "+err.Error(), http.StatusBadRequest)
-			return
-		}
-		http.Redirect(w, r, "/?ACCESSKEY="+os.Getenv(authAccessKey)+"&delete=true", http.StatusFound)
+		deleteFile(w, r, toDelete, folder)
 		return
 	}
 
@@ -96,19 +70,8 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.FormValue("append") == "on" {
-		file, err := os.OpenFile(folder+fileInfo.Filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w, "failed to open file on EFS with error: "+err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		defer file.Close()
-		if _, err := file.Write(buffer.Bytes()); err != nil {
-			log.Println(err.Error())
-			http.Error(w, "failed to append data to file on EFS with error: "+err.Error(), http.StatusBadRequest)
-			return
-		}
+		appendToFile(w, r, folder, fileInfo.Filename, buffer.Bytes())
+		return
 	} else if err := os.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644); err != nil {
 		log.Println(err.Error())
 		http.Error(w, "failed to write file to EFS with error: "+err.Error(), http.StatusBadRequest)
@@ -116,4 +79,54 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/?ACCESSKEY="+os.Getenv(authAccessKey)+"&success=true", http.StatusFound)
+}
+
+func appendToFile(w http.ResponseWriter, r *http.Request, folder, filename string, bytes []byte) {
+	file, err := os.OpenFile(folder+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "failed to open file on EFS with error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	defer file.Close()
+	if _, err := file.Write(bytes); err != nil {
+		log.Println(err.Error())
+		http.Error(w, "failed to append data to file on EFS with error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+}
+
+func deleteFile(w http.ResponseWriter, r *http.Request, toDelete, folder string) {
+	err := os.Remove(folder + toDelete)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "failed to delete file with error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	http.Redirect(w, r, "/?ACCESSKEY="+os.Getenv(authAccessKey)+"&delete=true", http.StatusFound)
+}
+
+func showFormWithList(w http.ResponseWriter, r *http.Request, folder string) {
+	files, err := ioutil.ReadDir(folder)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "failed to read directory on efs with error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fileText := "<ul>"
+	if r.URL.Query().Get("success") == "true" {
+		fileText = "<div>file uploaded successfully</div>" + fileText
+	} else if r.URL.Query().Get("delete") == "true" {
+		fileText = "<div>file deleted successfully</div>" + fileText
+	}
+
+	for _, v := range files {
+		fileText += fmt.Sprintf(listFileHTML, folder+v.Name(), v.Size(), os.Getenv(authAccessKey), v.Name())
+	}
+	fileText += "</ul>"
+
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(strings.Replace(uploadHTML, "[FILES]", fileText, 1)))
 }
