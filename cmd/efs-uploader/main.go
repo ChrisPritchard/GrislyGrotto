@@ -27,7 +27,7 @@ func main() {
 }
 
 func contentHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Query().Get(authAccessKey) != os.Getenv(authAccessKey) {
+	if r.URL.Query().Get(authAccessKey) != os.Getenv(authAccessKey) || r.FormValue(authAccessKey) != os.Getenv(authAccessKey) {
 		http.Error(w, "missing or invalid credentials", http.StatusUnauthorized)
 		return
 	}
@@ -41,17 +41,19 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		files, err := ioutil.ReadDir(folder)
 		if err != nil {
 			log.Println(err.Error())
-			http.Error(w, "read directory on efs with: "+err.Error(), http.StatusBadRequest)
+			http.Error(w, "failed to read directory on efs with error: "+err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		fileText := "<ul>"
 		if r.URL.Query().Get("success") == "true" {
 			fileText = "<div>file uploaded successfully</div>" + fileText
+		} else if r.URL.Query().Get("delete") == "true" {
+			fileText = "<div>file deleted successfully</div>" + fileText
 		}
 
 		for _, v := range files {
-			fileText += fmt.Sprintf("<li>%s</li>", v.Name())
+			fileText += fmt.Sprintf("<li>%s<form method='post' style='display: inline'><input type='hidden' name='ACCESSKEY' value='%s' /><input type='hidden' name='todelete' value='%s' /><input type='submit' value='Delete' /></form></li>", v.Name(), os.Getenv(authAccessKey), v.Name())
 		}
 		fileText += "</ul>"
 
@@ -62,6 +64,18 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
 		http.NotFound(w, r)
+		return
+	}
+
+	toDelete := r.FormValue("todelete")
+	if toDelete != "" {
+		err := os.Remove(folder + toDelete)
+		if err != nil {
+			log.Println(err.Error())
+			http.Error(w, "failed to delete file with error: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		http.Redirect(w, r, "/?ACCESSKEY="+os.Getenv(authAccessKey)+"&delete=true", http.StatusFound)
 		return
 	}
 
