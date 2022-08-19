@@ -16,7 +16,8 @@ import (
 const (
 	authAccessKey  = "ACCESSKEY"
 	defaultPathEnv = "UPLOADPATH"
-	uploadHTML     = "<!doctype html><html><head><meta charset='utf-8'></head></body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /></form></body></html>"
+	listFileHTML   = "<li>%s - %d bytes&nbsp;<form method='post' style='display: inline'><input type='hidden' name='ACCESSKEY' value='%s' /><input type='hidden' name='todelete' value='%s' /><input type='submit' value='Delete' /></form></li>"
+	uploadHTML     = "<!doctype html><html><head><meta charset='utf-8'></head></body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /><br/><label><input type='checkbox' name='append' />&nbsp;append</label></form></body></html>"
 )
 
 func main() {
@@ -53,7 +54,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, v := range files {
-			fileText += fmt.Sprintf("<li>%s<form method='post' style='display: inline'><input type='hidden' name='ACCESSKEY' value='%s' /><input type='hidden' name='todelete' value='%s' /><input type='submit' value='Delete' /></form></li>", folder+v.Name(), os.Getenv(authAccessKey), v.Name())
+			fileText += fmt.Sprintf(listFileHTML, folder+v.Name(), v.Size(), os.Getenv(authAccessKey), v.Name())
 		}
 		fileText += "</ul>"
 
@@ -94,7 +95,21 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := ioutil.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644); err != nil {
+	if r.FormValue("append") == "on" {
+		file, err := os.OpenFile(folder+fileInfo.Filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Println(err.Error())
+			http.Error(w, "failed to open file on EFS with error: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		defer file.Close()
+		if _, err := file.Write(buffer.Bytes()); err != nil {
+			log.Println(err.Error())
+			http.Error(w, "failed to append data to file on EFS with error: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+	} else if err := os.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644); err != nil {
 		log.Println(err.Error())
 		http.Error(w, "failed to write file to EFS with error: "+err.Error(), http.StatusBadRequest)
 		return
