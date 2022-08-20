@@ -65,7 +65,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := aws.UploadStorageFile(os.Getenv(bucketNameKey), fileInfo.Filename, buffer); err != nil {
 		log.Println(err.Error())
-		http.Error(w, "failed to write file to EFS with error: "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "failed to write file to s3 with error: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -86,7 +86,7 @@ func showFormWithList(w http.ResponseWriter, r *http.Request) {
 	files, err := aws.AllFiles(os.Getenv(bucketNameKey))
 	if err != nil {
 		log.Println(err.Error())
-		http.Error(w, "failed to read directory on efs with error: "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "failed to read directory on s3 with error: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
