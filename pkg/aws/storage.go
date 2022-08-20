@@ -2,6 +2,7 @@ package aws
 
 import (
 	"io"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -70,4 +71,22 @@ func UploadStorageFile(bucket, filename string, file io.Reader) error {
 	})
 
 	return err
+}
+
+func CreateTempLink(bucket, filename string) (string, error) {
+	session, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	svc := s3.New(session)
+
+	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(filename),
+	})
+
+	return req.Presign(15 * time.Minute)
 }
