@@ -71,6 +71,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.FormValue("append") == "on" {
 		appendToFile(w, r, folder, fileInfo.Filename, buffer.Bytes())
+		http.Redirect(w, r, "/?ACCESSKEY="+os.Getenv(authAccessKey)+"&success=true", http.StatusFound)
 		return
 	} else if err := os.WriteFile(folder+fileInfo.Filename, buffer.Bytes(), 0644); err != nil {
 		log.Println(err.Error())
