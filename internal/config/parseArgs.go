@@ -55,7 +55,17 @@ func ParseArgs() bool {
 	}
 
 	secret := make([]byte, 16)
-	rand.Read(secret)
+
+	// for lambda hosting, the secret needs to be specified else it will be random on each request
+	if envSecret := os.Getenv(envSecretKey); envSecret != "" {
+		if len(envSecret) != len(secret) {
+			log.Fatalf("environment secret should be %d characters long\n", len(secret))
+		}
+		secret = []byte(envSecret)
+	} else {
+		rand.Read(secret) // but for site hosting this will be generated once on site start
+	}
+
 	copy(Secret[:], secret)
 
 	if *storageArg != "" {

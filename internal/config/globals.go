@@ -26,6 +26,7 @@ const defaultStorageName = "grislygrotto-content"
 const envDatabaseKey = "GRISLYGROTTO_DB"
 const envUrlKey = "GRISLYGROTTO_URL"
 const envStorageKey = "GRISLYGROTTO_STORAGE"
+const envSecretKey = "GRISLYGROTTO_SECRET"
 
 var Database *sql.DB
 var AuthenticatedUser = struct{}{}
