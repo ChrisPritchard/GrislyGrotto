@@ -6,7 +6,9 @@ In AWS:
 - add a lambda to the vpc with access to both subnets
 - create an efs store in the private subnet, add an access point
 - in the lambda, add the 'AmazonElasticFileSystemClientFullAccess' managed role to its iam role assignments
+- also needs s3 access rights, put and get on objects as well as bucket list
 - add the efs access point under the lambda's storage tab
+- also need a vpc endpoint to access s3
 
 Next steps:
 
@@ -26,9 +28,14 @@ Final issues:
   - replaced with non-cgo sqlite handler
 - [x] fix for malformed images
   - needed to base64 lambda response
-- [ ] non-random secret - in lambda this will be screwed everytime
+- [x] non-random secret - in lambda this will be screwed everytime
+- [ ] logout fix
 - [ ] timezone fixing
 - [ ] writable database?
+- [ ] open database when used, not on every request
 - [ ] better logging
+- [ ] general trimming of anything that might slow performance on start up
+  - possibly separate content handler out for lambdas, invoked separately based on event so routing, http isnt needed
+
 - [ ] update about page
 - [ ] update readmes
