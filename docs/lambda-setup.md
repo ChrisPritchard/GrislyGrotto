@@ -19,3 +19,8 @@ Next steps:
   - done
 - export all aws config as cloudformation scripts
   - or terraform
+
+Final issues:
+
+- glibc on the lambda
+- timezone setting

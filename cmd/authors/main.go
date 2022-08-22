@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 var passwordConfig = &argon2.Argon2Config{

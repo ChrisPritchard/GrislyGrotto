@@ -7,7 +7,7 @@ import (
 	"github.com/ChrisPritchard/GrislyGrotto/internal"
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/lambda"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 func main() {

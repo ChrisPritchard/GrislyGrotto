@@ -35,7 +35,7 @@ func ParseArgs() bool {
 		ConnectionString = *connArg
 	}
 
-	db, err := sql.Open("sqlite3", ConnectionString) // db is closed by app close
+	db, err := sql.Open("sqlite", ConnectionString) // db is closed by app close
 	if err != nil {
 		log.Fatal(err)
 	}
