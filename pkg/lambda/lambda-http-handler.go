@@ -63,11 +63,14 @@ func HttpAdapter(server http.Handler) func(events.LambdaFunctionURLRequest) (eve
 			responseHeaders[k] = v[0]
 		}
 
+		encodedBody := base64.StdEncoding.EncodeToString(w.Body.Bytes())
+
 		// convert the http response into a lambda response
 		respEvent := events.LambdaFunctionURLResponse{
-			Headers:    responseHeaders,
-			Body:       w.Body.String(),
-			StatusCode: w.Code,
+			Headers:         responseHeaders,
+			IsBase64Encoded: true,
+			Body:            encodedBody,
+			StatusCode:      w.Code,
 		}
 		return respEvent, nil
 	}
