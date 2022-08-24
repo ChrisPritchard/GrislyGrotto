@@ -49,12 +49,6 @@ func HttpAdapter(server http.Handler) func(events.LambdaFunctionURLRequest) (eve
 		r := httptest.NewRequest(event.RequestContext.HTTP.Method, event.RawPath+"?"+event.RawQueryString, br)
 		r.Header = requestHeaders
 
-		if os.Getenv("DEBUG") == "true" {
-			serialised, _ := json.Marshal(r.Header)
-			encoded := base64.StdEncoding.EncodeToString(serialised)
-			log.Println("httprequest headers:" + encoded)
-		}
-
 		w := httptest.NewRecorder()
 		server.ServeHTTP(w, r)
 
