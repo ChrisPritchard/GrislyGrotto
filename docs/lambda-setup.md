@@ -29,10 +29,10 @@ Final issues:
 - [x] fix for malformed images
   - needed to base64 lambda response
 - [x] non-random secret - in lambda this will be screwed everytime
-- [ ] logout fix
-- [ ] timezone fixing
+- [x] logout fix
+- [x] timezone fixing
 - [ ] writable database?
-- [ ] open database when used, not on every request
+- [x] open database when used, not on every request
 - [ ] better logging
 - [ ] general trimming of anything that might slow performance on start up
   - possibly separate content handler out for lambdas, invoked separately based on event so routing, http isnt needed
