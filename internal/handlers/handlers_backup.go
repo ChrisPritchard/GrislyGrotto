@@ -69,7 +69,7 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	filename := fmt.Sprintf("posts-%s.zip", time.Now().Format("2006-01-02"))
+	filename := fmt.Sprintf("posts-%s.zip", config.CurrentTime().Format("2006-01-02"))
 	aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
 	link, err := aws.CreateTempLink(config.ContentStorageName, filename)
 	if err != nil {
@@ -116,7 +116,7 @@ func contentBackupHandler(w http.ResponseWriter, r *http.Request) {
 		writer.Write(data)
 	}
 
-	filename := fmt.Sprintf("content-%s.zip", time.Now().Format("2006-01-02"))
+	filename := fmt.Sprintf("content-%s.zip", config.CurrentTime().Format("2006-01-02"))
 	aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
 	link, err := aws.CreateTempLink(config.ContentStorageName, filename)
 	if err != nil {

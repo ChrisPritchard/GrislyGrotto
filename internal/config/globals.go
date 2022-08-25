@@ -2,6 +2,7 @@ package config
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
@@ -12,7 +13,22 @@ import (
 )
 
 // globals and constants used in multiple places
-// most globals are set early in main
+// some globals are set by parseArgs
+
+var currentTimeZone *time.Location
+
+// CurrentTime returns the current time in New Zealand's timezone
+func CurrentTime() time.Time {
+	return time.Now().UTC().In(currentTimeZone)
+}
+
+func init() {
+	loc, err := time.LoadLocation("Pacific/Auckland")
+	if err != nil {
+		log.Fatal("failure loading NZ timezone: " + err.Error())
+	}
+	currentTimeZone = loc
+}
 
 var Secret [16]byte
 var ConnectionString string

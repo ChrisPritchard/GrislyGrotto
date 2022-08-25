@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
@@ -153,7 +152,7 @@ func commentsForPost(key string) ([]BlogComment, error) {
 }
 
 func AddCommentToBlog(author, content, postKey string) (newID int64, err error) {
-	date := time.Now().Format("2006-01-02 15:04:05")
+	date := config.CurrentTime().Format("2006-01-02 15:04:05")
 	res, err := config.Database.Exec(`
 		INSERT INTO 
 			Comments (Author, Date, Content, Post_Key) 
@@ -422,7 +421,7 @@ func GetDisplayName(username string) (string, error) {
 }
 
 func CreateNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
-	date := time.Now().Format("2006-01-02 15:04:05")
+	date := config.CurrentTime().Format("2006-01-02 15:04:05")
 	_, err = config.Database.Exec(`
 		INSERT INTO 
 			Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
@@ -433,7 +432,7 @@ func CreateNewPost(key, title, content string, isStory bool, wordCount int, user
 
 func UpdatePost(key, title, content string, isStory bool, wordCount int, updateDate bool) (err error) {
 	if updateDate {
-		date := time.Now().Format("2006-01-02 15:04:05")
+		date := config.CurrentTime().Format("2006-01-02 15:04:05")
 		_, err = config.Database.Exec(`
 			UPDATE
 				Posts 

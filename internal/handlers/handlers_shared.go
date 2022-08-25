@@ -38,14 +38,14 @@ func getIP(r *http.Request) string {
 }
 
 func setBlockTime(r *http.Request, username string) {
-	blocked[getIP(r)] = time.Now().Unix()
+	blocked[getIP(r)] = config.CurrentTime().Unix()
 	if username != "" {
-		blocked[username] = time.Now().Unix()
+		blocked[username] = config.CurrentTime().Unix()
 	}
 }
 
 func cleanBlocked() {
-	now := time.Now().Unix()
+	now := config.CurrentTime().Unix()
 	for k, v := range blocked {
 		if now-v > config.BlockTime {
 			delete(blocked, k)
@@ -54,7 +54,7 @@ func cleanBlocked() {
 }
 
 func getBlockTime(r *http.Request, username string) int {
-	now := time.Now().Unix()
+	now := config.CurrentTime().Unix()
 	time1, time2 := now-blocked[getIP(r)], now-blocked[username]
 	if time1 > config.BlockTime && time2 > config.BlockTime {
 		return 0
@@ -109,7 +109,7 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	cookies.SetCookie("theme", r.FormValue("current-theme"), time.Now().Add(config.ThemeExpiry), w)
+	cookies.SetCookie("theme", r.FormValue("current-theme"), config.CurrentTime().Add(config.ThemeExpiry), w)
 	http.Redirect(w, r, "/"+r.FormValue("return-path"), http.StatusFound)
 }
 
