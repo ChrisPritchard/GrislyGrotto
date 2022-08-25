@@ -54,7 +54,7 @@ func HttpAdapter(server http.Handler) func(events.LambdaFunctionURLRequest) (eve
 
 		responseHeaders := map[string]string{}
 		for k, v := range w.Header() {
-			responseHeaders[k] = v[0]
+			responseHeaders[capitalise(k)] = v[0]
 		}
 
 		encodedBody := base64.StdEncoding.EncodeToString(w.Body.Bytes())

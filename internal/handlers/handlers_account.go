@@ -106,6 +106,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Del("Set-Cookie") // remove context user cookie
 	cookies.SetCookie("user", "", time.Unix(0, 0), w)
 
 	path := ""
