@@ -2,7 +2,6 @@ package config
 
 import (
 	"crypto/rand"
-	"database/sql"
 	"flag"
 	"log"
 	"os"
@@ -34,12 +33,6 @@ func ParseArgs() bool {
 	if *connArg != "" {
 		ConnectionString = *connArg
 	}
-
-	db, err := sql.Open("sqlite", ConnectionString) // db is closed by app close
-	if err != nil {
-		log.Fatal(err)
-	}
-	Database = db
 
 	if *urlArg != "" {
 		ListenURL = *urlArg

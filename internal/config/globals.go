@@ -13,14 +13,9 @@ import (
 )
 
 // globals and constants used in multiple places
-// some globals are set by parseArgs
+// some globals are set by parseConfig
 
 var currentTimeZone *time.Location
-
-// CurrentTime returns the current time in New Zealand's timezone
-func CurrentTime() time.Time {
-	return time.Now().UTC().In(currentTimeZone)
-}
 
 func init() {
 	loc, err := time.LoadLocation("Pacific/Auckland")
@@ -44,7 +39,6 @@ const envUrlKey = "GRISLYGROTTO_URL"
 const envStorageKey = "GRISLYGROTTO_STORAGE"
 const envSecretKey = "GRISLYGROTTO_SECRET"
 
-var Database *sql.DB
 var AuthenticatedUser = struct{}{}
 
 const PageLength = 5
@@ -115,3 +109,24 @@ var MonthIndexes = map[string]string{
 const BlockTime = 5 // seconds
 
 const DraftPrefix = "[DRAFT] "
+
+// CurrentTime returns the current time in New Zealand's timezone
+func CurrentTime() time.Time {
+	return time.Now().UTC().In(currentTimeZone)
+}
+
+var database *sql.DB
+
+// Database returns an instance of the site's datastore by its conn string
+func Database() *sql.DB {
+	if database == nil {
+		db, err := sql.Open("sqlite", ConnectionString)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// db is closed when lambda closes
+		// defer db.Close()
+		database = db
+	}
+	return database
+}
