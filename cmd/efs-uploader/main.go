@@ -17,7 +17,7 @@ const (
 	authAccessKey  = "ACCESSKEY"
 	defaultPathEnv = "UPLOADPATH"
 	listFileHTML   = "<li>%s - %d bytes&nbsp;<form method='post' style='display: inline'><input type='hidden' name='ACCESSKEY' value='%s' /><input type='hidden' name='todelete' value='%s' /><input type='submit' value='Delete' /></form></li>"
-	uploadHTML     = "<!doctype html><html><head><meta charset='utf-8'></head></body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /><br/><label><input type='checkbox' name='append' />&nbsp;append</label></form></body></html>"
+	uploadHTML     = "<!doctype html><html><head><meta charset='utf-8'></head><body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /><br/><label><input type='checkbox' name='append' />&nbsp;append</label></form></body></html>"
 )
 
 func main() {

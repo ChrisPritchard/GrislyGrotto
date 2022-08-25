@@ -17,7 +17,7 @@ const (
 	authAccessKey = "ACCESSKEY"
 	bucketNameKey = "S3BUCKET"
 	listFileHTML  = "<li><a href='?ACCESSKEY=%s&filename=%s'>%s</a></li>"
-	uploadHTML    = "<!doctype html><html><head><meta charset='utf-8'></head></body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /></form></body></html>"
+	uploadHTML    = "<!doctype html><html><head><meta charset='utf-8'></head><body><div>[FILES]</div><form method='POST' enctype='multipart/form-data'><input type='file' name='file' /><input type='submit' value='submit' /></form></body></html>"
 )
 
 func main() {
