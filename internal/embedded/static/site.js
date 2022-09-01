@@ -169,6 +169,14 @@ for (let i = 0; i < ownComments.length; i++) {
     });
 }
 
+// Comment honeypot
+
+let category = document.querySelector("#category")
+if (category) {
+    category.value = "user"
+    category.style.display = "none"
+}
+
 // Account details client validations
 
 function removeSuccessMessages() {

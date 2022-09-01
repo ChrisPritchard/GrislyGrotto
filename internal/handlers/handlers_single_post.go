@@ -102,6 +102,10 @@ func singlePostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createComment(r *http.Request, postKey string) (newID int, commentError string, err error) {
+	if r.FormValue("category") != "user" {
+		return 0, " ", nil // spammer honey pot
+	}
+
 	author, content := r.FormValue("author"), r.FormValue("content")
 	if author == "" || content == "" {
 		return 0, "both author and content are required", nil
@@ -111,11 +115,9 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 		return 0, "comment content exceeds max length of " + strconv.Itoa(config.MaxCommentLength), nil
 	}
 
-	// todo spammer checks
-
 	id, err := data.AddCommentToBlog(author, content, postKey)
 	if err != nil {
-		return 0, "", err
+		return 0, " ", err
 	}
 
 	return int(id), "", nil

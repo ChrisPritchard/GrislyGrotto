@@ -55,9 +55,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.FormValue("category") != "user" {
+		renderView(w, r, loginViewModel{""}, "login.html", "Login") // very basic brute force block
+		return
+	}
+
 	username, password := r.FormValue("username"), r.FormValue("password")
 	valid, errorMessage := validateCredentials(r, username, password)
 	if !valid {
+		time.Sleep(time.Second * 2) // basic brute force block
 		renderView(w, r, loginViewModel{errorMessage}, "login.html", "Login")
 		return
 	}
@@ -85,7 +91,11 @@ func validateCredentials(r *http.Request, username, password string) (bool, stri
 		return false, "Excessively sized values submitted"
 	}
 
-	// todo spam protection
+	valid, err := data.ValidateUser(username, password)
+	if err != nil || !valid {
+		return false, "Invalid credentials"
+	}
+
 	return true, ""
 }
 
