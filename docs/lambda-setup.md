@@ -36,6 +36,7 @@ Final issues:
 - [ ] better logging
 - [ ] general trimming of anything that might slow performance on start up
   - possibly separate content handler out for lambdas, invoked separately based on event so routing, http isnt needed
+  - possibly cached pages/content
 
 - [ ] update about page
 - [ ] update readmes

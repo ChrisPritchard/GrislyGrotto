@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/lambda"
@@ -48,8 +50,10 @@ func main() {
 func replace(r *http.Request, html, queryName, htmlToken string) string {
 	if param := r.URL.Query().Get(queryName); param != "" {
 		decoded, err := base64.URLEncoding.DecodeString(param)
-		if err != nil {
+		if err == nil {
 			html = strings.Replace(html, htmlToken, htmlToken+string(decoded), 1)
+		} else {
+			log.Printf("error with query %s: %s\n", queryName, err.Error())
 		}
 	}
 	return html
@@ -87,11 +91,11 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	sql := r.FormValue("sql")
 	var res string
 	if strings.HasPrefix(strings.ToLower(sql), "select") {
-		_, err := db.Query(sql)
+		rows, err := db.Query(sql)
 		if err != nil {
 			res = err.Error()
 		} else {
-			res = "query successful"
+			res = renderTable(rows)
 		}
 	} else {
 		r, err := db.Exec(sql)
@@ -105,8 +109,54 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 
 	url := fmt.Sprintf("/?ACCESSKEY=%s&conn=%s&lastsql=%s&result=%s",
 		os.Getenv(authAccessKey),
-		base64.URLEncoding.EncodeToString([]byte(conn)),
-		base64.URLEncoding.EncodeToString([]byte(sql)),
-		base64.URLEncoding.EncodeToString([]byte(res)))
+		url.QueryEscape(base64.URLEncoding.EncodeToString([]byte(conn))),
+		url.QueryEscape(base64.URLEncoding.EncodeToString([]byte(sql))),
+		url.QueryEscape(base64.URLEncoding.EncodeToString([]byte(res))))
 	http.Redirect(w, r, url, http.StatusFound)
+}
+
+func renderTable(rows *sql.Rows) string {
+
+	res := "<table><thead><tr>"
+	cols, _ := rows.Columns()
+	for _, v := range cols {
+		res += "<td>" + v + "</td>"
+	}
+	res += "</tr></thead><tbody>"
+
+	scanData := make([]interface{}, len(cols))
+	types, _ := rows.ColumnTypes()
+	for i, v := range types {
+		switch v.DatabaseTypeName() {
+		case "BOOL":
+			scanData[i] = new(sql.NullBool)
+		case "INT4":
+			scanData[i] = new(sql.NullInt64)
+		default:
+			scanData[i] = new(sql.NullString)
+		}
+	}
+
+	for rows.Next() {
+		rows.Scan(scanData...)
+		res += "<tr>"
+		for _, v := range scanData {
+			c := ""
+			if vc, ok := v.(*sql.NullString); ok {
+				c = vc.String
+			} else if vc, ok := v.(*sql.NullInt64); ok {
+				c = strconv.Itoa(int(vc.Int64))
+			} else if vc, ok := v.(*sql.NullBool); ok {
+				c = "FALSE"
+				if vc.Bool {
+					c = "TRUE"
+				}
+			}
+			res += "<td>" + c + "</td>"
+		}
+		res += "</tr>"
+	}
+
+	res += "</tbody></table>"
+	return res
 }

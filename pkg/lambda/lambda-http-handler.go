@@ -20,7 +20,7 @@ func Start(server http.Handler) {
 
 func HttpAdapter(server http.Handler) func(events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 	return func(event events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
-		if os.Getenv("DEBUG") == "true" {
+		if os.Getenv("LAMBDA_DEBUG") == "true" {
 			serialised, _ := json.Marshal(event)
 			encoded := base64.StdEncoding.EncodeToString(serialised)
 			log.Println("lambdarequest: " + encoded)
