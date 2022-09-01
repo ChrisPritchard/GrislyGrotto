@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -86,17 +85,7 @@ func validateCredentials(r *http.Request, username, password string) (bool, stri
 		return false, "Excessively sized values submitted"
 	}
 
-	blockTime := getBlockTime(r, username)
-	if blockTime > 0 {
-		return false, fmt.Sprintf("Cannot make another attempt for another %d seconds", blockTime)
-	}
-
-	valid, err := data.ValidateUser(username, password)
-	if err != nil || !valid {
-		setBlockTime(r, username)
-		return false, "Invalid credentials"
-	}
-
+	// todo spam protection
 	return true, ""
 }
 

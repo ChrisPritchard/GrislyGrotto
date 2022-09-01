@@ -2,9 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"io/ioutil"
-	"log"
-	"net"
 	"net/http"
 	"sort"
 	"strconv"
@@ -114,16 +111,7 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 		return 0, "comment content exceeds max length of " + strconv.Itoa(config.MaxCommentLength), nil
 	}
 
-	if notNZIP(r) {
-		return 0, "comments may only be submitted from New Zealand / Aotearoa", nil
-	}
-
-	blockTime := getBlockTime(r, author)
-	if blockTime > 0 {
-		return 0, "you may not make a comment for another " + strconv.Itoa(blockTime) + " seconds", nil
-	}
-
-	setBlockTime(r, author) // primitive automated commenting protection
+	// todo spammer checks
 
 	id, err := data.AddCommentToBlog(author, content, postKey)
 	if err != nil {
@@ -131,42 +119,6 @@ func createComment(r *http.Request, postKey string) (newID int, commentError str
 	}
 
 	return int(id), "", nil
-}
-
-func notNZIP(r *http.Request) bool {
-	// this wont stop people who spoof their x-forwarded-for header, obvs, but is sufficient for now
-
-	ipAddress := getIP(r)
-	if ipAddress == "127.0.0.1" {
-		return false // testing from dev
-	}
-
-	ip := net.ParseIP(ipAddress)
-	if ip == nil {
-		log.Printf("Warning: someone tried to comment with the following invalid request IP: %s", ipAddress)
-		return true // block comment
-	}
-
-	client := &http.Client{}
-	url := "http://ifconfig.co/country?ip=" + ip.String()
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("Warning: unable to reach ifconfig.co, error: %s", err.Error())
-		return true
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-	country := strings.Trim(string(body), "\n")
-	if country == "New Zealand" {
-		return false
-	}
-
-	if len(country) == 0 {
-		country = "Unknown"
-	}
-	log.Printf("Warning: someone tried to comment from %s with IP %s", country, ipAddress)
-	return true // block comment
 }
 
 func rawCommentHandler(w http.ResponseWriter, r *http.Request) {
