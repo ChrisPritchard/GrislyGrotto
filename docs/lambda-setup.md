@@ -41,3 +41,11 @@ Final issues:
 
 - [ ] update about page
 - [ ] update readmes
+
+Hosting:
+
+to have the custom domain, it needs to be fronted with a cloud front distro
+then the cloud front has the alternate domain name - however this requires that the cert for the domain be uploaded
+lets encrypt needs to renew the cert
+a records need to be pointed to the cloudfront distro
+  - this doesnt seem possible with a third party domain, due to being unable to point A records at cloud front
