@@ -261,9 +261,7 @@ if (passwordChange)
 let title = document.getElementById('title');
 let content = document.getElementById('content');
 if (title && content) { // both these being present means the user is on the editor page
-    let dirty = false
-    title.onchange = function () { dirty = true; }
-    content.onchange = function () { dirty = true; }
+    let dirty = true
     document.getElementById('submit').onclick = function () {
         dirty = false;
     }
