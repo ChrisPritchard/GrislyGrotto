@@ -11,3 +11,5 @@ src/.main.go.swp
 .DS_Store
 .secret
 .env
+main
+main.zip

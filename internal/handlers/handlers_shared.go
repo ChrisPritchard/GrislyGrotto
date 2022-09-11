@@ -14,9 +14,6 @@ import (
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/cookies"
 )
 
-// used for brute force protection
-var blocked = map[string]int64{}
-
 func getCurrentUser(r *http.Request) *string {
 	return r.Context().Value(config.AuthenticatedUser).(*string)
 }
@@ -27,43 +24,6 @@ func ipOnly(ipAndPort string) string {
 		return ipAndPort
 	}
 	return ipAndPort[:portMarker]
-}
-
-func getIP(r *http.Request) string {
-	forwarded := r.Header.Get("x-forwarded-for") // case is normalised
-	if forwarded == "" {
-		return ipOnly(r.RemoteAddr)
-	}
-	return ipOnly(strings.Split(forwarded, ", ")[0])
-}
-
-func setBlockTime(r *http.Request, username string) {
-	blocked[getIP(r)] = time.Now().Unix()
-	if username != "" {
-		blocked[username] = time.Now().Unix()
-	}
-}
-
-func cleanBlocked() {
-	now := time.Now().Unix()
-	for k, v := range blocked {
-		if now-v > config.BlockTime {
-			delete(blocked, k)
-		}
-	}
-}
-
-func getBlockTime(r *http.Request, username string) int {
-	now := time.Now().Unix()
-	time1, time2 := now-blocked[getIP(r)], now-blocked[username]
-	if time1 > config.BlockTime && time2 > config.BlockTime {
-		return 0
-	}
-	cleanBlocked() // done on blocking to not affect ligitimate users (except commenters)
-	if time2 < time1 {
-		return config.BlockTime - int(time2)
-	}
-	return config.BlockTime - int(time1)
 }
 
 func embeddedStaticHandler(w http.ResponseWriter, r *http.Request) {
@@ -109,7 +69,7 @@ func themeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	cookies.SetCookie("theme", r.FormValue("current-theme"), time.Now().Add(config.ThemeExpiry), w)
+	cookies.SetCookie("theme", r.FormValue("current-theme"), config.CurrentTime().Add(config.ThemeExpiry), w)
 	http.Redirect(w, r, "/"+r.FormValue("return-path"), http.StatusFound)
 }
 

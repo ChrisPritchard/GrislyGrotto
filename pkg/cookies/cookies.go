@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 )
 
 func SetCookie(name, data string, expires time.Time, w http.ResponseWriter) {
@@ -26,7 +28,7 @@ func SetCookie(name, data string, expires time.Time, w http.ResponseWriter) {
 }
 
 func SetEncryptedCookie(name, unencodedData string, secret [16]byte, lifeTime time.Duration, w http.ResponseWriter) (err error) {
-	now := time.Now()
+	now := config.CurrentTime()
 	data := now.Format(time.RFC3339) + "|" + unencodedData
 	cipher, err := encrypt([]byte(data), secret[:])
 	if err != nil {

@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -56,9 +55,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.FormValue("category") != "user" {
+		renderView(w, r, loginViewModel{""}, "login.html", "Login") // very basic brute force block
+		return
+	}
+
 	username, password := r.FormValue("username"), r.FormValue("password")
 	valid, errorMessage := validateCredentials(r, username, password)
 	if !valid {
+		time.Sleep(time.Second * 2) // basic brute force block
 		renderView(w, r, loginViewModel{errorMessage}, "login.html", "Login")
 		return
 	}
@@ -86,14 +91,8 @@ func validateCredentials(r *http.Request, username, password string) (bool, stri
 		return false, "Excessively sized values submitted"
 	}
 
-	blockTime := getBlockTime(r, username)
-	if blockTime > 0 {
-		return false, fmt.Sprintf("Cannot make another attempt for another %d seconds", blockTime)
-	}
-
 	valid, err := data.ValidateUser(username, password)
 	if err != nil || !valid {
-		setBlockTime(r, username)
 		return false, "Invalid credentials"
 	}
 
@@ -106,6 +105,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Del("Set-Cookie") // remove context user cookie
 	cookies.SetCookie("user", "", time.Unix(0, 0), w)
 
 	path := ""

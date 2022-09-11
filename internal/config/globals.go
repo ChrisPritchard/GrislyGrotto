@@ -2,6 +2,7 @@ package config
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
@@ -12,7 +13,17 @@ import (
 )
 
 // globals and constants used in multiple places
-// most globals are set early in main
+// some globals are set by parseConfig
+
+var currentTimeZone *time.Location
+
+func init() {
+	loc, err := time.LoadLocation("Pacific/Auckland")
+	if err != nil {
+		log.Fatal("failure loading NZ timezone: " + err.Error())
+	}
+	currentTimeZone = loc
+}
 
 var Secret [16]byte
 var ConnectionString string
@@ -23,7 +34,11 @@ const defaultConnectionString = "./grislygrotto.db"
 const defaultListenAddr = ":3000"
 const defaultStorageName = "grislygrotto-content"
 
-var Database *sql.DB
+const envDatabaseKey = "GRISLYGROTTO_DB"
+const envUrlKey = "GRISLYGROTTO_URL"
+const envStorageKey = "GRISLYGROTTO_STORAGE"
+const envSecretKey = "GRISLYGROTTO_SECRET"
+
 var AuthenticatedUser = struct{}{}
 
 const PageLength = 5
@@ -94,3 +109,24 @@ var MonthIndexes = map[string]string{
 const BlockTime = 5 // seconds
 
 const DraftPrefix = "[DRAFT] "
+
+// CurrentTime returns the current time in New Zealand's timezone
+func CurrentTime() time.Time {
+	return time.Now().UTC().In(currentTimeZone)
+}
+
+var database *sql.DB
+
+// Database returns an instance of the site's datastore by its conn string
+func Database() *sql.DB {
+	if database == nil {
+		db, err := sql.Open("sqlite", ConnectionString)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// db is closed when lambda closes
+		// defer db.Close()
+		database = db
+	}
+	return database
+}

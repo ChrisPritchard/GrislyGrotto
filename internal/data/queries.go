@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ChrisPritchard/GrislyGrotto/internal/config"
 	"github.com/ChrisPritchard/GrislyGrotto/pkg/argon2"
@@ -16,10 +15,14 @@ type StreamedBlogPost struct {
 	Error error
 }
 
+func db() *sql.DB {
+	return config.Database()
+}
+
 func GetAllPostsAsync(out chan<- StreamedBlogPost) {
 	defer close(out)
 
-	rows, err := config.Database.Query("SELECT p.Author_Username as AuthorUsername, p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount FROM Posts p")
+	rows, err := db().Query("SELECT p.Author_Username as AuthorUsername, p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount FROM Posts p")
 	if err != nil {
 		out <- StreamedBlogPost{Error: err}
 		return
@@ -47,7 +50,7 @@ func GetAllPostsAsync(out chan<- StreamedBlogPost) {
 }
 
 func GetLatestPosts(page int, currentUser *string) ([]BlogPost, error) {
-	rows, err := config.Database.Query(`
+	rows, err := db().Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Author_Username as AuthorUsername,
@@ -79,7 +82,7 @@ func GetLatestPosts(page int, currentUser *string) ([]BlogPost, error) {
 }
 
 func GetSinglePost(key string, currentUser *string) (post BlogPost, notFound bool, err error) {
-	row := config.Database.QueryRow(`
+	row := db().QueryRow(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Author_Username, p.Title, p.Content, p.Date, p.IsStory
@@ -126,7 +129,7 @@ func GetPostWithComments(key string, currentUser *string, ownedComments map[int]
 
 func commentsForPost(key string) ([]BlogComment, error) {
 	comments := make([]BlogComment, 0)
-	rows, err := config.Database.Query(`
+	rows, err := db().Query(`
 		SELECT 
 			Id, Author, Date, Content
 		FROM Comments
@@ -153,8 +156,8 @@ func commentsForPost(key string) ([]BlogComment, error) {
 }
 
 func AddCommentToBlog(author, content, postKey string) (newID int64, err error) {
-	date := time.Now().Format("2006-01-02 15:04:05")
-	res, err := config.Database.Exec(`
+	date := config.CurrentTime().Format("2006-01-02 15:04:05")
+	res, err := db().Exec(`
 		INSERT INTO 
 			Comments (Author, Date, Content, Post_Key) 
 		VALUES (?, ?, ?, ?)`,
@@ -167,7 +170,7 @@ func AddCommentToBlog(author, content, postKey string) (newID int64, err error) 
 }
 
 func GetCommentRaw(id int) (string, error) {
-	row := config.Database.QueryRow(`SELECT Content FROM Comments WHERE Id = ?`, id)
+	row := db().QueryRow(`SELECT Content FROM Comments WHERE Id = ?`, id)
 
 	var content string
 	err := row.Scan(&content)
@@ -179,17 +182,17 @@ func GetCommentRaw(id int) (string, error) {
 }
 
 func UpdateComment(id int, content string) error {
-	_, err := config.Database.Exec(`UPDATE Comments SET Content = ? WHERE Id = ?`, content, id)
+	_, err := db().Exec(`UPDATE Comments SET Content = ? WHERE Id = ?`, content, id)
 	return err
 }
 
 func DeleteComment(id int) error {
-	_, err := config.Database.Exec(`DELETE FROM Comments WHERE Id = ?`, id)
+	_, err := db().Exec(`DELETE FROM Comments WHERE Id = ?`, id)
 	return err
 }
 
 func DeletePost(key string) (err error) {
-	_, err = config.Database.Exec(`
+	_, err = db().Exec(`
 		DELETE FROM Posts
 		WHERE Key = ?`,
 		key)
@@ -198,7 +201,7 @@ func DeletePost(key string) (err error) {
 }
 
 func GetSearchResults(searchTerm string, currentUser *string) (results []BlogPost, err error) {
-	rows, err := config.Database.Query(`
+	rows, err := db().Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Key, p.Title, p.Content, p.Date
@@ -250,7 +253,7 @@ func stripToSearchTerm(content, searchTerm string) (result string) {
 }
 
 func GetYearMonthCounts(currentUser *string) (years []YearSet, err error) {
-	rows, err := config.Database.Query(`
+	rows, err := db().Query(`
 		SELECT 
 			SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
 		FROM 
@@ -291,7 +294,7 @@ func GetYearMonthCounts(currentUser *string) (years []YearSet, err error) {
 }
 
 func GetStories(currentUser *string) ([]BlogPost, error) {
-	rows, err := config.Database.Query(`
+	rows, err := db().Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Key, p.Title, p.Date, p.IsStory, p.WordCount
@@ -324,7 +327,7 @@ func GetStories(currentUser *string) ([]BlogPost, error) {
 func GetPostsForMonth(month, year string, currentUser *string) ([]BlogPost, error) {
 	monthToken := year + "-" + config.MonthIndexes[month]
 
-	rows, err := config.Database.Query(`
+	rows, err := db().Query(`
 		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Author_Username as AuthorUsername,
@@ -358,7 +361,7 @@ func GetPostsForMonth(month, year string, currentUser *string) ([]BlogPost, erro
 }
 
 func ValidateUser(username, password string) (valid bool, err error) {
-	row := config.Database.QueryRow(`
+	row := db().QueryRow(`
 		SELECT 
 			Password
 		FROM Authors
@@ -386,11 +389,11 @@ func InsertOrUpdateUser(username, password, displayName string) error {
 	}
 
 	if password == "" {
-		res, err = config.Database.Exec("UPDATE Authors SET DisplayName = ? WHERE Username = ?", displayName, username)
+		res, err = db().Exec("UPDATE Authors SET DisplayName = ? WHERE Username = ?", displayName, username)
 	} else if displayName != "" {
-		res, err = config.Database.Exec("UPDATE Authors SET Password = ?, DisplayName = ? WHERE Username = ?", passwordHash, displayName, username)
+		res, err = db().Exec("UPDATE Authors SET Password = ?, DisplayName = ? WHERE Username = ?", passwordHash, displayName, username)
 	} else {
-		res, err = config.Database.Exec("UPDATE Authors SET Password = ? WHERE Username = ?", passwordHash, username)
+		res, err = db().Exec("UPDATE Authors SET Password = ? WHERE Username = ?", passwordHash, username)
 	}
 
 	if err != nil {
@@ -401,12 +404,12 @@ func InsertOrUpdateUser(username, password, displayName string) error {
 		return err
 	}
 
-	_, err = config.Database.Exec("INSERT INTO Authors (Username, Password, DisplayName) VALUES (?, ?, ?)", username, passwordHash, displayName)
+	_, err = db().Exec("INSERT INTO Authors (Username, Password, DisplayName) VALUES (?, ?, ?)", username, passwordHash, displayName)
 	return err
 }
 
 func GetDisplayName(username string) (string, error) {
-	row := config.Database.QueryRow(`
+	row := db().QueryRow(`
 		SELECT 
 			DisplayName
 		FROM Authors
@@ -422,8 +425,8 @@ func GetDisplayName(username string) (string, error) {
 }
 
 func CreateNewPost(key, title, content string, isStory bool, wordCount int, user string) (err error) {
-	date := time.Now().Format("2006-01-02 15:04:05")
-	_, err = config.Database.Exec(`
+	date := config.CurrentTime().Format("2006-01-02 15:04:05")
+	_, err = db().Exec(`
 		INSERT INTO 
 			Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
 		VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -433,8 +436,8 @@ func CreateNewPost(key, title, content string, isStory bool, wordCount int, user
 
 func UpdatePost(key, title, content string, isStory bool, wordCount int, updateDate bool) (err error) {
 	if updateDate {
-		date := time.Now().Format("2006-01-02 15:04:05")
-		_, err = config.Database.Exec(`
+		date := config.CurrentTime().Format("2006-01-02 15:04:05")
+		_, err = db().Exec(`
 			UPDATE
 				Posts 
 			SET 
@@ -445,7 +448,7 @@ func UpdatePost(key, title, content string, isStory bool, wordCount int, updateD
 		return err
 	}
 
-	_, err = config.Database.Exec(`
+	_, err = db().Exec(`
 		UPDATE
 			Posts 
 		SET 
