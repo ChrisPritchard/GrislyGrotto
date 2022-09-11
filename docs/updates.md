@@ -1,10 +1,12 @@
 # Update & Error Debugging instructions
 
+**This is for the server version of the site.**
+
 To perform an update:
 
 1. Perform a backup of the site. At the very least, copy the existing grislygrotto.db file somewhere safe.
 
-2. In the `/cmd/site` folder, compile `grislygrotto.so`. For linux (x64) this would be (using bash):
+2. In the `/cmd/site-server-host` folder, compile `grislygrotto.so`. For linux (x64) this would be (using bash):
 
     `env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o grislygrotto.so main.go`
 

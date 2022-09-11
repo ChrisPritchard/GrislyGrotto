@@ -15,7 +15,7 @@ Further details can be found in:
 
 __Release Date:__ 12/09/2022
 
-__Release Post:__ TODO
+__Release Post:__ [Swift Changes](https://grislygrotto.nz/post/swift-changes)
 
 __Technology:__ Go
 
