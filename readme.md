@@ -11,20 +11,21 @@ Further details can be found in:
 - [setup.md](./docs/setup.md) which details how the site should be built and deployed
 - [updates.md](./docs/updates.md) which specifies how the site might be updated once deployed
 
-## Release 17.5
+## Release 17.6
 
-__Release Date:__ 20/06/2021
+__Release Date:__ 12/09/2022
 
-__Release Post:__ [https://www.grislygrotto.nz/post/seventeen-point-five](https://www.grislygrotto.nz/post/seventeen-point-five)
+__Release Post:__ TODO
 
 __Technology:__ Go
 
 Also uses the following Go packages (outside of built-in go packages):
 
-- [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3) for the database.
+- [modernc.org/sqlite](https://pkg.go.dev/modernc.org/sqlite#section-readme) for the database (CGO free!).
 - [yuin/goldmark](https://github.com/yuin/goldmark) for markdown.
 - [x/crypto/argon2](https://golang.org/x/crypto/argon2) for user password hashing.
 - [aws/aws-sdk-go](https://github.com/aws/aws-sdk-go) for image storage.
+- [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go) for lambda hosting.
 
 Install these via `go mod download`.
 
@@ -32,11 +33,14 @@ __Data Store:__ SQLite
 
 __Dev Tool(s):__ VS Code
 
-The 17.5 update over 17 involved bumping the Go version to latest, and switching to the Go standard project structure which was quite extensive. The new Go Embed functionality was used to.
+The 17.6 update over 17.5 was a significant rework to support lambda hosting (though this isn't presently used due to not being able to use the target custom domain). The site is more stateless, mostly, and doesn't rely on any in-memory storage.
+
+One significant change was moving from the mattn sqlite driver (which required cgo) to modernc/sqlite, which is pure go.
 
 ## All Releases of the Grisly Grotto
 
-- [17.5 (Current) written in **Go**, 20th June 2021](https://github.com/ChrisPritchard/GrislyGrotto)
+- [17.6 (Current) written in **Go**, 12th September 2022](https://github.com/ChrisPritchard/GrislyGrotto)
+- [17.5, written in **Go**, 20th June 2021](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-17.5)
 - [17.0, written in **Go**, 15th March 2020 (my daughter's 3rd birthday!)](https://github.com/ChrisPritchard/tree/release-17.0)
 - [16.0, written in **F#** on .NET Core 2.2, 20th June 2019](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-16.0)
 - [15.0, written in **F#** on .NET Core 2.1, 20th June 2018](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-15.0)

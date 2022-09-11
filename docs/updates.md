@@ -6,7 +6,7 @@ To perform an update:
 
 2. In the `/cmd/site` folder, compile `grislygrotto.so`. For linux (x64) this would be (using bash):
 
-    `env CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o grislygrotto.so main.go`
+    `env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o grislygrotto.so main.go`
 
 3. Copy the .so file onto the destination server, into a holding folder (e.g. `cd ~`) via `scp` or equivalent.
 
