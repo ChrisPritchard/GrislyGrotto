@@ -13,3 +13,4 @@ src/.main.go.swp
 .env
 main
 main.zip
+update.sh
