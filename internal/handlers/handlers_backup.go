@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"archive/zip"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,9 +41,12 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 	posts := make(chan data.StreamedBlogPost)
 	go data.GetAllPostsAsync(posts)
 
-	buffer := bytes.NewBuffer(nil)
-	zipWriter := zip.NewWriter(buffer)
-	defer zipWriter.Close()
+	headers := w.Header()
+	headers.Set("Content-Disposition", fmt.Sprintf("attachment; filename=posts-%s.zip", config.CurrentTime().Format("2006-01-02")))
+	headers.Set("Content-Type", "application/zip")
+	headers.Set("X-Content-Type", "application/zip")
+
+	zipWriter := zip.NewWriter(w)
 
 	for message := range posts {
 		if message.Error != nil {
@@ -69,14 +71,7 @@ func postsBackupHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	filename := fmt.Sprintf("posts-%s.zip", config.CurrentTime().Format("2006-01-02"))
-	aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
-	link, err := aws.CreateTempLink(config.ContentStorageName, filename)
-	if err != nil {
-		serverError(w, r, err)
-		return
-	}
-	http.Redirect(w, r, link, http.StatusFound)
+	defer zipWriter.Close()
 }
 
 func contentBackupHandler(w http.ResponseWriter, r *http.Request) {
@@ -95,9 +90,12 @@ func contentBackupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	buffer := bytes.NewBuffer(nil)
-	zipWriter := zip.NewWriter(buffer)
-	defer zipWriter.Close()
+	headers := w.Header()
+	headers.Set("Content-Disposition", fmt.Sprintf("attachment; filename=content-%s.zip", config.CurrentTime().Format("2006-01-02")))
+	headers.Set("Content-Type", "application/zip")
+	headers.Set("X-Content-Type", "application/zip")
+
+	zipWriter := zip.NewWriter(w)
 
 	for _, fileName := range files {
 		data, _, err := aws.RetrieveStorageFile(config.ContentStorageName, fileName)
@@ -116,12 +114,5 @@ func contentBackupHandler(w http.ResponseWriter, r *http.Request) {
 		writer.Write(data)
 	}
 
-	filename := fmt.Sprintf("content-%s.zip", config.CurrentTime().Format("2006-01-02"))
-	aws.UploadStorageFile(config.ContentStorageName, filename, buffer)
-	link, err := aws.CreateTempLink(config.ContentStorageName, filename)
-	if err != nil {
-		serverError(w, r, err)
-		return
-	}
-	http.Redirect(w, r, link, http.StatusFound)
+	defer zipWriter.Close()
 }
