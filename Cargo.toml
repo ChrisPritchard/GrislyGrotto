@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.3.1"
+serde = { version = "1.0.160", features = ["derive"] }
 sqlx = { version = "0.6.3", features = ["sqlite","runtime-async-std-native-tls"] }
 tera = "1.18.1"
 

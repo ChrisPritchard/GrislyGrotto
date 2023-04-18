@@ -1,6 +1,9 @@
 use actix_web::{Responder, HttpServer, App, get, web::{self, Data}, HttpResponse};
-use sqlx::{SqlitePool, query};
+use sqlx::{SqlitePool};
 use tera::Tera;
+
+mod model;
+mod data;
 
 const PAGE_INDEX: &str = include_str!("templates/index.html");
 
@@ -12,15 +15,10 @@ static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
 #[get("/")]
 async fn index(db: Data<SqlitePool>, tmpl: Data<Tera>) -> impl Responder {
     
-    let mut pool = db.acquire().await.unwrap();
-    let result = query!("
-        SELECT COUNT(Key) as count FROM Posts
-        ").fetch_one(&mut pool).await.unwrap();
-
-    let message = format!("Hello! There are {} posts in total.", result.count);
+    let posts = data::get_latest_posts(db, 0, Some("aquinas".to_string())).await.unwrap();
     
     let mut context = tera::Context::new();
-    context.insert("welcome", &message);
+    context.insert("posts", &posts);
 
     let html = tmpl.render("index", &context).expect("template rendering failed");
     HttpResponse::Ok().body(html)

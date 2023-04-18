@@ -9,7 +9,14 @@
         <meta name="application-name" content="The Grisly Grotto" />
     </head>
     <body>
-        {{ welcome }}
+        {% for post in posts %}
+            <div>
+                <h3>{{ post.title }}</h3>
+                <div>
+                    {{ post.content }}
+                </div>
+            </div>
+        {% endfor %}
         <script src="/static/site.js"></script>
     </body>
 </html>
