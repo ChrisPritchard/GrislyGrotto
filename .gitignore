@@ -14,3 +14,7 @@ src/.main.go.swp
 main
 main.zip
 update.sh
+
+# Added by cargo
+
+/target

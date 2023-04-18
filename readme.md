@@ -4,42 +4,33 @@ The is my personal blogging website, where I mainly blog about games I play, boo
 
 However, content aside, the main point of this blog for me is as a kata-like exercise of website development. Almost every single version has been a complete rebuild in a new technology stack, or a refinement / alteration of an existing technology stack.
 
-To date there have been ASP.NET WebForms versions (unfortunately the code for those has been lost), MVC, Node.JS, F#, XSLT view-based transforms, paid-for hosting, Azure hosting, Raspberry Pi hosting, Go, SQL Server, SQLite, MySql, document storage, XML storage etc. Building a complete website with code, styling, persistence, authentication, hosting, ssl and domain names etc by yourself is a strong educational experience and I recommend anyone who is in or adjacent to web development have a go at doing this.
+To date there have been ASP.NET WebForms versions (unfortunately the code for those has been lost), MVC, Node.JS, F#, XSLT view-based transforms, paid-for hosting, Azure hosting, Raspberry Pi hosting, **Rust**, Go, SQL Server, SQLite, MySql, document storage, XML storage etc. Building a complete website with code, styling, persistence, authentication, hosting, ssl and domain names etc by yourself is a strong educational experience and I recommend anyone who is in or adjacent to web development have a go at doing this.
 
 Further details can be found in:
 
 - [setup.md](./docs/setup.md) which details how the site should be built and deployed
 - [updates.md](./docs/updates.md) which specifies how the site might be updated once deployed
 
-## Release 17.6
+## Release 18.0
 
-__Release Date:__ 12/09/2022
+__Release Date:__ TODO
 
-__Release Post:__ [Swift Changes](https://grislygrotto.nz/post/swift-changes)
+__Release Post:__ TODO
 
-__Technology:__ Go
+__Technology:__ Rust
 
-Also uses the following Go packages (outside of built-in go packages):
-
-- [modernc.org/sqlite](https://pkg.go.dev/modernc.org/sqlite#section-readme) for the database (CGO free!).
-- [yuin/goldmark](https://github.com/yuin/goldmark) for markdown.
-- [x/crypto/argon2](https://golang.org/x/crypto/argon2) for user password hashing.
-- [aws/aws-sdk-go](https://github.com/aws/aws-sdk-go) for image storage.
-- [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go) for lambda hosting.
-
-Install these via `go mod download`.
+See all crates used in [the cargo file](./Cargo.toml)
 
 __Data Store:__ SQLite
 
 __Dev Tool(s):__ VS Code
 
-The 17.6 update over 17.5 was a significant rework to support lambda hosting (though this isn't presently used due to not being able to use the target custom domain). The site is more stateless, mostly, and doesn't rely on any in-memory storage.
-
-One significant change was moving from the mattn sqlite driver (which required cgo) to modernc/sqlite, which is pure go.
+18.0 is the first version to use Rust (following my personal development history, C# -> NodeJS -> C# -> F# -> Go -> Rust). Design emphasis was on size, performance and being self-contained: notably, though the web framework used is actix-web which by default has external file templates, all templates including all static files like JavaScript, images, CSS etc are embedded in the binary. This makes it a single file deployment... well, single file plus the SQLite database file. I had this in the prior Go version too and really like it for my needs.
 
 ## All Releases of the Grisly Grotto
 
-- [17.6 (Current) written in **Go**, 12th September 2022](https://github.com/ChrisPritchard/GrislyGrotto)
+- 18, written in **Rust**, TODO
+- [17.6, written in **Go**, 12th September 2022](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-17-final)
 - [17.5, written in **Go**, 20th June 2021](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-17.5)
 - [17.0, written in **Go**, 15th March 2020 (my daughter's 3rd birthday!)](https://github.com/ChrisPritchard/tree/release-17.0)
 - [16.0, written in **F#** on .NET Core 2.2, 20th June 2019](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-16.0)
