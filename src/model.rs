@@ -10,7 +10,7 @@ pub struct BlogPost {
     pub title: String,
     pub content: String,
     pub date: String,
-    pub is_story: i64,
+    pub is_story: bool,
     pub word_count: i64,
     pub comment_count: i64,
 }
