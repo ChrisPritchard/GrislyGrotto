@@ -1,5 +1,4 @@
 use actix_web::{Responder, HttpServer, App, get, web::{self, Data}, HttpResponse};
-use sqlx::{SqlitePool};
 use tera::Tera;
 
 mod model;
@@ -13,9 +12,9 @@ static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
 ];
 
 #[get("/")]
-async fn index(db: Data<SqlitePool>, tmpl: Data<Tera>) -> impl Responder {
+async fn index(tmpl: Data<Tera>) -> impl Responder {
     
-    let posts = data::get_latest_posts(db, 0, Some("aquinas".to_string())).await.unwrap();
+    let posts = data::get_latest_posts(0, "aquinas".to_string()).await.unwrap();
     
     let mut context = tera::Context::new();
     context.insert("posts", &posts);
@@ -40,12 +39,9 @@ async fn main() -> std::io::Result<()> {
     let mut tera = Tera::default();
     tera.add_raw_template("index", PAGE_INDEX).expect("template parsing failed");
 
-    let db = SqlitePool::connect("grislygrotto.db").await.expect("failed to access db");
-
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(tera.clone()))
-            .app_data(web::Data::new(db.clone()))
             .service(index)
             .service(static_content)
     });  
