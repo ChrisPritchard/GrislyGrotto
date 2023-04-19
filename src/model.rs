@@ -1,8 +1,7 @@
 use serde::Serialize;
-use sqlx::FromRow;
 
 
-#[derive(Clone, FromRow, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct BlogPost {
     pub author: String,
     pub author_username: String,

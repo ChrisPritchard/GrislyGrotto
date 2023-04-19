@@ -1,5 +1,5 @@
 use actix_web::{web::Data};
-use sqlx::{SqlitePool, query};
+use sqlx::{query, SqlitePool};
 
 use crate::model::BlogPost;
 
@@ -21,23 +21,18 @@ pub async fn get_latest_posts(db: Data<SqlitePool>, page: i32, current_user: Opt
 
 	let mut final_result = Vec::new();
 	
+	let mut markdown_options = comrak::ComrakOptions::default();
+	markdown_options.render.unsafe_ = true;
+
 	for entry in query_result {
-		let mut markdown_options = comrak::ComrakOptions::default();
-		markdown_options.render.unsafe_ = true;
-		let markdown = entry.Content.unwrap();
-		let content = comrak::markdown_to_html(&markdown, &markdown_options);
-		let mut is_story = false;
-		if let Some(n) = entry.IsStory {
-			is_story = n > 0;
-		}
 		final_result.push(BlogPost { 
 			author: entry.Author.unwrap(), 
 			author_username: entry.Author_Username.unwrap(), 
 			key: entry.Key.unwrap(), 
 			title: entry.Title.unwrap(), 
-			content,
+			content: comrak::markdown_to_html(&entry.Content.unwrap(), &markdown_options),
 			date: entry.Date.unwrap(), 
-			is_story, 
+			is_story: entry.IsStory.unwrap() > 0, 
 			word_count: entry.WordCount.unwrap(), 
 			comment_count: entry.CommentCount.unwrap() })
 	}
