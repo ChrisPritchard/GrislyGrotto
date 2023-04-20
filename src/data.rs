@@ -2,12 +2,9 @@ use sqlite::{Value, State};
 
 use crate::model::BlogPost;
 
-pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<BlogPost>, sqlite::Error> {
-
-    let connection = sqlite::open("./grislygrotto.db").unwrap();
-    let skip = page * 5;
-    let query = "
-        SELECT 
+/// provide params as: username, count, skip
+const QUERY_LATEST_POSTS: &str = "
+		SELECT 
 			(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
 			p.Author_Username, p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount,
 			(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
@@ -15,31 +12,36 @@ pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<Blo
 		WHERE 
 			(p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
 		ORDER BY p.Date DESC 
-		LIMIT ? OFFSET ?
-        ";
-	let mut statement = connection.prepare(query)?;
-	statement.bind::<&[(_, Value)]>(&[
+		LIMIT ? OFFSET ?";
+
+pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<BlogPost>, sqlite::Error> {
+
+    let connection = sqlite::open("./grislygrotto.db")?;
+
+	let mut stmt = connection.prepare(QUERY_LATEST_POSTS)?;
+	stmt.bind::<&[(_, Value)]>(&[
 		(1, current_user.into()), 
 		(2, 5.into()), 
-		(3, skip.into())])?;
+		(3, (page * 5).into())])?;
 
 	let mut final_result = Vec::new();
 	
 	let mut markdown_options = comrak::ComrakOptions::default();
 	markdown_options.render.unsafe_ = true;
 
-	while let Ok(State::Row) = statement.next() {
-		let content = statement.read::<String, _>("Content").unwrap();
+	while let Ok(State::Row) = stmt.next() {
+		let content: String = stmt.read("Content")?;
+		let is_story: i64 = stmt.read("IsStory")?;
 		final_result.push(BlogPost { 
-			author: statement.read::<String, _>("Author").unwrap(), 
-			author_username: statement.read::<String, _>("Author_Username").unwrap(), 
-			key: statement.read::<String, _>("Key").unwrap(), 
-			title: statement.read::<String, _>("Title").unwrap(), 
+			author: stmt.read("Author")?, 
+			author_username: stmt.read("Author_Username")?, 
+			key: stmt.read("Key")?, 
+			title: stmt.read("Title")?, 
 			content: comrak::markdown_to_html(&content, &markdown_options),
-			date: statement.read::<String, _>("Date").unwrap(), 
-			is_story: statement.read::<i64, _>("IsStory").unwrap() > 0, 
-			word_count: statement.read::<i64, _>("WordCount").unwrap(), 
-			comment_count: statement.read::<i64, _>("CommentCount").unwrap() })
+			date: stmt.read("Date")?, 
+			is_story: is_story > 0, 
+			word_count: stmt.read("WordCount")?, 
+			comment_count: stmt.read("CommentCount")? })
 	}
     
     Ok(final_result)
