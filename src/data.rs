@@ -16,7 +16,7 @@ const QUERY_LATEST_POSTS: &str = "
 
 pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<BlogPost>, sqlite::Error> {
 
-    let connection = sqlite::open("./grislygrotto.db")?;
+	let connection = sqlite::open("./grislygrotto.db")?;
 
 	let mut stmt = connection.prepare(QUERY_LATEST_POSTS)?;
 	stmt.bind::<&[(_, Value)]>(&[
@@ -25,7 +25,7 @@ pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<Blo
 		(3, (page * 5).into())])?;
 
 	let mut final_result = Vec::new();
-	
+
 	let mut markdown_options = comrak::ComrakOptions::default();
 	markdown_options.render.unsafe_ = true;
 
@@ -43,6 +43,6 @@ pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<Blo
 			word_count: stmt.read("WordCount")?, 
 			comment_count: stmt.read("CommentCount")? })
 	}
-    
-    Ok(final_result)
+
+	Ok(final_result)
 }
