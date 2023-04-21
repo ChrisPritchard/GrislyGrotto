@@ -12,30 +12,35 @@ pub struct BlogPost {
     pub is_story: bool,
     pub word_count: i64,
     pub comment_count: i64,
+    pub comments: Option<Vec<BlogComment>>
 }
 
-// pub struct BlogComment {
-//     pub id: i64,
-//     pub author: String,
-//     pub content: String,
-//     pub date: String,
-//     pub owned: bool
-// }
+#[derive(Clone, Debug, Serialize)]
+pub struct BlogComment {
+    pub id: i64,
+    pub author: String,
+    pub content: String,
+    pub date: String,
+    pub owned: bool
+}
 
-// pub struct Author {
-//     pub username: String,
-//     pub password: String,
-//     pub displayname: String,
-//     pub imageurl: String,
-// }
+#[derive(Clone, Debug, Serialize)]
+pub struct Author {
+    pub username: String,
+    pub password: String,
+    pub displayname: String,
+    pub imageurl: String,
+}
 
-// pub struct YearSet {
-//     pub year: String,
-//     pub yonths: Vec<MonthCount>,
-// }
+#[derive(Clone, Debug, Serialize)]
+pub struct YearSet {
+    pub year: String,
+    pub yonths: Vec<MonthCount>,
+}
 
-// pub struct MonthCount {
-//     pub month: String,
-//     pub year: String,
-//     pub count: i32
-// }
+#[derive(Clone, Debug, Serialize)]
+pub struct MonthCount {
+    pub month: String,
+    pub year: String,
+    pub count: i32
+}
