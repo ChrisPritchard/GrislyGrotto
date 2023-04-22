@@ -15,7 +15,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(tera.clone()))
             .service(handlers::latest)
             .service(handlers::single)
-            .service(handlers::comment)
+            .service(handlers::add_comment)
             .service(handlers::static_content)
     });  
 
