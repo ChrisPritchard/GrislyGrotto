@@ -10,10 +10,17 @@
     {% for comment in post.comments %}
         <div>
             <h3>{{ comment.author }}</h3>
+            <div>{{ comment.date }}</div>
             <div>
                 {{ comment.content }}
             </div>
         </div>
     {% endfor %}
+    <a name="comments"></a>
+    <form method="post" action="/post/{{ post.key }}/comment">
+        <div><input type="text" name="author" /></div>
+        <div><textarea name="content" rows="3" cols="50"></textarea></div>
+        <input type="submit" value="Comment" />
+    </form>
 {% endblock content %}
 

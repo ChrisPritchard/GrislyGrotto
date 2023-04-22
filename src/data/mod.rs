@@ -5,6 +5,7 @@ mod view_posts;
 
 pub use view_posts::get_latest_posts;
 pub use view_posts::get_single_post;
+pub use view_posts::add_comment;
 
 mod prelude {
     pub use sqlite::{Value, State, Error};

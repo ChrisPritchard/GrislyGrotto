@@ -28,3 +28,9 @@ pub const SELECT_COMMENTS: &str = "
 	FROM Comments
 	WHERE Post_Key = ?
 	ORDER BY Date";
+
+/// provide: author, date, content, post_key
+pub const INSERT_COMMENT: &str = "
+    INSERT INTO 
+        Comments (Author, Date, Content, Post_Key) 
+    VALUES (?, ?, ?, ?)";
