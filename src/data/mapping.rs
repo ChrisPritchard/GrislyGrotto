@@ -10,13 +10,13 @@ pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOp
     Ok(BlogPost { 
         author: stmt.read("Author")?, 
         author_username: stmt.read("Author_Username")?, 
-        key: stmt.read("Key")?, 
+        key: stmt.read("Key").or(Ok("".into()))?, 
         title: stmt.read("Title")?, 
         content: markdown,
         date: stmt.read("Date")?, 
         is_story: is_story > 0, 
-        word_count: stmt.read("WordCount")?, 
-        comment_count: stmt.read("CommentCount")?,
+        word_count: stmt.read("WordCount").or(Ok(0))?, 
+        comment_count: stmt.read("CommentCount").or(Ok(0))?,
         comments: None })
 }
 

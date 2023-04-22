@@ -40,7 +40,7 @@ pub async fn get_single_post(key: String, current_user: String) -> Result<Option
     let mut stmt = connection.prepare(sql::SELECT_SINGLE_POST)?;
     stmt.bind::<&[(_, Value)]>(&[
         (1, key.clone().into()), 
-        (1, current_user.into())])?;
+        (2, current_user.into())])?;
 
     if let Ok(State::Done) = stmt.next() {
         return Ok(None);

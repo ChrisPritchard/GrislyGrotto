@@ -6,7 +6,7 @@ static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
 ];
 
 #[get("/static/{file_path}")]
-async fn static_content(file_path: web::Path<String>) -> impl Responder {
+async fn static_content(file_path: Path<String>) -> impl Responder {
     let file_path = file_path.into_inner();
     let found = STATIC_CONTENT.iter().find(|(f, _)| *f == file_path).map(|(_, d)| *d);
     match found {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>The Grisly Grotto - Latest Posts</title>
+        <title>The Grisly Grotto - {{ post.title }}</title>
         <link href="/static/site.css" rel="stylesheet" />
         <meta charset="utf-8" />
         <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
@@ -9,11 +9,17 @@
         <meta name="application-name" content="The Grisly Grotto" />
     </head>
     <body>
-        {% for post in posts %}
+        <div>
+            <h3>{{ post.title }}</h3>
             <div>
-                <h3>{{ post.title }}</h3>
+                {{ post.content }}
+            </div>
+        </div>
+        {% for comment in post.comments %}
+            <div>
+                <h3>{{ comment.author }}</h3>
                 <div>
-                    {{ post.content }}
+                    {{ comment.content }}
                 </div>
             </div>
         {% endfor %}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>The Grisly Grotto - Latest Posts</title>
+        <link href="/static/site.css" rel="stylesheet" />
+        <meta charset="utf-8" />
+        <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="application-name" content="The Grisly Grotto" />
+    </head>
+    <body>
+        {% for post in posts %}
+            <div>
+                <a href="/post/{{ post.key }}">
+                    <h3>{{ post.title }}</h3>
+                </a>
+                <div>
+                    {{ post.content }}
+                </div>
+            </div>
+        {% endfor %}
+        <script src="/static/site.js"></script>
+    </body>
+</html>
