@@ -5,11 +5,13 @@ pub async fn add_comment(key: String, author: String, content: String) -> Result
 
     let connection = db()?;
     let mut stmt = connection.prepare(sql::INSERT_COMMENT)?;
-    stmt.bind_iter::<_, (_, Value)>([
+    stmt.bind::<&[(_, Value)]>(&[
         (1, author.clone().into()), 
         (2, date.into()),
         (3, content.into()),
         (4, key.into()),])?;
+
+    let _ = stmt.next();
 
     Ok(())
 }
