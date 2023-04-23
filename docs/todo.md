@@ -29,8 +29,8 @@
 
 ## doing
 
-- all months with post counts
 - all posts in month
+- prev/next month
 - all stories
 
 - search
@@ -48,3 +48,4 @@
 - menu
 - latest next 5 / prev 5
 - about
+- all months with post counts

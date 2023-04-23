@@ -1,5 +1,19 @@
 {% extends "master" %}
 {% block title %}Archives{% endblock title %}
 {% block content %}
-    Archives
+    <h2>Archives</h2>
+    <ul class="years">
+        {% for year in years %}
+            <li>
+                <h3>{{ year.year }}</h3>
+                <ul class="months">
+                    {% for month in year.months %}
+                        <li>
+                            <a href="/archives/{{ month.month }}/{{ year.year }}">{{ month.month }} ({{ month.count }})</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock content %}

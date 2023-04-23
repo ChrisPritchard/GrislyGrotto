@@ -18,6 +18,10 @@ pub async fn get_month_counts(current_user: String) -> Result<Vec<YearSet>> {
             None => {
                 current_year = Some(YearSet { year: month.year.clone(), months: vec![month] })
             },
+            Some(year) if year.year != month.year => {
+                all_years.push(year);
+                current_year = Some(YearSet { year: month.year.clone(), months: vec![month] })
+            },
             Some(mut year) => {
                 year.months.push(month);
                 current_year = Some(year)
