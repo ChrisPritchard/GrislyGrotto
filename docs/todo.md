@@ -20,10 +20,12 @@
 - update user details
 
 - s3 image storage
+- content and profile image links
 - upload file ui
 
 - full styling
 - light mode / dark mode
+- csp, security headers
 
 ## doing
 
