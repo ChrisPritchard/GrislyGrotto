@@ -8,7 +8,7 @@ struct PageInfo {
 }
 
 #[get("/")]
-async fn latest(tmpl: Data<Tera>, query: Query<PageInfo>) -> impl Responder {
+async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>) -> impl Responder {
 
     let page = query.page.unwrap_or(0);
     let posts = data::get_latest_posts(page, "aquinas".to_string()).await.unwrap();
@@ -22,7 +22,7 @@ async fn latest(tmpl: Data<Tera>, query: Query<PageInfo>) -> impl Responder {
 }
 
 #[get("/post/{key}")]
-async fn single(key: Path<String>, tmpl: Data<Tera>) -> impl Responder {
+async fn single_post(key: Path<String>, tmpl: Data<Tera>) -> impl Responder {
     let post = data::get_single_post(key.to_string(), "aquinas".to_string()).await.unwrap();
 
     if post.is_none() {

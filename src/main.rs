@@ -23,10 +23,12 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::new("%a - %r - %s"))
             .app_data(Data::new(tera.clone()))
             .app_data(query_cfg.clone())
-            .service(handlers::latest)
-            .service(handlers::single)
+            .service(handlers::latest_posts)
+            .service(handlers::single_post)
             .service(handlers::add_comment)
             .service(handlers::static_content)
+            .service(handlers::archives_page)
+            .service(handlers::search_page)
             .service(handlers::about_page)
     });  
 
