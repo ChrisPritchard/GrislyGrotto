@@ -12,4 +12,20 @@
         </div>
     </div>
     {% endfor %}
+    <nav class="prev_next_page">
+        {% if page > 0 %}
+        <div class="prev_link">
+            <form method="GET">
+                <input type="hidden" name="page" value="{{ page - 1 }}">
+                <input type="submit" value="Previous Page">
+            </form>
+        </div>
+        {% endif %}
+        <div class="next_link">
+            <form method="GET">
+                <input type="hidden" name="page" value="{{ page + 1 }}">
+                <input type="submit" value="Next Page">
+            </form>
+        </div>
+    </nav>
 {% endblock content %}

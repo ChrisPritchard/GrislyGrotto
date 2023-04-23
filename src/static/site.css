@@ -95,3 +95,18 @@ footer {
 .comment_form {
     margin-top: 2em;
 }
+
+.prev_next_page {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.prev_next_page div {
+    flex: 1;
+}
+
+.next_link {
+    text-align: right;
+}

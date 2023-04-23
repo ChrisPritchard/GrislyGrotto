@@ -29,7 +29,6 @@
 
 ## doing
 
-- latest next 5 / prev 5
 - about
 - all months with post counts
 - all posts in month
@@ -48,3 +47,4 @@
 - date formatting
 - basic, functional style for dev
 - menu
+- latest next 5 / prev 5

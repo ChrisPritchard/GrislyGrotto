@@ -2,14 +2,14 @@ use super::{prelude::*, *};
 
 use crate::model::*;
 
-pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<BlogPost>> {
+pub async fn get_latest_posts(page: usize, current_user: String) -> Result<Vec<BlogPost>> {
     let connection = db()?;
 
     let mut stmt = connection.prepare(sql::SELECT_LATEST_POSTS)?;
     stmt.bind::<&[(_, Value)]>(&[
         (1, current_user.into()), 
         (2, 5.into()), 
-        (3, (page * 5).into())])?;
+        (3, (page as i64 * 5).into())])?;
 
     let mut final_result = Vec::new();
     let markdown_options = markdown_options();	
