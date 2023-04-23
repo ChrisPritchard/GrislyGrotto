@@ -6,6 +6,7 @@ mod comments;
 
 pub use view_posts::get_latest_posts;
 pub use view_posts::get_single_post;
+pub use comments::comment_count;
 pub use comments::add_comment;
 
 mod prelude {

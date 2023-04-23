@@ -6,22 +6,34 @@ use crate::data;
 struct CommentForm {
     author: String,
     content: String,
+    category: String, // just used for honeypot
 }
 
 #[post("/post/{key}/comment")]
 async fn add_comment(key: Path<String>, form: Form<CommentForm>) -> Either<HttpResponse, Redirect> {
 
-    // TODO: proper error messages, if not handled by js
-    if form.author.len() == 0 || form.content.len() == 0 {
+    if form.category != "user" || form.author.len() == 0 || form.content.len() == 0 || form.content.len() > 1000 {
         return Either::Left(HttpResponse::BadRequest().body("invalid comment"))
     }
     
+    let existing_count = data::comment_count(key.to_string()).await;
+    if let Err(_) = existing_count {
+        return Either::Left(HttpResponse::InternalServerError().body("something went wrong"))
+    } 
+    
+    let existing_count = existing_count.unwrap();
+    
+    if existing_count.is_none() {
+        return Either::Left(HttpResponse::NotFound().body("not found"));
+    } else if existing_count.unwrap() >= 20 {
+        return Either::Left(HttpResponse::BadRequest().body("invalid comment"))
+    }
+
     let result = data::add_comment(key.to_string(), form.author.clone(), form.content.clone()).await;
-    if  result.is_err() {
-        // TODO: better error handling / logging
+    if let Err(_) = result {
         return Either::Left(HttpResponse::InternalServerError().body("something went wrong"))
     }
 
     let path = format!("/post/{}#comments", key.to_string());
-    Either::Right(Redirect::to(path).see_other()) // will change from post to get
+    Either::Right(Redirect::to(path).see_other()) // 'see other' will make the request to the new path a GET
 }

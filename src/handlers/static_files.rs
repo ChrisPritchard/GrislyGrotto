@@ -3,6 +3,7 @@ use super::prelude::*;
 static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
     ("site.css", ("text/css", include_bytes!("../static/site.css").as_slice())),
     ("site.js", ("text/javascript", include_bytes!("../static/site.js").as_slice())),
+    ("comments.js", ("text/javascript", include_bytes!("../static/comments.js").as_slice())),
 ];
 
 #[get("/static/{file_path}")]

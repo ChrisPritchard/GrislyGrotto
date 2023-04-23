@@ -15,3 +15,20 @@ pub async fn add_comment(key: String, author: String, content: String) -> Result
 
     Ok(())
 }
+
+pub async fn comment_count(key: String) -> Result<Option<i64>, Error> {
+    let date = format!("{}", chrono::offset::Local::now().format("%Y-%m-%d %H:%M:%S"));
+
+    let connection = db()?;
+    let mut stmt = connection.prepare(sql::SELECT_COMMENT_COUNT)?;
+    stmt.bind::<&[(_, Value)]>(&[
+        (1, key.into()),])?;
+
+    if let Ok(State::Done) = stmt.next() {
+        return Ok(None);
+    }
+
+    let count: i64 = stmt.read("Count")?;
+
+    Ok(Some(count))
+}

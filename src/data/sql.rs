@@ -29,6 +29,13 @@ pub const SELECT_COMMENTS: &str = "
 	WHERE Post_Key = ?
 	ORDER BY Date";
 
+/// provide: post_key
+pub const SELECT_COMMENT_COUNT: &str = "
+	SELECT 
+		Count(Id) AS Count
+	FROM Comments
+	WHERE Post_Key = ?";
+
 /// provide: author, date, content, post_key
 pub const INSERT_COMMENT: &str = "
     INSERT INTO 

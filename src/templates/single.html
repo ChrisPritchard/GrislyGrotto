@@ -17,10 +17,14 @@
         </div>
     {% endfor %}
     <a name="comments"></a>
-    <form method="post" action="/post/{{ post.key }}/comment">
-        <div><input type="text" name="author" /></div>
-        <div><textarea name="content" rows="3" cols="50"></textarea></div>
+    <form id="comment_form" method="post" action="/post/{{ post.key }}/comment">
+        <label for="author">Author</label>
+        <input type="text" id="author" name="author" maxlength="30" />
+        <input type="text" id="category" name="category" />
+        <label for="content">Content</label>
+        <textarea rows="3" cols="50" id="content" name="content" maxlength="1000"></textarea>
         <input type="submit" value="Comment" />
     </form>
+    <script src="/static/comments.js"></script>
 {% endblock content %}
 
