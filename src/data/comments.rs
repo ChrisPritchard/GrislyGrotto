@@ -1,7 +1,7 @@
 use super::{prelude::*, *};
 
-pub async fn add_comment(key: String, author: String, content: String) -> Result<(), Error> {
-    let date = format!("{}", chrono::offset::Local::now().format("%Y-%m-%d %H:%M:%S"));
+pub async fn add_comment(key: String, author: String, content: String) -> Result<(), Box<dyn std::error::Error>> {
+    let date = current_datetime_for_storage();
 
     let connection = db()?;
     let mut stmt = connection.prepare(sql::INSERT_COMMENT)?;
@@ -16,7 +16,7 @@ pub async fn add_comment(key: String, author: String, content: String) -> Result
     Ok(())
 }
 
-pub async fn comment_count(key: String) -> Result<Option<i64>, Error> {
+pub async fn comment_count(key: String) -> Result<Option<i64>, Box<dyn std::error::Error>> {
     let connection = db()?;
     let mut stmt = connection.prepare(sql::SELECT_COMMENT_COUNT)?;
     stmt.bind::<&[(_, Value)]>(&[
