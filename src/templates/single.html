@@ -3,6 +3,7 @@
 {% block content %}
     <div>
         <h3>{{ post.title }}</h3>
+        <div>Posted by {{ post.author_displayname }} at {{ post.date }}</div>
         <div>
             {{ post.content }}
         </div>
@@ -10,8 +11,7 @@
     <a name="comments"></a>
     {% for comment in post.comments %}
         <div class="comment_container">
-            <h3>{{ comment.author }}</h3>
-            <div>{{ comment.date }}</div>
+            <div>Commented by {{ comment.author }} at {{ comment.date }}</div>
             <div>
                 {{ comment.content }}
             </div>

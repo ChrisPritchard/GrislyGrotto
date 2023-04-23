@@ -27,6 +27,8 @@
 
 ## doing
 
+- date formatting
+- basic, functional style for dev
 
 ## Done
 
