@@ -27,6 +27,7 @@ async fn main() -> std::io::Result<()> {
             .service(handlers::single)
             .service(handlers::add_comment)
             .service(handlers::static_content)
+            .service(handlers::about_page)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await
