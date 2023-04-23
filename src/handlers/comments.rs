@@ -17,7 +17,8 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>) -> Either<HttpR
     }
     
     let existing_count = data::comment_count(key.to_string()).await;
-    if let Err(_) = existing_count {
+    if let Err(err) = existing_count {
+        error!("error checking existing comment count: {}", err);
         return Either::Left(HttpResponse::InternalServerError().body("something went wrong"))
     } 
     
@@ -30,7 +31,8 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>) -> Either<HttpR
     }
 
     let result = data::add_comment(key.to_string(), form.author.clone(), form.content.clone()).await;
-    if let Err(_) = result {
+    if let Err(err) = result {
+        error!("error adding comment to database: {}", err);
         return Either::Left(HttpResponse::InternalServerError().body("something went wrong"))
     }
 

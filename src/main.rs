@@ -1,4 +1,4 @@
-use actix_web::{HttpServer, App, web::Data};
+use actix_web::{HttpServer, App, web::Data, middleware::Logger};
 
 mod model;
 mod data;
@@ -10,8 +10,11 @@ async fn main() -> std::io::Result<()> {
 
     let tera = templates::template_engine();
 
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+
     let server = HttpServer::new(move || {
         App::new()
+            .wrap(Logger::new("%a %{User-Agent}i"))
             .app_data(Data::new(tera.clone()))
             .service(handlers::latest)
             .service(handlers::single)

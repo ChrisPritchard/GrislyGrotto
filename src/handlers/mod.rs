@@ -12,4 +12,5 @@ mod prelude {
     pub use actix_web::{Responder, get, post, web::*, HttpResponse};
     pub use tera::Tera;
     pub use serde::Deserialize;
+    pub use log::error;
 }

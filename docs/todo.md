@@ -23,12 +23,15 @@
 - user details display
 - update user details
 
-- error handling (server response and logging)
 - style
 - light mode / dark mode
 
+## doing
+
+
 ## Done
 
+- error handling (server response and logging)
 - basic latest posts
 - basic single post with comments
 - adding comments
