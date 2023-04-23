@@ -4,10 +4,10 @@
     {% for post in posts %}
     <div>
         <a href="/post/{{ post.key }}">
-            <h3>{{ post.title }}</h3>
+            <h3 class="post_title">{{ post.title }}</h3>
         </a>
-        <div>Posted by {{ post.author }} at {{ post.date }}</div>
-        <div>
+        <div class="post_summary">Posted by {{ post.author }} at {{ post.date }}</div>
+        <div class="post_content">
             {{ post.content }}
         </div>
     </div>

@@ -1,3 +1,97 @@
 body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    line-height: 1.3;
+    margin-left: 2em;
+    margin-right: auto;
+    max-width: 1000px;
+    background-color: whitesmoke;
+    color: #222;
+}
+
+a, a:visited {
+    text-decoration: none;
+    font-weight: 700;
+    color: black;
+}
+
+h1, h2, h3 {
+    text-shadow: 0 2px 4px grey;
+    text-transform: uppercase;
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    background-color: inherit;
+    color: inherit;
+    padding: 6px 12px;
+}
+
+input[type="text"], input[type="password"], textarea {
+    display: block;
+    border: 1px solid black;
+    border-radius: 2px;
+    background-color: whitesmoke;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-bottom: 8px;
+}
+
+input[type="submit"], input[type="button"] {
+    transition: all .3s ease;
+    font-weight: 400;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.6em;
+    user-select: none;
+}
+
+footer {
+    margin-top: 3em;
+    font-weight: 700;
+    font-size: 0.8em;
+}
+
+.post_title {
+    margin-bottom: 0;
+    font-size: 1.5em;
+}
+
+.post_summary {
+    font-weight: 700;
+    font-size: 0.9em;
+    margin-bottom: 0.5em;
+}
+
+.post_content {
+    text-align: justify;
+}
+
+.comment_summary {
+    font-size: 0.8em;
+    margin-top: 15px;
+    margin-bottom: 4px;
+}
+
+.comment_content p {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1em;
+    max-width: 50%;
+    text-align: justify;
+}
+
+.comment_form {
+    margin-top: 2em;
 }
