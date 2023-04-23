@@ -4,7 +4,6 @@
 
 - latest next 5 / prev 5
 - next post / prev post
-- comment validation javascript
 - edit comment
 - delete comment
 - menu
@@ -31,7 +30,8 @@
 
 ## Done
 
-- error handling (server response and logging)
 - basic latest posts
 - basic single post with comments
 - adding comments
+- error handling (server response and logging)
+- comment validation javascript

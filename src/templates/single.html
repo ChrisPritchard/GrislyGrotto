@@ -7,8 +7,9 @@
             {{ post.content }}
         </div>
     </div>
+    <a name="comments"></a>
     {% for comment in post.comments %}
-        <div>
+        <div class="comment_container">
             <h3>{{ comment.author }}</h3>
             <div>{{ comment.date }}</div>
             <div>
@@ -16,14 +17,13 @@
             </div>
         </div>
     {% endfor %}
-    <a name="comments"></a>
     <form id="comment_form" method="post" action="/post/{{ post.key }}/comment">
         <label for="author">Author</label>
         <input type="text" id="author" name="author" maxlength="30" />
         <input type="text" id="category" name="category" />
         <label for="content">Content</label>
         <textarea rows="3" cols="50" id="content" name="content" maxlength="1000"></textarea>
-        <input type="submit" value="Comment" />
+        <input id="comment_submit" type="submit" value="Comment" />
     </form>
     <script src="/static/comments.js"></script>
 {% endblock content %}
