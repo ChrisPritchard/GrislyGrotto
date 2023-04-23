@@ -29,7 +29,6 @@
 
 ## doing
 
-- about
 - all months with post counts
 - all posts in month
 - all stories
@@ -48,3 +47,4 @@
 - basic, functional style for dev
 - menu
 - latest next 5 / prev 5
+- about

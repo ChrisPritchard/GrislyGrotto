@@ -35,3 +35,17 @@ pub fn comment_from_statement(stmt: &Statement, markdown_options: &comrak::Comra
         content: markdown,
         owned: false })
 }
+
+const MONTHS: [&str; 13] = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+pub fn month_count_from_statement(stmt: &Statement) -> Result<MonthCount> {
+    let date: String = stmt.read("Month")?;
+    let year = (&date[..4]).to_string();
+    
+    let month = (&date[5..]).to_string();
+    let index = month.parse::<usize>()?;
+    let month = MONTHS[index].to_string();
+
+    Ok(MonthCount { 
+        year, month, count: stmt.read("Count")? })
+}

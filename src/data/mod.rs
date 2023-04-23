@@ -3,6 +3,7 @@ mod sql;
 mod mapping;
 mod view_posts;
 mod comments;
+mod archives;
 
 pub use view_posts::get_latest_posts;
 pub use view_posts::get_single_post;

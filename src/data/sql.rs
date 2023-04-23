@@ -41,3 +41,16 @@ pub const INSERT_COMMENT: &str = "
     INSERT INTO 
         Comments (Author, Date, Content, Post_Key) 
     VALUES (?, ?, ?, ?)";
+
+/// povide: author
+pub const SELECT_MONTH_COUNTS: &str = "
+	SELECT 
+		SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
+	FROM 
+		Posts 
+	WHERE
+		(Title NOT LIKE '[DRAFT] %' OR Author_Username = ?)
+	GROUP BY 
+		Month 
+	ORDER BY 
+		Date DESC";

@@ -34,12 +34,12 @@ pub struct Author {
 #[derive(Clone, Debug, Serialize)]
 pub struct YearSet {
     pub year: String,
-    pub yonths: Vec<MonthCount>,
+    pub months: Vec<MonthCount>,
 }
 
 #[derive(Clone, Debug, Serialize)]
 pub struct MonthCount {
     pub month: String,
     pub year: String,
-    pub count: i32
+    pub count: i64
 }
