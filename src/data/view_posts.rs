@@ -2,7 +2,7 @@ use super::{prelude::*, *};
 
 use crate::model::*;
 
-pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<BlogPost>, Box<dyn std::error::Error>> {
+pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<BlogPost>> {
     let connection = db()?;
 
     let mut stmt = connection.prepare(sql::SELECT_LATEST_POSTS)?;
@@ -22,7 +22,7 @@ pub async fn get_latest_posts(page: i64, current_user: String) -> Result<Vec<Blo
     Ok(final_result)
 }
 
-pub async fn get_single_post(key: String, current_user: String) -> Result<Option<BlogPost>, Box<dyn std::error::Error>> {
+pub async fn get_single_post(key: String, current_user: String) -> Result<Option<BlogPost>> {
     let connection = db()?;
 
     let mut stmt = connection.prepare(sql::SELECT_SINGLE_POST)?;

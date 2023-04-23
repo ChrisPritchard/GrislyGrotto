@@ -10,8 +10,11 @@ pub use comments::comment_count;
 pub use comments::add_comment;
 
 mod prelude {
-    pub use sqlite::{Value, State};
+    pub use sqlite::{Value, State, Statement};
+    pub use anyhow::Result;
 }
+
+use prelude::*;
 
 const DATABASE_PATH: &str = "./grislygrotto.db";
 const STORAGE_DATE_FORMAT: &str = "%Y-%m-%d %H:%M:%S";
@@ -24,7 +27,7 @@ fn markdown_options() -> comrak::ComrakOptions {
     markdown_options
 }
 
-fn db() -> Result<sqlite::Connection, Box<dyn std::error::Error>> {
+fn db() -> Result<sqlite::Connection> {
     Ok(sqlite::open(DATABASE_PATH)?)
 }
 
@@ -32,7 +35,7 @@ fn current_datetime_for_storage() -> String {
     format!("{}", chrono::offset::Local::now().format(STORAGE_DATE_FORMAT))
 }
 
-fn storage_datetime_as_display(datetime: &str) -> Result<String, Box<dyn std::error::Error>> {
+fn storage_datetime_as_display(datetime: &str) -> Result<String> {
     let parsed = chrono::NaiveDateTime::parse_from_str(datetime, STORAGE_DATE_FORMAT)?;
     Ok(format!("{}", parsed.format(STORAGE_DISPLAY_FORMAT)))
 }

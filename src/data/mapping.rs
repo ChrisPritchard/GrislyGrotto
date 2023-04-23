@@ -1,13 +1,13 @@
-use sqlite::Statement;
+use super::{prelude::*, *};
 
 use crate::model::*;
 
-pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogPost, Box<dyn std::error::Error>> {
+pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogPost> {
     let content: String = stmt.read("Content")?;
     let markdown = comrak::markdown_to_html(&content, markdown_options);
     let is_story: i64 = stmt.read("IsStory")?;
     let date: String = stmt.read("Date")?;
-    let date_formatted = super::storage_datetime_as_display(&date)?;
+    let date_formatted = storage_datetime_as_display(&date)?;
     
     Ok(BlogPost { 
         author: stmt.read("Author")?, 
@@ -22,11 +22,11 @@ pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOp
         comments: None })
 }
 
-pub fn comment_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogComment, Box<dyn std::error::Error>> {
+pub fn comment_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogComment> {
     let content: String = stmt.read("Content")?;
     let markdown = comrak::markdown_to_html(&content, markdown_options);
     let date: String = stmt.read("Date")?;
-    let date_formatted = super::storage_datetime_as_display(&date)?;
+    let date_formatted = storage_datetime_as_display(&date)?;
 
     Ok(BlogComment { 
         id: stmt.read("Id")?, 
