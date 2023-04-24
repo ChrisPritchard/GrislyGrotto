@@ -2,29 +2,31 @@
 {% block title %}Archives{% endblock title %}
 {% block content %}
     <h2>Archives</h2>
-    <ul class="years">
-        {% for year in years %}
-            <li>
-                <h3>{{ year.year }}</h3>
-                <ul class="months">
-                    {% for month in year.months %}
-                        <li>
-                            <a href="/archives/{{ month.month }}/{{ year.year }}">{{ month.month }} ({{ month.count }})</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
-    <div class="stories-container">
-        <h2>Stories</h2>
-        <ul class="stories">
-            {% for story in stories %}
-            <li>
-                <a href="/post/{{ story.key }}"><h3>{{ story.title }} ({{ story.word_count }} words)</h3></a>
-                <span>Posted by {{ story.author }} at {{ story.date }}</span>
-            </li>
+    <div class="archives_lists">
+        <ul class="years">
+            {% for year in years %}
+                <li class="year_container">
+                    <h3>{{ year.year }}</h3>
+                    <ul class="months">
+                        {% for month in year.months %}
+                            <li>
+                                <a href="/archives/{{ month.month }}/{{ year.year }}">{{ month.month }} ({{ month.count }})</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
             {% endfor %}
         </ul>
+        <div class="stories_container">
+            <h2>Stories</h2>
+            <ul class="stories">
+                {% for story in stories %}
+                <li>
+                    <a href="/post/{{ story.key }}"><h3 class="story_title">{{ story.title }} ({{ story.word_count }} words)</h3></a>
+                    <span>Posted by {{ story.author }} at {{ story.date }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock content %}

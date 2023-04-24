@@ -110,3 +110,33 @@ footer {
 .next_link {
     text-align: right;
 }
+
+.archives_lists {
+    display: flex;
+    flex-direction: row;
+}
+
+.archives_lists .years {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 0;
+}
+
+.year_container {
+    width: 30%;
+}
+
+.archives_lists .stories_container {
+    flex: 1
+}
+
+.story_title {
+    margin-bottom: 0;
+}
+
+.years, .months, .stories {
+    list-style: none;
+    padding-left: 0;
+}
