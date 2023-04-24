@@ -2,7 +2,7 @@ use crate::model::{YearSet, BlogPost};
 
 use super::{prelude::*, *};
 
-pub async fn get_month_counts(current_user: String) -> Result<Vec<YearSet>> {
+pub async fn get_month_counts(current_user: &str) -> Result<Vec<YearSet>> {
     let connection = db()?;
 
     let mut stmt = connection.prepare(sql::SELECT_MONTH_COUNTS)?;
@@ -34,7 +34,7 @@ pub async fn get_month_counts(current_user: String) -> Result<Vec<YearSet>> {
     Ok(all_years)
 }
 
-pub async fn get_stories(current_user: String) -> Result<Vec<BlogPost>> {
+pub async fn get_stories(current_user: &str) -> Result<Vec<BlogPost>> {
     let connection = db()?;
 
     let mut stmt = connection.prepare(sql::SELECT_STORIES)?;
@@ -52,7 +52,7 @@ pub async fn get_stories(current_user: String) -> Result<Vec<BlogPost>> {
     Ok(final_result)
 }
 
-pub async fn get_posts_in_month(year: &str, month: &str, current_user: String) -> Result<Vec<BlogPost>> {
+pub async fn get_posts_in_month(year: &str, month: &str, current_user: &str) -> Result<Vec<BlogPost>> {
 
     let month_filter = format!("{year}-{}", mapping::index_of_month(&month));
 

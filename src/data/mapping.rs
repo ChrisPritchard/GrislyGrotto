@@ -5,7 +5,7 @@ use crate::model::*;
 pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogPost> {
     let content: String = stmt.read("Content").unwrap_or("".into());
     let markdown = if content.len() > 0 { comrak::markdown_to_html(&content, markdown_options) } else { content };
-    let is_story: i64 = stmt.read("IsStory")?;
+    let is_story: i64 = stmt.read("IsStory").unwrap_or(0);
     let date: String = stmt.read("Date")?;
     let date_formatted = storage_datetime_as_display(&date)?;
     

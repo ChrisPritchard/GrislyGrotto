@@ -5,14 +5,14 @@ use super::prelude::*;
 #[get("/archives")]
 async fn archives_page(tmpl: Data<Tera>) -> impl Responder {
     
-    let counts = data::archives::get_month_counts("aquinas".to_string()).await;
+    let counts = data::archives::get_month_counts("aquinas").await;
     if let Err(err) = counts {
         error!("error getting month counts: {}", err);
         return HttpResponse::InternalServerError().body("something went wrong")
     } 
     let counts = counts.unwrap();
 
-    let stories = data::archives::get_stories("aquinas".to_string()).await;
+    let stories = data::archives::get_stories("aquinas").await;
     if let Err(err) = stories {
         error!("error getting stories: {}", err);
         return HttpResponse::InternalServerError().body("something went wrong")
@@ -46,7 +46,7 @@ struct MonthQuery {
 #[get("/archives/{month}/{year}")]
 async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>) -> impl Responder {
 
-    let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas".to_string()).await;
+    let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas").await;
     if let Err(err) = posts {
         error!("error getting month's posts: {}", err);
         return HttpResponse::InternalServerError().body("something went wrong")

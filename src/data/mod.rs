@@ -4,6 +4,7 @@ mod mapping;
 pub mod view_posts;
 pub mod comments;
 pub mod archives;
+pub mod search;
 
 mod prelude {
     pub use sqlite::{Value, State, Statement};

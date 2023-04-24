@@ -42,7 +42,7 @@ pub const INSERT_COMMENT: &str = "
         Comments (Author, Date, Content, Post_Key) 
     VALUES (?, ?, ?, ?)";
 
-/// povide: current_user
+/// provide: current_user
 pub const SELECT_MONTH_COUNTS: &str = "
 	SELECT 
 		SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
@@ -55,7 +55,7 @@ pub const SELECT_MONTH_COUNTS: &str = "
 	ORDER BY 
 		Date DESC";
 
-/// povide: current_user
+/// provide: current_user
 pub const SELECT_STORIES: &str = "
 	SELECT 
 		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -66,7 +66,7 @@ pub const SELECT_STORIES: &str = "
 		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
 	ORDER BY p.Date DESC";
 
-/// povide: 'YYYY-MM', current_user
+/// provide: 'YYYY-MM', current_user
 pub const SELECT_MONTH_POSTS: &str = "
 	SELECT 
 		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -78,3 +78,15 @@ pub const SELECT_MONTH_POSTS: &str = "
 		SUBSTR(p.Date, 0, 8) = ?
 		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
 	ORDER BY p.Date";
+
+/// provide: search_term, search_term, current_user
+pub const SELECT_SEARCH_RESULTS: &str = "
+	SELECT 
+		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+		p.Key, p.Title, p.Content, p.Date
+	FROM Posts p
+	WHERE 
+		(p.Title LIKE ? OR p.Content LIKE ?)
+		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
+	ORDER BY p.Date DESC 
+	LIMIT 50";
