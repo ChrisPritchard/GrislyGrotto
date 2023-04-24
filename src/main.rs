@@ -1,4 +1,4 @@
-use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::Logger, HttpResponse, error};
+use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error};
 
 mod model;
 mod data;
@@ -20,6 +20,7 @@ async fn main() -> std::io::Result<()> {
 
     let server = HttpServer::new(move || {
         App::new()
+            .wrap(middleware::Compress::default())
             .wrap(Logger::new("%a - %r - %s"))
             .app_data(Data::new(tera.clone()))
             .app_data(query_cfg.clone())
