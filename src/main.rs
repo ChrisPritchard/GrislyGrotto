@@ -23,13 +23,13 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::new("%a - %r - %s"))
             .app_data(Data::new(tera.clone()))
             .app_data(query_cfg.clone())
-            .service(handlers::latest_posts)
-            .service(handlers::single_post)
-            .service(handlers::add_comment)
-            .service(handlers::static_content)
-            .service(handlers::archives_page)
-            .service(handlers::search_page)
-            .service(handlers::about_page)
+            .service(handlers::view_posts::latest_posts)
+            .service(handlers::view_posts::single_post)
+            .service(handlers::comments::add_comment)
+            .service(handlers::embedded::static_content)
+            .service(handlers::archives::archives_page)
+            .service(handlers::search::search_page)
+            .service(handlers::about::about_page)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await

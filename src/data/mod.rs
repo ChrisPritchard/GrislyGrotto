@@ -1,15 +1,9 @@
 
 mod sql;
 mod mapping;
-mod view_posts;
-mod comments;
-mod archives;
-
-pub use view_posts::get_latest_posts;
-pub use view_posts::get_single_post;
-pub use comments::comment_count;
-pub use comments::add_comment;
-pub use archives::get_month_counts;
+pub mod view_posts;
+pub mod comments;
+pub mod archives;
 
 mod prelude {
     pub use sqlite::{Value, State, Statement};
