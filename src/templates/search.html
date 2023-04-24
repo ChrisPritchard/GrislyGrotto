@@ -1,5 +1,23 @@
 {% extends "master" %}
 {% block title %}Search{% endblock title %}
 {% block content %}
-Search
+    <h2>Search</h2>
+    <form method="GET">
+        <input type="text" name="search_term" autofocus maxlength="100" />
+        <input type="submit" value="Search" />
+    </form>
+    {% if search_term %}
+        {% if zero_results %}
+            <div>No results found for '{{ search_term | escape }}'</div>
+        {% else %}
+            <h3>Results for '{{ search_term | escape }}'</h3>
+            {% for result in results %}
+                <div class="search-result">
+                    <a href="/post/{{ result.key }}"><h4>{{ result.title }}</h4></a>
+                    <div>{{ result.content }}</div>
+                    <span>Posted by {{ result.author }} at {{ result.date }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
 {% endblock content %}
