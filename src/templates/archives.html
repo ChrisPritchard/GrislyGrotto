@@ -2,7 +2,7 @@
 {% block title %}Archives{% endblock title %}
 {% block content %}
     <h2>Archives</h2>
-    Currently, {{ total_posts }} blog posts in total over {{ total_years }} years!
+    {{ total_posts }} total blog posts over {{ total_years }} years, grouped by month below.
     <div class="archives_lists">
         <ul class="years">
             {% for year in years %}

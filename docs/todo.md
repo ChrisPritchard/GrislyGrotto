@@ -31,7 +31,6 @@
 
 - all posts in month
 - prev/next month
-- all stories
 
 - search
 - search results
@@ -49,3 +48,5 @@
 - latest next 5 / prev 5
 - about
 - all months with post counts
+- all stories
+- minimal embedded favicon
