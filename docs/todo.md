@@ -5,8 +5,6 @@
 - s3 image storage
 - content and profile image links
 
-- next post / prev post
-
 - edit comment
 - delete comment
 
@@ -50,3 +48,7 @@
 - minimal embedded favicon
 - all posts in month
 - prev/next month
+
+## Stretch / Possible ideas
+
+- next post / prev post: can't see where this would be needed, even though the current site has it
