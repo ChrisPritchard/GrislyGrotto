@@ -1,5 +1,5 @@
 
-/// provide: username, count, skip
+/// provide: current_user, count, skip
 pub const SELECT_LATEST_POSTS: &str = "
 	SELECT 
 		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -11,7 +11,7 @@ pub const SELECT_LATEST_POSTS: &str = "
 	ORDER BY p.Date DESC 
 	LIMIT ? OFFSET ?";
 
-/// provide: key, username
+/// provide: key, current_user
 pub const SELECT_SINGLE_POST: &str = "
 	SELECT 
 		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
@@ -42,7 +42,7 @@ pub const INSERT_COMMENT: &str = "
         Comments (Author, Date, Content, Post_Key) 
     VALUES (?, ?, ?, ?)";
 
-/// povide: author
+/// povide: current_user
 pub const SELECT_MONTH_COUNTS: &str = "
 	SELECT 
 		SUBSTR(Date, 0, 8) as Month, COUNT(Key) as Count 
@@ -54,3 +54,14 @@ pub const SELECT_MONTH_COUNTS: &str = "
 		Month 
 	ORDER BY 
 		Date DESC";
+
+/// povide: current_user
+pub const SELECT_STORIES: &str = "
+	SELECT 
+		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+		p.Key, p.Title, p.Date, p.IsStory, p.WordCount
+	FROM Posts p 
+	WHERE 
+		p.IsStory = 1
+		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
+	ORDER BY p.Date DESC";

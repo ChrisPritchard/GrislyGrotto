@@ -13,7 +13,8 @@ mod prelude {
 use prelude::*;
 
 const DATABASE_PATH: &str = "./grislygrotto.db";
-const STORAGE_DATE_FORMAT: &str = "%Y-%m-%d %H:%M:%S";
+const STORAGE_DATE_FORMAT_1: &str = "%Y-%m-%d %H:%M:%S";
+const STORAGE_DATE_FORMAT_2: &str = "%Y-%m-%d %H:%M:%S.%f";
 const STORAGE_DISPLAY_FORMAT: &str = "%l:%M %p, on %A, %e %B %Y";
 
 fn markdown_options() -> comrak::ComrakOptions {
@@ -28,10 +29,15 @@ fn db() -> Result<sqlite::Connection> {
 }
 
 fn current_datetime_for_storage() -> String {
-    format!("{}", chrono::offset::Local::now().format(STORAGE_DATE_FORMAT))
+    format!("{}", chrono::offset::Local::now().format(STORAGE_DATE_FORMAT_1))
 }
 
 fn storage_datetime_as_display(datetime: &str) -> Result<String> {
-    let parsed = chrono::NaiveDateTime::parse_from_str(datetime, STORAGE_DATE_FORMAT)?;
-    Ok(format!("{}", parsed.format(STORAGE_DISPLAY_FORMAT)))
+    let format_string = if datetime.contains(".") { STORAGE_DATE_FORMAT_2 } else { STORAGE_DATE_FORMAT_1 };
+    let parsed = chrono::NaiveDateTime::parse_from_str(datetime, format_string);
+    if let Err(err) = parsed {
+        log::error!("error parsing date value '{}', error: {}", datetime, err);
+        return Err(err.into())
+    }
+    Ok(format!("{}", parsed.unwrap().format(STORAGE_DISPLAY_FORMAT)))
 }

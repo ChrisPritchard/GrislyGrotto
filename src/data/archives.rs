@@ -1,4 +1,4 @@
-use crate::model::YearSet;
+use crate::model::{YearSet, BlogPost};
 
 use super::{prelude::*, *};
 
@@ -32,4 +32,22 @@ pub async fn get_month_counts(current_user: String) -> Result<Vec<YearSet>> {
     all_years.push(current_year.unwrap());
 
     Ok(all_years)
+}
+
+pub async fn get_stories(current_user: String) -> Result<Vec<BlogPost>> {
+    let connection = db()?;
+
+    let mut stmt = connection.prepare(sql::SELECT_STORIES)?;
+    stmt.bind::<&[(_, Value)]>(&[
+        (1, current_user.into()),])?;
+
+    let mut final_result = Vec::new();
+    let markdown_options = markdown_options();	
+
+    while let Ok(State::Row) = stmt.next() {
+        let post = mapping::post_from_statement(&stmt, &markdown_options)?;
+        final_result.push(post);
+    }
+
+    Ok(final_result)
 }

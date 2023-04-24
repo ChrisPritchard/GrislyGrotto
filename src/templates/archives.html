@@ -16,4 +16,15 @@
             </li>
         {% endfor %}
     </ul>
+    <div class="stories-container">
+        <h2>Stories</h2>
+        <ul class="stories">
+            {% for story in stories %}
+            <li>
+                <a href="/post/{{ story.key }}"><h3>{{ story.title }} ({{ story.word_count }} words)</h3></a>
+                <span>Posted by {{ story.author }} at {{ story.date }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock content %}

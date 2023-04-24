@@ -12,8 +12,16 @@ async fn archives_page(tmpl: Data<Tera>) -> impl Responder {
     } 
     let counts = counts.unwrap();
 
+    let stories = data::archives::get_stories("aquinas".to_string()).await;
+    if let Err(err) = stories {
+        error!("error getting stories: {}", err);
+        return HttpResponse::InternalServerError().body("something went wrong")
+    } 
+    let stories = stories.unwrap();
+
     let mut context = tera::Context::new();
     context.insert("years", &counts);
+    context.insert("stories", &stories);
 
     let html = tmpl.render("archives", &context).expect("template rendering failed");
     HttpResponse::Ok().body(html)

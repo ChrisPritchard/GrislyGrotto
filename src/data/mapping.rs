@@ -3,15 +3,15 @@ use super::{prelude::*, *};
 use crate::model::*;
 
 pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogPost> {
-    let content: String = stmt.read("Content")?;
-    let markdown = comrak::markdown_to_html(&content, markdown_options);
+    let content: String = stmt.read("Content").unwrap_or("".into());
+    let markdown = if content.len() > 0 { comrak::markdown_to_html(&content, markdown_options) } else { content };
     let is_story: i64 = stmt.read("IsStory")?;
     let date: String = stmt.read("Date")?;
     let date_formatted = storage_datetime_as_display(&date)?;
     
     Ok(BlogPost { 
         author: stmt.read("Author")?, 
-        author_username: stmt.read("Author_Username")?, 
+        author_username: stmt.read("Author_Username").unwrap_or("".into()), 
         key: stmt.read("Key").unwrap_or("".into()), 
         title: stmt.read("Title")?, 
         content: markdown,
