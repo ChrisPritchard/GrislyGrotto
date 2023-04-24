@@ -19,9 +19,19 @@ async fn archives_page(tmpl: Data<Tera>) -> impl Responder {
     } 
     let stories = stories.unwrap();
 
+    let mut total_posts = 0;
+    for year in &counts {
+        for month in &year.months {
+            total_posts += month.count;
+        }
+    }
+    let total_years = &counts[0].year.parse::<i64>().unwrap() - &counts[counts.len()-1].year.parse::<i64>().unwrap();
+
     let mut context = tera::Context::new();
     context.insert("years", &counts);
     context.insert("stories", &stories);
+    context.insert("total_posts", &total_posts);
+    context.insert("total_years", &total_years);
 
     let html = tmpl.render("archives", &context).expect("template rendering failed");
     HttpResponse::Ok().body(html)
