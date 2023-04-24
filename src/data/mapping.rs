@@ -49,3 +49,14 @@ pub fn month_count_from_statement(stmt: &Statement) -> Result<MonthCount> {
     Ok(MonthCount { 
         year, month, count: stmt.read("Count")? })
 }
+
+pub fn index_of_month(month_name: &str) -> String {
+    let mut index = -1;
+    for month in MONTHS {
+        index += 1;
+        if month.to_lowercase() == month_name.to_lowercase() {
+            return format!("{:0>2}", index);
+        }
+    }
+    return "INVALID".into() // invalid month, will result in no data
+}

@@ -36,3 +36,32 @@ async fn archives_page(tmpl: Data<Tera>) -> impl Responder {
     let html = tmpl.render("archives", &context).expect("template rendering failed");
     HttpResponse::Ok().body(html)
 }
+
+#[derive(Deserialize)]
+struct MonthQuery {
+    month: String,
+    year: String,
+}
+
+#[get("/archives/{month}/{year}")]
+async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>) -> impl Responder {
+
+    let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas".to_string()).await;
+    if let Err(err) = posts {
+        error!("error getting month's posts: {}", err);
+        return HttpResponse::InternalServerError().body("something went wrong")
+    } 
+    let posts = posts.unwrap();
+
+    if posts.len() == 0 {
+        return HttpResponse::NotFound().body("page not found")
+    }
+
+    let mut context = tera::Context::new();
+    context.insert("posts", &posts);
+    context.insert("year", &path.year);
+    context.insert("month", &path.month);
+
+    let html = tmpl.render("month", &context).expect("template rendering failed");
+    HttpResponse::Ok().body(html)
+}

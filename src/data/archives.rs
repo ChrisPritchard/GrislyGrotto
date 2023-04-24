@@ -51,3 +51,24 @@ pub async fn get_stories(current_user: String) -> Result<Vec<BlogPost>> {
 
     Ok(final_result)
 }
+
+pub async fn get_posts_in_month(year: &str, month: &str, current_user: String) -> Result<Vec<BlogPost>> {
+
+    let month_filter = format!("{year}-{}", mapping::index_of_month(&month));
+
+    let connection = db()?;
+    let mut stmt = connection.prepare(sql::SELECT_MONTH_POSTS)?;
+    stmt.bind::<&[(_, Value)]>(&[
+        (1, month_filter.into()), 
+        (2, current_user.into()),])?;
+
+    let mut final_result = Vec::new();
+    let markdown_options = markdown_options();	
+
+    while let Ok(State::Row) = stmt.next() {
+        let post = mapping::post_from_statement(&stmt, &markdown_options)?;
+        final_result.push(post);
+    }
+
+    Ok(final_result)
+}

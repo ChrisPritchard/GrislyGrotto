@@ -65,3 +65,16 @@ pub const SELECT_STORIES: &str = "
 		p.IsStory = 1
 		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
 	ORDER BY p.Date DESC";
+
+/// povide: 'YYYY-MM', current_user
+pub const SELECT_MONTH_POSTS: &str = "
+	SELECT 
+		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
+		p.Author_Username as AuthorUsername,
+		p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
+		(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
+	FROM Posts p
+	WHERE 
+		SUBSTR(p.Date, 0, 8) = ?
+		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
+	ORDER BY p.Date";

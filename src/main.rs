@@ -29,6 +29,7 @@ async fn main() -> std::io::Result<()> {
             .service(handlers::comments::add_comment)
             .service(handlers::embedded::static_content)
             .service(handlers::archives::archives_page)
+            .service(handlers::archives::posts_for_month)
             .service(handlers::search::search_page)
             .service(handlers::about::about_page)
     });  
