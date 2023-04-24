@@ -2,9 +2,6 @@
 
 ## To Start
 
-- s3 image storage
-- content and profile image links
-
 - argon2 functionality
 - cookie functionality
 - login
@@ -20,6 +17,7 @@
 - user details display
 - update user details
 
+- s3 image storage uploads
 - upload file ui
 
 - full styling
@@ -28,6 +26,8 @@
 
 ## doing
 
+- s3 image storage retrieval
+- content and profile image links
 
 ## Done
 

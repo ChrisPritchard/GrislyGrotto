@@ -8,6 +8,8 @@ mod templates;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
+    dotenv::dotenv().ok();
+
     let tera = templates::template_engine();
 
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
@@ -24,10 +26,11 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::new("%a - %r - %s"))
             .app_data(Data::new(tera.clone()))
             .app_data(query_cfg.clone())
+            .service(handlers::embedded::static_content)
+            .service(handlers::content::stored_content)
             .service(handlers::view_posts::latest_posts)
             .service(handlers::view_posts::single_post)
             .service(handlers::comments::add_comment)
-            .service(handlers::embedded::static_content)
             .service(handlers::archives::archives_page)
             .service(handlers::archives::posts_for_month)
             .service(handlers::search::search_page)

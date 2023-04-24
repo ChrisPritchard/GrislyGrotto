@@ -1,5 +1,6 @@
 
 pub mod embedded;
+pub mod content;
 pub mod view_posts;
 pub mod comments;
 pub mod archives;
