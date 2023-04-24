@@ -140,3 +140,8 @@ footer {
     list-style: none;
     padding-left: 0;
 }
+
+div.search-result h4 {
+    margin-bottom: 0;
+    text-transform: uppercase;
+}

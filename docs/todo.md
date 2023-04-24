@@ -28,8 +28,6 @@
 
 ## doing
 
-- search
-- search results
 
 ## Done
 
@@ -48,6 +46,8 @@
 - minimal embedded favicon
 - all posts in month
 - prev/next month
+- search
+- search results
 
 ## Stretch / Possible ideas
 
