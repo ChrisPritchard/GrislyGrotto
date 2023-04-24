@@ -60,3 +60,20 @@ pub fn index_of_month(month_name: &str) -> String {
     }
     return "INVALID".into() // invalid month, will result in no data
 }
+
+pub fn prev_next_month(month_name: &str) -> Option<(String, String)> {
+    let mut index = 0;
+    for month in MONTHS {
+        if month.to_lowercase() == month_name.to_lowercase() {
+            if index == 1 {
+                return Some((MONTHS[MONTHS.len()-1].into(),MONTHS[index+1].into()))
+            } else if index == MONTHS.len()-1 {
+                return Some((MONTHS[index-1].into(),MONTHS[1].into()))
+            } else {
+                return Some((MONTHS[index-1].into(),MONTHS[index+1].into()))
+            }
+        }
+        index += 1;
+    }
+    None
+}

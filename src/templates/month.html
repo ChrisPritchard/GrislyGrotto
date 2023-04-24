@@ -12,20 +12,20 @@
         </div>
     </div>
     {% endfor %}
-    {# <nav class="prev_next_page">
-        {% if page > 0 %}
+    <nav class="prev_next_page">
+        {% if prev_month %}
         <div class="prev_link">
-            <form method="GET">
-                <input type="hidden" name="page" value="{{ page - 1 }}">
-                <input type="submit" value="Previous Page">
+            <form method="GET" action="/archives/{{ prev_month }}/{{ prev_year }}">
+                <input type="submit" value="{{ prev_month }}, {{ prev_year }}">
             </form>
         </div>
         {% endif %}
+        {% if next_month %}
         <div class="next_link">
-            <form method="GET">
-                <input type="hidden" name="page" value="{{ page + 1 }}">
-                <input type="submit" value="Next Page">
+            <form method="GET" action="/archives/{{ next_month }}/{{ next_year }}">
+                <input type="submit" value="{{ next_month }}, {{ next_year }}">
             </form>
         </div>
-    </nav> #}
+        {% endif %}
+    </nav>
 {% endblock content %}

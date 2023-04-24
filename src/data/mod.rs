@@ -12,6 +12,8 @@ mod prelude {
 
 use prelude::*;
 
+pub use mapping::prev_next_month;
+
 const DATABASE_PATH: &str = "./grislygrotto.db";
 const STORAGE_DATE_FORMAT_1: &str = "%Y-%m-%d %H:%M:%S";
 const STORAGE_DATE_FORMAT_2: &str = "%Y-%m-%d %H:%M:%S.%f";

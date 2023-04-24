@@ -2,6 +2,9 @@
 
 ## To Start
 
+- s3 image storage
+- content and profile image links
+
 - next post / prev post
 
 - edit comment
@@ -19,8 +22,6 @@
 - user details display
 - update user details
 
-- s3 image storage
-- content and profile image links
 - upload file ui
 
 - full styling
@@ -28,9 +29,6 @@
 - csp, security headers
 
 ## doing
-
-- all posts in month
-- prev/next month
 
 - search
 - search results
@@ -50,3 +48,5 @@
 - all months with post counts
 - all stories
 - minimal embedded favicon
+- all posts in month
+- prev/next month
