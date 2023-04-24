@@ -5,9 +5,6 @@
 - s3 image storage
 - content and profile image links
 
-- edit comment
-- delete comment
-
 - argon2 functionality
 - cookie functionality
 - login
@@ -16,6 +13,9 @@
 - new post
 - edit post
 - delete post
+
+- edit comment
+- delete comment
 
 - user details display
 - update user details
