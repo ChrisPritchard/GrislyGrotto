@@ -5,6 +5,9 @@
 - cookie functionality
 - light mode / dark mode
 
+- edit comment
+- delete comment
+
 - argon2 functionality
 - login
 - login post
@@ -13,14 +16,11 @@
 - edit post
 - delete post
 
-- edit comment
-- delete comment
+- s3 image storage uploads
+- upload file ui
 
 - user details display
 - update user details
-
-- s3 image storage uploads
-- upload file ui
 
 - full styling
 - csp, security headers
