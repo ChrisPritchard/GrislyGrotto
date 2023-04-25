@@ -18,6 +18,8 @@ rust-s3 = "0.33.0"
 serde = { version = "1.0.160", features = ["derive"] }
 sqlite = "0.30.4"
 tera = "1.18.1"
+tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
+tree_magic = "0.2.3"
 
 # [profile.release]
 # strip = true
