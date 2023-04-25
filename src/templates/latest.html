@@ -2,14 +2,17 @@
 {% block title %}Latest Posts{% endblock title %}
 {% block content %}
     {% for post in posts %}
-    <div>
-        <a href="/post/{{ post.key }}">
-            <h3 class="post_title">{{ post.title }}</h3>
-        </a>
-        <div class="post_summary">Posted by {{ post.author }} at {{ post.date }}</div>
-        <div class="post_content">
-            {{ post.content }}
+    <div class="post_header">
+        <img class="profile_image" src="/content/{{ post.author_username }}" />
+        <div class="post_info">
+            <a href="/post/{{ post.key }}">
+                <h3 class="post_title">{{ post.title }}</h3>
+            </a>
+            <div class="post_summary">Posted by {{ post.author }} at {{ post.date }}. <a href="/post/{{ post.key }}">Comments ({{ post.comment_count }})</a></div>
         </div>
+    </div>
+    <div class="post_content">
+        {{ post.content }}
     </div>
     {% endfor %}
     <nav class="prev_next_page">

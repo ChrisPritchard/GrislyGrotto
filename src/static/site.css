@@ -63,7 +63,25 @@ footer {
     font-size: 0.8em;
 }
 
+.post_header {
+    display: flex;
+    flex-direction: row;
+}
+
+.profile_image {
+    max-width: 50px;
+    height: 50px;
+    flex: 1;
+    border: 1px solid black;
+    margin: 2px 8px 5px 5px;
+}
+
+.profile_info {
+    flex: 1;
+}
+
 .post_title {
+    margin-top: 0;
     margin-bottom: 0;
     font-size: 1.5em;
 }

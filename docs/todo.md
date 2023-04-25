@@ -2,8 +2,10 @@
 
 ## To Start
 
-- argon2 functionality
 - cookie functionality
+- light mode / dark mode
+
+- argon2 functionality
 - login
 - login post
 
@@ -21,13 +23,10 @@
 - upload file ui
 
 - full styling
-- light mode / dark mode
 - csp, security headers
 
 ## doing
 
-- s3 image storage retrieval
-- content and profile image links
 
 ## Done
 
@@ -48,6 +47,8 @@
 - prev/next month
 - search
 - search results
+- s3 image storage retrieval
+- profile image links
 
 ## Stretch / Possible ideas
 
