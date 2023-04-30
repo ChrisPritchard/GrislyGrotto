@@ -3,6 +3,9 @@
     <head>
         <title>The Grisly Grotto - {% block title %}{% endblock title %}</title>
         <link href="/static/site.css" rel="stylesheet" />
+        {% if style == "dark" %}
+        <link href="/static/site-dark.css" rel="stylesheet" />
+        {% endif %}
         <meta charset="utf-8" />
         <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,6 +24,10 @@
                 <li><a href="/about">About</a></li>
             </ul>
         </nav>
+        <div>
+            <a href="/style/light">light mode</a>
+            <a href="/style/dark">dark mode</a>
+        </div>
         {% block content %}{% endblock content %}
         <footer>Grisly Grotto v18. Site designed and coded by <a href="mailto:chris@grislygrotto.nz">Christopher Pritchard</a>, 2023</footer>
     </body>

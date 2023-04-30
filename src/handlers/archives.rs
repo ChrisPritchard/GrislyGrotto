@@ -3,7 +3,7 @@ use crate::data;
 use super::prelude::*;
 
 #[get("/archives")]
-async fn archives_page(tmpl: Data<Tera>) -> impl Responder {
+async fn archives_page(tmpl: Data<Tera>, session: Session) -> impl Responder {
     
     let counts = data::archives::get_month_counts("aquinas").await;
     if let Err(err) = counts {
@@ -27,7 +27,7 @@ async fn archives_page(tmpl: Data<Tera>) -> impl Responder {
     }
     let total_years = &counts[0].year.parse::<i64>().unwrap() - &counts[counts.len()-1].year.parse::<i64>().unwrap();
 
-    let mut context = tera::Context::new();
+    let mut context = super::default_tera_context(session);
     context.insert("years", &counts);
     context.insert("stories", &stories);
     context.insert("total_posts", &total_posts);
@@ -44,7 +44,7 @@ struct MonthQuery {
 }
 
 #[get("/archives/{month}/{year}")]
-async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>) -> impl Responder {
+async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Session) -> impl Responder {
 
     let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas").await;
     if let Err(err) = posts {
@@ -69,7 +69,7 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>) -> impl Respo
         next_year = (next_year.parse::<i64>().unwrap() + 1).to_string();
     }
 
-    let mut context = tera::Context::new();
+    let mut context = super::default_tera_context(session);
     context.insert("posts", &posts);
     context.insert("year", &path.year);
     context.insert("month", &month);

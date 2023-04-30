@@ -8,7 +8,7 @@ struct PageInfo {
 }
 
 #[get("/")]
-async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>) -> impl Responder {
+async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session) -> impl Responder {
 
     let page = query.page.unwrap_or(0);
     let posts = data::view_posts::get_latest_posts(page, "aquinas").await;
@@ -18,7 +18,7 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>) -> impl Responde
     } 
     let posts = posts.unwrap();
 
-    let mut context = tera::Context::new();
+    let mut context = super::default_tera_context(session);
     context.insert("posts", &posts);
     context.insert("page", &page);
 
@@ -27,7 +27,7 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>) -> impl Responde
 }
 
 #[get("/post/{key}")]
-async fn single_post(key: Path<String>, tmpl: Data<Tera>) -> impl Responder {
+async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> impl Responder {
     let post = data::view_posts::get_single_post(&key, "aquinas").await;
     if let Err(err) = post {
         error!("error getting single post: {}", err);
@@ -42,7 +42,7 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>) -> impl Responder {
     let mut post = post.unwrap();
     post.key = key.to_string();
     
-    let mut context = tera::Context::new();
+    let mut context = super::default_tera_context(session);
     context.insert("post", &post);
 
     let html = tmpl.render("single", &context).expect("template rendering failed");

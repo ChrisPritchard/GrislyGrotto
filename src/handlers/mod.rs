@@ -1,4 +1,5 @@
 
+pub mod style;
 pub mod embedded;
 pub mod content;
 pub mod view_posts;
@@ -12,4 +13,14 @@ mod prelude {
     pub use tera::Tera;
     pub use serde::Deserialize;
     pub use log::error;
+    pub use actix_session::Session;
+}
+
+fn default_tera_context(session: actix_session::Session) -> tera::Context {
+    let mut context = tera::Context::new();
+    
+    let style: String = session.get("style").unwrap().unwrap_or("light".into());
+    context.insert("style", &style.clone());
+    
+    context
 }
