@@ -16,11 +16,20 @@
     <a name="comments"></a>
     <h3>Comments</h3>
     {% for comment in post.comments %}
-        <div class="comment_container">
+        <div class="comment_container" {% if comment.owned %}data-comment="{{ comment.id }}"{% endif %}>
             <div class="comment_summary">Commented by {{ comment.author }} at {{ comment.date }}</div>
-            <div class="comment_content">
+            <div {% if comment.owned %}data-comment="{{ comment.id }}"{% endif %} class="comment_content">
                 {{ comment.content }}
             </div>
+            {% if comment.owned %}
+            <div>
+                <a href="#" data-comment="{{ comment.id }}" class="comment_link edit">edit</a>
+                <a href="#" data-comment="{{ comment.id }}" class="comment_link save hide">save</a>
+                <a href="#" data-comment="{{ comment.id }}" class="comment_link cancel hide">cancel</a>
+                <a href="#" data-comment="{{ comment.id }}" class="comment_link delete">delete</a>
+                <br /><span data-comment="{{ comment.id }}" class="error"></span>
+            </div>
+            {% endif %}
         </div>
     {% endfor %}
     <form id="comment_form" method="post" action="/post/{{ post.key }}/comment">

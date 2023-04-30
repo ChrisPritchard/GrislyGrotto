@@ -179,3 +179,12 @@ div.search-result h4 {
     margin-bottom: 0;
     text-transform: uppercase;
 }
+
+.comment-link {
+    font-size: 0.6em;
+    font-weight: normal;
+}
+
+.comment_link.hide {
+    display: none;
+}

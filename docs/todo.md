@@ -2,12 +2,6 @@
 
 ## To Start
 
-- cookie functionality
-- light mode / dark mode
-
-- edit comment
-- delete comment
-
 - argon2 functionality
 - login
 - login post
@@ -27,6 +21,8 @@
 
 ## doing
 
+- edit comment
+- delete comment
 
 ## Done
 
@@ -49,7 +45,10 @@
 - search results
 - s3 image storage retrieval
 - profile image links
+- cookie functionality
+- light mode / dark mode
 
 ## Stretch / Possible ideas
 
 - next post / prev post: can't see where this would be needed, even though the current site has it
+- themes, like the current site has. was always a bit messy, not sure it added much even if fun
