@@ -70,8 +70,7 @@ pub const SELECT_STORIES: &str = "
 pub const SELECT_MONTH_POSTS: &str = "
 	SELECT 
 		(SELECT DisplayName FROM Authors WHERE Username = p.Author_Username) as Author,
-		p.Author_Username as AuthorUsername,
-		p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
+		p.Author_Username, p.Key, p.Title, p.Content, p.Date, p.IsStory, p.WordCount, 
 		(SELECT COUNT(*) FROM Comments WHERE Post_Key = p.Key) as CommentCount
 	FROM Posts p
 	WHERE 
