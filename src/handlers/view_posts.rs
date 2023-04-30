@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use super::prelude::*;
 
 use crate::data;
@@ -28,7 +30,9 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session
 
 #[get("/post/{key}")]
 async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> impl Responder {
-    let post = data::view_posts::get_single_post(&key, "aquinas").await;
+    let owned_comments = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+
+    let post = data::view_posts::get_single_post(&key, "aquinas", &owned_comments).await;
     if let Err(err) = post {
         error!("error getting single post: {}", err);
         return HttpResponse::InternalServerError().body("something went wrong")

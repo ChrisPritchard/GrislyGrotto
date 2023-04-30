@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use super::{prelude::*, *};
 
 use crate::model::*;
@@ -22,18 +24,19 @@ pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOp
         comments: None })
 }
 
-pub fn comment_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOptions) -> Result<BlogComment> {
+pub fn comment_from_statement(stmt: &Statement, owned_comments: &HashSet<i64>, markdown_options: &comrak::ComrakOptions) -> Result<BlogComment> {
     let content: String = stmt.read("Content")?;
     let markdown = comrak::markdown_to_html(&content, markdown_options);
     let date: String = stmt.read("Date")?;
     let date_formatted = storage_datetime_as_display(&date)?;
+    let id = stmt.read("Id")?;
 
     Ok(BlogComment { 
-        id: stmt.read("Id")?, 
+        id, 
         author: stmt.read("Author")?, 
         date: date_formatted, 
         content: markdown,
-        owned: false })
+        owned: owned_comments.contains(&id) })
 }
 
 const MONTHS: [&str; 13] = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use super::prelude::*;
 
 use crate::data;
@@ -10,7 +12,7 @@ struct CommentForm {
 }
 
 #[post("/post/{key}/comment")]
-async fn add_comment(key: Path<String>, form: Form<CommentForm>) -> Either<HttpResponse, Redirect> {
+async fn add_comment(key: Path<String>, form: Form<CommentForm>, session: Session) -> Either<HttpResponse, Redirect> {
 
     if form.category != "user" || form.author.len() == 0 || form.content.len() == 0 || form.content.len() > 1000 {
         return Either::Left(HttpResponse::BadRequest().body("invalid comment"))
@@ -35,6 +37,12 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>) -> Either<HttpR
         error!("error adding comment to database: {}", err);
         return Either::Left(HttpResponse::InternalServerError().body("something went wrong"))
     }
+
+    let new_id = result.unwrap();
+
+    let mut owned_comments = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    owned_comments.insert(new_id);
+    let _ = session.insert("owned_comments", owned_comments);
 
     let path = format!("/post/{}#comments", key.to_string());
     Either::Right(Redirect::to(path).see_other()) // 'see other' will make the request to the new path a GET

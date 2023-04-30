@@ -42,6 +42,9 @@ pub const INSERT_COMMENT: &str = "
         Comments (Author, Date, Content, Post_Key) 
     VALUES (?, ?, ?, ?)";
 
+pub const GET_LAST_COMMENT_ID: &str = "
+	SELECT Id FROM Comments ORDER BY Id DESC LIMIT 1";
+
 /// provide: current_user
 pub const SELECT_MONTH_COUNTS: &str = "
 	SELECT 

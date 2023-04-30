@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use super::{prelude::*, *};
 
 use crate::model::*;
@@ -22,7 +24,7 @@ pub async fn get_latest_posts(page: usize, current_user: &str) -> Result<Vec<Blo
     Ok(final_result)
 }
 
-pub async fn get_single_post(key: &str, current_user: &str) -> Result<Option<BlogPost>> {
+pub async fn get_single_post(key: &str, current_user: &str, owned_comments: &HashSet<i64>) -> Result<Option<BlogPost>> {
     let connection = db()?;
 
     let mut stmt = connection.prepare(sql::SELECT_SINGLE_POST)?;
@@ -44,7 +46,7 @@ pub async fn get_single_post(key: &str, current_user: &str) -> Result<Option<Blo
         (1, key.clone().into())])?;
 
     while let Ok(State::Row) = stmt.next() {
-        let comment = mapping::comment_from_statement(&stmt, &markdown_options)?;
+        let comment = mapping::comment_from_statement(&stmt, owned_comments, &markdown_options)?;
         comments.push(comment);
     }
 

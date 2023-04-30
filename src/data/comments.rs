@@ -1,6 +1,6 @@
 use super::{prelude::*, *};
 
-pub async fn add_comment(key: &str, author: &str, content: &str) -> Result<()> {
+pub async fn add_comment(key: &str, author: &str, content: &str) -> Result<i64> {
     let date = current_datetime_for_storage();
 
     let connection = db()?;
@@ -13,7 +13,12 @@ pub async fn add_comment(key: &str, author: &str, content: &str) -> Result<()> {
 
     let _ = stmt.next();
 
-    Ok(())
+    let mut stmt = connection.prepare(sql::GET_LAST_COMMENT_ID)?;
+    let _ = stmt.next();
+    
+    let id: i64 = stmt.read("Id")?;
+
+    Ok(id)
 }
 
 pub async fn comment_count(key: &str) -> Result<Option<i64>> {
