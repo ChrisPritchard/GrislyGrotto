@@ -27,7 +27,7 @@ async fn archives_page(tmpl: Data<Tera>, session: Session) -> impl Responder {
     }
     let total_years = &counts[0].year.parse::<i64>().unwrap() - &counts[counts.len()-1].year.parse::<i64>().unwrap();
 
-    let mut context = super::default_tera_context(session);
+    let mut context = super::default_tera_context(&session);
     context.insert("years", &counts);
     context.insert("stories", &stories);
     context.insert("total_posts", &total_posts);
@@ -69,7 +69,7 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
         next_year = (next_year.parse::<i64>().unwrap() + 1).to_string();
     }
 
-    let mut context = super::default_tera_context(session);
+    let mut context = super::default_tera_context(&session);
     context.insert("posts", &posts);
     context.insert("year", &path.year);
     context.insert("month", &month);

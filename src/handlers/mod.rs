@@ -16,11 +16,16 @@ mod prelude {
     pub use actix_session::Session;
 }
 
-fn default_tera_context(session: actix_session::Session) -> tera::Context {
+fn default_tera_context(session: &actix_session::Session) -> tera::Context {
     let mut context = tera::Context::new();
     
     let style: String = session.get("style").unwrap().unwrap_or("light".into());
     context.insert("style", &style.clone());
+    
+    let current_user: Option<String> = session.get("current_user").unwrap();
+    if let Some(username) = current_user {
+        context.insert("current_user", &username.clone());
+    }
     
     context
 }

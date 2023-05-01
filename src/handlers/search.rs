@@ -9,7 +9,7 @@ struct SearchInfo {
 
 #[get("/search")]
 async fn search_page(tmpl: Data<Tera>, query: Query<SearchInfo>, session: Session) -> impl Responder {
-    let mut context = super::default_tera_context(session);
+    let mut context = super::default_tera_context(&session);
 
     if let Some(search_term) = &query.search_term {
         context.insert("search_term", &search_term);

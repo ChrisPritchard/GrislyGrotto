@@ -104,3 +104,10 @@ pub const SELECT_SEARCH_RESULTS: &str = "
 		AND (p.Title NOT LIKE '[DRAFT] %' OR p.Author_Username = ?)
 	ORDER BY p.Date DESC 
 	LIMIT 50";
+
+/// provide: username
+pub const SELECT_USER_PASSWORD_HASH: &str = "
+	SELECT 
+		Password
+	FROM Authors
+	WHERE Username = ?";

@@ -20,7 +20,7 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session
     } 
     let posts = posts.unwrap();
 
-    let mut context = super::default_tera_context(session);
+    let mut context = super::default_tera_context(&session);
     context.insert("posts", &posts);
     context.insert("page", &page);
 
@@ -46,7 +46,7 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> i
     let mut post = post.unwrap();
     post.key = key.to_string();
     
-    let mut context = super::default_tera_context(session);
+    let mut context = super::default_tera_context(&session);
     context.insert("post", &post);
 
     let html = tmpl.render("single", &context).expect("template rendering failed");
