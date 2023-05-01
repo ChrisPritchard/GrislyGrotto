@@ -15,11 +15,10 @@
 - full styling
 - csp, security headers
 
+- logout
+
 ## doing
 
-- argon2 functionality
-- login
-- login post
 
 ## Done
 
@@ -46,6 +45,9 @@
 - light mode / dark mode
 - edit comment
 - delete comment
+- argon2 functionality
+- login
+- login post
 
 ## Stretch / Possible ideas
 
