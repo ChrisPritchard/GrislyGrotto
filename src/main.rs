@@ -43,8 +43,9 @@ async fn main() -> Result<()> {
             .service(handlers::archives::posts_for_month)
             .service(handlers::search::search_page)
             .service(handlers::about::about_page)
-            .service(handlers::login::login_page)
-            .service(handlers::login::try_login)
+            .service(handlers::account::login_page)
+            .service(handlers::account::try_login)
+            .service(handlers::account::logout)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))

@@ -15,10 +15,9 @@
 - full styling
 - csp, security headers
 
-- logout
-
 ## doing
 
+- logout
 
 ## Done
 

@@ -6,7 +6,7 @@ pub mod comments;
 pub mod archives;
 pub mod search;
 pub mod about;
-pub mod login;
+pub mod account;
 
 mod prelude {
     pub use actix_web::{Responder, get, post, web::*, HttpResponse};

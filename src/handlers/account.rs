@@ -23,7 +23,7 @@ async fn try_login(form: Form<LoginForm>, tmpl: Data<Tera>, session: Session) ->
         return Either::Left(HttpResponse::BadRequest().body("invalid comment"))
     }
 
-    let valid = data::login::validate_user(&form.username, &form.password).await;
+    let valid = data::account::validate_user(&form.username, &form.password).await;
     if let Err(err) = valid {
         error!("error validating credentials: {}", err);
         return Either::Left(HttpResponse::InternalServerError().body("something went wrong"))
@@ -40,4 +40,10 @@ async fn try_login(form: Form<LoginForm>, tmpl: Data<Tera>, session: Session) ->
 
     let html = tmpl.render("login", &context).expect("template rendering failed");
     Either::Left(HttpResponse::Ok().body(html))
+}
+
+#[get("/logout")]
+async fn logout(session: Session) -> Redirect {
+    let _ = session.remove("current_user");
+    Redirect::to("/").see_other()
 }
