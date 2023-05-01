@@ -3,6 +3,7 @@ use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, 
 
 use anyhow::Result;
 
+mod embedded;
 mod model;
 mod data;
 mod handlers;
@@ -30,7 +31,7 @@ async fn main() -> Result<()> {
             .app_data(Data::new(s3_config.clone()))
             .app_data(query_cfg.clone())
             .service(handlers::style::set_style)
-            .service(handlers::embedded::static_content)
+            .service(embedded::static_content)
             .service(handlers::content::stored_content)
             .service(handlers::view_posts::latest_posts)
             .service(handlers::view_posts::single_post)
@@ -42,6 +43,8 @@ async fn main() -> Result<()> {
             .service(handlers::archives::posts_for_month)
             .service(handlers::search::search_page)
             .service(handlers::about::about_page)
+            .service(handlers::login::login_page)
+            .service(handlers::login::try_login)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))

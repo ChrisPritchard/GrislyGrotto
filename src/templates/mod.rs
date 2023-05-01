@@ -7,6 +7,7 @@ const PAGE_ARCHIVES: &str = include_str!("archives.html");
 const PAGE_MONTH: &str = include_str!("month.html");
 const PAGE_SEARCH: &str = include_str!("search.html");
 const PAGE_ABOUT: &str = include_str!("about.html");
+const PAGE_LOGIN: &str = include_str!("login.html");
 const PARSE_ERROR: &str = "template parsing failed";
 
 pub fn template_engine() -> Tera {
@@ -19,6 +20,7 @@ pub fn template_engine() -> Tera {
     tera.add_raw_template("month", PAGE_MONTH).expect(PARSE_ERROR);
     tera.add_raw_template("search", PAGE_SEARCH).expect(PARSE_ERROR);
     tera.add_raw_template("about", PAGE_ABOUT).expect(PARSE_ERROR);
+    tera.add_raw_template("login", PAGE_LOGIN).expect(PARSE_ERROR);
 
     tera
 }

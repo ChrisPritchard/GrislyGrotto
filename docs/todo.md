@@ -2,10 +2,6 @@
 
 ## To Start
 
-- argon2 functionality
-- login
-- login post
-
 - new post
 - edit post
 - delete post
@@ -20,6 +16,10 @@
 - csp, security headers
 
 ## doing
+
+- argon2 functionality
+- login
+- login post
 
 ## Done
 

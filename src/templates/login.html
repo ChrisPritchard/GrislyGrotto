@@ -1,0 +1,26 @@
+{% extends "master" %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+    <div>
+        <h2>Login</h2>
+        <form method="POST">
+            <div>
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" maxlength="20" />
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" maxlength="100" />
+                <input type="text" id="category" name="category" />
+            </div>
+            <div>
+                <input id="form_submit" type="submit" value="Submit" />
+                {% if error %}
+                <span class="error">{{ error }}</span>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    <script src="/static/login.js"></script>
+{% endblock content %}
+
