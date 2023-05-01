@@ -98,6 +98,9 @@ for (let i = 0; i < ownComments.length; i++) {
         if (editor.value.trim() === "") {
             errorMessage.innerText = "Comments must have some content";
             return;
+        } else if (editor.value.trim().length > 1000) {
+            errorMessage.innerText = "Comments have a max length of 1000 characters";
+            return;
         }
 
         const xhr = new XMLHttpRequest();
@@ -120,9 +123,8 @@ for (let i = 0; i < ownComments.length; i++) {
             errorMessage.innerText = "";
         };
 
-        let form = new FormData();
-        form.append("content", editor.value)
-        xhr.send(form);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.send("content="+encodeURIComponent(editor.value));
     });
 
     deleteLink.addEventListener("click", function (e) {

@@ -36,6 +36,8 @@ async fn main() -> Result<()> {
             .service(handlers::view_posts::single_post)
             .service(handlers::comments::add_comment)
             .service(handlers::comments::raw_comment_content)
+            .service(handlers::comments::edit_comment)
+            .service(handlers::comments::delete_comment)
             .service(handlers::archives::archives_page)
             .service(handlers::archives::posts_for_month)
             .service(handlers::search::search_page)

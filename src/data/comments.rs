@@ -51,7 +51,7 @@ pub async fn comment_content(id: i64) -> Result<Option<String>> {
     Ok(Some(content))
 }
 
-pub async fn update_comment_content(id: i64, new_content: &str) -> Result<()> {
+pub async fn update_comment_content(id: i64, new_content: &str) -> Result<String> {
     let connection = db()?;
     let mut stmt = connection.prepare(sql::UPDATE_COMMENT_CONTENT)?;
     stmt.bind::<&[(_, Value)]>(&[
@@ -60,7 +60,10 @@ pub async fn update_comment_content(id: i64, new_content: &str) -> Result<()> {
 
     let _ = stmt.next();
 
-    Ok(())
+    let markdown_options = markdown_options();	
+    let rendered = comrak::markdown_to_html(&new_content, &markdown_options);
+
+    Ok(rendered)
 }
 
 pub async fn delete_comment(id: i64) -> Result<()> {
