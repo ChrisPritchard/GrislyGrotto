@@ -9,15 +9,13 @@
 - s3 image storage uploads
 - upload file ui
 
-- user details display
-- update user details
-
 - full styling
 - csp, security headers
 
 ## doing
 
-- logout
+- user details display
+- update user details
 
 ## Done
 
@@ -47,8 +45,15 @@
 - argon2 functionality
 - login
 - login post
+- logout
 
 ## Stretch / Possible ideas
 
 - next post / prev post: can't see where this would be needed, even though the current site has it
 - themes, like the current site has. was always a bit messy, not sure it added much even if fun
+- rss feed
+- click enlarge images?
+- share on other socs?
+- social media links (linkedin, tryhackme, github etc) in more prominent locations
+- categories?
+- chatgpt integration lolol
