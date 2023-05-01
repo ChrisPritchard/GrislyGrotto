@@ -47,3 +47,24 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>, session: Sessio
     let path = format!("/post/{}#comments", key.to_string());
     Either::Right(Redirect::to(path).see_other()) // 'see other' will make the request to the new path a GET
 }
+
+#[get("/raw_comment/{id}")]
+async fn raw_comment_content(id: Path<i64>, session: Session) -> impl Responder {
+    let id = id.into_inner();
+    // let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    // if !owned_comments.contains(&id) {
+    //     return HttpResponse::Forbidden().body("forbidden")
+    // }
+
+    let content = data::comments::comment_content(id).await;
+    if let Err(err) = content {
+        error!("error getting raw comment content: {}", err);
+        return HttpResponse::InternalServerError().body("something went wrong")
+    }
+    let content = content.unwrap();
+
+    match content {
+        None => HttpResponse::NotFound().body("not found"),
+        Some(c) => HttpResponse::Ok().body(c)
+    }
+}

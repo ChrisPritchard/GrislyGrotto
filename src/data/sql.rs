@@ -45,6 +45,18 @@ pub const INSERT_COMMENT: &str = "
 pub const GET_LAST_COMMENT_ID: &str = "
 	SELECT Id FROM Comments ORDER BY Id DESC LIMIT 1";
 
+/// provide: id
+pub const SELECT_COMMENT_CONTENT: &str = "
+	SELECT Content FROM Comments WHERE Id = ?";
+
+/// provide: content, id
+pub const UPDATE_COMMENT_CONTENT: &str = "
+	UPDATE Comments SET Content = ? WHERE Id = ?";
+
+/// provide: id
+pub const DELETE_COMMENT: &str = "
+	DELETE FROM Comments WHERE Id = ?";
+
 /// provide: current_user
 pub const SELECT_MONTH_COUNTS: &str = "
 	SELECT 
