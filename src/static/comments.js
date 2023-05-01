@@ -3,7 +3,7 @@
 
 let comment_count = document.querySelectorAll(".comment_container").length;
 if (comment_count >= 20) {
-    document.querySelector("#comment_form").remove();
+    document.querySelector(".comment_form").remove();
 } else {
 
     // comment honey pot - headless crawlers that dont run js will be unable to post comments

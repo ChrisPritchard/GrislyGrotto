@@ -51,10 +51,10 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>, session: Sessio
 #[get("/raw_comment/{id}")]
 async fn raw_comment_content(id: Path<i64>, session: Session) -> impl Responder {
     let id = id.into_inner();
-    // let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
-    // if !owned_comments.contains(&id) {
-    //     return HttpResponse::Forbidden().body("forbidden")
-    // }
+    let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    if !owned_comments.contains(&id) {
+        return HttpResponse::Forbidden().body("forbidden")
+    }
 
     let content = data::comments::comment_content(id).await;
     if let Err(err) = content {
@@ -77,10 +77,10 @@ struct UpdateCommentForm {
 #[post("/edit_comment/{id}")]
 async fn edit_comment(id: Path<i64>, form: Form<UpdateCommentForm>, session: Session) -> impl Responder {
     let id = id.into_inner();
-    // let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
-    // if !owned_comments.contains(&id) {
-    //     return HttpResponse::Forbidden().body("forbidden")
-    // }
+    let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    if !owned_comments.contains(&id) {
+        return HttpResponse::Forbidden().body("forbidden")
+    }
 
     if form.content.len() == 0 || form.content.len() > 1000 {
         return HttpResponse::BadRequest().body("invalid content length")
@@ -98,10 +98,10 @@ async fn edit_comment(id: Path<i64>, form: Form<UpdateCommentForm>, session: Ses
 #[post("/delete_comment/{id}")]
 async fn delete_comment(id: Path<i64>, session: Session) -> impl Responder {
     let id = id.into_inner();
-    // let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
-    // if !owned_comments.contains(&id) {
-    //     return HttpResponse::Forbidden().body("forbidden")
-    // }
+    let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    if !owned_comments.contains(&id) {
+        return HttpResponse::Forbidden().body("forbidden")
+    }
 
     let result = data::comments::delete_comment(id).await;
     if let Err(err) = result {

@@ -32,7 +32,7 @@
             {% endif %}
         </div>
     {% endfor %}
-    <form id="comment_form" method="post" action="/post/{{ post.key }}/comment">
+    <form class="comment_form" method="post" action="/post/{{ post.key }}/comment">
         <label for="author">Author</label>
         <input type="text" id="author" name="author" maxlength="30" />
         <input type="text" id="category" name="category" />

@@ -36,7 +36,7 @@ pub fn comment_from_statement(stmt: &Statement, owned_comments: &HashSet<i64>, m
         author: stmt.read("Author")?, 
         date: date_formatted, 
         content: markdown,
-        owned: true })//owned_comments.contains(&id) })
+        owned: owned_comments.contains(&id) })
 }
 
 const MONTHS: [&str; 13] = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

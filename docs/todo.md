@@ -21,9 +21,6 @@
 
 ## doing
 
-- edit comment
-- delete comment
-
 ## Done
 
 - basic latest posts
@@ -47,6 +44,8 @@
 - profile image links
 - cookie functionality
 - light mode / dark mode
+- edit comment
+- delete comment
 
 ## Stretch / Possible ideas
 
