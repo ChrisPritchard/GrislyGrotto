@@ -6,7 +6,6 @@
 - edit post
 - delete post
 
-- s3 image storage uploads
 - upload file ui
 
 - full styling
@@ -14,6 +13,8 @@
 
 ## doing
 
+- s3 image storage uploads
+- argon2 hashing
 - user details display
 - update user details
 
@@ -42,7 +43,7 @@
 - light mode / dark mode
 - edit comment
 - delete comment
-- argon2 functionality
+- argon2 verification
 - login
 - login post
 - logout
@@ -56,4 +57,5 @@
 - share on other socs?
 - social media links (linkedin, tryhackme, github etc) in more prominent locations
 - categories?
-- chatgpt integration lolol
+- chatgpt integration lolol. could be used to get categories from a post
+- last 10 post headings?

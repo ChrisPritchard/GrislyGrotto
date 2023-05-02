@@ -1,0 +1,51 @@
+{% extends "master" %}
+{% block title %}Account Details{% endblock title %}
+{% block content %}
+<h2>Account Details</h2>
+<form method="POST" class="account_details_container">
+    <div>
+        <label for="display_name">Display Name</label>
+        <input id="display_name" name="display_name" type="text" value="{{ current_display_name }}" maxlength="30" />
+        <span class="help">Can't be blank</span>
+    </div>
+    <div>
+        <input type="submit" value="Update" id="display_name_update" />
+        {% if display_name_error %}<span class="error" id="display_name_error">{{ display_name_error }}</span>{% endif %}
+        {% if display_name_success %}<span class="success_message">Successfully Updated</span>{% endif %}
+    </div>
+</form>
+<form method="POST" class="account_details_container" enctype="multipart/form-data">
+    <div>
+        <label for="profile_image">Profile Image</label>
+        <img src="/content/{{ current_username }}" class="profile_image" />
+        <input id="profile_image" name="profile_image" type="file" accept=".jpg, .jpeg, .png, .gif" />
+        <br />
+        <span class="help">Maximum size: 1MB</span>
+    </div>
+    <div>
+        <input type="submit" value="Update" id="profile_image_update" />
+        {% if profile_image_error %}<span class="error" id="profile_image_error">{{ profile_image_error }}</span>{% endif %}
+        {% if profile_image_success %}<span class="success_message">Successfully Updated</span>{% endif %}
+    </div>
+</form>
+<form method="POST" class="account_details_container">
+    <div>
+        <label for="old_password">Current Password</label>
+        <input id="old_password" name="old_password" type="password" maxlength="100" />
+    </div>
+    <div>
+        <label for="new_password">New Password</label>
+        <input id="new_password" name="new_password" type="password" maxlength="100" />
+        <span class="help">Min-length: 14 characters</span>
+    </div>
+    <div>
+        <label for="new_password_confirm">Confirm New Password</label>
+        <input id="new_password_confirm" name="new_password_confirm" type="password" maxlength="100" />
+    </div>
+    <div>
+        <input type="submit" value="Update" id="password_update" />
+        {% if new_password_error %}<span class="error" id="password_error">{{ new_password_error }}</span>{% endif %}
+        {% if new_password_success %}<span class="success_message">Successfully Updated</span>{% endif %}
+    </div>
+</form>
+{% endblock content %}

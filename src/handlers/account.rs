@@ -47,3 +47,18 @@ async fn logout(session: Session) -> Redirect {
     let _ = session.remove("current_user");
     Redirect::to("/").see_other()
 }
+
+#[get("/account")]
+async fn account_details(tmpl: Data<Tera>, session: Session) -> impl Responder {
+    let current_user: Option<String> = session.get("current_user").unwrap_or(None);
+    if current_user.is_none() {
+        return HttpResponse::NotFound().body("not found")
+    }
+    
+    let mut context = super::default_tera_context(&session);
+    context.insert("current_display_name", &current_user);
+    context.insert("current_username", &current_user);
+
+    let html = tmpl.render("account", &context).expect("template rendering failed");
+    HttpResponse::Ok().body(html)
+}
