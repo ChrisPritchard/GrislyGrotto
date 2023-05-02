@@ -11,10 +11,10 @@ pub async fn add_comment(key: &str, author: &str, content: &str) -> Result<i64> 
         (3, content.into()),
         (4, key.into()),])?;
 
-    let _ = stmt.next();
+    let _ = stmt.next()?;
 
     let mut stmt = connection.prepare(sql::GET_LAST_COMMENT_ID)?;
-    let _ = stmt.next();
+    let _ = stmt.next()?;
     
     let id: i64 = stmt.read("Id")?;
 
@@ -27,7 +27,7 @@ pub async fn comment_count(key: &str) -> Result<Option<i64>> {
     stmt.bind::<&[(_, Value)]>(&[
         (1, key.into()),])?;
 
-    if let Ok(State::Done) = stmt.next() {
+    if stmt.next()? == State::Done {
         return Ok(None);
     }
 
@@ -42,7 +42,7 @@ pub async fn comment_content(id: i64) -> Result<Option<String>> {
     stmt.bind::<&[(_, Value)]>(&[
         (1, id.into()),])?;
 
-    if let Ok(State::Done) = stmt.next() {
+    if stmt.next()? == State::Done {
         return Ok(None);
     }
 
@@ -58,7 +58,7 @@ pub async fn update_comment_content(id: i64, new_content: &str) -> Result<String
         (1, new_content.to_string().into()), 
         (2, id.into()),])?;
 
-    let _ = stmt.next();
+    let _ = stmt.next()?;
 
     let markdown_options = markdown_options();	
     let rendered = comrak::markdown_to_html(&new_content, &markdown_options);
@@ -72,7 +72,7 @@ pub async fn delete_comment(id: i64) -> Result<()> {
     stmt.bind::<&[(_, Value)]>(&[
         (1, id.into()),])?;
 
-    let _ = stmt.next();
+    let _ = stmt.next()?;
 
     Ok(())
 }

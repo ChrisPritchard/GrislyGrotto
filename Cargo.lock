@@ -1181,6 +1181,7 @@ dependencies = [
  "env_logger",
  "futures-util",
  "log",
+ "rand",
  "regex",
  "rust-argon2",
  "rust-s3",

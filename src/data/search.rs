@@ -20,7 +20,7 @@ pub async fn get_search_results(search_term: &str, current_user: &str) -> Result
 
     let remove_html = Regex::new("<[^>]*>").unwrap();
 
-    while let Ok(State::Row) = stmt.next() {
+    while stmt.next()? == State::Row {
         let mut post = mapping::post_from_statement(&stmt, &markdown_options)?;
 
         let content = remove_html.replace_all(&post.content, "");

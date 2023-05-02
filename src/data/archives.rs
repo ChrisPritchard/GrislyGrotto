@@ -12,7 +12,7 @@ pub async fn get_month_counts(current_user: &str) -> Result<Vec<YearSet>> {
     let mut all_years = Vec::new();
     let mut current_year: Option<YearSet> = None;
 
-    while let Ok(State::Row) = stmt.next() {
+    while stmt.next()? == State::Row {
         let month = mapping::month_count_from_statement(&stmt)?;
         match current_year {
             None => {
@@ -44,7 +44,7 @@ pub async fn get_stories(current_user: &str) -> Result<Vec<BlogPost>> {
     let mut final_result = Vec::new();
     let markdown_options = markdown_options();	
 
-    while let Ok(State::Row) = stmt.next() {
+    while stmt.next()? == State::Row {
         let post = mapping::post_from_statement(&stmt, &markdown_options)?;
         final_result.push(post);
     }
@@ -65,7 +65,7 @@ pub async fn get_posts_in_month(year: &str, month: &str, current_user: &str) -> 
     let mut final_result = Vec::new();
     let markdown_options = markdown_options();	
 
-    while let Ok(State::Row) = stmt.next() {
+    while stmt.next()? == State::Row {
         let post = mapping::post_from_statement(&stmt, &markdown_options)?;
         final_result.push(post);
     }

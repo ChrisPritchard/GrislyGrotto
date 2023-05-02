@@ -111,3 +111,22 @@ pub const SELECT_USER_PASSWORD_HASH: &str = "
 		Password
 	FROM Authors
 	WHERE Username = ?";
+
+/// provide: new_password_hash, username
+pub const UPDATE_USER_PASSWORD_HASH: &str = "
+	UPDATE Authors 
+	SET Password = ? 
+	WHERE Username = ?";
+
+/// provide: username
+pub const SELECT_USER_DISPLAY_NAME: &str = "
+	SELECT 
+		DisplayName
+	FROM Authors
+	WHERE Username = ?";
+
+/// provide: new_display_name, username
+pub const UPDATE_USER_DISPLAY_NAME: &str = "
+	UPDATE Authors 
+	SET DisplayName = ? 
+	WHERE Username = ?";
