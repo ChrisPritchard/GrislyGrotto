@@ -1,3 +1,6 @@
+use std::fmt::Display;
+
+use actix_web::error;
 
 pub mod style;
 pub mod content;
@@ -16,6 +19,8 @@ mod prelude {
     pub use actix_session::Session;
 }
 
+use prelude::*;
+
 fn default_tera_context(session: &actix_session::Session) -> tera::Context {
     let mut context = tera::Context::new();
     
@@ -28,4 +33,38 @@ fn default_tera_context(session: &actix_session::Session) -> tera::Context {
     }
     
     context
+}
+
+#[derive(Debug)]
+enum WebError {
+    NotFound, BadRequest(String), Forbidden, ServerError(anyhow::Error)
+}
+
+impl Display for WebError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
+    }
+}
+
+impl error::ResponseError for WebError {
+    fn error_response(&self) -> HttpResponse {
+        match self {
+            WebError::NotFound => error::ErrorNotFound("404 not found").into(),
+            WebError::BadRequest(m) => {
+                let m = format!("400 {m}");
+                error::ErrorNotFound(m).into()
+            }
+            WebError::Forbidden => error::ErrorNotFound("403 forbidden").into(),
+            WebError::ServerError(e) => {
+                error!("{}", e);
+                error::ErrorInternalServerError("500 internal server error").into()
+            }
+        }
+    }
+}
+
+impl From<anyhow::Error> for WebError {
+    fn from(err: anyhow::Error) -> Self {
+        Self::ServerError(err)
+    }
 }

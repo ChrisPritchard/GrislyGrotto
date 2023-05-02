@@ -11,11 +11,17 @@
 - full styling
 - csp, security headers
 
+- docker file
+- fly.io deployment
+- dns update
+- docs
+
 ## doing
+
+- better handler error handling
 
 - s3 image storage uploads
 - argon2 hashing
-- user details display
 - update user details
 
 ## Done
@@ -59,3 +65,4 @@
 - categories?
 - chatgpt integration lolol. could be used to get categories from a post
 - last 10 post headings?
+- user details display

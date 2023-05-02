@@ -17,7 +17,7 @@ struct LoginForm {
 }
 
 #[post("/login")]
-async fn try_login(form: Form<LoginForm>, tmpl: Data<Tera>, session: Session) -> Either<HttpResponse, Redirect> {
+async fn try_login(form: Form<LoginForm>, tmpl: Data<Tera>, session: Session) -> impl Responder {
 
     if form.category != "user" || form.username.len() == 0 || form.password.len() == 0 {
         return Either::Left(HttpResponse::BadRequest().body("invalid comment"))
@@ -54,9 +54,17 @@ async fn account_details(tmpl: Data<Tera>, session: Session) -> impl Responder {
     if current_user.is_none() {
         return HttpResponse::NotFound().body("not found")
     }
+    let current_user = current_user.unwrap();
     
+    let display_name = data::account::get_user_display_name(&current_user).await;
+    if let Err(err) = display_name {
+        error!("error getting display name: {}", err);
+        return HttpResponse::InternalServerError().body("something went wrong")
+    } 
+    let display_name = display_name.unwrap().unwrap_or(current_user.clone());
+
     let mut context = super::default_tera_context(&session);
-    context.insert("current_display_name", &current_user);
+    context.insert("current_display_name", &display_name);
     context.insert("current_username", &current_user);
 
     let html = tmpl.render("account", &context).expect("template rendering failed");

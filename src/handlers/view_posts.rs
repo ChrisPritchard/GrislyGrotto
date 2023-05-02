@@ -1,8 +1,9 @@
 use std::collections::HashSet;
 
 use super::prelude::*;
+use anyhow::Result;
 
-use crate::data;
+use crate::{data, handlers::WebError};
 
 #[derive(Deserialize)]
 struct PageInfo {
@@ -10,37 +11,27 @@ struct PageInfo {
 }
 
 #[get("/")]
-async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session) -> impl Responder {
+async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session) -> Result<HttpResponse, WebError> {
 
     let page = query.page.unwrap_or(0);
-    let posts = data::view_posts::get_latest_posts(page, "aquinas").await;
-    if let Err(err) = posts {
-        error!("error getting latest posts: {}", err);
-        return HttpResponse::InternalServerError().body("something went wrong")
-    } 
-    let posts = posts.unwrap();
+    let posts = data::view_posts::get_latest_posts(page, "aquinas").await?;
 
     let mut context = super::default_tera_context(&session);
     context.insert("posts", &posts);
     context.insert("page", &page);
 
     let html = tmpl.render("latest", &context).expect("template rendering failed");
-    HttpResponse::Ok().body(html)
+    Ok(HttpResponse::Ok().body(html))
 }
 
 #[get("/post/{key}")]
-async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> impl Responder {
+async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> Result<HttpResponse, WebError> {
     let owned_comments = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
 
-    let post = data::view_posts::get_single_post(&key, "aquinas", &owned_comments).await;
-    if let Err(err) = post {
-        error!("error getting single post: {}", err);
-        return HttpResponse::InternalServerError().body("something went wrong")
-    } 
-    let post = post.unwrap();
+    let post = data::view_posts::get_single_post(&key, "aquinas", &owned_comments).await?;
 
     if post.is_none() {
-        return HttpResponse::NotFound().body("not found");
+        return Err(WebError::NotFound)
     }
 
     let mut post = post.unwrap();
@@ -50,5 +41,5 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> i
     context.insert("post", &post);
 
     let html = tmpl.render("single", &context).expect("template rendering failed");
-    HttpResponse::Ok().body(html)
+    Ok(HttpResponse::Ok().body(html))
 }
