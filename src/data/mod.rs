@@ -6,6 +6,7 @@ pub mod comments;
 pub mod archives;
 pub mod search;
 pub mod account;
+pub mod editor;
 
 mod prelude {
     pub use sqlite::{Value, State, Statement};

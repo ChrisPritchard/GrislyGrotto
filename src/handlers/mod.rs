@@ -10,6 +10,7 @@ pub mod archives;
 pub mod search;
 pub mod about;
 pub mod account;
+pub mod editor;
 
 mod prelude {
     pub use actix_web::{get, post, web::{Data, Query, Path, Form}};

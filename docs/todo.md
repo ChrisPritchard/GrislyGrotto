@@ -2,7 +2,6 @@
 
 ## To Start
 
-- new post
 - edit post
 - delete post
 
@@ -18,6 +17,7 @@
 
 ## doing
 
+- new post
 
 ## Done
 

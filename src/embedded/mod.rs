@@ -7,6 +7,7 @@ static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
     ("comments.js", ("text/javascript", include_bytes!("comments.js").as_slice())),
     ("login.js", ("text/javascript", include_bytes!("login.js").as_slice())),
     ("account.js", ("text/javascript", include_bytes!("account.js").as_slice())),
+    ("editor.js", ("text/javascript", include_bytes!("editor.js").as_slice())),
 ];
 
 #[get("/static/{file_path}")]
