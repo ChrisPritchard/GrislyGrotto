@@ -14,19 +14,19 @@
         <span class="error" id="display_name_error"></span>
     </div>
 </form>
-<form method="POST" class="account_details_container" enctype="multipart/form-data" action="/account/profile_image">
+<div class="account_details_container">
     <div>
         <label for="profile_image">Profile Image</label>
-        <img src="/content/{{ current_username }}" class="profile_image" />
+        <img src="/content/{{ current_username }}" class="profile_image" data-username="{{ current_username }}" />
         <input id="profile_image" name="profile_image" type="file" accept=".jpg, .jpeg, .png, .gif" />
         <br />
         <span class="help">Maximum size: 1MB</span>
     </div>
     <div>
-        <input type="submit" value="Update" id="profile_image_update" />
+        <input type="button" value="Update" id="profile_image_update" />
         <span class="error" id="profile_image_error"></span>
     </div>
-</form>
+</div>
 <form method="POST" class="account_details_container" action="/account/password">
     <div>
         <label for="old_password">Current Password</label>

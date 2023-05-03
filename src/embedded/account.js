@@ -51,8 +51,18 @@ if (profileImageChange)
             profileImageError.innerText = "File size is too large ("+size+" MB)";
             return;
         }
-    });
-    
+
+        fetch("/account/profile_image", {
+            method: "POST",
+            body: profileImage.files[0]
+        }).then(r => {
+            if (r.ok) {
+                let img = document.querySelector(".profile_image");
+                img.src = "/content/" + img.getAttribute("data-username") + "?t=" + new Date().getTime();
+            }
+            r.text().then(b => document.querySelector(".account_update_message").innerText = b);
+        })
+    });    
 
 let passwordChange = document.getElementById('password_update');
 if (passwordChange) 

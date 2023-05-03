@@ -70,8 +70,7 @@ impl error::ResponseError for WebError {
         match self {
             WebError::NotFound => error::ErrorNotFound("404 not found").into(),
             WebError::BadRequest(m) => {
-                let m = format!("400 {m}");
-                error::ErrorNotFound(m).into()
+                error::ErrorNotFound(m.clone()).into()
             }
             WebError::Forbidden => error::ErrorNotFound("403 forbidden").into(),
             WebError::ServerError(e) => {
@@ -90,6 +89,13 @@ impl From<anyhow::Error> for WebError {
 
 impl From<s3::error::S3Error> for WebError {
     fn from(err: s3::error::S3Error) -> Self {
+        let err = anyhow::Error::from(err);
+        Self::ServerError(err)
+    }
+}
+
+impl From<actix_web::error::PayloadError> for WebError {
+    fn from(err: actix_web::error::PayloadError) -> Self {
         let err = anyhow::Error::from(err);
         Self::ServerError(err)
     }

@@ -1179,6 +1179,7 @@ dependencies = [
  "comrak",
  "dotenv",
  "env_logger",
+ "futures",
  "futures-util",
  "log",
  "rand",

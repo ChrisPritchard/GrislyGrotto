@@ -48,7 +48,7 @@ async fn main() -> Result<()> {
             .service(handlers::account::logout)
             .service(handlers::account::account_details)
             .service(handlers::account::update_display_name)
-            //.service(handlers::account::update_profile_image)
+            .service(handlers::account::update_profile_image)
             .service(handlers::account::update_password)
     });  
 

@@ -2,6 +2,8 @@ use crate::{data, s3::S3Config};
 
 use super::{prelude::*, *};
 
+use futures::StreamExt;
+
 #[get("/login")]
 async fn login_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     let context = super::default_tera_context(&session);
@@ -82,24 +84,35 @@ async fn update_display_name(form: Form<UpdateDisplayNameForm>, session: Session
     redirect("/account?message=display+name+updated+successfully".into())
 }
 
-// #[derive(Debug, MultipartForm)]
-// struct UpdateProfileImageForm {
-//     profile_image: TempFile,
-// }
-
-// #[post("/account/profile_image")]
-// async fn update_profile_image(MultipartForm(form): MultipartForm<UpdateProfileImageForm>, session: Session, s3_config: Data<S3Config>) -> WebResponse {
-//     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
-//     if current_user.is_none() {
-//         return Err(WebError::Forbidden)
-//     }
-//     let current_user = current_user.unwrap();
+#[post("/account/profile_image")]
+async fn update_profile_image(mut body: actix_web::web::Payload, session: Session, s3_config: Data<S3Config>) -> WebResponse {
+    let current_user: Option<String> = session.get("current_user").unwrap_or(None);
+    if current_user.is_none() {
+        return Err(WebError::Forbidden)
+    }
+    let current_user = current_user.unwrap();
     
-//     let bucket = s3_config.bucket()?;
-//     bucket.put_object(current_user, form.profile_image).await?;
+    let mut bytes = actix_web::web::BytesMut::new();
+    while let Some(item) = body.next().await {
+        let item = item?;
+        bytes.extend_from_slice(&item);
+    }
 
-//     redirect("/account?message=profile+image+updated+successfully".into())
-// }
+    let data = bytes.to_vec();
+    if bytes.len() > 1024*1024 {
+        return Err(WebError::BadRequest("invalid profile image".into()))
+    }
+
+    let mime_type = tree_magic::from_u8(&data);
+    if !mime_type.starts_with("image/") {
+        return Err(WebError::BadRequest("invalid profile image".into()))
+    }
+
+    let bucket = s3_config.bucket()?;
+    bucket.put_object(current_user, &data).await?;
+
+    accepted("profile image updated successfully".into())
+}
 
 #[derive(Deserialize)]
 struct UpdatePasswordForm {
