@@ -107,7 +107,7 @@ async fn update_user_password(form: Form<UpdatePasswordForm>, session: Session) 
     
     let valid = data::account::validate_user(&current_user, &form.old_password).await?;
     if !valid {
-        return Err(WebError::BadRequest("old password is not correct".into()))
+        return redirect("/account?message=invalid+existing+password".into())
     }
     
     data::account::update_user_password(&current_user, &form.new_password).await?;
