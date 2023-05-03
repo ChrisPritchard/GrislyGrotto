@@ -38,19 +38,19 @@ fn default_tera_context(session: &actix_session::Session) -> tera::Context {
 
 type WebResponse = Result<HttpResponse, WebError>;
 
-fn Redirect(address: String) -> WebResponse {
+fn redirect(address: String) -> WebResponse {
     Result::Ok(HttpResponse::SeeOther().insert_header((header::LOCATION, address)).finish())
 }
 
-fn Ok(body: String) -> WebResponse {
+fn ok(body: String) -> WebResponse {
     Result::Ok(HttpResponse::Ok().body(body))
 }
 
-fn Accepted(body: String) -> WebResponse {
+fn accepted(body: String) -> WebResponse {
     Result::Ok(HttpResponse::Accepted().body(body))
 }
 
-fn File(mime_type: String, bytes: Vec<u8>) -> WebResponse {
+fn file(mime_type: String, bytes: Vec<u8>) -> WebResponse {
     Result::Ok(HttpResponse::Ok().content_type(mime_type).body(bytes))
 }
 

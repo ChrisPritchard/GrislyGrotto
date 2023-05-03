@@ -6,7 +6,7 @@ use super::{prelude::*, *};
 async fn login_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     let context = super::default_tera_context(&session);
     let html = tmpl.render("login", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }
 
 #[derive(Deserialize)]
@@ -30,24 +30,24 @@ async fn try_login(form: Form<LoginForm>, tmpl: Data<Tera>, session: Session) ->
         context.insert("error", "invalid username and/or password");
     } else {
         let _ = session.insert("current_user", form.username.clone());
-        return Redirect("/".into())
+        return redirect("/".into())
     }
 
     let html = tmpl.render("login", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }
 
 #[get("/logout")]
 async fn logout(session: Session) -> WebResponse {
     let _ = session.remove("current_user");
-    Redirect("/".into())
+    redirect("/".into())
 }
 
 #[get("/account")]
 async fn account_details(tmpl: Data<Tera>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
-        return Redirect("/login".into())
+        return redirect("/login".into())
     }
     let current_user = current_user.unwrap();
     
@@ -58,7 +58,7 @@ async fn account_details(tmpl: Data<Tera>, session: Session) -> WebResponse {
     context.insert("current_username", &current_user);
 
     let html = tmpl.render("account", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }
 
 #[derive(Deserialize)]
@@ -73,7 +73,7 @@ struct AccountForm {
 async fn update_account_details(tmpl: Data<Tera>, form: Form<AccountForm>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
-        return Redirect("/login".into())
+        return redirect("/login".into())
     }
     let current_user = current_user.unwrap();
     
@@ -110,5 +110,5 @@ async fn update_account_details(tmpl: Data<Tera>, form: Form<AccountForm>, sessi
     }
 
     let html = tmpl.render("account", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }

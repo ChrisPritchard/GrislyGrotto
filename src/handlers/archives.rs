@@ -23,7 +23,7 @@ async fn archives_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     context.insert("total_years", &total_years);
 
     let html = tmpl.render("archives", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }
 
 #[derive(Deserialize)]
@@ -71,5 +71,5 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
     }
 
     let html = tmpl.render("month", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }

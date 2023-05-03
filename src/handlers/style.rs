@@ -11,5 +11,5 @@ async fn set_style(mode: Path<String>, session: Session) -> WebResponse {
         return Err(WebError::BadRequest("invalid style name".into()));
     }
 
-    Ok("style set".into())
+    ok("style set".into())
 }

@@ -18,7 +18,7 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session
     context.insert("page", &page);
 
     let html = tmpl.render("latest", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }
 
 #[get("/post/{key}")]
@@ -38,5 +38,5 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> W
     context.insert("post", &post);
 
     let html = tmpl.render("single", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }

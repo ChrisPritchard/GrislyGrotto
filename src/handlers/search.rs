@@ -24,5 +24,5 @@ async fn search_page(tmpl: Data<Tera>, query: Query<SearchInfo>, session: Sessio
     }
 
     let html = tmpl.render("search", &context).expect("template rendering failed");
-    Ok(html)
+    ok(html)
 }

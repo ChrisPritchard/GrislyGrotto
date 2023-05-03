@@ -10,7 +10,7 @@
     </div>
     <div>
         <input type="submit" value="Update" id="display_name_update" />
-        {% if new_display_name_error %}<span class="error" id="display_name_error">{{ display_name_error }}</span>{% endif %}
+        <span class="error" id="display_name_error">{% if new_display_name_error %}{{ display_name_error }}{% endif %}</span>
         {% if new_display_name_success %}<span class="success_message">Successfully Updated</span>{% endif %}
     </div>
 </form>
@@ -24,7 +24,7 @@
     </div>
     <div>
         <input type="submit" value="Update" id="profile_image_update" />
-        {% if profile_image_error %}<span class="error" id="profile_image_error">{{ profile_image_error }}</span>{% endif %}
+        <span class="error" id="profile_image_error">{% if profile_image_error %}{{ profile_image_error }}{% endif %}</span>
         {% if profile_image_success %}<span class="success_message">Successfully Updated</span>{% endif %}
     </div>
 </form>
@@ -44,8 +44,9 @@
     </div>
     <div>
         <input type="submit" value="Update" id="password_update" />
-        {% if new_password_error %}<span class="error" id="password_error">{{ new_password_error }}</span>{% endif %}
+        <span class="error" id="password_error">{% if new_password_error %}{{ new_password_error }}{% endif %}</span>
         {% if new_password_success %}<span class="success_message">Successfully Updated</span>{% endif %}
     </div>
 </form>
+<script src="/static/account.js"></script>
 {% endblock content %}

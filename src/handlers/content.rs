@@ -12,5 +12,5 @@ async fn stored_content(file_path: Path<String>, s3_config: Data<S3Config>) -> W
     let data = bucket.get_object(path).await?.to_vec();
 
     let mime_type = tree_magic::from_u8(&data);
-    File(mime_type, data)
+    file(mime_type, data)
 }

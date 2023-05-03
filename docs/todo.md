@@ -18,8 +18,9 @@
 
 ## doing
 
+- user details client side validations
 - s3 image storage uploads
-- update user details
+    - either via form or pure js
 
 ## Done
 
@@ -52,6 +53,8 @@
 - logout
 - better handler error handling
 - argon2 hashing
+- user details display
+- update user details
 
 ## Stretch / Possible ideas
 
@@ -64,4 +67,3 @@
 - categories?
 - chatgpt integration lolol. could be used to get categories from a post
 - last 10 post headings?
-- user details display

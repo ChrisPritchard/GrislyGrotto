@@ -33,7 +33,7 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>, session: Sessio
     let _ = session.insert("owned_comments", owned_comments);
 
     let path = format!("/post/{}#comments", key.to_string());
-    Redirect(path)
+    redirect(path)
 }
 
 #[get("/raw_comment/{id}")]
@@ -48,7 +48,7 @@ async fn raw_comment_content(id: Path<i64>, session: Session) -> WebResponse {
 
     match content {
         None => Err(WebError::NotFound),
-        Some(c) => Ok(c)
+        Some(c) => ok(c)
     }
 }
 
@@ -70,7 +70,7 @@ async fn edit_comment(id: Path<i64>, form: Form<UpdateCommentForm>, session: Ses
     }
 
     let new_content = data::comments::update_comment_content(id, &form.content).await?;
-    Accepted(new_content)
+    accepted(new_content)
 }
 
 #[post("/delete_comment/{id}")]
@@ -82,5 +82,5 @@ async fn delete_comment(id: Path<i64>, session: Session) -> WebResponse {
     }
 
     let _ = data::comments::delete_comment(id).await?;    
-    Accepted("comment deleted".into())
+    accepted("comment deleted".into())
 }
