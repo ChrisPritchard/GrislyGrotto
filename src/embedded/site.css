@@ -195,3 +195,7 @@ div.search-result h4 {
     width: 300px;
     margin-bottom: 1em;
 }
+
+.account_update_message {
+    margin-bottom: 1em;
+}

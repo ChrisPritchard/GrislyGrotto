@@ -1,4 +1,10 @@
 
+const urlParams = new URLSearchParams(window.location.search);
+const message = urlParams.get('message');
+if (message) {
+    document.querySelector(".account_update_message").innerText = message;
+}
+
 function removeSuccessMessages() {
     let elems = document.querySelectorAll(".success_message");
     for(let i = 0; i < elems.length; i++) {

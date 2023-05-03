@@ -2,7 +2,8 @@
 {% block title %}Account Details{% endblock title %}
 {% block content %}
 <h2>Account Details</h2>
-<form method="POST" class="account_details_container">
+<div class="account_update_message"></div>
+<form method="POST" class="account_details_container" action="/account/display_name">
     <div>
         <label for="new_display_name">Display Name</label>
         <input id="new_display_name" name="new_display_name" type="text" value="{{ current_display_name }}" maxlength="30" />
@@ -10,11 +11,10 @@
     </div>
     <div>
         <input type="submit" value="Update" id="display_name_update" />
-        <span class="error" id="display_name_error">{% if new_display_name_error %}{{ display_name_error }}{% endif %}</span>
-        {% if new_display_name_success %}<span class="success_message">Successfully Updated</span>{% endif %}
+        <span class="error" id="display_name_error"></span>
     </div>
 </form>
-<form method="POST" class="account_details_container" enctype="multipart/form-data">
+<form method="POST" class="account_details_container" enctype="multipart/form-data" action="/account/profile_image">
     <div>
         <label for="profile_image">Profile Image</label>
         <img src="/content/{{ current_username }}" class="profile_image" />
@@ -24,11 +24,10 @@
     </div>
     <div>
         <input type="submit" value="Update" id="profile_image_update" />
-        <span class="error" id="profile_image_error">{% if profile_image_error %}{{ profile_image_error }}{% endif %}</span>
-        <span class="success_message" id="profile_image_success"></span>
+        <span class="error" id="profile_image_error"></span>
     </div>
 </form>
-<form method="POST" class="account_details_container">
+<form method="POST" class="account_details_container" action="/account/password">
     <div>
         <label for="old_password">Current Password</label>
         <input id="old_password" name="old_password" type="password" maxlength="100" />
@@ -44,8 +43,7 @@
     </div>
     <div>
         <input type="submit" value="Update" id="password_update" />
-        <span class="error" id="password_error">{% if new_password_error %}{{ new_password_error }}{% endif %}</span>
-        {% if new_password_success %}<span class="success_message">Successfully Updated</span>{% endif %}
+        <span class="error" id="password_error"></span>
     </div>
 </form>
 <script src="/static/account.js"></script>

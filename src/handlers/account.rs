@@ -62,53 +62,54 @@ async fn account_details(tmpl: Data<Tera>, session: Session) -> WebResponse {
 }
 
 #[derive(Deserialize)]
-struct AccountForm {
-    new_display_name: Option<String>,
-    old_password: Option<String>,
-    new_password: Option<String>,
-    new_password_confirm: Option<String>,
+struct UpdateDisplayNameForm {
+    new_display_name: String,
 }
 
-#[post("/account")]
-async fn update_account_details(tmpl: Data<Tera>, form: Form<AccountForm>, session: Session) -> WebResponse {
+#[post("/account/display_name")]
+async fn update_user_display_name(form: Form<UpdateDisplayNameForm>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
-        return redirect("/login".into())
+        return Err(WebError::Forbidden)
+    }
+    let current_user = current_user.unwrap();
+
+    if form.new_display_name.len() < 1 {
+        return Err(WebError::BadRequest("invalid display name".into()))
+    }
+
+    data::account::update_user_display_name(&current_user, &form.new_display_name).await?;
+    redirect("/account?message=display+name+updated+successfully".into())
+}
+
+#[derive(Deserialize)]
+struct UpdatePasswordForm {
+    old_password: String,
+    new_password: String,
+    new_password_confirm: String,
+}
+
+#[post("/account/password")]
+async fn update_user_password(form: Form<UpdatePasswordForm>, session: Session) -> WebResponse {
+    let current_user: Option<String> = session.get("current_user").unwrap_or(None);
+    if current_user.is_none() {
+        return Err(WebError::Forbidden)
     }
     let current_user = current_user.unwrap();
     
-    let mut context = super::default_tera_context(&session);
-    context.insert("current_username", &current_user);
+    if form.new_password != form.new_password_confirm {
+        return Err(WebError::BadRequest("new password does not match".into()))
+    }
     
-    if let Some(new_display_name) = &form.new_display_name {
-        data::account::update_user_display_name(&current_user, &new_display_name).await?;
-        context.insert("current_display_name", &new_display_name);
-        context.insert("new_display_name_success", &true);
-    } else {
-        let display_name = data::account::get_user_display_name(&current_user).await?.unwrap_or(current_user.clone());
-        context.insert("current_display_name", &display_name);
+    if form.new_password.len() < 14 {
+        return Err(WebError::BadRequest("new password must be a minimum of 14 characters".into()))
     }
-
-    if let Some(old_password) = &form.old_password {
-        if let Some(new_password) = &form.new_password {
-            if let Some(new_password_confirm) = &form.new_password_confirm {
-                if new_password != new_password_confirm {
-                    context.insert("new_password_error", "new password does not match");
-                } else if new_password.len() < 14 {
-                    context.insert("new_password_error", "new password must be a minimum of 14 characters");
-                } else {
-                    let valid = data::account::validate_user(&current_user, &old_password).await?;
-                    if !valid {
-                        context.insert("new_password_error", "old password is not correct");
-                    } else {
-                        data::account::update_user_password(&current_user, &new_password).await?;
-                        context.insert("new_password_success", &true);
-                    }
-                }
-            }
-        }
+    
+    let valid = data::account::validate_user(&current_user, &form.old_password).await?;
+    if !valid {
+        return Err(WebError::BadRequest("old password is not correct".into()))
     }
-
-    let html = tmpl.render("account", &context).expect("template rendering failed");
-    ok(html)
+    
+    data::account::update_user_password(&current_user, &form.new_password).await?;
+    redirect("/account?message=password+updated+successfully".into())
 }
