@@ -1,23 +1,12 @@
 use crate::data;
 
-use super::prelude::*;
+use super::{prelude::*, *};
 
 #[get("/archives")]
-async fn archives_page(tmpl: Data<Tera>, session: Session) -> impl Responder {
+async fn archives_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     
-    let counts = data::archives::get_month_counts("aquinas").await;
-    if let Err(err) = counts {
-        error!("error getting month counts: {}", err);
-        return HttpResponse::InternalServerError().body("something went wrong")
-    } 
-    let counts = counts.unwrap();
-
-    let stories = data::archives::get_stories("aquinas").await;
-    if let Err(err) = stories {
-        error!("error getting stories: {}", err);
-        return HttpResponse::InternalServerError().body("something went wrong")
-    } 
-    let stories = stories.unwrap();
+    let counts = data::archives::get_month_counts("aquinas").await?;
+    let stories = data::archives::get_stories("aquinas").await?;
 
     let mut total_posts = 0;
     for year in &counts {
@@ -34,7 +23,7 @@ async fn archives_page(tmpl: Data<Tera>, session: Session) -> impl Responder {
     context.insert("total_years", &total_years);
 
     let html = tmpl.render("archives", &context).expect("template rendering failed");
-    HttpResponse::Ok().body(html)
+    Ok(html)
 }
 
 #[derive(Deserialize)]
@@ -44,17 +33,12 @@ struct MonthQuery {
 }
 
 #[get("/archives/{month}/{year}")]
-async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Session) -> impl Responder {
+async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Session) -> WebResponse {
 
-    let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas").await;
-    if let Err(err) = posts {
-        error!("error getting month's posts: {}", err);
-        return HttpResponse::InternalServerError().body("something went wrong")
-    } 
-    let posts = posts.unwrap();
+    let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas").await?;
 
     if posts.len() == 0 {
-        return HttpResponse::NotFound().body("page not found")
+        return Err(WebError::NotFound)
     }
 
     let mut month_chars: Vec<char> = path.month.to_lowercase().chars().collect();
@@ -87,5 +71,5 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
     }
 
     let html = tmpl.render("month", &context).expect("template rendering failed");
-    HttpResponse::Ok().body(html)
+    Ok(html)
 }

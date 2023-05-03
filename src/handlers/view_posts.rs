@@ -1,9 +1,6 @@
-use std::collections::HashSet;
+use super::{prelude::*, *};
 
-use super::prelude::*;
-use anyhow::Result;
-
-use crate::{data, handlers::WebError};
+use crate::data;
 
 #[derive(Deserialize)]
 struct PageInfo {
@@ -11,7 +8,7 @@ struct PageInfo {
 }
 
 #[get("/")]
-async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session) -> Result<HttpResponse, WebError> {
+async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session) -> WebResponse {
 
     let page = query.page.unwrap_or(0);
     let posts = data::view_posts::get_latest_posts(page, "aquinas").await?;
@@ -21,11 +18,11 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session
     context.insert("page", &page);
 
     let html = tmpl.render("latest", &context).expect("template rendering failed");
-    Ok(HttpResponse::Ok().body(html))
+    Ok(html)
 }
 
 #[get("/post/{key}")]
-async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> Result<HttpResponse, WebError> {
+async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> WebResponse {
     let owned_comments = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
 
     let post = data::view_posts::get_single_post(&key, "aquinas", &owned_comments).await?;
@@ -41,5 +38,5 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> R
     context.insert("post", &post);
 
     let html = tmpl.render("single", &context).expect("template rendering failed");
-    Ok(HttpResponse::Ok().body(html))
+    Ok(html)
 }

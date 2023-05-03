@@ -18,8 +18,6 @@
 
 ## doing
 
-- better handler error handling
-
 - s3 image storage uploads
 - argon2 hashing
 - update user details
@@ -53,6 +51,7 @@
 - login
 - login post
 - logout
+- better handler error handling
 
 ## Stretch / Possible ideas
 

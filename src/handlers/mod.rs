@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use actix_web::error;
+use actix_web::{error, http::header, HttpResponse};
 
 pub mod style;
 pub mod content;
@@ -12,11 +12,12 @@ pub mod about;
 pub mod account;
 
 mod prelude {
-    pub use actix_web::{Responder, get, post, web::*, HttpResponse};
+    pub use actix_web::{get, post, web::{Data, Query, Path, Form}};
     pub use tera::Tera;
     pub use serde::Deserialize;
     pub use log::error;
     pub use actix_session::Session;
+    pub use std::collections::HashSet;
 }
 
 use prelude::*;
@@ -33,6 +34,24 @@ fn default_tera_context(session: &actix_session::Session) -> tera::Context {
     }
     
     context
+}
+
+type WebResponse = Result<HttpResponse, WebError>;
+
+fn Redirect(address: String) -> WebResponse {
+    Result::Ok(HttpResponse::SeeOther().insert_header((header::LOCATION, address)).finish())
+}
+
+fn Ok(body: String) -> WebResponse {
+    Result::Ok(HttpResponse::Ok().body(body))
+}
+
+fn Accepted(body: String) -> WebResponse {
+    Result::Ok(HttpResponse::Accepted().body(body))
+}
+
+fn File(mime_type: String, bytes: Vec<u8>) -> WebResponse {
+    Result::Ok(HttpResponse::Ok().content_type(mime_type).body(bytes))
 }
 
 #[derive(Debug)]
@@ -65,6 +84,13 @@ impl error::ResponseError for WebError {
 
 impl From<anyhow::Error> for WebError {
     fn from(err: anyhow::Error) -> Self {
+        Self::ServerError(err)
+    }
+}
+
+impl From<s3::error::S3Error> for WebError {
+    fn from(err: s3::error::S3Error) -> Self {
+        let err = anyhow::Error::from(err);
         Self::ServerError(err)
     }
 }
