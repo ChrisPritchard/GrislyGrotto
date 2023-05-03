@@ -18,13 +18,6 @@
 
 ## doing
 
-- s3 image storage uploads
-    - either via form or pure js
-
-> change how account works? rest of site will use js to prevent submits that are invalid, and just bad request at the server
-> difference here is that we need to return to this page on completion, and as there are three forms, indicate success
-> possibly pass back query and print message?
-> could also simplify updates... send each form to a different endpoint, which then redirects back
 
 ## Done
 
@@ -60,6 +53,7 @@
 - user details display
 - update user details
 - user details client side validations
+- s3 image storage uploads
 
 ## Stretch / Possible ideas
 
