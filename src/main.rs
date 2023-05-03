@@ -47,8 +47,9 @@ async fn main() -> Result<()> {
             .service(handlers::account::try_login)
             .service(handlers::account::logout)
             .service(handlers::account::account_details)
-            .service(handlers::account::update_user_display_name)
-            .service(handlers::account::update_user_password)
+            .service(handlers::account::update_display_name)
+            //.service(handlers::account::update_profile_image)
+            .service(handlers::account::update_password)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))

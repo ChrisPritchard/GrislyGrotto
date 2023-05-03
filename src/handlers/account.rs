@@ -1,4 +1,4 @@
-use crate::data;
+use crate::{data, s3::S3Config};
 
 use super::{prelude::*, *};
 
@@ -67,7 +67,7 @@ struct UpdateDisplayNameForm {
 }
 
 #[post("/account/display_name")]
-async fn update_user_display_name(form: Form<UpdateDisplayNameForm>, session: Session) -> WebResponse {
+async fn update_display_name(form: Form<UpdateDisplayNameForm>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
         return Err(WebError::Forbidden)
@@ -82,6 +82,25 @@ async fn update_user_display_name(form: Form<UpdateDisplayNameForm>, session: Se
     redirect("/account?message=display+name+updated+successfully".into())
 }
 
+// #[derive(Debug, MultipartForm)]
+// struct UpdateProfileImageForm {
+//     profile_image: TempFile,
+// }
+
+// #[post("/account/profile_image")]
+// async fn update_profile_image(MultipartForm(form): MultipartForm<UpdateProfileImageForm>, session: Session, s3_config: Data<S3Config>) -> WebResponse {
+//     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
+//     if current_user.is_none() {
+//         return Err(WebError::Forbidden)
+//     }
+//     let current_user = current_user.unwrap();
+    
+//     let bucket = s3_config.bucket()?;
+//     bucket.put_object(current_user, form.profile_image).await?;
+
+//     redirect("/account?message=profile+image+updated+successfully".into())
+// }
+
 #[derive(Deserialize)]
 struct UpdatePasswordForm {
     old_password: String,
@@ -90,7 +109,7 @@ struct UpdatePasswordForm {
 }
 
 #[post("/account/password")]
-async fn update_user_password(form: Form<UpdatePasswordForm>, session: Session) -> WebResponse {
+async fn update_password(form: Form<UpdatePasswordForm>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
         return Err(WebError::Forbidden)
