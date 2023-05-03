@@ -60,3 +60,44 @@ async fn account_details(tmpl: Data<Tera>, session: Session) -> WebResponse {
     let html = tmpl.render("account", &context).expect("template rendering failed");
     Ok(html)
 }
+
+#[derive(Deserialize)]
+struct AccountForm {
+    new_display_name: Option<String>,
+    old_password: Option<String>,
+    new_password: Option<String>,
+    new_password_confirm: Option<String>,
+}
+
+#[post("/account")]
+async fn update_account_details(tmpl: Data<Tera>, form: Form<AccountForm>, session: Session) -> WebResponse {
+    let current_user: Option<String> = session.get("current_user").unwrap_or(None);
+    if current_user.is_none() {
+        return Err(WebError::NotFound)
+    }
+    let current_user = current_user.unwrap();
+    
+    if let Some(new_display_name) = &form.new_display_name {
+        data::account::update_user_display_name(&current_user, &new_display_name).await?;
+        return Redirect("/account".into())
+    }
+
+    if let Some(old_password) = &form.old_password {
+        if let Some(new_password) = &form.new_password {
+            if let Some(new_password_confirm) = &form.new_password_confirm {
+                if new_password != new_password_confirm {
+                    return Err(WebError::BadRequest("new password does not match".into()))
+                }
+                let valid = data::account::validate_user(&current_user, &old_password).await?;
+                if !valid {
+                    return Err(WebError::BadRequest("old password is not correct".into()))
+                }
+
+                data::account::update_user_password(&current_user, &new_password).await?;
+                return Redirect("/account".into())
+            }
+        }
+    }
+
+    Err(WebError::BadRequest("invalid update".into()))
+}

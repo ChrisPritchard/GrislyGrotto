@@ -19,7 +19,6 @@
 ## doing
 
 - s3 image storage uploads
-- argon2 hashing
 - update user details
 
 ## Done
@@ -52,6 +51,7 @@
 - login post
 - logout
 - better handler error handling
+- argon2 hashing
 
 ## Stretch / Possible ideas
 
