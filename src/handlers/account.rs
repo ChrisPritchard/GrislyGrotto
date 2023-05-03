@@ -47,7 +47,7 @@ async fn logout(session: Session) -> WebResponse {
 async fn account_details(tmpl: Data<Tera>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
-        return Err(WebError::NotFound)
+        return Redirect("/login".into())
     }
     let current_user = current_user.unwrap();
     
@@ -73,31 +73,42 @@ struct AccountForm {
 async fn update_account_details(tmpl: Data<Tera>, form: Form<AccountForm>, session: Session) -> WebResponse {
     let current_user: Option<String> = session.get("current_user").unwrap_or(None);
     if current_user.is_none() {
-        return Err(WebError::NotFound)
+        return Redirect("/login".into())
     }
     let current_user = current_user.unwrap();
     
+    let mut context = super::default_tera_context(&session);
+    context.insert("current_username", &current_user);
+    
     if let Some(new_display_name) = &form.new_display_name {
         data::account::update_user_display_name(&current_user, &new_display_name).await?;
-        return Redirect("/account".into())
+        context.insert("current_display_name", &new_display_name);
+        context.insert("new_display_name_success", &true);
+    } else {
+        let display_name = data::account::get_user_display_name(&current_user).await?.unwrap_or(current_user.clone());
+        context.insert("current_display_name", &display_name);
     }
 
     if let Some(old_password) = &form.old_password {
         if let Some(new_password) = &form.new_password {
             if let Some(new_password_confirm) = &form.new_password_confirm {
                 if new_password != new_password_confirm {
-                    return Err(WebError::BadRequest("new password does not match".into()))
+                    context.insert("new_password_error", "new password does not match");
+                } else if new_password.len() < 14 {
+                    context.insert("new_password_error", "new password must be a minimum of 14 characters");
+                } else {
+                    let valid = data::account::validate_user(&current_user, &old_password).await?;
+                    if !valid {
+                        context.insert("new_password_error", "old password is not correct");
+                    } else {
+                        data::account::update_user_password(&current_user, &new_password).await?;
+                        context.insert("new_password_success", &true);
+                    }
                 }
-                let valid = data::account::validate_user(&current_user, &old_password).await?;
-                if !valid {
-                    return Err(WebError::BadRequest("old password is not correct".into()))
-                }
-
-                data::account::update_user_password(&current_user, &new_password).await?;
-                return Redirect("/account".into())
             }
         }
     }
 
-    Err(WebError::BadRequest("invalid update".into()))
+    let html = tmpl.render("account", &context).expect("template rendering failed");
+    Ok(html)
 }
