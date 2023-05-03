@@ -25,7 +25,7 @@
     <div>
         <input type="submit" value="Update" id="profile_image_update" />
         <span class="error" id="profile_image_error">{% if profile_image_error %}{{ profile_image_error }}{% endif %}</span>
-        {% if profile_image_success %}<span class="success_message">Successfully Updated</span>{% endif %}
+        <span class="success_message" id="profile_image_success"></span>
     </div>
 </form>
 <form method="POST" class="account_details_container">
