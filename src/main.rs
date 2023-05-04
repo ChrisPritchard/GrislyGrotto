@@ -50,6 +50,7 @@ async fn main() -> Result<()> {
             .service(handlers::account::update_display_name)
             .service(handlers::account::update_profile_image)
             .service(handlers::account::update_password)
+            .service(handlers::editor::new_post)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))

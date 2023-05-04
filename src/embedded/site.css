@@ -199,3 +199,28 @@ div.search-result h4 {
 .account_update_message {
     margin-bottom: 1em;
 }
+
+div.checkbox input, div.checkbox label {
+    display: inline;
+    vertical-align: center;
+}
+
+div.editor-help {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    text-align: justify;
+    font-size: 0.8em;
+}
+
+div.editor-help span {
+    border: 1px solid #222;
+    background-color: #222;
+    color: whitesmoke;
+}
+
+#content-upload-container {
+    border: 1px solid #222;
+    padding: 10px;
+    width: 300px;
+    margin-bottom: 1em;
+}

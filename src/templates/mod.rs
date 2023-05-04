@@ -14,6 +14,7 @@ pub fn template_engine() -> Tera {
     tera.add_raw_template("about", include_str!("about.html")).expect(PARSE_ERROR);
     tera.add_raw_template("login", include_str!("login.html")).expect(PARSE_ERROR);
     tera.add_raw_template("account", include_str!("account.html")).expect(PARSE_ERROR);
+    tera.add_raw_template("editor", include_str!("editor.html")).expect(PARSE_ERROR);
 
     tera
 }

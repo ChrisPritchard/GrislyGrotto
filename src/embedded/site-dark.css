@@ -24,3 +24,13 @@ input[type="submit"], input[type="button"] {
 .account_details_container {
     border: 1px solid whitesmoke;
 }
+
+div.editor-help span {
+    border: 1px solid whitesmoke;
+    background-color: whitesmoke;
+    color: #222;
+}
+
+#content-upload-container {
+    border: 1px solid whitesmoke;
+}
