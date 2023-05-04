@@ -205,20 +205,20 @@ div.checkbox input, div.checkbox label {
     vertical-align: center;
 }
 
-div.editor-help {
+.editor_help {
     margin-top: 1em;
     margin-bottom: 0.5em;
     text-align: justify;
     font-size: 0.8em;
 }
 
-div.editor-help span {
+.editor_help span {
     border: 1px solid #222;
     background-color: #222;
     color: whitesmoke;
 }
 
-#content-upload-container {
+.content_upload_container {
     border: 1px solid #222;
     padding: 10px;
     width: 300px;

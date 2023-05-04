@@ -5,7 +5,7 @@
     <label for="title">Post Title</label>
     <input type="text" id="title" name="title" value="{% if post %}{{ post.title }}{% endif %}" maxlength="100" />
 
-    <div class="editor-help">
+    <div class="editor_help">
         The editor supports markdown syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">in this cheat sheet</a>. 
         <br />Basically type normally, use <span>*text*</span> for italic, <span>**text**</span> for bold, <span>-</span> to create bullet points etc. Its faily intuitive.
         <br />Use <span>[title](url)</span> to create a link. A raw url will also be 'linkified'. Tables (see the cheat sheet) also work.
@@ -15,29 +15,29 @@
     <label for="content">Content <span class="error">{% if post_error %}{{ post_error }}{% endif %}</span></label>
     <textarea id="content" name="content" cols="100" rows="35">{% if post %}{{ post.content }}{% endif %}</textarea>
 
-    <div id="content-upload-container">
+    <div class="content_upload_container">
         <h3>Upload images</h3>
-        <input type="file" id="content-selector" accept=".jpg, .jpeg, .png, .gif, .mp4, .zip" /><span>maximum size: 1mb</span>
+        <input type="file" id="content_selector" accept=".jpg, .jpeg, .png, .gif, .webp, .mp4, .zip" /><span>maximum size: 1mb</span>
         <br/>
-        <input type="button" id="content-upload-button" value="Upload" class="hide" /><br/>
-        <span id="content-upload-result">HTML to use will appear here</span>
-        <input type="button" value="copy" id="copy-content-html" class="hide" />
+        <input type="button" id="content_upload_submit" value="Upload" class="hide" /><br/>
+        <span id="content_upload_result">HTML to use will appear here</span>
+        <input type="button" value="copy" id="copy_content_html" class="hide" />
     </div>
 
     <div class="checkbox">
-        <input type="checkbox" id="isStory" name="isStory" {% if post and post.is_story %}checked="checked"{% endif %} />
-        <label for="isStory">Is Story</label>
+        <input type="checkbox" id="is_story" name="is_story" {% if post and post.is_story %}checked="checked"{% endif %} />
+        <label for="is_story">Is Story</label>
     </div>
 
     {% if not post or post.is_draft %}
         <div class="checkbox">
-            <input type="checkbox" id="isDraft" name="isDraft" {% if post and post.is_draft %}checked="checked"{% endif %} />
-            <label for="isDraft">Is Draft</label>
+            <input type="checkbox" id="is_draft" name="is_draft" {% if post and post.is_draft %}checked="checked"{% endif %} />
+            <label for="is_draft">Is Draft</label>
             <br/>Draft posts can only be seen by you.
         </div>
     {% endif %}
 
-    <div class="post-submit">
+    <div class="post_submit">
         <input id="submit" type="submit" value="Submit" />
         <span class="error">{% if post_error %}{{ post_error }}{% endif %}</span>
     </div>

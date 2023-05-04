@@ -25,12 +25,12 @@ input[type="submit"], input[type="button"] {
     border: 1px solid whitesmoke;
 }
 
-div.editor-help span {
+.editor_help span {
     border: 1px solid whitesmoke;
     background-color: whitesmoke;
     color: #222;
 }
 
-#content-upload-container {
+.content_upload_container {
     border: 1px solid whitesmoke;
 }
