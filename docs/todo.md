@@ -66,3 +66,5 @@
 - categories?
 - chatgpt integration lolol. could be used to get categories from a post
 - last 10 post headings?
+- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
+- automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
