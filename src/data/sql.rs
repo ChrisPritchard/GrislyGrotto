@@ -130,3 +130,27 @@ pub const UPDATE_USER_DISPLAY_NAME: &str = "
 	UPDATE Authors 
 	SET DisplayName = ? 
 	WHERE Username = ?";
+
+/// provide: username, key, title, date, content, wordcount, is_story
+pub const INSERT_POST: &str = "
+	INSERT INTO 
+		Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
+	VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+/// provide: username, title, content, wordcount, is_story
+pub const UPDATE_POST: &str = "
+	UPDATE
+		Posts 
+	SET 
+		Title = ?, Content = ?, WordCount = ?, IsStory = ? 
+	WHERE
+		Key = ?";
+		
+/// provide: username, title, date, content, wordcount, is_story
+pub const UPDATE_POST_WITH_DATE: &str = "
+	UPDATE
+		Posts 
+	SET 
+		Title = ?, Date = ?, Content = ?, WordCount = ?, IsStory = ? 
+	WHERE
+		Key = ?";
