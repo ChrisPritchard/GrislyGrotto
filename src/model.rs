@@ -9,6 +9,7 @@ pub struct BlogPost {
     pub content: String,
     pub date: String,
     pub is_story: bool,
+    pub is_draft: bool,
     pub word_count: i64,
     pub comment_count: i64,
     pub comments: Option<Vec<BlogComment>>

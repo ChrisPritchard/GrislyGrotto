@@ -10,15 +10,19 @@ pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOp
     let is_story: i64 = stmt.read("IsStory").unwrap_or(0);
     let date: String = stmt.read("Date")?;
     let date_formatted = storage_datetime_as_display(&date)?;
+
+    let title: String = stmt.read("Title")?;
+    let (is_draft, title) = if title.starts_with("[DRAFT] ") { (true, title.chars().skip(8).collect()) } else { (false, title) };
     
     Ok(BlogPost { 
         author: stmt.read("Author")?, 
         author_username: stmt.read("Author_Username").unwrap_or("".into()), 
         key: stmt.read("Key").unwrap_or("".into()), 
-        title: stmt.read("Title")?, 
+        title: title.into(), 
         content: markdown,
         date: date_formatted, 
         is_story: is_story > 0, 
+        is_draft,
         word_count: stmt.read("WordCount").unwrap_or(0), 
         comment_count: stmt.read("CommentCount").unwrap_or(0),
         comments: None })

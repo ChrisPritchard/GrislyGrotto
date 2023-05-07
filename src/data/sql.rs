@@ -131,13 +131,29 @@ pub const UPDATE_USER_DISPLAY_NAME: &str = "
 	SET DisplayName = ? 
 	WHERE Username = ?";
 
+/// provide: key
+pub const SELECT_EXISTING_KEY: &str = "
+	SELECT 
+		Key
+	FROM Posts
+	WHERE 
+		Key = ?";
+
 /// provide: username, key, title, date, content, wordcount, is_story
 pub const INSERT_POST: &str = "
 	INSERT INTO 
 		Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
 	VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-/// provide: username, title, content, wordcount, is_story
+/// provide: key
+pub const SELECT_IF_DRAFT: &str = "
+	SELECT 
+		Title
+	FROM Posts
+	WHERE 
+		Title LIKE '[DRAFT] %' AND Key = ?";
+
+/// provide: title, content, wordcount, is_story
 pub const UPDATE_POST: &str = "
 	UPDATE
 		Posts 
@@ -145,8 +161,8 @@ pub const UPDATE_POST: &str = "
 		Title = ?, Content = ?, WordCount = ?, IsStory = ? 
 	WHERE
 		Key = ?";
-		
-/// provide: username, title, date, content, wordcount, is_story
+
+/// provide: title, date, content, wordcount, is_story
 pub const UPDATE_POST_WITH_DATE: &str = "
 	UPDATE
 		Posts 
