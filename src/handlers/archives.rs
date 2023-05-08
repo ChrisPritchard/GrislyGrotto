@@ -4,9 +4,10 @@ use super::{prelude::*, *};
 
 #[get("/archives")]
 async fn archives_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
-    
-    let counts = data::archives::get_month_counts("aquinas").await?;
-    let stories = data::archives::get_stories("aquinas").await?;
+    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
+
+    let counts = data::archives::get_month_counts(&current_user).await?;
+    let stories = data::archives::get_stories(&current_user).await?;
 
     let mut total_posts = 0;
     for year in &counts {
@@ -34,8 +35,8 @@ struct MonthQuery {
 
 #[get("/archives/{month}/{year}")]
 async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Session) -> WebResponse {
-
-    let posts = data::archives::get_posts_in_month(&path.year, &path.month, "aquinas").await?;
+    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
+    let posts = data::archives::get_posts_in_month(&path.year, &path.month, &current_user).await?;
 
     if posts.len() == 0 {
         return Err(WebError::NotFound)

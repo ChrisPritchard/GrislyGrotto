@@ -9,9 +9,10 @@ struct PageInfo {
 
 #[get("/")]
 async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session) -> WebResponse {
+    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
 
     let page = query.page.unwrap_or(0);
-    let posts = data::view_posts::get_latest_posts(page, "aquinas").await?;
+    let posts = data::view_posts::get_latest_posts(page, &current_user).await?;
 
     let mut context = super::default_tera_context(&session);
     context.insert("posts", &posts);
@@ -23,9 +24,10 @@ async fn latest_posts(tmpl: Data<Tera>, query: Query<PageInfo>, session: Session
 
 #[get("/post/{key}")]
 async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> WebResponse {
+    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
     let owned_comments = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
 
-    let post = data::view_posts::get_single_post(&key, "aquinas", &owned_comments).await?;
+    let post = data::view_posts::get_single_post(&key, &current_user, &owned_comments).await?;
 
     if post.is_none() {
         return Err(WebError::NotFound)

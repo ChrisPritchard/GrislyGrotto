@@ -21,6 +21,7 @@
 
 > how should drafts work? applied at the db level? tag never appears up?
 > this seems to make sense
+> i could also ditch the draft functionality entirely, as its kind of points
 
 ## Done
 
