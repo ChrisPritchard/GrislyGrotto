@@ -4,7 +4,7 @@ use super::{prelude::*, *};
 
 #[get("/archives")]
 async fn archives_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
-    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
+    let current_user = session.get("current_user")?.unwrap_or(Some("".to_string())).unwrap();
 
     let counts = data::archives::get_month_counts(&current_user).await?;
     let stories = data::archives::get_stories(&current_user).await?;
@@ -17,13 +17,13 @@ async fn archives_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     }
     let total_years = &counts[0].year.parse::<i64>().unwrap() - &counts[counts.len()-1].year.parse::<i64>().unwrap();
 
-    let mut context = super::default_tera_context(&session);
+    let mut context = super::default_tera_context(&session)?;
     context.insert("years", &counts);
     context.insert("stories", &stories);
     context.insert("total_posts", &total_posts);
     context.insert("total_years", &total_years);
 
-    let html = tmpl.render("archives", &context).expect("template rendering failed");
+    let html = tmpl.render("archives", &context)?;
     ok(html)
 }
 
@@ -35,7 +35,7 @@ struct MonthQuery {
 
 #[get("/archives/{month}/{year}")]
 async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Session) -> WebResponse {
-    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
+    let current_user = session.get("current_user")?.unwrap_or(Some("".to_string())).unwrap();
     let posts = data::archives::get_posts_in_month(&path.year, &path.month, &current_user).await?;
 
     if posts.len() == 0 {
@@ -54,7 +54,7 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
         next_year = (next_year.parse::<i64>().unwrap() + 1).to_string();
     }
 
-    let mut context = super::default_tera_context(&session);
+    let mut context = super::default_tera_context(&session)?;
     context.insert("posts", &posts);
     context.insert("year", &path.year);
     context.insert("month", &month);
@@ -71,6 +71,6 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
         context.insert("next_year", &next_year);
     }
 
-    let html = tmpl.render("month", &context).expect("template rendering failed");
+    let html = tmpl.render("month", &context)?;
     ok(html)
 }

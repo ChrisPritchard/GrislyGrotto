@@ -28,7 +28,7 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>, session: Sessio
 
     let new_id = data::comments::add_comment(&key, &form.author, &form.content).await?;
 
-    let mut owned_comments = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    let mut owned_comments = session.get("owned_comments")?.unwrap_or(HashSet::new());
     owned_comments.insert(new_id);
     let _ = session.insert("owned_comments", owned_comments);
 
@@ -39,7 +39,7 @@ async fn add_comment(key: Path<String>, form: Form<CommentForm>, session: Sessio
 #[get("/raw_comment/{id}")]
 async fn raw_comment_content(id: Path<i64>, session: Session) -> WebResponse {
     let id = id.into_inner();
-    let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    let owned_comments: HashSet::<i64> = session.get("owned_comments")?.unwrap_or(HashSet::new());
     if !owned_comments.contains(&id) {
         return Err(WebError::Forbidden)
     }
@@ -60,7 +60,7 @@ struct UpdateCommentForm {
 #[post("/edit_comment/{id}")]
 async fn edit_comment(id: Path<i64>, form: Form<UpdateCommentForm>, session: Session) -> WebResponse {
     let id = id.into_inner();
-    let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    let owned_comments: HashSet::<i64> = session.get("owned_comments")?.unwrap_or(HashSet::new());
     if !owned_comments.contains(&id) {
         return Err(WebError::Forbidden)
     }
@@ -76,7 +76,7 @@ async fn edit_comment(id: Path<i64>, form: Form<UpdateCommentForm>, session: Ses
 #[post("/delete_comment/{id}")]
 async fn delete_comment(id: Path<i64>, session: Session) -> WebResponse {
     let id = id.into_inner();
-    let owned_comments: HashSet::<i64> = session.get("owned_comments").unwrap_or(None).unwrap_or(HashSet::new());
+    let owned_comments: HashSet::<i64> = session.get("owned_comments")?.unwrap_or(HashSet::new());
     if !owned_comments.contains(&id) {
         return Err(WebError::Forbidden)
     }

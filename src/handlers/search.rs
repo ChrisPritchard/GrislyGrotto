@@ -9,8 +9,8 @@ struct SearchInfo {
 
 #[get("/search")]
 async fn search_page(tmpl: Data<Tera>, query: Query<SearchInfo>, session: Session) -> WebResponse {
-    let current_user = session.get("current_user").unwrap_or(Some("".to_string())).unwrap();
-    let mut context = super::default_tera_context(&session);
+    let current_user = session.get("current_user")?.unwrap_or(Some("".to_string())).unwrap();
+    let mut context = super::default_tera_context(&session)?;
 
     if let Some(search_term) = &query.search_term {
         context.insert("search_term", &search_term);
@@ -24,6 +24,6 @@ async fn search_page(tmpl: Data<Tera>, query: Query<SearchInfo>, session: Sessio
         }
     }
 
-    let html = tmpl.render("search", &context).expect("template rendering failed");
+    let html = tmpl.render("search", &context)?;
     ok(html)
 }

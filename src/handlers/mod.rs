@@ -24,18 +24,18 @@ mod prelude {
 use prelude::*;
 use serde::Serialize;
 
-fn default_tera_context(session: &actix_session::Session) -> tera::Context {
+fn default_tera_context(session: &actix_session::Session) -> anyhow::Result<tera::Context> {
     let mut context = tera::Context::new();
     
-    let style: String = session.get("style").unwrap().unwrap_or("light".into());
+    let style: String = session.get("style")?.unwrap_or("light".into());
     context.insert("style", &style.clone());
     
-    let current_user: Option<String> = session.get("current_user").unwrap();
+    let current_user: Option<String> = session.get("current_user")?;
     if let Some(username) = current_user {
         context.insert("current_user", &username.clone());
     }
     
-    context
+    Ok(context)
 }
 
 type WebResponse = Result<HttpResponse, WebError>;
@@ -102,6 +102,20 @@ impl From<s3::error::S3Error> for WebError {
 
 impl From<actix_web::error::PayloadError> for WebError {
     fn from(err: actix_web::error::PayloadError) -> Self {
+        let err = anyhow::Error::from(err);
+        Self::ServerError(err)
+    }
+}
+
+impl From<actix_session::SessionGetError> for WebError {
+    fn from(err: actix_session::SessionGetError) -> Self {
+        let err = anyhow::Error::from(err);
+        Self::ServerError(err)
+    }
+}
+
+impl From<tera::Error> for WebError {
+    fn from(err: tera::Error) -> Self {
         let err = anyhow::Error::from(err);
         Self::ServerError(err)
     }

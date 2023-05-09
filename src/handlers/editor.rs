@@ -5,18 +5,18 @@ use super::{prelude::*, *};
 
 #[get("/editor/new")]
 async fn new_post(tmpl: Data<Tera>, session: Session) -> WebResponse {
-    if session.get::<String>("current_user").unwrap_or(None).is_none() {
+    if session.get::<String>("current_user")?.is_none() {
         return Err(WebError::Forbidden);
     }
 
-    let context = super::default_tera_context(&session);
-    let html = tmpl.render("editor", &context).expect("template rendering failed");
+    let context = super::default_tera_context(&session)?;
+    let html = tmpl.render("editor", &context)?;
     ok(html)
 }
 
 #[get("editor/exists/{key}")]
 async fn key_exists(key: Query<String>, session: Session) -> WebResponse {
-    if session.get::<String>("current_user").unwrap_or(None).is_none() {
+    if session.get::<String>("current_user")?.is_none() {
         return Err(WebError::Forbidden);
     }
 
@@ -34,7 +34,7 @@ struct EditorForm {
 
 #[post("/editor/new")]
 async fn create_new_post(form: Form<EditorForm>, session: Session) -> WebResponse {
-    let current_user = session.get("current_user").unwrap_or(None);
+    let current_user = session.get("current_user")?.unwrap_or(None);
     if current_user.is_none() {
         return Err(WebError::Forbidden);
     }
