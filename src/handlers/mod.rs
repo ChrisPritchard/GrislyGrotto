@@ -22,6 +22,7 @@ mod prelude {
 }
 
 use prelude::*;
+use serde::Serialize;
 
 fn default_tera_context(session: &actix_session::Session) -> tera::Context {
     let mut context = tera::Context::new();
@@ -45,6 +46,10 @@ fn redirect(address: String) -> WebResponse {
 
 fn ok(body: String) -> WebResponse {
     Result::Ok(HttpResponse::Ok().body(body))
+}
+
+fn json<T: Serialize>(body: T) -> WebResponse {
+    Result::Ok(HttpResponse::Ok().json(body))
 }
 
 fn accepted(body: String) -> WebResponse {

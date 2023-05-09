@@ -2,7 +2,15 @@ use regex::Regex;
 
 use super::{prelude::*, *};
 
-pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool, is_draft: bool) -> Result<bool> {
+pub async fn key_exists(key: &str) -> Result<bool> {
+    let connection = db()?;
+    let mut stmt = connection.prepare(sql::SELECT_EXISTING_KEY)?;
+    stmt.bind::<&[(_, Value)]>(&[
+        (1, key.into()),])?;
+    Ok(stmt.next()? == State::Row)
+}
+
+pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool, is_draft: bool) -> Result<Option<String>> {
     
     let mut key = title.to_ascii_lowercase().replace(" ", "-");
     let key_regex = Regex::new("[^A-Za-z0-9 -]+").unwrap();
@@ -15,7 +23,7 @@ pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool
         (1, key.clone().into()),])?;
 
     if stmt.next()? == State::Row {
-        return Ok(false) // a post already exists with this key
+        return Ok(None) // a post already exists with this key
     }
     
     let date = current_datetime_for_storage();
@@ -31,7 +39,7 @@ pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool
     let mut stmt = connection.prepare(sql::INSERT_POST)?;
     stmt.bind::<&[(_, Value)]>(&[
         (1, username.into()), 
-        (2, key.into()),
+        (2, key.clone().into()),
         (3, title.into()),
         (4, date.into()),
         (5, content.into()),
@@ -40,7 +48,7 @@ pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool
 
     let _ = stmt.next()?;
 
-    Ok(true)
+    Ok(Some(key.clone()))
 }
 
 pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, is_draft: bool) -> Result<()> {
