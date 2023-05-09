@@ -28,6 +28,18 @@ pub fn post_from_statement(stmt: &Statement, markdown_options: &comrak::ComrakOp
         comments: None })
 }
 
+pub fn raw_post_from_statement(stmt: &Statement) -> Result<EditPost> {
+    let is_story: i64 = stmt.read("IsStory").unwrap_or(0);
+    let title: String = stmt.read("Title")?;
+    let (is_draft, title) = if title.starts_with("[DRAFT] ") { (true, title.chars().skip(8).collect()) } else { (false, title) };
+    
+    Ok(EditPost { 
+        title: title.into(), 
+        content: stmt.read("Content")?,
+        is_story: is_story > 0, 
+        is_draft, })
+}
+
 pub fn comment_from_statement(stmt: &Statement, owned_comments: &HashSet<i64>, markdown_options: &comrak::ComrakOptions) -> Result<BlogComment> {
     let content: String = stmt.read("Content")?;
     let markdown = comrak::markdown_to_html(&content, markdown_options);

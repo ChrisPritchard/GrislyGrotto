@@ -53,3 +53,22 @@ async fn create_new_post(form: Form<EditorForm>, session: Session) -> WebRespons
 
     redirect(format!("/post/{}", key))
 }
+
+#[get("/post/{key}/edit")]
+async fn edit_post_page(key: Path<String>, tmpl: Data<Tera>, session: Session) -> WebResponse {
+    let current_user = session.get("current_user")?.unwrap_or(None);
+    if current_user.is_none() {
+        return Err(WebError::Forbidden);
+    }
+    let current_user: String = current_user.unwrap();
+
+    let post = data::editor::get_post_for_edit(&key, &current_user).await?;
+    if post.is_none() {
+        return Err(WebError::Forbidden);
+    }
+
+    let mut context = super::default_tera_context(&session)?;
+    context.insert("post", &post);
+    let html = tmpl.render("editor", &context)?;
+    ok(html)
+}

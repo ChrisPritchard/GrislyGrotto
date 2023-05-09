@@ -1,5 +1,7 @@
 use regex::Regex;
 
+use crate::model::EditPost;
+
 use super::{prelude::*, *};
 
 pub async fn key_exists(key: &str) -> Result<bool> {
@@ -50,6 +52,23 @@ pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool
 
     Ok(Some(key.clone()))
 }
+
+pub async fn get_post_for_edit(key: &str, current_user: &str) -> Result<Option<EditPost>> {
+    let connection = db()?;
+
+    let mut stmt = connection.prepare(sql::SELECT_RAW_POST)?;
+    stmt.bind::<&[(_, Value)]>(&[
+        (1, key.clone().into()), 
+        (2, current_user.into())])?;
+
+    if stmt.next()? == State::Done {
+        return Ok(None);
+    }
+
+    let post = mapping::raw_post_from_statement(&stmt)?;
+    Ok(Some(post))
+}
+
 
 pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, is_draft: bool) -> Result<()> {
     

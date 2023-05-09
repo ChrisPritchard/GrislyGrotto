@@ -4,7 +4,6 @@
 
 - delete post
 
-
 - full styling
 - csp, security headers
 
@@ -15,10 +14,9 @@
 
 ## doing
 
-- new post
 - edit post
-- upload file js
 - editor validation js
+- upload file js
 
 ## Done
 
@@ -55,6 +53,7 @@
 - update user details
 - user details client side validations
 - s3 image storage uploads
+- new post
 
 ## Stretch / Possible ideas
 

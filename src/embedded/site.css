@@ -112,6 +112,20 @@ footer {
     text-align: justify;
 }
 
+.blog_controls {
+    display: flex;
+    flex-direction: row;
+}
+
+.blog_controls div {
+    flex: none;
+    margin-right: 0.5em;
+}
+
+.blog_controls input {
+    width: 80px;
+}
+
 .comment_summary {
     font-size: 0.8em;
     margin-top: 15px;

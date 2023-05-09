@@ -39,6 +39,10 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> W
     let mut context = super::default_tera_context(&session)?;
     context.insert("post", &post);
 
+    if post.author_username == current_user {
+        context.insert("own_blog", &true);
+    }
+
     let html = tmpl.render("single", &context)?;
     ok(html)
 }

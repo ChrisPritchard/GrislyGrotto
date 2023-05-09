@@ -13,6 +13,20 @@
             {{ post.content }}
         </div>
     </div>
+    {% if own_blog %}
+        <div class="blog_controls">
+            <div>
+                <form method="GET" action="/post/{{ post.key }}/edit">
+                    <input type="submit" value="Edit">
+                </form>
+            </div>
+            <div>
+                <form method="GET" action="/delete/{{ post.key }}">
+                    <input type="submit" value="Delete">
+                </form>
+            </div>
+        </div>
+    {% endif %}
     <a name="comments"></a>
     <h3>Comments</h3>
     {% for comment in post.comments %}

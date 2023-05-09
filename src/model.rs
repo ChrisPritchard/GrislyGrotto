@@ -44,3 +44,11 @@ pub struct MonthCount {
     pub year: String,
     pub count: i64
 }
+
+#[derive(Clone, Debug, Serialize)]
+pub struct EditPost {
+    pub title: String,
+    pub content: String,
+    pub is_story: bool,
+    pub is_draft: bool,
+}

@@ -145,6 +145,15 @@ pub const INSERT_POST: &str = "
 		Posts (Author_Username, Key, Title, Date, Content, WordCount, IsStory) 
 	VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+/// provide: key, current_user
+pub const SELECT_RAW_POST: &str = "
+	SELECT 
+		Title, Content, IsStory
+	FROM Posts
+	WHERE 
+		Key = ?
+		AND Author_Username = ?";
+
 /// provide: key
 pub const SELECT_IF_DRAFT: &str = "
 	SELECT 
