@@ -2,10 +2,8 @@
 
 ## To Start
 
-- edit post
 - delete post
 
-- upload file ui
 
 - full styling
 - csp, security headers
@@ -18,10 +16,9 @@
 ## doing
 
 - new post
-
-> how should drafts work? applied at the db level? tag never appears up?
-> this seems to make sense
-> i could also ditch the draft functionality entirely, as its kind of points
+- edit post
+- upload file js
+- editor validation js
 
 ## Done
 
