@@ -4,7 +4,7 @@ use crate::data;
 use super::{prelude::*, *};
 
 #[get("/editor/new")]
-async fn new_post(tmpl: Data<Tera>, session: Session) -> WebResponse {
+async fn new_post_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     if session.get::<String>("current_user")?.is_none() {
         return Err(WebError::Forbidden);
     }
@@ -28,8 +28,8 @@ async fn key_exists(key: Query<String>, session: Session) -> WebResponse {
 struct EditorForm {
     title: String,
     content: String,
-    is_story: bool,
-    is_draft: bool,
+    is_story: Option<bool>,
+    is_draft: Option<bool>,
 }
 
 #[post("/editor/new")]
@@ -44,7 +44,7 @@ async fn create_new_post(form: Form<EditorForm>, session: Session) -> WebRespons
         return Err(WebError::BadRequest("invalid post".into()));
     }
 
-    let result = data::editor::add_post(&current_user, &form.title, &form.content, form.is_story, form.is_draft).await?;
+    let result = data::editor::add_post(&current_user, &form.title, &form.content, form.is_story.unwrap_or(false), form.is_draft.unwrap_or(false)).await?;
     if result.is_none() {
         return Err(WebError::BadRequest("post with this key already exists".into()));
     }

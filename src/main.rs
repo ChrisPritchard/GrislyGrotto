@@ -20,7 +20,7 @@ async fn main() -> Result<()> {
     
     let query_cfg = get_query_cfg();
     let s3_config = s3::get_s3_config()?;
-    let session_key = Key::generate();
+    let session_key = Key::from(&[0; 64]);//::generate();
 
     let server = HttpServer::new(move || {
         App::new()
@@ -50,7 +50,8 @@ async fn main() -> Result<()> {
             .service(handlers::account::update_display_name)
             .service(handlers::account::update_profile_image)
             .service(handlers::account::update_password)
-            .service(handlers::editor::new_post)
+            .service(handlers::editor::new_post_page)
+            .service(handlers::editor::create_new_post)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
