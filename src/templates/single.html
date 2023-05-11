@@ -5,7 +5,7 @@
         <div class="post_header">
             <img class="profile_image" src="/content/{{ post.author_username }}" />
             <div class="post_info">
-                <h3 class="post_title">{{ post.title }}</h3>
+                <h3 class="post_title">{% if post.is_draft %}[DRAFT] {% endif %}{{ post.title }}</h3>
                 <div class="post_summary">Posted by {{ post.author }} at {{ post.date }}.</div>
             </div>
         </div>

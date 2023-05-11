@@ -28,8 +28,8 @@ async fn key_exists(key: Query<String>, session: Session) -> WebResponse {
 struct EditorForm {
     title: String,
     content: String,
-    is_story: Option<bool>,
-    is_draft: Option<bool>,
+    is_story: Option<String>,
+    is_draft: Option<String>,
 }
 
 #[post("/editor/new")]
@@ -44,7 +44,10 @@ async fn create_new_post(form: Form<EditorForm>, session: Session) -> WebRespons
         return Err(WebError::BadRequest("invalid post".into()));
     }
 
-    let result = data::editor::add_post(&current_user, &form.title, &form.content, form.is_story.unwrap_or(false), form.is_draft.unwrap_or(false)).await?;
+    let is_story = form.is_story.is_some();
+    let is_draft = form.is_draft.is_some();
+
+    let result = data::editor::add_post(&current_user, &form.title, &form.content, is_story, is_draft).await?;
     if result.is_none() {
         return Err(WebError::BadRequest("post with this key already exists".into()));
     }
