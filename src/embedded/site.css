@@ -44,6 +44,11 @@ input[type="text"], input[type="password"], textarea {
     margin-bottom: 8px;
 }
 
+input[type="submit"]:disabled, input[type="button"]:disabled {
+    border: 1px solid gray;
+    color: gray;
+}
+
 input[type="submit"], input[type="button"] {
     transition: all .3s ease;
     font-weight: 400;
@@ -201,6 +206,10 @@ div.search-result h4 {
 
 .hide {
     display: none;
+}
+
+.error {
+    color: red;
 }
 
 .account_details_container {

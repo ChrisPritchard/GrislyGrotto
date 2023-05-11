@@ -4,6 +4,7 @@
 <form method="POST">
     <label for="title">Post Title</label>
     <input type="text" id="title" name="title" value="{% if post %}{{ post.title }}{% endif %}" maxlength="100" />
+    <span id="title_error" class="error hide">A post with a similar title already exists</span>
 
     <div class="editor_help">
         The editor supports markdown syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">in this cheat sheet</a>. 
@@ -12,7 +13,7 @@
         <br />Raw HTML (e.g. <span>&lt;img&gt;</span>) will be interpreted as is. Note that the content security policy will prevent script and most external image sources.
     </div>
 
-    <label for="content">Content <span class="error">{% if post_error %}{{ post_error }}{% endif %}</span></label>
+    <label for="content">Content (min length: 500 chars)</label>
     <textarea id="content" name="content" cols="100" rows="35">{% if post %}{{ post.content }}{% endif %}</textarea>
 
     <div class="content_upload_container">
@@ -38,8 +39,7 @@
     {% endif %}
 
     <div class="post_submit">
-        <input id="submit" type="submit" value="Submit" />
-        <span class="error">{% if post_error %}{{ post_error }}{% endif %}</span>
+        <input id="post_submit" type="submit" value="Submit" />
     </div>
 </form>
 <script src="/static/editor.js"></script>

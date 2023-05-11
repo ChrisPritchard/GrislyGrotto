@@ -4,8 +4,18 @@ use crate::model::EditPost;
 
 use super::{prelude::*, *};
 
-pub async fn key_exists(key: &str) -> Result<bool> {
+fn get_key_from_title(title: &str) -> String {
+    let mut key = title.to_ascii_lowercase().replace(" ", "-");
+    let key_regex = Regex::new("[^A-Za-z0-9 -]+").unwrap();
+    key = key_regex.replace_all(&key, "").into_owned();
+    key
+}
+
+pub async fn similar_title_exists(title: &str) -> Result<bool> {
+    let key = get_key_from_title(title);
+
     let connection = db()?;
+
     let mut stmt = connection.prepare(sql::SELECT_EXISTING_KEY)?;
     stmt.bind::<&[(_, Value)]>(&[
         (1, key.into()),])?;
@@ -14,9 +24,7 @@ pub async fn key_exists(key: &str) -> Result<bool> {
 
 pub async fn add_post(username: &str, title: &str, content: &str, is_story: bool, is_draft: bool) -> Result<Option<String>> {
     
-    let mut key = title.to_ascii_lowercase().replace(" ", "-");
-    let key_regex = Regex::new("[^A-Za-z0-9 -]+").unwrap();
-    key = key_regex.replace_all(&key, "").into_owned();
+    let key = get_key_from_title(title);
     
     let connection = db()?;
 

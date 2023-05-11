@@ -14,13 +14,18 @@ async fn new_post_page(tmpl: Data<Tera>, session: Session) -> WebResponse {
     ok(html)
 }
 
-#[get("editor/exists/{key}")]
-async fn key_exists(key: Query<String>, session: Session) -> WebResponse {
+#[derive(Deserialize)]
+struct TitleForm {
+    title: String,
+}
+
+#[post("editor/check_title")]
+async fn similar_title_exists(form: Form<TitleForm>, session: Session) -> WebResponse {
     if session.get::<String>("current_user")?.is_none() {
         return Err(WebError::Forbidden);
     }
 
-    let exists = data::editor::key_exists(key.as_str()).await?;
+    let exists = data::editor::similar_title_exists(&form.title).await?;
     json(exists)
 }
 

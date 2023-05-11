@@ -14,7 +14,6 @@
 
 ## doing
 
-- edit post
 - editor validation js
 - upload file js
 
@@ -54,6 +53,7 @@
 - user details client side validations
 - s3 image storage uploads
 - new post
+- edit post
 
 ## Stretch / Possible ideas
 

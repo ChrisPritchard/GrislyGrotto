@@ -50,6 +50,7 @@ async fn main() -> Result<()> {
             .service(handlers::account::update_display_name)
             .service(handlers::account::update_profile_image)
             .service(handlers::account::update_password)
+            .service(handlers::editor::similar_title_exists)
             .service(handlers::editor::new_post_page)
             .service(handlers::editor::create_new_post)
             .service(handlers::editor::edit_post_page)
