@@ -3,7 +3,7 @@ use actix_web::{get, Responder, web::Path, HttpResponse};
 static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
     ("site.css", ("text/css", include_bytes!("site.css").as_slice())),
     ("site-dark.css", ("text/css", include_bytes!("site-dark.css").as_slice())),
-    ("site.js", ("text/javascript", include_bytes!("site.js").as_slice())),
+    ("style.js", ("text/javascript", include_bytes!("style.js").as_slice())),
     ("comments.js", ("text/javascript", include_bytes!("comments.js").as_slice())),
     ("login.js", ("text/javascript", include_bytes!("login.js").as_slice())),
     ("account.js", ("text/javascript", include_bytes!("account.js").as_slice())),
