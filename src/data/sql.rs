@@ -157,12 +157,12 @@ pub const SELECT_RAW_POST: &str = "
 /// provide: key
 pub const SELECT_IF_DRAFT: &str = "
 	SELECT 
-		Title
+		1
 	FROM Posts
 	WHERE 
 		Title LIKE '[DRAFT] %' AND Key = ?";
 
-/// provide: title, content, wordcount, is_story
+/// provide: title, content, wordcount, is_story, key
 pub const UPDATE_POST: &str = "
 	UPDATE
 		Posts 
@@ -171,7 +171,7 @@ pub const UPDATE_POST: &str = "
 	WHERE
 		Key = ?";
 
-/// provide: title, date, content, wordcount, is_story
+/// provide: title, date, content, wordcount, is_story, key
 pub const UPDATE_POST_WITH_DATE: &str = "
 	UPDATE
 		Posts 

@@ -69,9 +69,35 @@ async fn edit_post_page(key: Path<String>, tmpl: Data<Tera>, session: Session) -
     if post.is_none() {
         return Err(WebError::Forbidden);
     }
+    let post = post.unwrap();
 
     let mut context = super::default_tera_context(&session)?;
     context.insert("post", &post);
     let html = tmpl.render("editor", &context)?;
     ok(html)
+}
+
+#[post("/post/{key}/edit")]
+async fn update_post(form: Form<EditorForm>, key: Path<String>, session: Session) -> WebResponse {
+    let current_user = session.get("current_user")?.unwrap_or(None);
+    if current_user.is_none() {
+        return Err(WebError::Forbidden);
+    }
+    let current_user: String = current_user.unwrap();
+
+    let post = data::editor::get_post_for_edit(&key, &current_user).await?;
+    if post.is_none() {
+        return Err(WebError::Forbidden);
+    }
+    let post = post.unwrap();
+
+    if form.title.len() == 0 || form.content.len() == 0 || form.content.len() < 100 {
+        return Err(WebError::BadRequest("invalid post".into()));
+    }
+
+    let is_story = form.is_story.is_some();
+    let is_draft = form.is_draft.is_some() && post.is_draft; // editor can only keep a post as a draft, it can't make a non-draft a draft
+
+    let _ = data::editor::update_post(&key, &form.title, &form.content, is_story, is_draft).await?;
+    redirect(format!("/post/{}", key))
 }

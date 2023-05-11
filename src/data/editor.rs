@@ -69,7 +69,6 @@ pub async fn get_post_for_edit(key: &str, current_user: &str) -> Result<Option<E
     Ok(Some(post))
 }
 
-
 pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, is_draft: bool) -> Result<()> {
     
     let connection = db()?;
@@ -82,7 +81,7 @@ pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, 
     let title = if is_draft { format!("[DRAFT] {}", title) } else { title.to_string() };
 
     if !is_draft {
-        let mut stmt = connection.prepare(sql::SELECT_EXISTING_KEY)?;
+        let mut stmt = connection.prepare(sql::SELECT_IF_DRAFT)?;
         stmt.bind::<&[(_, Value)]>(&[
             (1, key.clone().into()),])?;
 
@@ -94,12 +93,13 @@ pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, 
                 (2, date.into()),
                 (3, content.into()),
                 (4, word_count.into()),
-                (5, is_story.into()),])?;
+                (5, is_story.into()),
+                (6, key.clone().into()),])?;
 
             let _ = stmt.next()?;
-        }
 
-        return Ok(());
+            return Ok(());
+        }
     }
     
     let mut stmt = connection.prepare(sql::UPDATE_POST)?;
@@ -107,7 +107,8 @@ pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, 
         (1, title.into()),
         (2, content.into()),
         (3, word_count.into()),
-        (4, is_story.into()),])?;
+        (4, is_story.into()),
+        (5, key.clone().into()),])?;
 
     let _ = stmt.next()?;
 

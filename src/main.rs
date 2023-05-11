@@ -53,6 +53,7 @@ async fn main() -> Result<()> {
             .service(handlers::editor::new_post_page)
             .service(handlers::editor::create_new_post)
             .service(handlers::editor::edit_post_page)
+            .service(handlers::editor::update_post)
     });  
 
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
