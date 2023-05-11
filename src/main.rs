@@ -33,6 +33,7 @@ async fn main() -> Result<()> {
             .service(handlers::style::set_style)
             .service(embedded::static_content)
             .service(handlers::content::stored_content)
+            .service(handlers::content::upload_content)
             .service(handlers::view_posts::latest_posts)
             .service(handlers::view_posts::single_post)
             .service(handlers::comments::add_comment)
