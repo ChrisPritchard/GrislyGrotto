@@ -14,7 +14,8 @@
 
 ## doing
 
-- editor validation js
+- dirty flag
+- cookie expiry check
 - upload file js
 
 ## Done
@@ -54,6 +55,7 @@
 - s3 image storage uploads
 - new post
 - edit post
+- editor validation js
 
 ## Stretch / Possible ideas
 

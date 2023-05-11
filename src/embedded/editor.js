@@ -41,3 +41,17 @@ function check_title() {
     });
 }
 
+
+let dirty = true
+document.querySelector("#post_submit").addEventListener("click", () => {
+    dirty = false;
+});
+window.addEventListener("beforeunload", () => {
+    if (dirty) {
+        // note: most browsers ignore this and just detect that I return anything at all
+        // if I do (e.g. the below 'confirm' object), then they present their own version of the below
+        // I could return 1 here, or true, or even false, and it would trigger a prompt
+        return confirm('Are you sure you want to leave?')
+    }
+    // by returning nothing here, there is no prompt. note that returning false here WOULD trigger a prompt
+});
