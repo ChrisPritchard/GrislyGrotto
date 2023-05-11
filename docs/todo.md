@@ -2,19 +2,18 @@
 
 ## To Start
 
-- delete post
-
-- full styling
 - csp, security headers
-
 - docker file
 - fly.io deployment
+
+- full styling
+
 - dns update
 - docs
 
 ## doing
 
-- upload file js
+- delete post
 
 ## Done
 
@@ -55,6 +54,7 @@
 - edit post
 - editor validation js
 - editor dirty flag
+- upload file for editor
 
 ## Stretch / Possible ideas
 
