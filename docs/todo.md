@@ -14,8 +14,6 @@
 
 ## doing
 
-- dirty flag
-- cookie expiry check
 - upload file js
 
 ## Done
@@ -56,6 +54,7 @@
 - new post
 - edit post
 - editor validation js
+- editor dirty flag
 
 ## Stretch / Possible ideas
 
@@ -70,3 +69,4 @@
 - last 10 post headings?
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
 - automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
+- cookie expiry check - new cookies last much longer, and its unclear how likely they are to expire during a new post
