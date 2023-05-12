@@ -1,5 +1,5 @@
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
-use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::Key};
+use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::Key, http::header::CONTENT_SECURITY_POLICY};
 
 use anyhow::Result;
 
@@ -9,6 +9,8 @@ mod data;
 mod handlers;
 mod templates;
 mod s3;
+
+const GG_CONTENT_SECURITY_POLICY: &str = "default-src 'self';style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;script-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;";
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -26,6 +28,7 @@ async fn main() -> Result<()> {
         App::new()
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%a - %r - %s"))
+            .wrap(middleware::DefaultHeaders::new().add((CONTENT_SECURITY_POLICY, GG_CONTENT_SECURITY_POLICY)))
             .wrap(SessionMiddleware::new(CookieSessionStore::default(), session_key.clone()))
             .app_data(Data::new(tera.clone()))
             .app_data(Data::new(s3_config.clone()))

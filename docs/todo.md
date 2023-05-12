@@ -2,7 +2,6 @@
 
 ## To Start
 
-- csp, security headers
 - docker file
 - fly.io deployment
 
@@ -55,6 +54,7 @@
 - editor dirty flag
 - upload file for editor
 - delete post
+- csp, security headers
 
 ## Stretch / Possible ideas
 
