@@ -13,7 +13,6 @@
 
 ## doing
 
-- delete post
 
 ## Done
 
@@ -55,6 +54,7 @@
 - editor validation js
 - editor dirty flag
 - upload file for editor
+- delete post
 
 ## Stretch / Possible ideas
 

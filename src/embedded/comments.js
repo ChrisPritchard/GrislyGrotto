@@ -146,3 +146,13 @@ for (let i = 0; i < ownComments.length; i++) {
         }
     });
 }
+
+let delete_post = document.querySelector("#delete_post");
+if (delete_post) {
+    delete_post.addEventListener("click", e => {
+        if (!confirm("Are you sure? This action is irreversible!")) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
+}
