@@ -46,3 +46,16 @@ async fn single_post(key: Path<String>, tmpl: Data<Tera>, session: Session) -> W
     let html = tmpl.render("single", &context)?;
     ok(html)
 }
+
+#[post("/delete/{key}")]
+async fn delete_post(key: Path<String>, session: Session) -> WebResponse {
+    let current_user = session.get("current_user")?.unwrap_or(None);
+    if current_user.is_none() {
+        return Err(WebError::Forbidden);
+    }
+    let current_user: String = current_user.unwrap();
+
+    let _ = data::view_posts::delete_post(&key.into_inner(), &current_user).await?;
+
+    redirect("/".into())
+}

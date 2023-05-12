@@ -179,3 +179,7 @@ pub const UPDATE_POST_WITH_DATE: &str = "
 		Title = ?, Date = ?, Content = ?, WordCount = ?, IsStory = ? 
 	WHERE
 		Key = ?";
+
+/// provide: key, current_user
+pub const DELETE_POST: &str = "
+	DELETE FROM Posts WHERE Key = ? AND Author_Username = ?";

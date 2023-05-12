@@ -53,3 +53,16 @@ pub async fn get_single_post(key: &str, current_user: &str, owned_comments: &Has
     post.comments = Some(comments);
     Ok(Some(post))
 }
+
+pub async fn delete_post(key: &str, current_user: &str) -> Result<()> {
+    let connection = db()?;
+
+    let mut stmt = connection.prepare(sql::DELETE_POST)?;
+    stmt.bind::<&[(_, Value)]>(&[
+        (1, key.clone().into()), 
+        (2, current_user.into())])?;
+
+    let _ = stmt.next()?;
+
+    Ok(())
+}
