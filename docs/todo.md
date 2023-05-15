@@ -12,6 +12,8 @@
 
 ## doing
 
+- docker file
+- fly.io deployment
 
 ## Done
 

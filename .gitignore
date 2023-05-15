@@ -1,19 +1,8 @@
 ﻿
-/**/bin
-/**/obj
-/.vs
-project.lock.json
 grislygrotto.db
-/**/*.exe
-/**/*.so
-**/__debug_bin
-src/.main.go.swp
 .DS_Store
 .secret
 .env
-main
-main.zip
-update.sh
 
 # Added by cargo
 

@@ -5,6 +5,11 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# this is added so that when copying cargo.toml by itself, cargo vendor can be run
+[[bin]]
+name = "grislygrotto"
+path = "src/main.rs"
+
 [dependencies]
 actix-session = { version = "0.7.2", features = ["cookie-session"] }
 actix-web = "4.3.1"
@@ -25,6 +30,14 @@ sqlite = "0.30.4"
 tera = "1.18.1"
 tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
 tree_magic = "0.2.3"
+# Add openssl-sys as a direct dependency so it can be cross compiled to
+# x86_64-unknown-linux-musl using the "vendored" feature below
+openssl-sys = "*"
+
+[features]
+# Force openssl-sys to staticly link in the openssl library. Necessary when
+# cross compiling to x86_64-unknown-linux-musl.
+vendored = ["openssl-sys/vendored"]
 
 # [profile.release]
 # strip = true
