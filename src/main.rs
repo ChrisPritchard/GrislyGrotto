@@ -20,9 +20,9 @@ async fn main() -> Result<()> {
     let tera = templates::template_engine();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     
-    let query_cfg = get_query_cfg();
     let s3_config = s3::get_s3_config()?;
-    let session_key = Key::from(&[0; 64]);//::generate();
+    let session_key = Key::generate();
+    let query_extractor_cfg = get_query_extractor_cfg();
 
     let server = HttpServer::new(move || {
         App::new()
@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
             .wrap(SessionMiddleware::new(CookieSessionStore::default(), session_key.clone()))
             .app_data(Data::new(tera.clone()))
             .app_data(Data::new(s3_config.clone()))
-            .app_data(query_cfg.clone())
+            .app_data(query_extractor_cfg.clone())
             .service(handlers::style::set_style)
             .service(embedded::static_content)
             .service(handlers::content::stored_content)
@@ -65,7 +65,7 @@ async fn main() -> Result<()> {
     server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
 }
 
-fn get_query_cfg() -> QueryConfig {
+fn get_query_extractor_cfg() -> QueryConfig {
     QueryConfig::default()
         .error_handler(|err, _| {
             log::error!("bad query param: {}", err);

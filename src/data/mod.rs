@@ -13,11 +13,13 @@ mod prelude {
     pub use anyhow::Result;
 }
 
+use std::env;
+
 use prelude::*;
 
 pub use mapping::prev_next_month;
 
-const DATABASE_PATH: &str = "./grislygrotto.db";
+const DEFAULT_DATABASE_PATH: &str = "./grislygrotto.db";
 const STORAGE_DATE_FORMAT_1: &str = "%Y-%m-%d %H:%M:%S";
 const STORAGE_DATE_FORMAT_2: &str = "%Y-%m-%d %H:%M:%S.%f";
 const STORAGE_DISPLAY_FORMAT: &str = "%l:%M %p, on %A, %e %B %Y";
@@ -26,11 +28,13 @@ fn markdown_options() -> comrak::ComrakOptions {
     let mut markdown_options = comrak::ComrakOptions::default();
     markdown_options.render.unsafe_ = true;
 
-    markdown_options
+    return markdown_options
 }
 
 fn db() -> Result<sqlite::Connection> {
-    Ok(sqlite::open(DATABASE_PATH)?)
+    let mut args = env::args();
+    let path = args.nth(1).unwrap_or(DEFAULT_DATABASE_PATH.into());
+    Ok(sqlite::open(path)?)
 }
 
 fn current_datetime_for_storage() -> String {
