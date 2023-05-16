@@ -9,4 +9,4 @@ FROM debian:latest
 RUN apt-get update && apt-get -y install sqlite3 libsqlite3-dev
 COPY --from=builder /target/release/grislygrotto .
 EXPOSE 3000
-CMD ["/grislygrotto"]
+CMD ["/grislygrotto","/mnt/db/grislygrotto.db"]

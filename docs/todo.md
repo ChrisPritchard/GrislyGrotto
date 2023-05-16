@@ -2,18 +2,14 @@
 
 ## To Start
 
-- docker file
-- fly.io deployment
-
 - full styling
 
 - dns update
-- docs
 
 ## doing
 
-- docker file
-- fly.io deployment
+- s3 issue
+- docs
 
 ## Done
 
@@ -57,6 +53,7 @@
 - upload file for editor
 - delete post
 - csp, security headers
+- fly.io deployment
 
 ## Stretch / Possible ideas
 
@@ -72,3 +69,6 @@
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
 - automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
 - cookie expiry check - new cookies last much longer, and its unclear how likely they are to expire during a new post
+- default click to open on image script code
+- docker file
+- database path specifiable by param?

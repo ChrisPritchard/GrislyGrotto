@@ -1169,7 +1169,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "grisly_grotto"
+name = "grislygrotto"
 version = "0.1.0"
 dependencies = [
  "actix-session",
