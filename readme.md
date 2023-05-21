@@ -13,9 +13,9 @@ Further details can be found in:
 
 ## Release 18.0
 
-__Release Date:__ TODO
+__Release Date:__ 22/05/2023
 
-__Release Post:__ TODO
+__Release Post:__ https://grislygrotto.nz/post/grisly-grotto-180---rust-edition
 
 __Technology:__ Rust
 
@@ -29,7 +29,7 @@ __Dev Tool(s):__ VS Code
 
 ## All Releases of the Grisly Grotto
 
-- 18, written in **Rust**, TODO
+- 18, written in **Rust**, 22nd of May, 2023
 - [17.6, written in **Go**, 12th September 2022](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-17-final)
 - [17.5, written in **Go**, 20th June 2021](https://github.com/ChrisPritchard/GrislyGrotto/tree/release-17.5)
 - [17.0, written in **Go**, 15th March 2020 (my daughter's 3rd birthday!)](https://github.com/ChrisPritchard/tree/release-17.0)
