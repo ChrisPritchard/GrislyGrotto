@@ -105,10 +105,9 @@ upload.addEventListener('click', function() {
             }
             html.classList.remove("hide");
         } else {
-            result.innerText = "An error occurred uploading :( " + xhr.responseText;
+            result.innerText = "An error occurred uploading :(";
             html.classList.add("hide");
         }
-        r.text().then(b => document.querySelector(".account_update_message").innerText = b);
     })
 
     return false;
