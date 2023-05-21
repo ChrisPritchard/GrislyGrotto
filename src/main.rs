@@ -1,5 +1,5 @@
-use actix_session::{SessionMiddleware, storage::CookieSessionStore};
-use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::Key, http::header::CONTENT_SECURITY_POLICY};
+use actix_session::{SessionMiddleware, storage::CookieSessionStore, config::PersistentSession};
+use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::{Key, time::Duration}, http::header::CONTENT_SECURITY_POLICY};
 
 use anyhow::Result;
 
@@ -29,7 +29,10 @@ async fn main() -> Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%a - %r - %s"))
             .wrap(middleware::DefaultHeaders::new().add((CONTENT_SECURITY_POLICY, GG_CONTENT_SECURITY_POLICY)))
-            .wrap(SessionMiddleware::new(CookieSessionStore::default(), session_key.clone()))
+            .wrap(SessionMiddleware::builder(CookieSessionStore::default(), session_key.clone())
+                .session_lifecycle(
+                    PersistentSession::default().session_ttl(Duration::days(90)))
+                .build())
             .app_data(Data::new(tera.clone()))
             .app_data(Data::new(s3_config.clone()))
             .app_data(query_extractor_cfg.clone())
