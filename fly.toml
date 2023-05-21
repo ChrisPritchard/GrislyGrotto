@@ -1,10 +1,13 @@
-# fly.toml app configuration file generated for grislygrotto on 2023-05-17T09:47:41+12:00
+# fly.toml app configuration file generated for grislygrotto on 2023-05-22T09:02:50+12:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = "grislygrotto"
 primary_region = "syd"
+
+[env]
+  TZ = "Pacific/Auckland"
 
 [[mounts]]
   source = "grislygrotto_db"

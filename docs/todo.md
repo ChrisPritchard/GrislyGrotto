@@ -3,13 +3,10 @@
 ## To Start
 
 - full styling
-
-- dns update
+- delete comments when deleting post
 
 ## doing
 
-- s3 issue
-- docs
 
 ## Done
 
@@ -53,7 +50,13 @@
 - upload file for editor
 - delete post
 - csp, security headers
+- docker file
+- database path specifiable by param?
 - fly.io deployment
+- s3 issue
+- docs
+- dns update
+- time zone fix
 
 ## Stretch / Possible ideas
 
@@ -70,5 +73,4 @@
 - automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
 - cookie expiry check - new cookies last much longer, and its unclear how likely they are to expire during a new post
 - default click to open on image script code
-- docker file
-- database path specifiable by param?
+- comment edit author?
