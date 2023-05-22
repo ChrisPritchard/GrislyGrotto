@@ -1,5 +1,7 @@
 # Deploying on Fly.IO
 
+All fly commands will take the app of the folder they are currently run in, or an additional argument `-a grislygrotto`. This is reflected in some commands below and not others.
+
 1. Ensure you have an account with Fly.IO, and the `flyctl` CLI tool installed.
     - the tool can be installed on windows with `iwr https://fly.io/install.ps1 -useb | iex`
     - on linux with `curl -L https://fly.io/install.sh | sh`
@@ -11,16 +13,20 @@
     - `--copy-config` doesn't prompt for copying the existing config
     - `--no-deploy` will not deploy the app, allowing you to set the env vars
     - `--no-cache` can be appended to not use docker caches - should not be used unless the docker file radically changes
-5. Add secrets for AWS, the following need to be set:
+5. Add secrets for AWS & the session key, the following need to be set:
     ```
     AWS_REGION=ap-southeast-2
     AWS_ACCESS_KEY_ID=[REDACTED]
     AWS_SECRET_ACCESS_KEY=[REDACTED]
     AWS_BUCKET_NAME=grislygrotto-content
+    SESSION_KEY=[REDACTED]
     ```
     The bucket name and region will likely not change.
-    Secrets can be set with `fly secrets set AWS_REGION=ap-southeast-2 AWS_ACCESS_KEY_ID=[REDACTED] AWS_SECRET_ACCESS_KEY=[REDACTED] AWS_BUCKET_NAME=grislygrotto-content`.
+    Secrets can be set with `fly secrets set AWS_REGION=ap-southeast-2 AWS_ACCESS_KEY_ID=[REDACTED] AWS_SECRET_ACCESS_KEY=[REDACTED] AWS_BUCKET_NAME=grislygrotto-content SESSION_KEY=[REDACTED]`.
     Alternately, each secret can be set individually, e.g. `fly secrets set AWS_REGION=ap-southeast-2`.
+
+    Note the SESSION_KEY must be 64 bytes wrong and very random. Using a SHA2-256 hash of something randomly generated will do it.
+    If not specified, the session_key will be randomly generated on every start, which is problematic for fly.io as the app gets stopped when there is no activity.
 6. Deploy the app using `fly deploy` - this is required so an actual VM is started, in order to access and upload the database
 7. Open a sftp shell and upload the latest version of `grislygrotto.db` to `/mnt/db`:
     - use `fly sftp shell -a grislygrotto` to connect over sftp - you might need to run `fly ssh console -a grislygrotto` first if auth fails, not sure

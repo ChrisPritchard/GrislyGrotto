@@ -2,11 +2,12 @@
 
 ## To Start
 
-- full styling
-- delete comments when deleting post
+
 
 ## doing
 
+- full styling
+- delete comments when deleting post
 
 ## Done
 
@@ -57,6 +58,7 @@
 - docs
 - dns update
 - time zone fix
+- secret key from env var
 
 ## Stretch / Possible ideas
 

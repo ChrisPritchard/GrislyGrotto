@@ -1,3 +1,5 @@
+use std::env;
+
 use actix_session::{SessionMiddleware, storage::CookieSessionStore, config::PersistentSession};
 use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::{Key, time::Duration}, http::header::CONTENT_SECURITY_POLICY};
 
@@ -21,7 +23,13 @@ async fn main() -> Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     
     let s3_config = s3::get_s3_config()?;
-    let session_key = Key::generate();
+
+    let specified_key = env::var("SESSION_KEY");
+    let session_key = if specified_key.is_ok() { 
+        let bytes: Vec<u8> = specified_key.unwrap().bytes().collect();
+        Key::try_from(&bytes[..])? 
+    } 
+    else { Key::generate() };
     let query_extractor_cfg = get_query_extractor_cfg();
 
     let server = HttpServer::new(move || {
