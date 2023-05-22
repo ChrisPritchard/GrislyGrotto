@@ -14,10 +14,9 @@ pub async fn get_latest_posts(page: usize, current_user: &str) -> Result<Vec<Blo
         (3, (page as i64 * 5).into())])?;
 
     let mut final_result = Vec::new();
-    let markdown_options = markdown_options();	
 
     while stmt.next()? == State::Row {
-        let post = mapping::post_from_statement(&stmt, &markdown_options)?;
+        let post = mapping::post_from_statement(&stmt)?;
         final_result.push(post);
     }
 
@@ -36,8 +35,7 @@ pub async fn get_single_post(key: &str, current_user: &str, owned_comments: &Has
         return Ok(None);
     }
 
-    let markdown_options = markdown_options();
-    let mut post = mapping::post_from_statement(&stmt, &markdown_options)?;
+    let mut post = mapping::post_from_statement(&stmt)?;
 
     let mut comments = Vec::new();
     
@@ -46,7 +44,7 @@ pub async fn get_single_post(key: &str, current_user: &str, owned_comments: &Has
         (1, key.clone().into())])?;
 
     while stmt.next()? == State::Row {
-        let comment = mapping::comment_from_statement(&stmt, owned_comments, &markdown_options)?;
+        let comment = mapping::comment_from_statement(&stmt, owned_comments)?;
         comments.push(comment);
     }
 

@@ -15,6 +15,7 @@ mod prelude {
 
 use std::env;
 
+use comrak::plugins;
 use prelude::*;
 
 pub use mapping::prev_next_month;
@@ -24,11 +25,15 @@ const STORAGE_DATE_FORMAT_1: &str = "%Y-%m-%d %H:%M:%S";
 const STORAGE_DATE_FORMAT_2: &str = "%Y-%m-%d %H:%M:%S.%f";
 const STORAGE_DISPLAY_FORMAT: &str = "%l:%M %p, on %A, %e %B %Y";
 
-fn markdown_options() -> comrak::ComrakOptions {
+fn markdown_to_html(markdown: &str) -> String {
     let mut markdown_options = comrak::ComrakOptions::default();
-    markdown_options.render.unsafe_ = true;
+    markdown_options.render.unsafe_ = true; // required for html rendering, e.g. images
 
-    return markdown_options
+    let mut markdown_plugins = comrak::ComrakPlugins::default();
+    let syntect = plugins::syntect::SyntectAdapter::new("base16-ocean.dark");
+    markdown_plugins.render.codefence_syntax_highlighter = Some(&syntect);
+
+    comrak::markdown_to_html_with_plugins(markdown, &markdown_options, &markdown_plugins)
 }
 
 fn db() -> Result<sqlite::Connection> {

@@ -41,11 +41,10 @@ pub async fn get_stories(current_user: &str) -> Result<Vec<BlogPost>> {
     stmt.bind::<&[(_, Value)]>(&[
         (1, current_user.into()),])?;
 
-    let mut final_result = Vec::new();
-    let markdown_options = markdown_options();	
+    let mut final_result = Vec::new();	
 
     while stmt.next()? == State::Row {
-        let post = mapping::post_from_statement(&stmt, &markdown_options)?;
+        let post = mapping::post_from_statement(&stmt)?;
         final_result.push(post);
     }
 
@@ -63,10 +62,9 @@ pub async fn get_posts_in_month(year: &str, month: &str, current_user: &str) -> 
         (2, current_user.into()),])?;
 
     let mut final_result = Vec::new();
-    let markdown_options = markdown_options();	
 
     while stmt.next()? == State::Row {
-        let post = mapping::post_from_statement(&stmt, &markdown_options)?;
+        let post = mapping::post_from_statement(&stmt)?;
         final_result.push(post);
     }
 

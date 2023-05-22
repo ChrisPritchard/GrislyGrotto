@@ -60,8 +60,7 @@ pub async fn update_comment_content(id: i64, new_content: &str) -> Result<String
 
     let _ = stmt.next()?;
 
-    let markdown_options = markdown_options();	
-    let rendered = comrak::markdown_to_html(&new_content, &markdown_options);
+    let rendered = markdown_to_html(new_content);
 
     Ok(rendered)
 }

@@ -16,12 +16,11 @@ pub async fn get_search_results(search_term: &str, current_user: &str) -> Result
         (3, current_user.into()),])?;
 
     let mut final_result = Vec::new();
-    let markdown_options = markdown_options();	
 
     let remove_html = Regex::new("<[^>]*>").unwrap();
 
     while stmt.next()? == State::Row {
-        let mut post = mapping::post_from_statement(&stmt, &markdown_options)?;
+        let mut post = mapping::post_from_statement(&stmt)?;
 
         let content = remove_html.replace_all(&post.content, "");
         let term_loc = content.to_lowercase().find(&search_term.to_lowercase());

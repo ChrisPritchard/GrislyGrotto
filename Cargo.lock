@@ -1189,6 +1189,7 @@ dependencies = [
  "rust-s3",
  "serde",
  "sqlite",
+ "syntect",
  "tera",
  "time 0.3.21",
  "tokio",

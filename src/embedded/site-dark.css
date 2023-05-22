@@ -15,8 +15,13 @@ nav span a, nav span a:visited {
     color: whitesmoke;
 }
 
-img {
+img, pre {
     border-color: whitesmoke;
+}
+
+:not(pre) > code {
+    background-color: whitesmoke;
+    color: #222;
 }
 
 input[type="text"], input[type="password"], textarea {
