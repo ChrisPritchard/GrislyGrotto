@@ -2,12 +2,10 @@
 
 ## To Start
 
-
+- delete comments when deleting post
 
 ## doing
 
-- full styling
-- delete comments when deleting post
 
 ## Done
 
@@ -59,13 +57,14 @@
 - dns update
 - time zone fix
 - secret key from env var
+- full styling
+- default click to open on image script code
 
 ## Stretch / Possible ideas
 
 - next post / prev post: can't see where this would be needed, even though the current site has it
 - themes, like the current site has. was always a bit messy, not sure it added much even if fun
 - rss feed
-- click enlarge images?
 - share on other socs?
 - social media links (linkedin, tryhackme, github etc) in more prominent locations
 - categories?
@@ -74,5 +73,4 @@
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
 - automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
 - cookie expiry check - new cookies last much longer, and its unclear how likely they are to expire during a new post
-- default click to open on image script code
 - comment edit author?
