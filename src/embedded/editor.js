@@ -101,7 +101,7 @@ upload.addEventListener('click', function() {
             } else if (filename.endsWith(".mp4")) {
                 result.innerText = "<div align=\"center\"><video width=\"800\" src=\"/content/"+filename+"\" controls/></div>";
             } else {
-                result.innerText = "<div align=\"center\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></div>";
+                result.innerText = "<div align=\"center\"><a href=\"/content/"+filename+"\" target=\"_blank\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></a></div>";
             }
             html.classList.remove("hide");
         } else {
