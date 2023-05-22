@@ -3,9 +3,7 @@
 ## To Start
 
 - delete comments when deleting post
-- fix code rendering
-    - potentially add proper syntax highlighting
-- speed up docker image building
+- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
 
 ## doing
 
@@ -62,6 +60,8 @@
 - secret key from env var
 - full styling
 - default click to open on image script code
+- fix code rendering
+- speed up docker image building
 
 ## Stretch / Possible ideas
 
@@ -73,7 +73,6 @@
 - categories?
 - chatgpt integration lolol. could be used to get categories from a post
 - last 10 post headings?
-- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
-- automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
 - cookie expiry check - new cookies last much longer, and its unclear how likely they are to expire during a new post
 - comment edit author?
+- automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
