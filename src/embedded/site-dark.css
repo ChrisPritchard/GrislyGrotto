@@ -3,8 +3,20 @@ body {
     color: whitesmoke;
 }
 
+h1, h2, h3 {
+    color: whitesmoke;
+}
+
 a, a:visited {
-    color: white;
+    color: lightblue;
+}
+
+nav ul li a, nav ul li a:visited {
+    color: whitesmoke;
+}
+
+img {
+    border-color: whitesmoke;
 }
 
 input[type="text"], input[type="password"], textarea {
