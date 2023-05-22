@@ -5,6 +5,7 @@
 - delete comments when deleting post
 - fix code rendering
     - potentially add proper syntax highlighting
+- speed up docker image building
 
 ## doing
 
