@@ -20,6 +20,7 @@ dotenv = "0.15.0"
 env_logger = "0.10.0"
 futures = "0.3.28"
 futures-util = "0.3.28"
+lock_api = "0.4.9"
 log = "0.4.17"
 rand = "0.8.5"
 regex = "1.8.1"
@@ -28,6 +29,7 @@ rust-s3 = "0.33.0"
 serde = { version = "1.0.160", features = ["derive"] }
 sqlite = "0.30.4"
 tera = "1.18.1"
+time = "0.3.21"
 tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
 tree_magic = "0.2.3"
 
