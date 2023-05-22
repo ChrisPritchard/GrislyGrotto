@@ -11,7 +11,7 @@ a, a:visited {
     color: lightblue;
 }
 
-nav ul li a, nav ul li a:visited {
+nav span a, nav span a:visited {
     color: whitesmoke;
 }
 

@@ -17,20 +17,24 @@
             <h1>The Grisly Grotto</h1>
         </a>
         <nav>
-            <ul>
-                {% if current_user %}
-                <li><a href="/editor/new">New Post</a></li>
-                <li><a href="/account">Account Details</a></li>
-                <li><a href="/logout">Logout</a></li>
-                {% else %}
-                <li><a href="/login">Login</a></li>
-                {% endif %}
-                <li><a href="/archives">Archives</a></li>
-                <li><a href="/search">Search</a></li>
-                <li><a href="/about">About</a></li>
-            </ul>
+            {% if current_user %}
+            <span><a href="/editor/new">New</a></span>
+            <span>&nbsp;|&nbsp;</span>
+            <span><a href="/account">Account</a></span>
+            <span>&nbsp;|&nbsp;</span>
+            <span><a href="/logout">Logout</a></span>
+            <span>&nbsp;|&nbsp;</span>
+            {% else %}
+            <span><a href="/login">Login</a></span>
+            <span>&nbsp;|&nbsp;</span>
+            {% endif %}
+            <span><a href="/archives">Archives</a></span>
+            <span>&nbsp;|&nbsp;</span>
+            <span><a href="/search">Search</a></span>
+            <span>&nbsp;|&nbsp;</span>
+            <span><a href="/about">About</a></span>
         </nav>
-        <div>
+        <div class="style_selector_container">
             <a class="style_selector light" data-style="light" href="#" alt="light mode">☼</a><a class="style_selector dark" data-style="dark" href="#" alt="dark mode">☾</a>
         </div>
         {% block content %}{% endblock content %}
