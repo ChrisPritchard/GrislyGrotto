@@ -1,8 +1,13 @@
 FROM rust:latest as builder
 RUN apt-get update && apt-get -y install ca-certificates cmake libssl-dev && rm -rf /var/lib/apt/lists/*
-COPY . .
 RUN rustup default stable && rustup update
-ENV PKG_CONFIG_ALLOW_CROSS=1
+
+# cache crate compilation
+RUN mkdir src
+RUN echo "fn main() {}" > ./src/main.rs
+COPY ["Cargo.toml", "Cargo.lock",  "./"]
+RUN cargo build --release
+COPY src src
 RUN cargo build --release
 
 FROM debian:latest
