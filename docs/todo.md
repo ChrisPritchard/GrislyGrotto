@@ -8,7 +8,6 @@
 
 ## doing
 
-- speed up docker image building
 
 ## Done
 
@@ -63,6 +62,7 @@
 - full styling
 - default click to open on image script code
 - fix code rendering
+- speed up docker image building
 
 ## Stretch / Possible ideas
 

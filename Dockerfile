@@ -2,7 +2,14 @@ FROM rust:latest as builder
 RUN apt-get update && apt-get -y install ca-certificates cmake libssl-dev && rm -rf /var/lib/apt/lists/*
 RUN rustup default stable && rustup update
 
-COPY . .
+# cache crate compilation
+RUN mkdir src
+RUN echo "fn main() {}" > ./src/main.rs
+COPY ["Cargo.toml", "Cargo.lock",  "./"]
+RUN cargo build --release
+COPY src src
+# just to ensure cargo rebuilds this
+RUN touch -a -m ./src/main.rs
 RUN cargo build --release
 
 FROM debian:latest
