@@ -4,9 +4,11 @@
 
 - delete comments when deleting post
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
+    - could include easy emojis
 
 ## doing
 
+- speed up docker image building
 
 ## Done
 
@@ -61,7 +63,6 @@
 - full styling
 - default click to open on image script code
 - fix code rendering
-- speed up docker image building
 
 ## Stretch / Possible ideas
 
