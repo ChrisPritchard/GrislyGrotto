@@ -75,10 +75,8 @@ impl error::ResponseError for WebError {
     fn error_response(&self) -> HttpResponse {
         match self {
             WebError::NotFound => error::ErrorNotFound("404 not found").into(),
-            WebError::BadRequest(m) => {
-                error::ErrorNotFound(m.clone()).into()
-            }
-            WebError::Forbidden => error::ErrorNotFound("403 forbidden").into(),
+            WebError::BadRequest(m) => error::ErrorBadRequest(m.clone()).into(),
+            WebError::Forbidden => error::ErrorForbidden("403 forbidden").into(),
             WebError::ServerError(e) => {
                 error!("{}", e);
                 error::ErrorInternalServerError("500 internal server error").into()

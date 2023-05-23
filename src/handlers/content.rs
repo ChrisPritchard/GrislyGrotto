@@ -36,7 +36,7 @@ async fn upload_content(mut body: actix_web::web::Payload, file_name: Path<Strin
     }
 
     let mime_type = tree_magic::from_u8(&data);
-    if !mime_type.starts_with("image/") && mime_type != "video/mp4" && mime_type != "application/zip" {
+    if !mime_type.starts_with("image/") && mime_type != "video/mp4" && mime_type != "application/zip" && mime_type != "application/x-riff" {
         return Err(WebError::BadRequest("mime type not allowed".into()))
     }
 
