@@ -103,7 +103,7 @@ async fn update_profile_image(mut body: actix_web::web::Payload, session: Sessio
         return Err(WebError::BadRequest("invalid profile image".into()))
     }
 
-    let mime_type = tree_magic::from_u8(&data);
+    let mime_type = mime_type(&data, true);
     if !mime_type.starts_with("image/") {
         return Err(WebError::BadRequest("invalid profile image".into()))
     }

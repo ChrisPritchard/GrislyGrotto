@@ -11,9 +11,9 @@ async fn stored_content(file_name: Path<String>, s3_config: Data<S3Config>) -> W
 
     let path = file_name.into_inner();
 
-    let data = bucket.get_object(path).await?.to_vec();
+    let data = bucket.get_object(&path).await?.to_vec();
 
-    let mime_type = tree_magic::from_u8(&data);
+    let mime_type = mime_type(&data, path.ends_with(".webp"));
     file(mime_type, data)
 }
 
@@ -35,8 +35,8 @@ async fn upload_content(mut body: actix_web::web::Payload, file_name: Path<Strin
         return Err(WebError::BadRequest("file size too large".into()))
     }
 
-    let mime_type = tree_magic::from_u8(&data);
-    if !mime_type.starts_with("image/") && mime_type != "video/mp4" && mime_type != "application/zip" && mime_type != "application/x-riff" {
+    let mime_type = mime_type(&data, file_name.ends_with(".webp"));
+    if !mime_type.starts_with("image/") && mime_type != "video/mp4" && mime_type != "application/zip" {
         return Err(WebError::BadRequest("mime type not allowed".into()))
     }
 

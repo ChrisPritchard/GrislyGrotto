@@ -24,6 +24,15 @@ mod prelude {
 use prelude::*;
 use serde::Serialize;
 
+fn mime_type(bytes: &[u8], could_be_webp: bool) -> String {
+    let mime_type = tree_magic::from_u8(bytes);
+    if mime_type == "application/x-riff" && could_be_webp {
+        "image/webp".to_string()
+    } else {
+        mime_type
+    }
+}
+
 fn default_tera_context(session: &actix_session::Session) -> anyhow::Result<tera::Context> {
     let mut context = tera::Context::new();
     
