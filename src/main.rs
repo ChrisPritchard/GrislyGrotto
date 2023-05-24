@@ -35,7 +35,7 @@ async fn main() -> Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .wrap(middleware::Compress::default())
-            .wrap(Logger::new("%a - %r - %s"))
+            .wrap(Logger::new("%r %s - %{r}a %{User-Agent}i"))
             .wrap(middleware::DefaultHeaders::new().add((CONTENT_SECURITY_POLICY, GG_CONTENT_SECURITY_POLICY)))
             .wrap(SessionMiddleware::builder(CookieSessionStore::default(), session_key.clone())
                 .session_lifecycle(
