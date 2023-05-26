@@ -6,10 +6,7 @@ However, content aside, the main point of this blog for me is as a kata-like exe
 
 To date there have been ASP.NET WebForms versions (unfortunately the code for those has been lost), MVC, Node.JS, F#, XSLT view-based transforms, paid-for hosting, Azure hosting, Raspberry Pi hosting, **Rust**, Go, SQL Server, SQLite, MySql, document storage, XML storage etc. Building a complete website with code, styling, persistence, authentication, hosting, ssl and domain names etc by yourself is a strong educational experience and I recommend anyone who is in or adjacent to web development have a go at doing this.
 
-Further details can be found in:
-
-- [setup.md](./docs/setup.md) which details how the site should be built and deployed
-- [updates.md](./docs/updates.md) which specifies how the site might be updated once deployed
+Further details can be found under [./docs](./docs)
 
 ## Release 18.0
 
