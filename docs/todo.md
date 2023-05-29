@@ -79,3 +79,4 @@
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
     - could include easy emojis
 - server-side caching on images? or support to allow clients to cache?
+- switch to litefs so it can be scaled better? https://fly.io/blog/introducing-litefs/
