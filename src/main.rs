@@ -73,7 +73,7 @@ async fn main() -> Result<()> {
             .service(handlers::editor::update_post)
     });  
 
-    server.bind("0.0.0.0:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
+    server.bind("[::]:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
 }
 
 fn get_query_extractor_cfg() -> QueryConfig {
