@@ -1,5 +1,5 @@
-FROM rust:latest as builder
-RUN apt-get update && apt-get -y install ca-certificates cmake libssl-dev && rm -rf /var/lib/apt/lists/*
+FROM rust:buster as builder
+RUN apt-get update && apt-get -y install ca-certificates cmake && rm -rf /var/lib/apt/lists/*
 RUN rustup default stable && rustup update
 
 # cache crate compilation
@@ -12,7 +12,7 @@ COPY src src
 RUN touch -a -m ./src/main.rs
 RUN cargo build --release
 
-FROM debian:latest
+FROM debian:buster
 RUN apt-get update && apt-get -y install sqlite3 libsqlite3-dev ca-certificates
 COPY --from=builder /target/release/grislygrotto .
 EXPOSE 3000

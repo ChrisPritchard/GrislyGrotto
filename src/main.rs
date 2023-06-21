@@ -45,6 +45,7 @@ async fn main() -> Result<()> {
             .app_data(Data::new(s3_config.clone()))
             .app_data(query_extractor_cfg.clone())
             .service(handlers::style::set_style)
+            .service(embedded::robots)
             .service(embedded::static_content)
             .service(handlers::content::stored_content)
             .service(handlers::content::upload_content)
@@ -73,7 +74,9 @@ async fn main() -> Result<()> {
             .service(handlers::editor::update_post)
     });  
 
-    server.bind("[::]:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
+    server
+        .worker_max_blocking_threads(1024)
+        .bind("[::]:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
 }
 
 fn get_query_extractor_cfg() -> QueryConfig {

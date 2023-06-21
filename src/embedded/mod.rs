@@ -10,6 +10,8 @@ static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
     ("editor.js", ("text/javascript", include_bytes!("editor.js").as_slice())),
 ];
 
+static ROBOTS: &[u8] = include_bytes!("robots.txt").as_slice();
+
 #[get("/static/{file_path}")]
 async fn static_content(file_path: Path<String>) -> impl Responder {
     let file_path = file_path.into_inner();
@@ -18,4 +20,9 @@ async fn static_content(file_path: Path<String>) -> impl Responder {
         None => HttpResponse::NotFound().body("file not found"),
         Some((ct, bytes)) => HttpResponse::Ok().content_type(ct).body(bytes).into()
     }
+}
+
+#[get("/robots.txt")]
+async fn robots() -> impl Responder {
+    HttpResponse::Ok().content_type("text/plain").body(ROBOTS)
 }
