@@ -5,6 +5,8 @@
 
 ## doing
 
+- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
+    - could include easy emojis
 
 ## Done
 
@@ -61,6 +63,7 @@
 - fix code rendering
 - speed up docker image building
 - better logging
+- replaced tree_magic with infer
 
 ## Stretch / Possible ideas
 
@@ -76,7 +79,5 @@
 - comment edit author?
 - automatic webp image conversion: https://github.com/image-rs/image/blob/master/README.md
 - delete comments when deleting post
-- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
-    - could include easy emojis
 - server-side caching on images? or support to allow clients to cache?
 - switch to litefs so it can be scaled better? https://fly.io/blog/introducing-litefs/

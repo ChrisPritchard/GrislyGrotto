@@ -67,7 +67,7 @@ let upload = document.querySelector('#content_upload_submit');
 let result = document.querySelector("#content_upload_result");
 let html = document.querySelector("#copy_content_html");
 
-contentSelector.addEventListener('change', function() {
+contentSelector.addEventListener('change', () => {
     let files = contentSelector.files;
     if(files.length != 1) {
         return;
@@ -84,7 +84,7 @@ contentSelector.addEventListener('change', function() {
 });
 
 
-upload.addEventListener('click', function() {
+upload.addEventListener('click', () => {
     upload.classList.add('hide');
     let files = contentSelector.files;
 
@@ -113,7 +113,7 @@ upload.addEventListener('click', function() {
     return false;
 });
 
-html.addEventListener('click', function () {
+html.addEventListener('click', () => {
     let textToCopy = result.innerText;
     const temp = document.createElement('textarea');
     temp.value = textToCopy;
@@ -123,3 +123,14 @@ html.addEventListener('click', function () {
     navigator.clipboard.writeText(temp.value);
     document.body.removeChild(temp);
 });
+
+// editor tools
+
+let emojiis = document.querySelectorAll(".emojii_container li");
+for (let i = 0; i < emojiis.length; i++) {
+    emojiis[i].addEventListener('click', e => {
+        let value = e.target.innerText;
+        let content = document.querySelector("#content");
+        content.setRangeText(value);
+    });
+}
