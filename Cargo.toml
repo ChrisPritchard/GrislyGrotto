@@ -20,7 +20,7 @@ dotenv = "0.15.0"
 env_logger = "0.10.0"
 futures = "0.3.28"
 futures-util = "0.3.28"
-lock_api = "0.4.9"
+infer = "0.15.0"
 log = "0.4.17"
 rand = "0.8.5"
 regex = "1.8.1"
@@ -32,7 +32,6 @@ syntect = "5.0.0"
 tera = "1.18.1"
 time = "0.3.21"
 tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
-tree_magic = "0.2.3"
 
 # [profile.release]
 # strip = true

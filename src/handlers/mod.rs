@@ -25,11 +25,16 @@ use prelude::*;
 use serde::Serialize;
 
 fn mime_type(bytes: &[u8], could_be_webp: bool) -> String {
-    let mime_type = tree_magic::from_u8(bytes);
+    let mime_type_infer = infer::get(bytes);
+    if mime_type_infer.is_none() {
+        return String::from("text/plain");
+    }
+    
+    let mime_type = mime_type_infer.unwrap().mime_type();
     if mime_type == "application/x-riff" && could_be_webp {
-        "image/webp".to_string()
+        String::from("image/webp")
     } else {
-        mime_type
+        String::from("mime_type")
     }
 }
 
