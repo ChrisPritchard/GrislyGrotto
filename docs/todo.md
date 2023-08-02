@@ -5,8 +5,6 @@
 
 ## doing
 
-- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
-    - could include easy emojis
 
 ## Done
 
@@ -64,6 +62,8 @@
 - speed up docker image building
 - better logging
 - replaced tree_magic with infer
+- maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
+    - could include easy emojis
 
 ## Stretch / Possible ideas
 

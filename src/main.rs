@@ -75,7 +75,7 @@ async fn main() -> Result<()> {
     });  
 
     server
-        .worker_max_blocking_threads(1024)
+        .worker_max_blocking_threads(2048)
         .bind("[::]:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
 }
 
