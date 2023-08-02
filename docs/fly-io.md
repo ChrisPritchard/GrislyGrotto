@@ -53,3 +53,7 @@ Then, the flyctl command line tool can be used to backup the database locally: `
 - `-a` specifies the app to use
 - the first argument after get is the remote location to retrieve
 - the second argument is the local location to save 
+
+## Updates (code only)
+
+Should be a simple matter of running `fly launch --copy-config --reuse-app` - default options (enter, enter, enter), but deploy when asked.
