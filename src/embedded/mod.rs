@@ -8,6 +8,7 @@ static STATIC_CONTENT: &[(&str, (&str, &[u8]))] = &[
     ("login.js", ("text/javascript", include_bytes!("login.js").as_slice())),
     ("account.js", ("text/javascript", include_bytes!("account.js").as_slice())),
     ("editor.js", ("text/javascript", include_bytes!("editor.js").as_slice())),
+    ("toolbar.js", ("text/javascript", include_bytes!("toolbar.js").as_slice())),
 ];
 
 static ROBOTS: &[u8] = include_bytes!("robots.txt").as_slice();

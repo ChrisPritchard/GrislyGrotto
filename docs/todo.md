@@ -64,6 +64,7 @@
 - replaced tree_magic with infer
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
     - could include easy emojis
+- command toolbar for comments, as well
 
 ## Stretch / Possible ideas
 

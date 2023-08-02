@@ -51,9 +51,26 @@
         <input type="text" id="author" name="author" maxlength="30" />
         <input type="text" id="category" name="category" />
         <label for="content">Content</label>
+        <div>
+            <ul class="editor_toolbar">
+                <li>😁</li>
+                <li>🙂</li>
+                <li>🤔</li>
+                <li>😳</li>
+                <li>😐</li>
+                <li>😠</li>
+                <li>😏</li>
+                <li>😢</li>
+                <li>🙃</li>
+                <li><b>B</b></li>
+                <li><i>I</i></li>
+                <li>🔗</li>
+            </ul>
+        </div>
         <textarea rows="3" cols="50" id="content" name="content" maxlength="1000"></textarea>
         <input id="comment_submit" type="submit" value="Comment" />
     </form>
     <script src="/static/comments.js"></script>
+    <script src="/static/toolbar.js"></script>
 {% endblock content %}
 

@@ -123,23 +123,3 @@ html.addEventListener('click', () => {
     navigator.clipboard.writeText(temp.value);
     document.body.removeChild(temp);
 });
-
-// editor toolbar
-
-let toolbar_buttons = document.querySelectorAll(".editor_toolbar li");
-for (let i = 0; i < toolbar_buttons.length; i++) {
-    toolbar_buttons[i].addEventListener('click', e => {
-        let content = document.querySelector("#content");
-        let selected = content.value.substring(content.selectionStart, content.selectionEnd);
-        if (e.target.innerText == "B") {
-            content.setRangeText("**" + selected + "**");
-        } else if (e.target.innerText == "I") {
-            content.setRangeText("*" + selected + "*");
-        } else if (e.target.innerText == "🔗") {
-            content.setRangeText("[" + selected + "](https://)");
-        } else {
-            let value = e.target.innerText;
-            content.setRangeText(value);
-        }
-    });
-}
