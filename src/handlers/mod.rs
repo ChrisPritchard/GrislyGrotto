@@ -34,7 +34,7 @@ fn mime_type(bytes: &[u8], could_be_webp: bool) -> String {
     if mime_type == "application/x-riff" && could_be_webp {
         String::from("image/webp")
     } else {
-        String::from("mime_type")
+        String::from(mime_type)
     }
 }
 
