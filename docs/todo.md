@@ -65,6 +65,7 @@
 - maybe some command handling on the editor? e.g. ctrl+b for bold, a button to add a link etc: these could just insert the requisite markdown characters
     - could include easy emojis
 - command toolbar for comments, as well
+- replaced chrono with time package
 
 ## Stretch / Possible ideas
 
