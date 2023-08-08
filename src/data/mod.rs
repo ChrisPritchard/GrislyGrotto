@@ -19,11 +19,9 @@ use comrak::plugins;
 use prelude::*;
 
 pub use mapping::prev_next_month;
+use time::{OffsetDateTime, macros::format_description, format_description::FormatItem, PrimitiveDateTime};
 
 const DEFAULT_DATABASE_PATH: &str = "./grislygrotto.db";
-const STORAGE_DATE_FORMAT_1: &str = "%Y-%m-%d %H:%M:%S";
-const STORAGE_DATE_FORMAT_2: &str = "%Y-%m-%d %H:%M:%S.%f";
-const STORAGE_DISPLAY_FORMAT: &str = "%l:%M %p, on %A, %e %B %Y";
 
 fn markdown_to_html(markdown: &str) -> String {
     let mut markdown_options = comrak::ComrakOptions::default();
@@ -42,16 +40,34 @@ fn db() -> Result<sqlite::Connection> {
     Ok(sqlite::open(path)?)
 }
 
+fn storage_date_format_1() -> &'static [FormatItem<'static>] {
+    format_description!("[year]-[month]-[day] [hour]:[minute]:[second]")
+}
+
+fn storage_date_format_2() -> &'static [FormatItem<'static>] {
+    format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond]")
+}
+
+fn storage_display_format() -> &'static [FormatItem<'static>] {
+    format_description!("[hour repr:12]:[minute] [period], on [weekday], [day] [month repr:long] [year]")
+}
+
 fn current_datetime_for_storage() -> String {
-    format!("{}", chrono::offset::Local::now().format(STORAGE_DATE_FORMAT_1))
+    let format = storage_date_format_1();
+    OffsetDateTime::now_local().unwrap().format(format).unwrap()
 }
 
 fn storage_datetime_as_display(datetime: &str) -> Result<String> {
-    let format_string = if datetime.contains(".") { STORAGE_DATE_FORMAT_2 } else { STORAGE_DATE_FORMAT_1 };
-    let parsed = chrono::NaiveDateTime::parse_from_str(datetime, format_string);
+    let format = if datetime.contains(".") { 
+        storage_date_format_2() 
+    } else { 
+        storage_date_format_1()
+    };
+    let parsed = PrimitiveDateTime::parse(datetime, format);
     if let Err(err) = parsed {
         log::error!("error parsing date value '{}', error: {}", datetime, err);
         return Err(err.into())
     }
-    Ok(format!("{}", parsed.unwrap().format(STORAGE_DISPLAY_FORMAT)))
+    let result = parsed.unwrap().format(storage_display_format()).unwrap();
+    Ok(result)
 }

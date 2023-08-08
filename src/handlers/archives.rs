@@ -1,3 +1,5 @@
+use time::OffsetDateTime;
+
 use crate::data;
 
 use super::{prelude::*, *};
@@ -63,9 +65,9 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
         context.insert("prev_month", &prev_month);
         context.insert("prev_year", &prev_year);
     }
-    let now = chrono::offset::Local::now();
-    let now_month = format!("{}", now.format("%B"));
-    let now_year = format!("{}", now.format("%Y"));
+    let now = OffsetDateTime::now_local().unwrap();
+    let now_month = now.month().to_string();
+    let now_year = now.year().to_string();
     if !(&month == &now_month && &path.year == &now_year) {
         context.insert("next_month", &next_month);
         context.insert("next_year", &next_year);
