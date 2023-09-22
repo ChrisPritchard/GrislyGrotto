@@ -1,7 +1,7 @@
 use std::env;
 
 use actix_session::{SessionMiddleware, storage::CookieSessionStore, config::PersistentSession};
-use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::{Key, time::Duration}, http::header::CONTENT_SECURITY_POLICY};
+use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::{Key, time::Duration}, http::header};
 
 use anyhow::Result;
 
@@ -12,7 +12,7 @@ mod handlers;
 mod templates;
 mod s3;
 
-const GG_CONTENT_SECURITY_POLICY: &str = "default-src 'self';style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;script-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;";
+const GG_CONTENT_SECURITY_POLICY: &str = "default-src 'self';style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;script-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none'";
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -36,7 +36,8 @@ async fn main() -> Result<()> {
         App::new()
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%r %s - %{r}a %{User-Agent}i"))
-            .wrap(middleware::DefaultHeaders::new().add((CONTENT_SECURITY_POLICY, GG_CONTENT_SECURITY_POLICY)))
+            .wrap(middleware::DefaultHeaders::new()
+                .add((header::CONTENT_SECURITY_POLICY, GG_CONTENT_SECURITY_POLICY)))
             .wrap(SessionMiddleware::builder(CookieSessionStore::default(), session_key.clone())
                 .session_lifecycle(
                     PersistentSession::default().session_ttl(Duration::days(90)))

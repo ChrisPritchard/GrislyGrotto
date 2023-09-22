@@ -59,7 +59,7 @@ fn redirect(address: String) -> WebResponse {
 }
 
 fn ok(body: String) -> WebResponse {
-    Result::Ok(HttpResponse::Ok().body(body))
+    Result::Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
 fn json<T: Serialize>(body: T) -> WebResponse {
