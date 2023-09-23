@@ -12,8 +12,6 @@ mod handlers;
 mod templates;
 mod s3;
 
-const GG_CONTENT_SECURITY_POLICY: &str = "default-src 'self';style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;script-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none'";
-
 #[tokio::main]
 async fn main() -> Result<()> {
 
@@ -37,7 +35,11 @@ async fn main() -> Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%r %s - %{r}a %{User-Agent}i"))
             .wrap(middleware::DefaultHeaders::new()
-                .add((header::CONTENT_SECURITY_POLICY, GG_CONTENT_SECURITY_POLICY)))
+                .add((header::CONTENT_SECURITY_POLICY, "default-src 'self';style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;script-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none'"))
+                .add((header::X_CONTENT_TYPE_OPTIONS, "nosniff"))
+                .add((header::REFERRER_POLICY, "same-origin"))
+                .add((header::PERMISSIONS_POLICY, "microphone=(), geolocation=(), camera=(), usb=(), serial=()"))
+                .add((header::STRICT_TRANSPORT_SECURITY, "max-age=31536000; includeSubDomains")))
             .wrap(SessionMiddleware::builder(CookieSessionStore::default(), session_key.clone())
                 .session_lifecycle(
                     PersistentSession::default().session_ttl(Duration::days(90)))
