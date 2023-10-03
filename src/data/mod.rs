@@ -51,7 +51,7 @@ fn storage_date_format_2() -> &'static [FormatItem<'static>] {
 }
 
 fn cmd_date_format() -> &'static [FormatItem<'static>] {
-    format_description!("[weekday repr:short] [month repr:short] [day] [hour]:[minute]:[second][optional [ [period]]] [ignore count:4] [year]")
+    format_description!("[weekday repr:short] [month repr:short] [day padding:none] [hour]:[minute]:[second][optional [ [period]]] [ignore count:4] [year]")
 }
 
 fn storage_display_format() -> &'static [FormatItem<'static>] {
