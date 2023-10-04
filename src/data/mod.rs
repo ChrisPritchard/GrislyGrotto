@@ -13,7 +13,7 @@ mod prelude {
     pub use anyhow::Result;
 }
 
-use std::{env, process::Command};
+use std::env;
 
 use comrak::plugins;
 use prelude::*;
@@ -50,31 +50,15 @@ fn storage_date_format_2() -> &'static [FormatItem<'static>] {
     format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond]")
 }
 
-fn cmd_date_format() -> &'static [FormatItem<'static>] {
-    format_description!("[weekday repr:short] [month repr:short] [day padding:none] [hour]:[minute]:[second][optional [ [period]]] [ignore count:4] [year]")
-}
-
 fn storage_display_format() -> &'static [FormatItem<'static>] {
     format_description!("[hour repr:12]:[minute] [period], on [weekday], [day] [month repr:long] [year]")
 }
 
 fn current_datetime_for_storage() -> String {
     let format = storage_date_format_1();
-    let local_time = OffsetDateTime::now_local();
-    if let Err(e) = local_time {
-        log::error!("unable to get local time on server: {:?}", e);
-        if !cfg!(windows) {
-            let result = Command::new("date").output(); // woo rce
-            let message = result.map(|o| String::from_utf8(o.stdout).unwrap()).unwrap_or("error".to_string());
-            let message = message.trim();
-            let date = PrimitiveDateTime::parse(&message, cmd_date_format());
-            if let Err(e) = date {
-                log::error!("unable to parse 'date' output: '{}' -> {:?}", &message, e);
-            }
-            return date.unwrap().format(format).unwrap();
-        }
-    }
-    local_time.unwrap().format(format).unwrap()
+    let utc_time = OffsetDateTime::now_utc();
+    let local_time = utc_time.to_offset(time::macros::offset!(+13)); // hack hack hack
+    local_time.format(format).unwrap()
 }
 
 fn storage_datetime_as_display(datetime: &str) -> Result<String> {
