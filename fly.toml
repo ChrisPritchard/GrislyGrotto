@@ -8,9 +8,6 @@ primary_region = "syd"
 
 [build]
 
-[env]
-  TZ = "Pacific/Auckland"
-
 [[mounts]]
   source = "grislygrotto_db"
   destination = "/mnt/db"
