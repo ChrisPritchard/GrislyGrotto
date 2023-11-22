@@ -1,6 +1,4 @@
-use time::OffsetDateTime;
-
-use crate::data;
+use crate::{data, local_time};
 
 use super::{prelude::*, *};
 
@@ -65,7 +63,7 @@ async fn posts_for_month(tmpl: Data<Tera>, path: Path<MonthQuery>, session: Sess
         context.insert("prev_month", &prev_month);
         context.insert("prev_year", &prev_year);
     }
-    let now = OffsetDateTime::now_local().unwrap();
+    let now = local_time::get_now();
     let now_month = now.month().to_string();
     let now_year = now.year().to_string();
     if !(&month == &now_month && &path.year == &now_year) {

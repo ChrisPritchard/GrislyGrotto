@@ -19,7 +19,9 @@ use comrak::plugins;
 use prelude::*;
 
 pub use mapping::prev_next_month;
-use time::{OffsetDateTime, macros::format_description, format_description::FormatItem, PrimitiveDateTime};
+use time::{macros::format_description, format_description::FormatItem, PrimitiveDateTime};
+
+use crate::local_time;
 
 const DEFAULT_DATABASE_PATH: &str = "./grislygrotto.db";
 
@@ -56,8 +58,7 @@ fn storage_display_format() -> &'static [FormatItem<'static>] {
 
 fn current_datetime_for_storage() -> String {
     let format = storage_date_format_1();
-    let utc_time = OffsetDateTime::now_utc();
-    let local_time = utc_time.to_offset(time::macros::offset!(+13)); // hack hack hack
+    let local_time = local_time::get_now();
     local_time.format(format).unwrap()
 }
 

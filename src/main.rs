@@ -11,6 +11,7 @@ mod data;
 mod handlers;
 mod templates;
 mod s3;
+mod local_time;
 
 #[tokio::main]
 async fn main() -> Result<()> {

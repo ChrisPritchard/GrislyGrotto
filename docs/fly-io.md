@@ -7,9 +7,8 @@ All fly commands will take the app of the folder they are currently run in, or a
     - on linux with `curl -L https://fly.io/install.sh | sh`
 2. Create the app, using `fly apps create`. Use the name grislygrotto and syd region
 3. Create a volume to host the database: `fly volume create grislygrotto_db`. Put it in the syd region.
-4. From the root of the project, run `fly launch --copy-config --reuse-app --no-deploy`
+4. From the root of the project, run `fly launch --copy-config --no-deploy`
     - this will build the docker image but not deploy it
-    - `--reuse-app` will put it in the same place as the existing deployment, if one exists
     - `--copy-config` doesn't prompt for copying the existing config
     - `--no-deploy` will not deploy the app, allowing you to set the env vars
     - `--no-cache` can be appended to not use docker caches - should not be used unless the docker file radically changes
@@ -56,4 +55,4 @@ Then, the flyctl command line tool can be used to backup the database locally: `
 
 ## Updates (code only)
 
-Should be a simple matter of running `fly launch --copy-config --reuse-app` - default options (enter, enter, enter), but deploy when asked.
+Should be a simple matter of running `fly deploy`
