@@ -28,7 +28,7 @@ pub async fn get_single_post(key: &str, current_user: &str, owned_comments: &Has
 
     let mut stmt = connection.prepare(sql::SELECT_SINGLE_POST)?;
     stmt.bind::<&[(_, Value)]>(&[
-        (1, key.clone().into()), 
+        (1, key.into()), 
         (2, current_user.into())])?;
 
     if stmt.next()? == State::Done {
@@ -41,7 +41,7 @@ pub async fn get_single_post(key: &str, current_user: &str, owned_comments: &Has
     
     let mut stmt = connection.prepare(sql::SELECT_COMMENTS)?;
     stmt.bind::<&[(_, Value)]>(&[
-        (1, key.clone().into())])?;
+        (1, key.into())])?;
 
     while stmt.next()? == State::Row {
         let comment = mapping::comment_from_statement(&stmt, owned_comments)?;
@@ -57,7 +57,7 @@ pub async fn delete_post(key: &str, current_user: &str) -> Result<()> {
 
     let mut stmt = connection.prepare(sql::DELETE_POST)?;
     stmt.bind::<&[(_, Value)]>(&[
-        (1, key.clone().into()), 
+        (1, key.into()), 
         (2, current_user.into())])?;
 
     let _ = stmt.next()?;

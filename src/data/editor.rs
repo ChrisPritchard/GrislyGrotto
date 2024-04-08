@@ -66,7 +66,7 @@ pub async fn get_post_for_edit(key: &str, current_user: &str) -> Result<Option<E
 
     let mut stmt = connection.prepare(sql::SELECT_RAW_POST)?;
     stmt.bind::<&[(_, Value)]>(&[
-        (1, key.clone().into()), 
+        (1, key.into()), 
         (2, current_user.into())])?;
 
     if stmt.next()? == State::Done {
@@ -91,7 +91,7 @@ pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, 
     if !is_draft {
         let mut stmt = connection.prepare(sql::SELECT_IF_DRAFT)?;
         stmt.bind::<&[(_, Value)]>(&[
-            (1, key.clone().into()),])?;
+            (1, key.into()),])?;
 
         if stmt.next()? == State::Row { // was draft, now isnt so update the date
             let date = current_datetime_for_storage();
@@ -102,7 +102,7 @@ pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, 
                 (3, content.into()),
                 (4, word_count.into()),
                 (5, is_story.into()),
-                (6, key.clone().into()),])?;
+                (6, key.into()),])?;
 
             let _ = stmt.next()?;
 
@@ -116,7 +116,7 @@ pub async fn update_post(key: &str, title: &str, content: &str, is_story: bool, 
         (2, content.into()),
         (3, word_count.into()),
         (4, is_story.into()),
-        (5, key.clone().into()),])?;
+        (5, key.into()),])?;
 
     let _ = stmt.next()?;
 
