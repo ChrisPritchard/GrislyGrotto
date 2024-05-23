@@ -12,7 +12,13 @@
         </div>
     </div>
     <div class="post_content">
+        {% if post.is_story %}
+            <p>
+            This post is marked as a long-form story. <a href="/post/{{ post.key }}">Click through</a> to read.
+            </p>
+        {% else %}
         {{ post.content }}
+        {% endif %}
     </div>
     {% endfor %}
     <nav class="prev_next_page">
