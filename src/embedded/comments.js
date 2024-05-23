@@ -1,4 +1,11 @@
 
+// comment scrolling
+if (window.location.hash == "#comments") {
+    Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
+        window.scrollTo(0,document.getElementById('comments_anchor').offsetTop);
+    });
+}
+
 // Comment form validation:
 
 let comment_count = document.querySelectorAll(".comment_container").length;

@@ -27,7 +27,7 @@
             </div>
         </div>
     {% endif %}
-    <a name="comments"></a>
+    <a name="comments" id="comments_anchor"></a>
     <h3>Comments</h3>
     {% for comment in post.comments %}
         <div class="comment_container" {% if comment.owned %}data-comment="{{ comment.id }}"{% endif %}>
