@@ -1,6 +1,8 @@
 {% extends "master" %}
 {% block title %}{{ month }}, {{ year }}{% endblock title %}
 {% block content %}
+    <script type="text/javascript" src="/static/mathjax.js"></script>
+    <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
     {% for post in posts %}
     <div class="post_header">
         <img class="profile_image" src="/content/{{ post.author_username }}" />
