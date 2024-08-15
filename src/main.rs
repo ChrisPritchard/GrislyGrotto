@@ -36,7 +36,7 @@ async fn main() -> Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%r %s - %{r}a %{User-Agent}i"))
             .wrap(middleware::DefaultHeaders::new()
-                .add((header::CONTENT_SECURITY_POLICY, "default-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none';style-src 'self' unsafe-inline *.youtube.com chrispritchard.github.io"))
+                .add((header::CONTENT_SECURITY_POLICY, "default-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none';style-src 'self' 'unsafe-inline' *.youtube.com chrispritchard.github.io"))
                 .add((header::X_CONTENT_TYPE_OPTIONS, "nosniff"))
                 .add((header::REFERRER_POLICY, "same-origin"))
                 .add((header::PERMISSIONS_POLICY, "microphone=(), geolocation=(), camera=(), usb=(), serial=()"))
