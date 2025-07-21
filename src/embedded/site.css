@@ -1,7 +1,6 @@
 body {
-    font-family: var(--font-serif);
-    font-size: calc(var(--content-font-size,1.2rem)*var(--font-multiplier,1));
-    letter-spacing: var(--content-letter-spacing,0);
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: var(--content-letter-spacing, 0);
     line-height: 1.3;
     margin-left: auto;
     margin-right: auto;
@@ -10,13 +9,16 @@ body {
     color: #222;
 }
 
-a, a:visited {
+a,
+a:visited {
     text-decoration: none;
     font-weight: 700;
     color: blue;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     text-shadow: 0 2px 4px grey;
     color: #222;
 }
@@ -35,7 +37,10 @@ label {
     margin-bottom: 5px;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
@@ -48,22 +53,26 @@ pre {
     padding: 1em;
 }
 
-input[type="text"], input[type="password"], textarea {
+input[type="text"],
+input[type="password"],
+textarea {
     display: block;
     border: 1px solid #222;
     border-radius: 2px;
     background-color: whitesmoke;
     box-shadow: inset 0 1px 1px #222;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     margin-bottom: 8px;
 }
 
-input[type="submit"]:disabled, input[type="button"]:disabled {
+input[type="submit"]:disabled,
+input[type="button"]:disabled {
     border: 1px solid gray;
     color: gray;
 }
 
-input[type="submit"], input[type="button"] {
+input[type="submit"],
+input[type="button"] {
     transition: all .3s ease;
     font-weight: 400;
     text-align: center;
@@ -94,7 +103,8 @@ nav span {
     text-align: center;
 }
 
-nav span a, nav span a:visited {
+nav span a,
+nav span a:visited {
     color: #222;
 }
 
@@ -102,12 +112,13 @@ nav span a, nav span a:visited {
     text-align: center;
 }
 
-img, pre {
+img,
+pre {
     border: 1px solid #222;
     box-shadow: 0 2px 4px grey;
 }
 
-:not(pre) > code {
+:not(pre)>code {
     background-color: #222;
     color: whitesmoke;
     padding: 2px;
@@ -120,10 +131,12 @@ img, pre {
     text-align: center;
     margin-bottom: 1em;
 }
+
 .style_selector.light {
     color: #222;
     background-color: whitesmoke;
 }
+
 .style_selector.dark {
     color: whitesmoke;
     background-color: #222;
@@ -234,7 +247,9 @@ img, pre {
     margin-bottom: 0;
 }
 
-.years, .months, .stories {
+.years,
+.months,
+.stories {
     list-style: none;
     padding-left: 0;
 }
@@ -268,7 +283,8 @@ div.search-result h4 {
     margin-bottom: 1em;
 }
 
-div.checkbox input, div.checkbox label {
+div.checkbox input,
+div.checkbox label {
     display: inline;
     vertical-align: center;
 }
