@@ -1,4 +1,4 @@
-FROM rust:buster as builder
+FROM rust:bookworm as builder
 RUN apt-get update && apt-get -y install ca-certificates cmake && rm -rf /var/lib/apt/lists/*
 RUN rustup default stable && rustup update
 
@@ -12,7 +12,7 @@ COPY src src
 RUN touch -a -m ./src/main.rs
 RUN cargo build --release
 
-FROM debian:buster
+FROM debian:bookworm
 RUN apt-get update && apt-get -y install sqlite3 libsqlite3-dev ca-certificates
 COPY --from=builder /target/release/grislygrotto .
 EXPOSE 3000
