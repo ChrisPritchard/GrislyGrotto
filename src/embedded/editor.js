@@ -1,4 +1,4 @@
-// title, content and similar key )via title) validation
+// title, content and similar key (via title) validation
 
 let title_is_valid = false;
 let current_title = document.querySelector("#title").value;
@@ -28,10 +28,10 @@ test_post_is_valid();
 
 function check_title() {
     let title = document.querySelector("#title").value;
-    fetch("/editor/check_title", { 
-        method: "POST", 
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
-        body: "title="+encodeURIComponent(title) 
+    fetch("/editor/check_title", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "title=" + encodeURIComponent(title)
     }).then(r => r.text()).then(t => {
         title_is_valid = t !== "true";
         if (title_is_valid) {
@@ -69,12 +69,12 @@ let html = document.querySelector("#copy_content_html");
 
 contentSelector.addEventListener('change', () => {
     let files = contentSelector.files;
-    if(files.length != 1) {
+    if (files.length != 1) {
         return;
     }
-    let size = Math.round((files[0].size/1024/1024)*100)/100;
+    let size = Math.round((files[0].size / 1024 / 1024) * 100) / 100;
     if (size > 1) {
-        result.innerText = "file size is too large ("+size+" MB, max size is 1 MB)";
+        result.innerText = "file size is too large (" + size + " MB, max size is 1 MB)";
         html.classList.add("hide");
         upload.classList.add("hide");
         return;
@@ -83,7 +83,6 @@ contentSelector.addEventListener('change', () => {
     upload.classList.remove('hide');
 });
 
-
 upload.addEventListener('click', () => {
     upload.classList.add('hide');
     let files = contentSelector.files;
@@ -91,17 +90,17 @@ upload.addEventListener('click', () => {
     let filename = (new Date()).getTime() + "-" + files[0].name;
     filename = filename.toLowerCase().replace(/ /g, '-');
 
-    fetch("/content/"+filename, {
+    fetch("/content/" + filename, {
         method: "POST",
         body: files[0]
     }).then(r => {
         if (r.ok) {
             if (filename.endsWith(".zip")) {
-                result.innerText = "<a href=\"/content/"+filename+"\">"+filename+"</a>";
+                result.innerText = "<a href=\"/content/" + filename + "\">" + filename + "</a>";
             } else if (filename.endsWith(".mp4")) {
-                result.innerText = "<div align=\"center\"><video width=\"800\" src=\"/content/"+filename+"\" controls/></div>";
+                result.innerText = "<div align=\"center\"><video width=\"800\" src=\"/content/" + filename + "\" controls/></div>";
             } else {
-                result.innerText = "<div align=\"center\"><a href=\"/content/"+filename+"\" target=\"_blank\"><img style=\"max-width:800px\" src=\"/content/"+filename+"\" /></a></div>";
+                result.innerText = "<div align=\"center\"><a href=\"/content/" + filename + "\" target=\"_blank\"><img style=\"max-width:800px\" src=\"/content/" + filename + "\" /></a></div>";
             }
             html.classList.remove("hide");
         } else {
