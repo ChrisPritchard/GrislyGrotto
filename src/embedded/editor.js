@@ -62,63 +62,111 @@ window.addEventListener("beforeunload", e => {
 
 // content uploader
 
-let contentSelector = document.querySelector('#content_selector');
-let upload = document.querySelector('#content_upload_submit');
-let result = document.querySelector("#content_upload_result");
-let html = document.querySelector("#copy_content_html");
+document.querySelector('#content').addEventListener('paste', async (event) => {
+    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    const textarea = event.target;
 
-contentSelector.addEventListener('change', () => {
-    let files = contentSelector.files;
-    if (files.length != 1) {
-        return;
-    }
-    let size = Math.round((files[0].size / 1024 / 1024) * 100) / 100;
-    if (size > 1) {
-        result.innerText = "file size is too large (" + size + " MB, max size is 1 MB)";
-        html.classList.add("hide");
-        upload.classList.add("hide");
-        return;
-    }
-    result.innerText = "";
-    upload.classList.remove('hide');
-});
+    // Find the first supported file in clipboard
+    let fileItem = null;
+    let fileType = null;
 
-upload.addEventListener('click', () => {
-    upload.classList.add('hide');
-    let files = contentSelector.files;
-
-    let filename = (new Date()).getTime() + "-" + files[0].name;
-    filename = filename.toLowerCase().replace(/ /g, '-');
-
-    fetch("/content/" + filename, {
-        method: "POST",
-        body: files[0]
-    }).then(r => {
-        if (r.ok) {
-            if (filename.endsWith(".zip")) {
-                result.innerText = "<a href=\"/content/" + filename + "\">" + filename + "</a>";
-            } else if (filename.endsWith(".mp4")) {
-                result.innerText = "<div align=\"center\"><video width=\"800\" src=\"/content/" + filename + "\" controls/></div>";
-            } else {
-                result.innerText = "<div align=\"center\"><a href=\"/content/" + filename + "\" target=\"_blank\"><img style=\"max-width:800px\" src=\"/content/" + filename + "\" /></a></div>";
+    for (const item of items) {
+        if (item.kind === 'file') {
+            if (item.type.startsWith('image/')) {
+                fileItem = item;
+                fileType = 'image';
+                break;
+            } else if (item.type === 'video/mp4') {
+                fileItem = item;
+                fileType = 'video';
+                break;
+            } else if (item.type === 'application/zip' || item.name?.endsWith('.zip')) {
+                fileItem = item;
+                fileType = 'zip';
+                break;
             }
-            html.classList.remove("hide");
-        } else {
-            result.innerText = "An error occurred uploading :(";
-            html.classList.add("hide");
         }
-    })
+    }
 
-    return false;
-});
+    if (!fileItem) return; // No supported file found
 
-html.addEventListener('click', () => {
-    let textToCopy = result.innerText;
-    const temp = document.createElement('textarea');
-    temp.value = textToCopy;
-    document.body.appendChild(temp);
-    temp.select();
-    temp.setSelectionRange(0, 99999); // For mobile devices
-    navigator.clipboard.writeText(temp.value);
-    document.body.removeChild(temp);
+    event.preventDefault();
+
+    // Show name prompt (except for ZIP which uses original filename)
+    let name = fileType === 'zip' ? fileItem.name :
+        prompt(`Enter a name for this ${fileType} (used for alt text/filename):`,
+            fileItem.name || fileType);
+
+    if (name === null) return; // User cancelled
+
+    // Clean filename
+    fileName = `${Date.now()}-${name.toLowerCase()
+        .replace(/[^a-z0-9.-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')}`;
+
+    // Ensure correct extension
+    if (fileType === 'image' && !fileName.endsWith('.webp')) {
+        fileName = fileName.replace(/\.[^.]*$|$/, '.webp');
+    } else if (fileType === 'video' && !fileName.endsWith('.mp4')) {
+        fileName = fileName.replace(/\.[^.]*$|$/, '.mp4');
+    } else if (fileType === 'zip' && !fileName.endsWith('.zip')) {
+        fileName = fileName.replace(/\.[^.]*$|$/, '.zip');
+    }
+
+    // Create upload indicator
+    const originalSelectionStart = textarea.selectionStart;
+    const originalSelectionEnd = textarea.selectionEnd;
+    const uploadIndicator = `[Uploading ${fileType}...]`;
+
+    // Insert at cursor position
+    textarea.value = textarea.value.substring(0, originalSelectionStart) +
+        uploadIndicator +
+        textarea.value.substring(originalSelectionEnd);
+
+    // Disable textarea during upload
+    textarea.disabled = true;
+
+    try {
+        const blob = fileItem.getAsFile();
+
+        // Upload the file
+        const response = await fetch(`/content/${fileName}`, {
+            method: 'POST',
+            body: blob
+        });
+
+        if (!response.ok) throw new Error('Upload failed');
+
+        // Generate appropriate markup based on file type
+        let markup;
+        if (fileType === 'zip') {
+            markup = `<a href="/content/${fileName}">${fileName}</a>`;
+        } else if (fileType === 'video') {
+            markup = `<div align="center"><video width="800" src="/content/${fileName}" controls></video></div>`;
+        } else {
+            // For images
+            markup = `<div align="center"><a href="/content/${fileName}" target="_blank">` +
+                `<img style="max-width:800px" src="/content/${fileName}" alt="${name}" />` +
+                `</a></div>`;
+        }
+
+        // Replace indicator with the generated markup
+        textarea.value = textarea.value.replace(uploadIndicator, markup);
+
+    } catch (error) {
+        console.error('Upload failed:', error);
+        // Remove the upload indicator on failure
+        textarea.value = textarea.value.replace(uploadIndicator, '');
+        alert(`${fileType} upload failed. Please try again.`);
+    } finally {
+        textarea.disabled = false;
+        textarea.focus();
+
+        // Position cursor at end of inserted content
+        setTimeout(() => {
+            const newCursorPos = textarea.value.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }, 0);
+    }
 });

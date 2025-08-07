@@ -11,6 +11,7 @@
         <br />Basically type normally, use <span>*text*</span> for italic, <span>**text**</span> for bold, <span>-</span> to create bullet points etc. Its faily intuitive.
         <br />Use <span>[title](url)</span> to create a link. A raw url will also be 'linkified'. Tables (see the cheat sheet) also work.
         <br />Raw HTML (e.g. <span>&lt;img&gt;</span>) will be interpreted as is. Note that the content security policy will prevent script and most external image sources.
+        <br />You can also upload images (of any format/size, will be converted to &lt;500kb webp), zip files and mp4. Just copy-paste into the content, or drag drop.
     </div>
 
     <label for="content">Content (min length: 500 chars)</label>
@@ -31,15 +32,6 @@
         </ul>
     </div>
     <textarea id="content" name="content" cols="100" rows="35">{% if post %}{{ post.content }}{% endif %}</textarea>
-
-    <div class="content_upload_container">
-        <h3>Upload images</h3>
-        <input type="file" id="content_selector" accept=".jpg, .jpeg, .png, .gif, .webp, .mp4, .zip" /><span>maximum size: 1mb</span>
-        <br/>
-        <input type="button" id="content_upload_submit" value="Upload" class="hide" /><br/>
-        <span id="content_upload_result">HTML to use will appear here</span>
-        <input type="button" value="copy" id="copy_content_html" class="hide" />
-    </div>
 
     <div class="checkbox">
         <input type="checkbox" id="is_story" name="is_story" {% if post and post.is_story %}checked="checked"{% endif %} />
