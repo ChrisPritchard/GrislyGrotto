@@ -315,3 +315,23 @@ div.checkbox label {
     width: 2em;
     text-align: center;
 }
+
+#content.drag-active {
+    background-color: #f0f8ff;
+    border: 2px dashed #1e90ff;
+    padding: 10px;
+}
+
+#content.drag-active::after {
+    content: "Drop files to upload";
+    color: #1e90ff;
+    display: block;
+    text-align: center;
+    margin-top: 5px;
+}
+
+#content[disabled] {
+    background-color: #f8f8f8;
+    cursor: progress;
+    opacity: 0.8;
+}

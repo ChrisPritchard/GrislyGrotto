@@ -62,9 +62,10 @@ window.addEventListener("beforeunload", e => {
 
 // content uploader
 
-document.querySelector('#content').addEventListener('paste', async (event) => {
+const content = document.querySelector('#content');
+
+content.addEventListener('paste', async (event) => {
     const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-    const textarea = event.target;
 
     // Find the first supported file in clipboard
     let fileItem = null;
@@ -91,6 +92,45 @@ document.querySelector('#content').addEventListener('paste', async (event) => {
     if (!fileItem) return; // No supported file found
 
     event.preventDefault();
+    const file = fileItem.getAsFile();
+    await handle_file_upload(file, fileType);
+});
+
+content.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    content.classList.add('drag-active');
+});
+
+content.addEventListener('dragleave', () => {
+    content.classList.remove('drag-active');
+});
+
+content.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    content.classList.remove('drag-active');
+
+    const files = e.dataTransfer.files;
+    if (files.length === 0) return;
+
+    // Handle each dropped file
+    for (const file of files) {
+        let fileType = null;
+
+        if (file.type.startsWith('image/')) {
+            fileType = 'image';
+        } else if (file.type === 'video/mp4') {
+            fileType = 'video';
+        } else if (file.type === 'application/zip' || file.name.endsWith('.zip')) {
+            fileType = 'zip';
+        } else {
+            continue; // Skip unsupported files
+        }
+
+        await handle_file_upload(file, fileType);
+    }
+});
+
+async function handle_file_upload(fileItem, fileType) {
 
     // Show name prompt (except for ZIP which uses original filename)
     let name = fileType === 'zip' ? fileItem.name :
@@ -115,25 +155,23 @@ document.querySelector('#content').addEventListener('paste', async (event) => {
     }
 
     // Create upload indicator
-    const originalSelectionStart = textarea.selectionStart;
-    const originalSelectionEnd = textarea.selectionEnd;
+    const originalSelectionStart = content.selectionStart;
+    const originalSelectionEnd = content.selectionEnd;
     const uploadIndicator = `[Uploading ${fileType}...]`;
 
     // Insert at cursor position
-    textarea.value = textarea.value.substring(0, originalSelectionStart) +
+    content.value = content.value.substring(0, originalSelectionStart) +
         uploadIndicator +
-        textarea.value.substring(originalSelectionEnd);
+        content.value.substring(originalSelectionEnd);
 
-    // Disable textarea during upload
-    textarea.disabled = true;
+    // Disable content during upload
+    content.disabled = true;
 
     try {
-        const blob = fileItem.getAsFile();
-
         // Upload the file
         const response = await fetch(`/content/${fileName}`, {
             method: 'POST',
-            body: blob
+            body: fileItem
         });
 
         if (!response.ok) throw new Error('Upload failed');
@@ -152,21 +190,21 @@ document.querySelector('#content').addEventListener('paste', async (event) => {
         }
 
         // Replace indicator with the generated markup
-        textarea.value = textarea.value.replace(uploadIndicator, markup);
+        content.value = content.value.replace(uploadIndicator, markup);
 
     } catch (error) {
         console.error('Upload failed:', error);
         // Remove the upload indicator on failure
-        textarea.value = textarea.value.replace(uploadIndicator, '');
+        content.value = content.value.replace(uploadIndicator, '');
         alert(`${fileType} upload failed. Please try again.`);
     } finally {
-        textarea.disabled = false;
-        textarea.focus();
+        content.disabled = false;
+        content.focus();
 
         // Position cursor at end of inserted content
         setTimeout(() => {
-            const newCursorPos = textarea.value.length;
-            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            const newCursorPos = content.value.length;
+            content.setSelectionRange(newCursorPos, newCursorPos);
         }, 0);
     }
-});
+}
