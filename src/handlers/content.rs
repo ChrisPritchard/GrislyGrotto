@@ -47,17 +47,21 @@ async fn upload_content(
         return Err(WebError::BadRequest("mime type not allowed".into()));
     }
 
+    let max_size_bytes = 500 * 1024;
+
     if mime_type.starts_with("image/") {
-        match image::load_from_memory(&data) {
-            Ok(img) => match process_image(img, 500).await {
-                Ok(processed_data) => data = processed_data,
+        if !is_webp(&data) || data.len() > max_size_bytes {
+            match image::load_from_memory(&data) {
+                Ok(img) => match process_image(img, max_size_bytes).await {
+                    Ok(processed_data) => data = processed_data,
+                    Err(e) => {
+                        log::error!("Failed to process image: {}", e);
+                        return Err(WebError::ServerError(anyhow!("Failed to process image")));
+                    }
+                },
                 Err(e) => {
-                    log::error!("Failed to process image: {}", e);
-                    return Err(WebError::ServerError(anyhow!("Failed to process image")));
+                    return Err(WebError::BadRequest(format!("Invalid image: {}", e).into()));
                 }
-            },
-            Err(e) => {
-                return Err(WebError::BadRequest(format!("Invalid image: {}", e).into()));
             }
         }
     }
@@ -70,11 +74,10 @@ async fn upload_content(
 
 async fn process_image(
     mut img: DynamicImage,
-    max_size_kb: usize,
+    max_size_bytes: usize,
 ) -> Result<Vec<u8>, anyhow::Error> {
     let mut quality: f32 = 1.0; // Start with decent quality
     let output;
-    let max_size_bytes = max_size_kb * 1024;
 
     let initial_width = img.width() as f32;
     let initial_height = img.height() as f32;
@@ -103,4 +106,9 @@ async fn process_image(
     }
 
     Ok(output)
+}
+
+fn is_webp(data: &[u8]) -> bool {
+    // WebP signature check (RIFF....WEBP)
+    data.len() > 12 && &data[0..4] == b"RIFF" && &data[8..12] == b"WEBP"
 }
