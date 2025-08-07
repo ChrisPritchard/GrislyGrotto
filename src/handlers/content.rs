@@ -1,7 +1,7 @@
-use anyhow::anyhow;
+use anyhow::{anyhow, Result};
 use futures_util::StreamExt;
-use image::{imageops::FilterType, DynamicImage, ImageFormat};
-use std::io::Cursor;
+use image::{imageops::FilterType, DynamicImage};
+use webp::Encoder;
 
 use crate::s3::S3Config;
 
@@ -48,11 +48,12 @@ async fn upload_content(
     }
 
     let max_size_bytes = 500 * 1024;
+    let max_width_pixels = 2000;
 
     if mime_type.starts_with("image/") {
         if !is_webp(&data) || data.len() > max_size_bytes {
             match image::load_from_memory(&data) {
-                Ok(img) => match process_image(img, max_size_bytes).await {
+                Ok(img) => match process_image(img, max_size_bytes, max_width_pixels).await {
                     Ok(processed_data) => data = processed_data,
                     Err(e) => {
                         log::error!("Failed to process image: {}", e);
@@ -75,37 +76,43 @@ async fn upload_content(
 async fn process_image(
     mut img: DynamicImage,
     max_size_bytes: usize,
-) -> Result<Vec<u8>, anyhow::Error> {
-    let mut quality: f32 = 1.0; // Start with decent quality
-    let output;
+    max_width_pixels: usize,
+) -> Result<Vec<u8>> {
+    // Resize the image to be within maximum size
+    let width = img.width() as f32;
+    if width > max_width_pixels as f32 {
+        let ratio = (max_width_pixels as f32) / width;
+        let height = img.height() as f32;
+        img = img.resize(
+            (width * ratio) as u32,
+            (height * ratio) as u32,
+            FilterType::Lanczos3,
+        );
+    }
 
-    let initial_width = img.width() as f32;
-    let initial_height = img.height() as f32;
-
+    let mut quality = 80.0;
     loop {
-        let mut webp_data = Vec::new();
-
-        if quality != 1.0 {
-            img = img.resize(
-                (initial_width * quality) as u32,
-                (initial_height * quality) as u32,
-                FilterType::Lanczos3,
-            )
-        }
-        // Encode with current quality setting
-        img.write_to(&mut Cursor::new(&mut webp_data), ImageFormat::WebP)?;
+        let webp_data = encode_image(&img, quality)?;
 
         // Check if within size limit
         if webp_data.len() <= max_size_bytes || quality <= 0.1 {
-            output = webp_data;
-            break;
+            return Ok(webp_data);
         }
 
         // Reduce quality for next attempt
         quality *= 0.9; // Reduce quality by 10%
     }
+}
 
-    Ok(output)
+// This was a lot harder than it needed to be
+fn encode_image(img: &DynamicImage, quality: f32) -> Result<Vec<u8>> {
+    let data = img.to_rgba8();
+    let result = {
+        let encoder = Encoder::from_rgba(&data, img.width(), img.height());
+        let encoded = encoder.encode(quality);
+        encoded.to_vec()
+    };
+    Ok(result)
 }
 
 fn is_webp(data: &[u8]) -> bool {
