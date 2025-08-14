@@ -335,3 +335,7 @@ div.checkbox label {
     cursor: progress;
     opacity: 0.8;
 }
+
+code {
+    white-space: pre-wrap;
+}
