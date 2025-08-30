@@ -1,34 +1,41 @@
 use std::env;
 
-use actix_session::{SessionMiddleware, storage::CookieSessionStore, config::PersistentSession};
-use actix_web::{HttpServer, App, web::{Data, QueryConfig}, middleware::{Logger, self}, HttpResponse, error, cookie::{Key, time::Duration}, http::header};
+use actix_session::{config::PersistentSession, storage::CookieSessionStore, SessionMiddleware};
+use actix_web::{
+    cookie::{time::Duration, Key},
+    error,
+    http::header,
+    middleware::{self, Logger},
+    web::{Data, QueryConfig},
+    App, HttpResponse, HttpServer,
+};
 
 use anyhow::Result;
 
-mod embedded;
-mod model;
 mod data;
+mod embedded;
 mod handlers;
-mod templates;
-mod s3;
 mod local_time;
+mod model;
+mod s3;
+mod templates;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-
     dotenv::dotenv().ok();
 
     let tera = templates::template_engine();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    
+
     let s3_config = s3::get_s3_config()?;
 
     let specified_key = env::var("SESSION_KEY");
-    let session_key = if specified_key.is_ok() { 
+    let session_key = if specified_key.is_ok() {
         let bytes: Vec<u8> = specified_key.unwrap().bytes().collect();
-        Key::try_from(&bytes[..])? 
-    } 
-    else { Key::generate() };
+        Key::try_from(&bytes[..])?
+    } else {
+        Key::generate()
+    };
     let query_extractor_cfg = get_query_extractor_cfg();
 
     let server = HttpServer::new(move || {
@@ -36,7 +43,7 @@ async fn main() -> Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%r %s - %{r}a %{User-Agent}i"))
             .wrap(middleware::DefaultHeaders::new()
-                .add((header::CONTENT_SECURITY_POLICY, "default-src 'self' cdnjs.cloudflare.com;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none';style-src 'self' 'unsafe-inline' *.youtube.com chrispritchard.github.io"))
+                .add((header::CONTENT_SECURITY_POLICY, "default-src 'self' cdnjs.cloudflare.com chrispritchard.github.io;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none';style-src 'self' 'unsafe-inline' *.youtube.com chrispritchard.github.io"))
                 .add((header::X_CONTENT_TYPE_OPTIONS, "nosniff"))
                 .add((header::REFERRER_POLICY, "same-origin"))
                 .add((header::PERMISSIONS_POLICY, "microphone=(), geolocation=(), camera=(), usb=(), serial=()"))
@@ -76,17 +83,23 @@ async fn main() -> Result<()> {
             .service(handlers::editor::create_new_post)
             .service(handlers::editor::edit_post_page)
             .service(handlers::editor::update_post)
-    });  
+    });
 
     server
         .worker_max_blocking_threads(2048)
-        .bind("[::]:3000")?.run().await.map_err(|e| anyhow::Error::from(e))
+        .bind("[::]:3000")?
+        .run()
+        .await
+        .map_err(|e| anyhow::Error::from(e))
 }
 
 fn get_query_extractor_cfg() -> QueryConfig {
-    QueryConfig::default()
-        .error_handler(|err, _| {
-            log::error!("bad query param: {}", err);
-            error::InternalError::from_response(err, HttpResponse::BadRequest().body("bad request").into()).into()
-        })
+    QueryConfig::default().error_handler(|err, _| {
+        log::error!("bad query param: {}", err);
+        error::InternalError::from_response(
+            err,
+            HttpResponse::BadRequest().body("bad request").into(),
+        )
+        .into()
+    })
 }
