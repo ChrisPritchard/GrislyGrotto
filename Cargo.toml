@@ -32,7 +32,7 @@ syntect = "5.0.0"
 tera = "1.18.1"
 time = { version = "0.3.21", features = ["local-offset"] }
 tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
-webp = "0.3.0"
+webp = "0.3.1"
 
 # [profile.release]
 # strip = true
