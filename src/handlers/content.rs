@@ -50,7 +50,7 @@ async fn upload_content(
     let max_size_bytes = 500 * 1024;
     let max_width_pixels = 2000;
 
-    if mime_type.starts_with("image/") && mime_type != "image/gif" {
+    if mime_type.starts_with("image/") {
         if !is_webp(&data) || data.len() > max_size_bytes {
             match image::load_from_memory(&data) {
                 Ok(img) => match process_image(img, max_size_bytes, max_width_pixels).await {

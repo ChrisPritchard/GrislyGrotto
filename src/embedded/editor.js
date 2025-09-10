@@ -67,7 +67,6 @@ const content = document.querySelector('#content');
 content.addEventListener('paste', async (event) => {
     const items = (event.clipboardData || event.originalEvent.clipboardData).items;
 
-    // Find the first supported file in clipboard
     let fileItem = null;
     let fileType = null;
 
@@ -112,7 +111,6 @@ content.addEventListener('drop', async (e) => {
     const files = e.dataTransfer.files;
     if (files.length === 0) return;
 
-    // Handle each dropped file
     for (const file of files) {
         let fileType = null;
 
@@ -146,7 +144,7 @@ async function handle_file_upload(fileItem, fileType) {
         .replace(/^-|-$/g, '')}`;
 
     // Ensure correct extension
-    if (fileType === 'image' && !fileName.endsWith('.webp') && !fileName.endsWith('.gif')) {
+    if (fileType === 'image' && !fileName.endsWith('.webp')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.webp');
     } else if (fileType === 'video' && !fileName.endsWith('.mp4')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.mp4');
