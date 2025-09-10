@@ -108,6 +108,9 @@ content.addEventListener('drop', async (e) => {
     e.preventDefault();
     content.classList.remove('drag-active');
 
+    if (!e.dataTransfer)
+        return;
+
     const files = e.dataTransfer.files;
     if (files.length === 0) return;
 
@@ -132,7 +135,7 @@ async function handle_file_upload(fileItem, fileType) {
 
     // Show name prompt (except for ZIP which uses original filename)
     let name = fileType === 'zip' ? fileItem.name :
-        prompt(`Enter a name for this ${fileType} (used for alt text/filename):`,
+        prompt(`Enter a name for this ${fileType} (used for alt text/filename - add 'anim' somewhere to avoid compression):`,
             fileItem.name || fileType);
 
     if (name === null) return; // User cancelled
@@ -144,7 +147,7 @@ async function handle_file_upload(fileItem, fileType) {
         .replace(/^-|-$/g, '')}`;
 
     // Ensure correct extension
-    if (fileType === 'image' && !fileName.endsWith('.webp')) {
+    if (fileType === 'image' && !fileName.endsWith('.webp') && !fileName.contains('anim')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.webp');
     } else if (fileType === 'video' && !fileName.endsWith('.mp4')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.mp4');
