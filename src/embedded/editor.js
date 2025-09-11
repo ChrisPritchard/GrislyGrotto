@@ -147,7 +147,7 @@ async function handle_file_upload(fileItem, fileType) {
         .replace(/^-|-$/g, '')}`;
 
     // Ensure correct extension
-    if (fileType === 'image' && !fileName.endsWith('.webp') && !fileName.contains('anim')) {
+    if (fileType === 'image' && !fileName.endsWith('.webp') && fileName.indexOf('anim') < 0) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.webp');
     } else if (fileType === 'video' && !fileName.endsWith('.mp4')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.mp4');
