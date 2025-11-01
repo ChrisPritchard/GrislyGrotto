@@ -1,3 +1,4 @@
+use actix_web::web::FormConfig;
 use std::env;
 
 use actix_session::{config::PersistentSession, storage::CookieSessionStore, SessionMiddleware};
@@ -54,6 +55,7 @@ async fn main() -> Result<()> {
                 .build())
             .app_data(Data::new(tera.clone()))
             .app_data(Data::new(s3_config.clone()))
+            .app_data(FormConfig::default().limit(1 << 25)) // 32 mb form post size max
             .app_data(query_extractor_cfg.clone())
             .service(handlers::style::set_style)
             .service(embedded::robots)
