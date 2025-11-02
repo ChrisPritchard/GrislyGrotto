@@ -7,11 +7,19 @@
     <span id="title_error" class="error hide">A post with a similar title already exists</span>
 
     <div class="editor_help">
-        The editor supports markdown syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">in this cheat sheet</a>. 
-        <br />Basically type normally, use <span>*text*</span> for italic, <span>**text**</span> for bold, <span>-</span> to create bullet points etc. Its faily intuitive.
-        <br />Use <span>[title](url)</span> to create a link. A raw url will also be 'linkified'. Tables (see the cheat sheet) also work.
-        <br />Raw HTML (e.g. <span>&lt;img&gt;</span>) will be interpreted as is. Note that the content security policy will prevent script and most external image sources.
-        <br />You can also upload images (of any format/size, will be converted to &lt;500kb webp), zip files and mp4. Just copy-paste into the content, or drag drop.
+        The editor supports markdown syntax specified <a href="https://www.markdownguide.org/cheat-sheet/">in this cheat
+            sheet</a>.
+        <br />Basically type normally, use <span>*text*</span> for italic, <span>**text**</span> for bold,
+        <span>-</span> to create bullet points etc. Its faily intuitive.
+        <br />Use <span>[title](url)</span> to create a link. A raw url will also be 'linkified'. Tables (see the cheat
+        sheet) also work.
+        <br />Raw HTML (e.g. <span>&lt;img&gt;</span>) will be interpreted as is. Note that the content security policy
+        will prevent script and most external image sources.
+        <br />You can also upload images (of any format/size, will be converted to &lt;500kb webp), zip files and mp4.
+        Just copy-paste into the content, or drag drop.
+        <br />Finally, you can incorporate <a href="https://mermaid.live">mermaid diagrams</a> as well, by adding a
+        <span>&lt;pre class="mermaid"&gt;</span> element with the configuration, see this <a
+            href="https://mermaid.js.org/intro/getting-started.html#examples">example</a>.
     </div>
 
     <label for="content">Content (min length: 500 chars)</label>
@@ -34,16 +42,18 @@
     <textarea id="content" name="content" cols="100" rows="35">{% if post %}{{ post.content }}{% endif %}</textarea>
 
     <div class="checkbox">
-        <input type="checkbox" id="is_story" name="is_story" {% if post and post.is_story %}checked="checked"{% endif %} />
+        <input type="checkbox" id="is_story" name="is_story" {% if post and post.is_story %}checked="checked" {% endif
+            %} />
         <label for="is_story">Is Story</label>
     </div>
 
     {% if not post or post.is_draft %}
-        <div class="checkbox">
-            <input type="checkbox" id="is_draft" name="is_draft" {% if post and post.is_draft %}checked="checked"{% endif %} />
-            <label for="is_draft">Is Draft</label>
-            <br/>Draft posts can only be seen by you.
-        </div>
+    <div class="checkbox">
+        <input type="checkbox" id="is_draft" name="is_draft" {% if post and post.is_draft %}checked="checked" {% endif
+            %} />
+        <label for="is_draft">Is Draft</label>
+        <br />Draft posts can only be seen by you.
+    </div>
     {% endif %}
 
     <div class="post_submit">
@@ -53,4 +63,3 @@
 <script src="/static/editor.js"></script>
 <script src="/static/toolbar.js"></script>
 {% endblock content %}
-
