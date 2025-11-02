@@ -21,6 +21,20 @@ mod model;
 mod s3;
 mod templates;
 
+const CSP_DEFAULT_SRC: &[&str] = &[
+    "'self'",
+    "cdnjs.cloudflare.com",
+    "cdn.jsdelivr.net",
+    "chrispritchard.github.io",
+];
+const CSP_FRAME_SRC: &[&str] = &["'self'", "*.youtube.com", "chrispritchard.github.io"];
+const CSP_STYLE_SRC: &[&str] = &[
+    "'self'",
+    "'unsafe-inline'",
+    "*.youtube.com",
+    "chrispritchard.github.io",
+];
+
 #[tokio::main]
 async fn main() -> Result<()> {
     dotenv::dotenv().ok();
@@ -39,12 +53,16 @@ async fn main() -> Result<()> {
     };
     let query_extractor_cfg = get_query_extractor_cfg();
 
+    let default_src = CSP_DEFAULT_SRC.join(" ");
+    let frame_src = CSP_FRAME_SRC.join(" ");
+    let style_src = CSP_STYLE_SRC.join(" ");
+
     let server = HttpServer::new(move || {
         App::new()
             .wrap(middleware::Compress::default())
             .wrap(Logger::new("%r %s - %{r}a %{User-Agent}i"))
             .wrap(middleware::DefaultHeaders::new()
-                .add((header::CONTENT_SECURITY_POLICY, "default-src 'self' cdnjs.cloudflare.com chrispritchard.github.io;frame-src 'self' *.youtube.com chrispritchard.github.io;frame-ancestors 'none';style-src 'self' 'unsafe-inline' *.youtube.com chrispritchard.github.io"))
+                .add((header::CONTENT_SECURITY_POLICY, format!("default-src {default_src};frame-src {frame_src};frame-ancestors 'none';style-src {style_src}")))
                 .add((header::X_CONTENT_TYPE_OPTIONS, "nosniff"))
                 .add((header::REFERRER_POLICY, "same-origin"))
                 .add((header::PERMISSIONS_POLICY, "microphone=(), geolocation=(), camera=(), usb=(), serial=()"))
