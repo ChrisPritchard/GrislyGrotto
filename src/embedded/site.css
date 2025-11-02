@@ -339,3 +339,9 @@ div.checkbox label {
 code {
     white-space: pre-wrap;
 }
+
+pre.mermaid {
+    border: none;
+    box-shadow: none;
+    text-align: center;
+}
