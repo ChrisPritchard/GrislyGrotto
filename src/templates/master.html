@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>The Grisly Grotto - {% block title %}{% endblock title %}</title>
-        <link href="/static/site.css" rel="stylesheet" />
-        {% if style == "dark" %}
-        <link href="/static/site-dark.css" rel="stylesheet" />
+
+<head>
+    <title>The Grisly Grotto - {% block title %}{% endblock title %}</title>
+    <link href="/static/site.css" rel="stylesheet" />
+    {% if style == "dark" %}
+    <link href="/static/site-dark.css" rel="stylesheet" />
+    {% endif %}
+    <meta charset="utf-8" />
+    <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="application-name" content="The Grisly Grotto" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='black' width='100' height='100'></rect></svg>" />
+</head>
+
+<body>
+    <a href="/">
+        <h1>The Grisly Grotto</h1>
+    </a>
+    <nav>
+        {% if current_user %}
+        <span><a href="/editor/new">New</a></span>
+        <span>&nbsp;|&nbsp;</span>
+        <span><a href="/account">Account</a></span>
+        <span>&nbsp;|&nbsp;</span>
+        <span><a href="/logout">Logout</a></span>
+        <span>&nbsp;|&nbsp;</span>
+        {% else %}
+        <span><a href="/login">Login</a></span>
+        <span>&nbsp;|&nbsp;</span>
         {% endif %}
-        <meta charset="utf-8" />
-        <meta name="description" content="Personal blog site of Chris Pritchard and Peter Coleman" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="application-name" content="The Grisly Grotto" />
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='black' width='100' height='100'></rect></svg>" />
-    </head>
-    <body>
-        <a href="/">
-            <h1>The Grisly Grotto</h1>
-        </a>
-        <nav>
-            {% if current_user %}
-            <span><a href="/editor/new">New</a></span>
-            <span>&nbsp;|&nbsp;</span>
-            <span><a href="/account">Account</a></span>
-            <span>&nbsp;|&nbsp;</span>
-            <span><a href="/logout">Logout</a></span>
-            <span>&nbsp;|&nbsp;</span>
-            {% else %}
-            <span><a href="/login">Login</a></span>
-            <span>&nbsp;|&nbsp;</span>
-            {% endif %}
-            <span><a href="/archives">Archives</a></span>
-            <span>&nbsp;|&nbsp;</span>
-            <span><a href="/search">Search</a></span>
-            <span>&nbsp;|&nbsp;</span>
-            <span><a href="/about">About</a></span>
-        </nav>
-        <div class="style_selector_container">
-            <a class="style_selector light" data-style="light" href="#" alt="light mode">☼</a><a class="style_selector dark" data-style="dark" href="#" alt="dark mode">☾</a>
-        </div>
-        {% block content %}{% endblock content %}
-        <footer>Grisly Grotto v18. Site designed and coded by <a href="mailto:chris@grislygrotto.nz">Christopher Pritchard</a>, 2023</footer>
-        <script type="text/javascript" src="/static/style.js"></script>
-    </body>
+        <span><a href="/archives">Archives</a></span>
+        <span>&nbsp;|&nbsp;</span>
+        <span><a href="/search">Search</a></span>
+        <span>&nbsp;|&nbsp;</span>
+        <span><a href="/about">About</a></span>
+    </nav>
+    <div class="style_selector_container">
+        <a class="style_selector light" data-style="light" href="#" alt="light mode">☼</a><a class="style_selector dark"
+            data-style="dark" href="#" alt="dark mode">☾</a>
+    </div>
+    {% block content %}{% endblock content %}
+    <footer>Grisly Grotto v18. Site designed and coded by <a href="mailto:chris@grislygrotto.nz">Christopher
+            Pritchard</a>, 2023</footer>
+    <script type="text/javascript" src="/static/style.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script type="text/javascript" src="/static/mermaid.js"></script>
+</body>
+
 </html>
