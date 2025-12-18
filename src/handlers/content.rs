@@ -42,6 +42,7 @@ async fn upload_content(
     let mime_type = mime_type(&data, file_name.ends_with(".webp"));
     if !mime_type.starts_with("image/")
         && mime_type != "video/mp4"
+        && mime_type != "video/webm"
         && mime_type != "application/zip"
     {
         return Err(WebError::BadRequest("mime type not allowed".into()));

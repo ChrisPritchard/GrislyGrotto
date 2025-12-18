@@ -119,7 +119,7 @@ content.addEventListener('drop', async (e) => {
 
         if (file.type.startsWith('image/')) {
             fileType = 'image';
-        } else if (file.type === 'video/mp4') {
+        } else if (file.type === 'video/mp4' || file.type === 'video/webm') {
             fileType = 'video';
         } else if (file.type === 'application/zip' || file.name.endsWith('.zip')) {
             fileType = 'zip';
@@ -134,7 +134,7 @@ content.addEventListener('drop', async (e) => {
 async function handle_file_upload(fileItem, fileType) {
 
     // Show name prompt (except for ZIP which uses original filename)
-    let name = fileType === 'zip' ? fileItem.name :
+    let name = fileType === 'zip' || fileType === 'video' ? fileItem.name :
         prompt(`Enter a name for this ${fileType} (used for alt text/filename - add 'anim' somewhere to avoid compression):`,
             fileItem.name || fileType);
 
@@ -149,7 +149,7 @@ async function handle_file_upload(fileItem, fileType) {
     // Ensure correct extension
     if (fileType === 'image' && !fileName.endsWith('.webp') && fileName.indexOf('anim') < 0) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.webp');
-    } else if (fileType === 'video' && !fileName.endsWith('.mp4')) {
+    } else if (fileType === 'video' && !fileName.endsWith('.mp4') && !fileName.endsWith('.webm')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.mp4');
     } else if (fileType === 'zip' && !fileName.endsWith('.zip')) {
         fileName = fileName.replace(/\.[^.]*$|$/, '.zip');
