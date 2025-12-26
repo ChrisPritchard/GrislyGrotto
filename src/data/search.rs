@@ -13,7 +13,8 @@ pub async fn get_search_results(search_term: &str, current_user: &str) -> Result
     stmt.bind::<&[(_, Value)]>(&[
         (1, filter_search_term.clone().into()),
         (2, filter_search_term.clone().into()),
-        (3, current_user.into()),])?;
+        (3, current_user.into()),
+    ])?;
 
     let mut final_result = Vec::new();
 
@@ -25,10 +26,20 @@ pub async fn get_search_results(search_term: &str, current_user: &str) -> Result
         let content = remove_html.replace_all(&post.content, "");
         let term_loc = content.to_lowercase().find(&search_term.to_lowercase());
         if let Some(loc) = term_loc {
-            let start = 0.max(loc as i64 - 20);
-            let end = (content.len() - 1).min(loc + 20);
+            let mut start = 20.max(loc) - 20; // min 0
+            while start != 0 && !content.is_char_boundary(start) {
+                start -= 1;
+            }
+            let mut end = (content.len() - 1).min(loc + 20);
+            while !content.is_char_boundary(end) {
+                end += 1;
+            }
             let prepend = if start == 0 { "" } else { "..." };
-            let append = if end == (content.len() - 1) { "" } else { "..." };
+            let append = if end == (content.len() - 1) {
+                ""
+            } else {
+                "..."
+            };
             post.content = format!("{prepend}{}{append}", &content[start as usize..end]);
         } else {
             post.content = format!("{}...", &content[..40]);
