@@ -12,7 +12,7 @@ pub struct BlogPost {
     pub is_draft: bool,
     pub word_count: i64,
     pub comment_count: i64,
-    pub comments: Option<Vec<BlogComment>>
+    pub comments: Option<Vec<BlogComment>>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -21,15 +21,7 @@ pub struct BlogComment {
     pub author: String,
     pub content: String,
     pub date: String,
-    pub owned: bool
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct Author {
-    pub username: String,
-    pub password: String,
-    pub displayname: String,
-    pub imageurl: String,
+    pub owned: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -42,7 +34,7 @@ pub struct YearSet {
 pub struct MonthCount {
     pub month: String,
     pub year: String,
-    pub count: i64
+    pub count: i64,
 }
 
 #[derive(Clone, Debug, Serialize)]
