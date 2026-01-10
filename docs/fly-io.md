@@ -13,18 +13,20 @@ All fly commands will take the app of the folder they are currently run in, or a
     - `--no-deploy` will not deploy the app, allowing you to set the env vars
     - `--no-cache` can be appended to not use docker caches - should not be used unless the docker file radically changes
 5. Add secrets for AWS & the session key, the following need to be set:
-    ```
+
+    ```bash
     AWS_REGION=ap-southeast-2
     AWS_ACCESS_KEY_ID=[REDACTED]
     AWS_SECRET_ACCESS_KEY=[REDACTED]
     AWS_BUCKET_NAME=grislygrotto-content
     SESSION_KEY=[REDACTED]
     ```
+
     The bucket name and region will likely not change.
     Secrets can be set with `fly secrets set AWS_REGION=ap-southeast-2 AWS_ACCESS_KEY_ID=[REDACTED] AWS_SECRET_ACCESS_KEY=[REDACTED] AWS_BUCKET_NAME=grislygrotto-content SESSION_KEY=[REDACTED]`.
     Alternately, each secret can be set individually, e.g. `fly secrets set AWS_REGION=ap-southeast-2`.
 
-    Note the SESSION_KEY must be 64 bytes wrong and very random. Using a SHA2-256 hash of something randomly generated will do it.
+    Note the `SESSION_KEY` must be 64 bytes wrong and very random. Using a SHA2-256 hash of something randomly generated will do it.
     If not specified, the session_key will be randomly generated on every start, which is problematic for fly.io as the app gets stopped when there is no activity.
 6. Deploy the app using `fly deploy` - this is required so an actual VM is started, in order to access and upload the database
 7. Open a sftp shell and upload the latest version of `grislygrotto.db` to `/mnt/db`:
@@ -47,12 +49,18 @@ The following command can show these being created: `flyctl certs show -a grisly
 
 To backup the database, first ensure the fly.io instance is started with `curl -I grislygrotto.nz`
 
-Then, the flyctl command line tool can be used to backup the database locally: `fly sftp get /mnt/db/grislygrotto.db grislygrotto.db -a grislygrotto`
+Then, the `flyctl` command line tool can be used to backup the database locally: `fly sftp get /mnt/db/grislygrotto.db grislygrotto.db -a grislygrotto`
 
 - `-a` specifies the app to use
 - the first argument after get is the remote location to retrieve
-- the second argument is the local location to save 
+- the second argument is the local location to save
 
 ## Updates (code only)
 
 Should be a simple matter of running `fly deploy`
+
+## Github Action (new)
+
+Under [.github/workflows/fly-deploy.yml](../.github/workflows/fly-deploy.yml) is a github action spec that will now update the fly.io deployment on every check in to master.
+
+It requires a action secret, `FLY_API_TOKEN` to be set - this can be created on the Fly.IO dashboard.
