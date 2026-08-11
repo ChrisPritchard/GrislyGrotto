@@ -186,7 +186,7 @@ async function handle_file_upload(fileItem, fileType) {
         } else {
             // For images
             markup = `<div align="center"><a href="/content/${fileName}" target="_blank">` +
-                `<img style="max-width:800px" src="/content/${fileName}" alt="${name}" />` +
+                `<img style="max-width:600px" src="/content/${fileName}" alt="${name}" />` +
                 `</a></div>`;
         }
 
